@@ -1,0 +1,848 @@
+Build a full-stack production-grade 
+B2B packaging platform called [YOUR BRAND NAME].
+
+This is a serious business application — 
+not a prototype. 
+Code quality, error handling, 
+and user experience must be 
+production standard.
+
+TECH STACK
+Frontend: Next.js 14 App Router, 
+          TypeScript strict mode, 
+          Tailwind CSS, 
+          Shadcn/ui component library
+Backend: Supabase 
+         (PostgreSQL, auth, storage, 
+          edge functions)
+Payments: Razorpay 
+          (samples and design only — 
+          production orders are 
+          quote-first, invoice-based)
+Email: Supabase built-in auth emails 
+       for now 
+       (domain + Resend added later — 
+        build email functions 
+        with provider abstraction 
+        so swapping is one config change)
+WhatsApp alerts: 
+       HTTP POST webhook to team's 
+       WhatsApp Business API 
+       (WATI or manual — 
+        build as configurable 
+        env variable endpoint)
+Deploy: Vercel
+
+COLOUR TOKENS
+--navy: #0D1B2A
+--blue: #1B6CA8
+--amber: #E8A838
+--bg: #FFFFFF
+--surface: #F8F9FC
+--border: #E2EAF4
+--text: #0D1B2A
+--muted: #64748B
+--success: #22C55E
+--danger: #EF4444
+
+---
+
+DATABASE SCHEMA — 
+build all tables with proper 
+RLS (Row Level Security) policies
+
+products:
+  id uuid primary key
+  name text not null
+  slug text unique not null
+  category enum 
+    (flexible, rigid, boxes, 
+     ecommerce, rolls, 
+     accessories, sustainable, premium)
+  description text (max 100 chars)
+  use_case text (one line)
+  price_min numeric not null
+  price_max numeric not null
+  moq integer not null
+  moq_unit text not null
+  is_smartstock boolean default false
+  is_eco boolean default false
+  sample_tier enum 
+    (standard, premium, 
+     complex, not_required)
+  sample_price integer 
+    (2999 / 4999 / 7999 / 0)
+  image_url text
+  specs jsonb default '{}'
+  compliance_certs text[] 
+    (array of cert names)
+  delivery_days_india integer
+  delivery_days_global integer
+  is_active boolean default true
+  created_at timestamptz default now()
+
+quote_requests:
+  id uuid primary key
+  quote_id text unique not null 
+    (PKG-YYYY-XXXXX format)
+  contact_name text not null
+  company_name text not null
+  email text not null
+  phone text not null
+  items jsonb not null 
+    (array of 
+    {product_id, quantity, 
+     variants, artwork_status, 
+     artwork_url, 
+     sample_requested, 
+     sample_tier})
+  delivery_country text not null
+  delivery_pincode text
+  preferred_timeline enum 
+    (urgent, standard, flexible)
+  notes text
+  total_estimated_min numeric
+  total_estimated_max numeric
+  status enum 
+    (submitted, reviewing, 
+     quoted, accepted, rejected)
+    default submitted
+  user_id uuid references users(id)
+    (null until account created)
+  rejection_reason text
+  created_at timestamptz default now()
+
+quotes_sent:
+  id uuid primary key
+  quote_request_id uuid 
+    references quote_requests(id)
+  line_items jsonb not null
+  total_price numeric not null
+  payment_type enum 
+    (upfront, standard, credit)
+  discount_amount numeric default 0
+  validity_days integer default 7
+  accepted_at timestamptz
+  rejected_at timestamptz
+  created_at timestamptz default now()
+
+orders:
+  id uuid primary key
+  order_id text unique not null 
+    (ORD-YYYY-XXXXX)
+  quote_request_id uuid
+  quotes_sent_id uuid
+  user_id uuid references users(id)
+  items jsonb not null
+  total_price numeric not null
+  payment_type enum
+  discount_applied numeric default 0
+  delivery_address jsonb not null
+  status enum 
+    (confirmed, in_production, 
+     qc, dispatched, delivered)
+    default confirmed
+  estimated_delivery date
+  tracking_number text
+  tracking_url text
+  internal_notes text
+  created_at timestamptz default now()
+
+users:
+  id uuid primary key 
+    references auth.users(id)
+  email text unique not null
+  company_name text
+  contact_name text
+  phone text
+  gstin text
+  country text default 'India'
+  default_address jsonb
+  orders_completed integer default 0
+  credit_eligible boolean default false
+  credit_limit numeric default 0
+  created_at timestamptz default now()
+
+design_requests:
+  id uuid primary key
+  design_id text unique not null 
+    (DES-YYYY-XXXXX)
+  user_id uuid (nullable)
+  contact_name text not null
+  email text not null
+  phone text not null
+  product_type text not null
+  product_id uuid 
+    references products(id)
+  brand_colors text
+  logo_url text
+  reference_images text[] 
+  brand_description text 
+    (3 words)
+  notes text
+  is_rush boolean default false
+  amount_paid integer not null
+  razorpay_payment_id text
+  status enum 
+    (paid, in_design, 
+     revision, approved)
+    default paid
+  designer_notes text
+  output_files text[]
+  created_at timestamptz default now()
+
+sample_requests:
+  id uuid primary key
+  sample_id text unique not null 
+    (SAM-YYYY-XXXXX)
+  user_id uuid (nullable)
+  contact_name text not null
+  email text not null
+  phone text not null
+  product_id uuid 
+    references products(id)
+  sample_tier enum 
+    (standard, premium, complex)
+  amount_paid integer not null
+  razorpay_payment_id text
+  status enum 
+    (paid, dispatched, delivered)
+    default paid
+  adjusted_to_order_id uuid 
+    references orders(id) 
+    (nullable — set when adjusted)
+  created_at timestamptz default now()
+
+invoices:
+  id uuid primary key
+  invoice_id text unique not null 
+    (INV-YYYY-XXXXX)
+  order_id uuid references orders(id)
+  user_id uuid references users(id)
+  amount numeric not null
+  discount_line numeric default 0
+  status enum 
+    (pending, paid, overdue)
+    default pending
+  due_date date not null
+  payment_method text
+  razorpay_payment_id text
+  pdf_url text
+  created_at timestamptz default now()
+
+testimonials:
+  id, company_name, city, 
+  industry, quote_text, 
+  metric_label, metric_value, 
+  is_active
+
+---
+
+ID GENERATION FUNCTION
+Create a Supabase edge function 
+generate_id(prefix, table, column):
+  year = current year
+  last_id = SELECT MAX(column) 
+            FROM table 
+            WHERE column LIKE 
+            prefix-year-%
+  sequence = last_id ? 
+    parseInt(last_id.split('-')[2]) + 1 : 
+    10001
+  return prefix-year-sequence
+
+Use for all IDs:
+PKG (quote_requests.quote_id)
+ORD (orders.order_id)
+DES (design_requests.design_id)
+SAM (sample_requests.sample_id)
+INV (invoices.invoice_id)
+
+---
+
+ROW LEVEL SECURITY POLICIES
+
+products: SELECT for all (public)
+quote_requests: 
+  INSERT for all (public — 
+  no auth required to submit quote)
+  SELECT/UPDATE only for 
+  owner (user_id) and admin role
+orders, invoices: 
+  SELECT only for owner user_id
+  UPDATE only for admin role
+users: 
+  SELECT/UPDATE only for owner
+design_requests, sample_requests: 
+  INSERT for all
+  SELECT for owner or admin
+Admin role: 
+  Full access to all tables
+  (Supabase custom role: 
+   service_role for admin panel)
+
+---
+
+PUBLIC PAGES
+
+/ — Home
+Implement all sections from Prompt 1.
+
+Savings calculator logic:
+monthly_spend = slider value (number)
+vendor_count = '1' | '2-3' | '5+'
+credit = true | false
+
+saving_pct = 
+  vendor_count === '1' ? 0.08 :
+  vendor_count === '2-3' ? 0.10 : 0.12
+annual_saving = 
+  monthly_spend * 12 * saving_pct
+
+credit_markup = credit ? 
+  monthly_spend * 12 * 0.12 : 0
+
+upfront_saving = 
+  monthly_spend * 12 * 0.03
+
+time_saved = 
+  vendor_count === '1' ? 4 :
+  vendor_count === '2-3' ? 8 : 14
+
+total_value = 
+  annual_saving + credit_markup
+
+All values formatted as 
+Indian number format 
+(₹X,XX,XXX) using 
+Intl.NumberFormat('en-IN').
+All count up with 
+requestAnimationFrame 
+when section enters viewport 
+(IntersectionObserver).
+
+/products
+Query products table:
+  WHERE is_active = true
+  Filter by category (if chip selected)
+  Filter by is_eco (if toggle on)
+  Filter by is_smartstock 
+    (if toggle on)
+  Full text search on name, 
+  use_case, description
+  ORDER BY is_smartstock DESC, 
+  is_tier1 DESC, name ASC
+
+/products/[slug]
+Query by slug.
+Parse specs jsonb for 
+specifications tab.
+Sticky right panel:
+  quantity state (number, 
+  min = product.moq)
+  estimated_min = 
+    product.price_min * quantity
+  estimated_max = 
+    product.price_max * quantity
+  upfront_saving = 
+    estimated_min * 0.03
+  All update live on 
+  quantity change.
+
+/quote — 6-step wizard
+All state managed with 
+React useState / useReducer.
+No page reload between steps.
+URL updates: /quote/step/1 etc 
+(for back button support).
+
+Step 6 submission:
+const quoteId = await generateId(
+  'PKG', 'quote_requests', 'quote_id')
+
+const { error } = await supabase
+  .from('quote_requests')
+  .insert({
+    quote_id: quoteId,
+    contact_name, company_name,
+    email, phone,
+    items: selectedItems,
+    delivery_country,
+    delivery_pincode,
+    preferred_timeline,
+    notes,
+    total_estimated_min,
+    total_estimated_max,
+    status: 'submitted'
+  })
+
+if (!error) {
+  // WhatsApp webhook
+  await fetch(
+    process.env.WHATSAPP_WEBHOOK_URL, 
+    {
+      method: 'POST',
+      body: JSON.stringify({
+        message: 
+          `New quote: ${quoteId}
+           Company: ${company_name}
+           Products: ${itemSummary}
+           Value: ₹${total_estimated_min}
+           Phone: ${phone}`
+      })
+    }
+  )
+  router.push(
+    `/quote/confirmed/${quoteId}`)
+}
+
+/design — 4-step brief + Razorpay payment
+On Razorpay success callback:
+  Create design_request record
+  Set status: 'paid'
+  Generate design_id
+  WhatsApp webhook to team
+  Redirect to 
+  /design/confirmed/[design_id]
+
+/samples — static pricing page with 
+CTA to /products
+
+---
+
+AUTH FLOW — NO PUBLIC SIGNUP
+
+Remove sign-up from public nav.
+No /signup route.
+Dashboard accounts created only 
+from admin panel.
+
+Admin creates account:
+1. Admin accepts quote in /admin
+2. System checks: 
+   SELECT * FROM users 
+   WHERE email = quote.email
+3. If no user:
+   const { data } = await 
+   supabase.auth.admin
+   .createUser({
+     email: quote.email,
+     password: generateTempPassword(),
+     email_confirm: true,
+     user_metadata: {
+       company_name: quote.company_name,
+       contact_name: quote.contact_name,
+       phone: quote.phone
+     }
+   })
+   Insert into users table
+4. Create order record from 
+   accepted quote
+5. Send welcome email 
+   (Supabase template for now):
+   Subject: 
+   "Your [BRAND] account is ready"
+   Body: 
+   Login URL, temp password, 
+   "Your order is waiting inside."
+
+/login — email + password
+Error states:
+"Wrong email or password. 
+Need help? WhatsApp us."
+Forgot password → 
+Supabase password reset flow.
+
+Middleware: 
+Redirect /dashboard/* to /login 
+if no session.
+Redirect /admin/* to /login 
+if no admin role.
+
+---
+
+DASHBOARD — 5 PAGES
+
+Layout:
+Sidebar (desktop) / 
+bottom nav (mobile):
+Overview | Orders | 
+Designs | Payments | Profile
+Header: company name, 
+        logout button
+
+/dashboard (Overview)
+4 stat cards 
+(query from DB on load):
+Active orders: 
+  COUNT from orders 
+  WHERE user_id = current 
+  AND status != 'delivered'
+Last order: 
+  MAX(created_at) from orders 
+  WHERE user_id = current
+Total saved: 
+  SUM(discount_applied) 
+  from orders 
+  WHERE user_id = current
+Credit status: 
+  users.credit_eligible 
+  ? 'Eligible' : 
+  `${3 - orders_completed} 
+  orders away`
+
+Recent orders: 
+last 3 from orders table.
+Columns: 
+Product name | Qty | 
+Status chip | Date | 
+Reorder button
+
+/dashboard/orders
+Full orders table.
+Status filter tabs at top.
+Row click → Sheet (slide-out):
+  Order details
+  Estimated delivery
+  Tracking link (if dispatched)
+  Download invoice button
+  Reorder button:
+    onClick: 
+      router.push(
+        `/quote?reorder=${order.id}`)
+    Pre-fill Step 2 and 3 
+    with same product and quantity.
+
+/dashboard/designs
+Grid of design_requests.
+Card: design_id, product_type, 
+      status chip, date.
+If status = approved:
+  Download files button 
+  (signed URL from Supabase Storage)
+  "Order production →" button
+    → /quote pre-filled with 
+      product_id from design
+
+/dashboard/payments
+Invoices table:
+Invoice ID | Amount | 
+Status chip | Due date | 
+Download PDF
+
+Credit section below table:
+If credit_eligible = false:
+  Locked icon + text:
+  "Net-30 credit unlocks 
+  after 3 completed orders."
+  Progress bar:
+  width: orders_completed/3 * 100%
+  "{orders_completed} of 3 orders 
+  completed"
+If credit_eligible = true:
+  Green badge: "Credit Active"
+  "Credit limit: 
+  ₹[credit_limit]"
+
+/dashboard/profile
+Form with current user data.
+Fields: 
+company_name, contact_name, 
+email (read-only), 
+phone, gstin, 
+default_address (jsonb fields).
+Save button → 
+UPDATE users SET ... 
+WHERE id = current_user
+Success toast on save.
+
+---
+
+ADMIN PANEL (/admin/*)
+
+Simple auth: 
+Check Supabase role = 'service_role'
+or separate admin_users table.
+
+/admin/quotes
+Table: Quote ID | Company | 
+       Items summary | 
+       Est value | Date | Status
+Status filter tabs.
+Row click → detail panel (full width):
+  All quote fields
+  Items table with quantities
+  Customer contact
+  Status updater:
+    Select: 
+    reviewing → quoted → 
+    accepted → rejected
+  If status = quoted:
+    Final price input per line item
+    Payment terms selector
+    "Send quote to customer" button:
+      Creates quotes_sent record
+      Updates quote status = quoted
+      WhatsApp to customer 
+      with quote summary and 
+      accept link
+  If status = accepted:
+    "Create order and account" button:
+      Runs account creation flow above
+      Creates order record
+      Creates invoice record
+      WhatsApp to customer 
+      with dashboard credentials
+  If status = rejected:
+    Rejection reason text field
+
+/admin/orders
+Table with status update dropdown 
+per row.
+"Mark dispatched" → 
+  input tracking number and URL → 
+  update order.tracking_number, 
+  order.tracking_url, 
+  order.status = 'dispatched'
+  WhatsApp to customer: 
+  "Your order [ORD-XXXXX] 
+  has been dispatched. 
+  Track here: [url]"
+"Mark delivered" → 
+  update status = 'delivered'
+  Increment 
+  users.orders_completed + 1
+  Check if orders_completed >= 3:
+    Set credit_eligible = true
+    WhatsApp to customer:
+    "You're now eligible 
+    for net-30 credit terms."
+
+/admin/designs
+Table with status dropdown.
+File upload for output files 
+(Supabase Storage).
+"Mark approved" → 
+  update status = 'approved'
+  Send notification to customer
+
+/admin/samples
+Table.
+"Mark dispatched" button per row.
+
+---
+
+BUSINESS LOGIC FUNCTIONS
+
+Upfront discount calculation:
+function calculateUpfrontDiscount(
+  price: number, 
+  paymentType: string
+): number {
+  if (paymentType === 'upfront') {
+    return Math.round(price * 0.03)
+  }
+  return 0
+}
+
+Credit eligibility check:
+Trigger on orders.status update to 
+'delivered':
+  UPDATE users 
+  SET orders_completed = 
+    orders_completed + 1
+  WHERE id = order.user_id
+  
+  IF orders_completed >= 3:
+    UPDATE users 
+    SET credit_eligible = true
+    WHERE id = order.user_id
+
+Sample fee adjustment:
+In admin order creation:
+  SELECT * FROM sample_requests
+  WHERE user_id = ? 
+  AND product_id = ?
+  AND status = 'delivered'
+  AND adjusted_to_order_id IS NULL
+  
+  If found AND order_total > 50000:
+    Show admin alert:
+    "Customer has a delivered 
+    sample (SAM-XXXXX) for 
+    this product. 
+    Adjust ₹[amount] from order?"
+    On confirm:
+      Deduct from invoice amount
+      UPDATE sample_requests 
+      SET adjusted_to_order_id = 
+        new_order.id
+
+Indian number formatting:
+Use throughout for all prices:
+const formatINR = (n: number) => 
+  new Intl.NumberFormat('en-IN', {
+    style: 'currency',
+    currency: 'INR',
+    maximumFractionDigits: 0
+  }).format(n)
+
+---
+
+WHATSAPP WEBHOOK
+All WhatsApp notifications sent as 
+HTTP POST to 
+process.env.WHATSAPP_WEBHOOK_URL
+Body format:
+{
+  "phone": "+91XXXXXXXXXX",
+  "message": "..."
+}
+
+Initially can point to a 
+Make.com / Zapier webhook 
+that forwards to WhatsApp manually.
+Later upgrade to WATI API.
+Build as abstraction — 
+one sendWhatsApp(phone, message) 
+utility function used everywhere.
+
+---
+
+ERROR HANDLING STANDARDS
+
+All Supabase operations: 
+try/catch with specific error messages.
+Toast notifications for all 
+user-facing actions:
+Success: green toast, 3 seconds
+Error: red toast, 5 seconds, 
+       with retry action
+Loading states: 
+skeleton screens on data fetch, 
+button loading spinners on submit.
+Form validation: 
+inline, real-time, 
+never submit-time only.
+Empty states: 
+every table/grid has a 
+designed empty state with 
+helpful CTA.
+
+Human-readable errors:
+"Artwork upload failed — 
+try a PDF or AI file under 50MB"
+"Quote submission failed — 
+please check your connection 
+and try again, 
+or WhatsApp us directly."
+
+---
+
+SEO — ALL PUBLIC PAGES
+
+Each page needs:
+title tag (unique, 60 chars max)
+meta description (160 chars max)
+OG tags (title, description, image)
+Canonical URL
+Structured data 
+(Organization, Product schemas)
+
+Key pages:
+/ → "Packaging Platform India | 
+     Design, Source, QC, Deliver — 
+     [BRAND NAME]"
+/products → "110+ Packaging SKUs | 
+             Flexible, Rigid, 
+             Eco Packaging India"
+/products/[slug] → 
+  "[Product Name] | 
+   Price, MOQ, Sample — 
+   [BRAND NAME]"
+
+Sitemap: auto-generated from 
+Next.js sitemap.ts with 
+all product slugs from DB.
+
+---
+
+SEED DATA
+
+Products: 
+All 110 SKUs from the catalogue.
+Each with:
+  name, slug, category, 
+  description, use_case,
+  price_min, price_max, 
+  moq, moq_unit,
+  is_smartstock 
+    (true for all Tier 1 
+     high-demand SKUs),
+  is_eco 
+    (true for sustainable 
+     category and eco SKUs),
+  sample_tier as mapped above,
+  sample_price matching tier,
+  delivery_days_india: 
+    smartstock=2, standard=7,
+  delivery_days_global: 14-21,
+  compliance_certs: 
+    relevant per category,
+  specs: basic jsonb per category
+
+Testimonials: 3 records
+payout_rates: not needed here 
+  (that is solar platform)
+
+---
+
+ENV VARIABLES NEEDED
+NEXT_PUBLIC_SUPABASE_URL
+NEXT_PUBLIC_SUPABASE_ANON_KEY
+SUPABASE_SERVICE_ROLE_KEY
+NEXT_PUBLIC_RAZORPAY_KEY_ID
+RAZORPAY_KEY_SECRET
+WHATSAPP_WEBHOOK_URL
+NEXT_PUBLIC_SITE_URL
+ADMIN_SECRET_KEY 
+  (simple admin route protection)
+
+---
+
+LAUNCH CHECKLIST
+[] Supabase project created
+[] All tables with RLS policies
+[] 110 products seeded
+[] /quote flow complete 
+   and tested end to end
+[] Quote ID generated correctly
+[] WhatsApp webhook fires on 
+   new quote (test with 
+   requestbin.com first)
+[] /design flow with 
+   Razorpay ₹1,999 working
+[] /samples page live 
+   (static — no payment on this page,
+    payment on product detail page)
+[] Admin panel quote acceptance 
+   creates user and order
+[] Dashboard login flow works 
+   (temp password email received)
+[] All 5 dashboard pages functional
+[] Savings calculator accurate 
+   on home page
+[] All stat count-up animations 
+   working
+[] Product filters working correctly
+[] SmartStock badges showing
+[] Upfront discount showing 
+   in quote Step 3
+[] Mobile responsive: 
+   home, products, quote flow
+[] SEO meta tags on all pages
+[] Sitemap generated and valid
+[] 404 page designed
+[] All empty states designed
+[] Error toasts working
+[] Vercel deployment successful
