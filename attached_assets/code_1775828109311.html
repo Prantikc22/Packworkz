@@ -1,0 +1,727 @@
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800;900&amp;family=Plus+Jakarta+Sans:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,400&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-primary": "#ffffff",
+                    "outline-variant": "#c4c6cc",
+                    "surface-bright": "#f8f9fc",
+                    "on-primary-fixed-variant": "#3a4859",
+                    "tertiary-fixed": "#ffddaf",
+                    "surface-tint": "#525f71",
+                    "secondary-fixed": "#cfe5ff",
+                    "on-secondary-fixed-variant": "#004a78",
+                    "primary-fixed-dim": "#bac8dc",
+                    "on-primary-container": "#778598",
+                    "surface-dim": "#d9dadd",
+                    "secondary-fixed-dim": "#9acbff",
+                    "surface-container": "#edeef1",
+                    "on-secondary-container": "#004c7c",
+                    "inverse-on-surface": "#f0f1f4",
+                    "surface-container-lowest": "#ffffff",
+                    "tertiary-container": "#281800",
+                    "on-secondary": "#ffffff",
+                    "surface-container-low": "#f2f3f6",
+                    "surface-container-highest": "#e1e2e5",
+                    "secondary-container": "#7cbeff",
+                    "on-error": "#ffffff",
+                    "surface-container-high": "#e7e8eb",
+                    "tertiary": "#000000",
+                    "on-tertiary": "#ffffff",
+                    "inverse-primary": "#bac8dc",
+                    "background": "#f8f9fc",
+                    "on-surface": "#191c1e",
+                    "on-surface-variant": "#44474c",
+                    "primary": "#0D1B2A",
+                    "error": "#ba1a1a",
+                    "primary-fixed": "#d6e4f9",
+                    "on-secondary-fixed": "#001d34",
+                    "primary-container": "#0f1c2c",
+                    "inverse-surface": "#2e3133",
+                    "secondary": "#1B6CA8",
+                    "outline": "#74777d",
+                    "on-tertiary-container": "#b17900",
+                    "surface": "#f8f9fc",
+                    "error-container": "#ffdad6",
+                    "on-tertiary-fixed-variant": "#614000",
+                    "surface-variant": "#e1e2e5",
+                    "on-error-container": "#93000a",
+                    "on-primary-fixed": "#0f1c2c",
+                    "on-background": "#191c1e",
+                    "tertiary-fixed-dim": "#fdba49",
+                    "on-tertiary-fixed": "#281800"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Space Grotesk"],
+                    "body": ["Plus Jakarta Sans"],
+                    "label": ["Plus Jakarta Sans"],
+                    "mono": ["JetBrains Mono"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .clash-display { font-family: 'Space Grotesk', sans-serif; font-weight: 800; }
+        .glass-panel { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(20px); }
+        .hero-gradient { background: linear-gradient(135deg, #0D1B2A 0%, #0F1C2C 100%); }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        .animate-marquee {
+            display: inline-flex;
+            white-space: nowrap;
+            animation: marquee 20s linear infinite;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body selection:bg-tertiary-fixed selection:text-on-tertiary-fixed">
+<!-- Top Navigation Bar -->
+<nav class="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-8 py-4 bg-[#0D1B2A] shadow-2xl shadow-black/20">
+<div class="text-2xl font-black tracking-tighter text-white">PackOps</div>
+<div class="hidden md:flex items-center gap-8 font-['Space_Grotesk'] tracking-tight text-sm font-bold uppercase">
+<a class="text-[#E8A838] border-b-2 border-[#E8A838] pb-1 hover:text-white transition-colors duration-200" href="#">Products</a>
+<a class="text-slate-300 hover:text-white transition-colors duration-200" href="#">How it Works</a>
+<a class="text-slate-300 hover:text-white transition-colors duration-200" href="#">Industries</a>
+<a class="text-slate-300 hover:text-white transition-colors duration-200" href="#">Design</a>
+<a class="text-slate-300 hover:text-white transition-colors duration-200" href="#">Sample</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="font-['Space_Grotesk'] tracking-tight text-sm font-bold uppercase text-slate-300 hover:text-white transition-colors duration-200">Login</button>
+<button class="bg-[#1B6CA8] text-white px-6 py-2.5 rounded font-['Space_Grotesk'] tracking-tight text-sm font-bold uppercase hover:opacity-90 active:scale-95 transition-all">Get Quote</button>
+</div>
+</nav>
+<main class="pt-[72px]">
+<!-- Hero Section -->
+<section class="relative min-h-[90vh] hero-gradient flex flex-col justify-center px-8 md:px-20 overflow-hidden py-24">
+<div class="absolute inset-0 opacity-10 pointer-events-none">
+<svg height="100%" preserveaspectratio="none" viewbox="0 0 100 100" width="100%">
+<path d="M0,20 L20,0 L100,0 L100,80 L80,100 L0,100 Z" fill="none" stroke="white" stroke-width="0.1"></path>
+<path d="M10,30 L30,10 L90,10 L90,70 L70,90 L10,90 Z" fill="none" stroke="white" stroke-width="0.1"></path>
+</svg>
+</div>
+<div class="relative z-10 max-w-5xl">
+<p class="text-[#1B6CA8] font-bold tracking-[0.2em] mb-6 text-sm uppercase">INDIA'S FIRST MANAGED PACKAGING PLATFORM</p>
+<h1 class="clash-display text-white text-5xl md:text-[88px] leading-[1.0] mb-8">
+                Your Packaging.<br/>Sorted. Forever.
+            </h1>
+<p class="text-slate-400 text-xl md:text-2xl mb-4 max-w-2xl font-light">
+                Design. Source. QC. Deliver. One platform. <span class="text-white font-medium italic">Zero vendor chaos.</span>
+</p>
+<p class="text-secondary text-sm md:text-base font-bold tracking-wide mb-12 uppercase flex items-center gap-2">
+<span class="w-1 h-1 rounded-full bg-secondary"></span> Trusted by D2C &amp; FMCG brands across India
+            </p>
+<div class="flex flex-col sm:flex-row gap-6 mb-20">
+<button class="bg-[#E8A838] text-primary-container px-10 py-5 rounded font-bold text-lg flex items-center justify-center gap-2 hover:opacity-90 transition-all active:scale-95">
+                    Browse 110+ SKUs <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+<button class="border-2 border-white text-white px-10 py-5 rounded font-bold text-lg hover:bg-white/10 transition-all active:scale-95">
+                    Get a sample from ₹2,999
+                </button>
+</div>
+<!-- Trust Stats -->
+<div class="grid grid-cols-2 md:grid-cols-5 gap-8 py-10 border-t border-white/10">
+<div>
+<p class="font-mono text-white text-2xl font-bold">110+</p>
+<p class="text-slate-500 text-xs uppercase tracking-widest mt-1">SKUs</p>
+</div>
+<div>
+<p class="font-mono text-white text-2xl font-bold">500+</p>
+<p class="text-slate-500 text-xs uppercase tracking-widest mt-1">Factory Partners</p>
+</div>
+<div>
+<p class="font-mono text-white text-2xl font-bold">40+</p>
+<p class="text-slate-500 text-xs uppercase tracking-widest mt-1">Countries Served</p>
+</div>
+<div>
+<p class="font-mono text-white text-2xl font-bold">QC</p>
+<p class="text-slate-500 text-xs uppercase tracking-widest mt-1">On Every Order</p>
+</div>
+<div>
+<p class="font-mono text-[#E8A838] text-2xl font-bold">₹0</p>
+<p class="text-slate-500 text-xs uppercase tracking-widest mt-1">Hidden Charges</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Moving Strip 1 -->
+<div class="bg-secondary overflow-hidden py-3 border-y border-white/10">
+<div class="animate-marquee">
+<span class="text-white font-bold tracking-[0.2em] text-xs uppercase mx-8">We are not a vendor. We are your packaging partner.</span>
+<span class="text-white font-bold tracking-[0.2em] text-xs uppercase mx-8">We are not a vendor. We are your packaging partner.</span>
+<span class="text-white font-bold tracking-[0.2em] text-xs uppercase mx-8">We are not a vendor. We are your packaging partner.</span>
+<span class="text-white font-bold tracking-[0.2em] text-xs uppercase mx-8">We are not a vendor. We are your packaging partner.</span>
+</div>
+</div>
+<!-- Hero Strip (Post-Hero) -->
+<div class="bg-surface-bright border-b border-outline-variant/10 py-24 px-8">
+<div class="max-w-7xl mx-auto flex flex-wrap justify-center md:justify-between items-center gap-8 md:gap-4">
+<div class="flex flex-col items-center text-center group">
+<span class="material-symbols-outlined text-secondary mb-3 text-3xl" data-icon="assignment_turned_in">assignment_turned_in</span>
+<span class="text-sm font-bold text-on-surface whitespace-nowrap">Multi-vendor backup</span>
+</div>
+<div class="flex flex-col items-center text-center group">
+<span class="material-symbols-outlined text-secondary mb-3 text-3xl" data-icon="verified_user">verified_user</span>
+<span class="text-sm font-bold text-on-surface whitespace-nowrap">QC owned by us</span>
+</div>
+<div class="flex flex-col items-center text-center group">
+<span class="material-symbols-outlined text-secondary mb-3 text-3xl" data-icon="public">public</span>
+<span class="text-sm font-bold text-on-surface whitespace-nowrap">Global shipping</span>
+</div>
+<div class="flex flex-col items-center text-center group">
+<span class="material-symbols-outlined text-secondary mb-3 text-3xl" data-icon="payments">payments</span>
+<span class="text-sm font-bold text-on-surface whitespace-nowrap">Net-30 credit</span>
+</div>
+<div class="flex flex-col items-center text-center group">
+<span class="material-symbols-outlined text-secondary mb-3 text-3xl" data-icon="psychology">psychology</span>
+<span class="text-sm font-bold text-on-surface whitespace-nowrap">AI demand forecasting</span>
+</div>
+<div class="flex flex-col items-center text-center group">
+<span class="material-symbols-outlined text-secondary mb-3 text-3xl" data-icon="palette">palette</span>
+<span class="text-sm font-bold text-on-surface whitespace-nowrap">Design from ₹1,999</span>
+</div>
+</div>
+</div>
+<!-- Pain Points Section -->
+<section class="py-24 px-8 md:px-20 bg-primary-container relative">
+<div class="max-w-7xl mx-auto">
+<h2 class="clash-display text-white text-4xl mb-16 max-w-xl">Traditional sourcing is broken. We fixed it.</h2>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-0 border border-white/10 rounded overflow-hidden shadow-2xl">
+<!-- Card 1 -->
+<div class="bg-[#0D1B2A] p-8 border-r border-white/5 last:border-r-0 hover:bg-[#1B6CA8]/20 transition-colors">
+<span class="material-symbols-outlined text-[#E8A838] mb-6 text-3xl" data-icon="schedule">schedule</span>
+<h3 class="font-bold text-white text-xl mb-3">Clock/Delay</h3>
+<p class="text-slate-400 text-sm">Missed deadlines lead to stock-outs and lost revenue.</p>
+</div>
+<!-- Card 2 -->
+<div class="bg-[#0D1B2A] p-8 border-r border-white/5 last:border-r-0 hover:bg-[#1B6CA8]/20 transition-colors">
+<span class="material-symbols-outlined text-[#E8A838] mb-6 text-3xl" data-icon="warning">warning</span>
+<h3 class="font-bold text-white text-xl mb-3">Inconsistency</h3>
+<p class="text-slate-400 text-sm">Variations in color and thickness across batches.</p>
+</div>
+<!-- Card 3 -->
+<div class="bg-[#0D1B2A] p-8 border-r border-white/5 last:border-r-0 hover:bg-[#1B6CA8]/20 transition-colors">
+<span class="material-symbols-outlined text-[#E8A838] mb-6 text-3xl" data-icon="group_off">group_off</span>
+<h3 class="font-bold text-white text-xl mb-3">Vendor Chaos</h3>
+<p class="text-slate-400 text-sm">Managing 20+ vendors manually is an operational nightmare.</p>
+</div>
+<!-- Card 4 -->
+<div class="bg-[#0D1B2A] p-8 border-r border-white/5 last:border-r-0 hover:bg-[#1B6CA8]/20 transition-colors">
+<span class="material-symbols-outlined text-[#E8A838] mb-6 text-3xl" data-icon="fact_check">fact_check</span>
+<h3 class="font-bold text-white text-xl mb-3">Compliance</h3>
+<p class="text-slate-400 text-sm">Uncertified factories putting global exports at risk.</p>
+</div>
+<!-- Card 5 -->
+<div class="bg-[#0D1B2A] p-8 border-r border-white/5 last:border-r-0 hover:bg-[#1B6CA8]/20 transition-colors">
+<span class="material-symbols-outlined text-[#E8A838] mb-6 text-3xl" data-icon="credit_card_off">credit_card_off</span>
+<h3 class="font-bold text-white text-xl mb-3">Hidden Costs</h3>
+<p class="text-slate-400 text-sm">"Free credit" usually hides a 15-20% markup on unit costs.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- VS Comparison Section -->
+<section class="py-24 px-8 md:px-20 bg-surface-container-low">
+<div class="max-w-5xl mx-auto">
+<h2 class="clash-display text-4xl mb-12 text-center">PackOps vs. The Old Way</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<!-- PackOps Column -->
+<div class="bg-primary-container rounded p-10 shadow-2xl border-2 border-secondary relative overflow-hidden">
+<div class="absolute top-0 right-0 bg-secondary text-white px-6 py-2 font-bold text-xs uppercase tracking-widest">Recommended</div>
+<h3 class="text-white text-3xl font-black mb-10 flex items-center gap-3">
+<span class="text-secondary">PackOps</span> Precision
+                    </h3>
+<ul class="space-y-6">
+<li class="flex items-center gap-4 text-slate-200">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="font-medium">Redundant Production Nodes</span>
+</li>
+<li class="flex items-center gap-4 text-slate-200">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="font-medium">Managed &amp; Liability-owned QC</span>
+</li>
+<li class="flex items-center gap-4 text-slate-200">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="font-medium">100% Transparent Unit Pricing</span>
+</li>
+<li class="flex items-center gap-4 text-slate-200">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="font-medium">Global Certification Stack</span>
+</li>
+<li class="flex items-center gap-4 text-slate-200">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="font-medium">Digital SKU Dashboard</span>
+</li>
+</ul>
+</div>
+<!-- Traditional Column -->
+<div class="bg-white rounded p-10 shadow-lg border border-outline-variant/30 opacity-60">
+<h3 class="text-on-surface text-3xl font-black mb-10">Direct Vendors</h3>
+<ul class="space-y-6">
+<li class="flex items-center gap-4 text-on-surface-variant">
+<span class="material-symbols-outlined text-error">cancel</span>
+<span>Single Point of Failure</span>
+</li>
+<li class="flex items-center gap-4 text-on-surface-variant">
+<span class="material-symbols-outlined text-error">cancel</span>
+<span>Self-certified (Conflict of Interest)</span>
+</li>
+<li class="flex items-center gap-4 text-on-surface-variant">
+<span class="material-symbols-outlined text-error">cancel</span>
+<span>Markup-heavy "Free" Credit</span>
+</li>
+<li class="flex items-center gap-4 text-on-surface-variant">
+<span class="material-symbols-outlined text-error">cancel</span>
+<span>Compliance Gaps</span>
+</li>
+<li class="flex items-center gap-4 text-on-surface-variant">
+<span class="material-symbols-outlined text-error">cancel</span>
+<span>Manual WhatsApp Chaos</span>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<!-- Core Product Categories Section -->
+<section class="py-24 px-8 md:px-20 bg-surface">
+<div class="max-w-7xl mx-auto">
+<div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 gap-4">
+<div>
+<h2 class="clash-display text-4xl">Core Product Categories</h2>
+<p class="text-on-surface-variant mt-2 text-lg">110+ SKUs across 8 managed hubs.</p>
+</div>
+<button class="text-[#1B6CA8] font-bold flex items-center gap-2 hover:underline">View full catalog <span class="material-symbols-outlined">chevron_right</span></button>
+</div>
+<!-- Categories Grid -->
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-20">
+<!-- Flexible Packaging -->
+<div class="group bg-white rounded p-6 shadow-sm hover:-translate-y-2 transition-all cursor-pointer border border-outline-variant/10">
+<img class="w-full h-48 object-cover rounded mb-4 grayscale group-hover:grayscale-0 transition-all" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBS_2e9fd6clfAnMTfJprpd6x2fDJGQ5ftIImGre3ietP3wXggbBlZaA9O-5KTQrvQkCKA3-Uo88s481SKwdeup5DqP2PPtDM3uolL7NLRoWHnO4lEBKlEwdjpnX7V7GIAGSX2xQEfpzjk_OxrCG95K3evhHwm8-nnffaB1AkiCfn-sIyY0vK6vskBKqvPoK_wkUMcGYI1Xc2lIR5V1iEXFZ4tbH4Tq-mwX-xpOMQEbIgznmcqlBFZUvq4AnVne7LyjVdYHjmXiot-0"/>
+<h4 class="font-bold text-lg">Flexible Packaging</h4>
+<p class="text-on-surface-variant text-sm">Pouches, Films &amp; Wraps</p>
+</div>
+<!-- Rigid Packaging -->
+<div class="group bg-white rounded p-6 shadow-sm hover:-translate-y-2 transition-all cursor-pointer border border-outline-variant/10">
+<img class="w-full h-48 object-cover rounded mb-4 grayscale group-hover:grayscale-0 transition-all" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB9c_sWlKLdq6D2t_oqjiLhHjzn7BG3NQy-XyCE9hVuUYOr9BRqvSlB_ye-W6_phxaKexpq-zsZwpjHV5m6vMiVN8AxN9cvSo1ha-BV-MHwMtXI90P5SfTvC9dtdY4VUL3tTisXALdZZZQkLePDvLRUmWnPqsnWbtip4X5j5MJpvJPMe4XnEo6LbcWfmQSTGt4mQVUU2Y1jErGyHwpEHnl_DtPUZAEIMISXGBDMvwm-bBVgJazxOobXhKadNmXDYSJJVTObACOrdj7N"/>
+<h4 class="font-bold text-lg">Rigid Packaging</h4>
+<p class="text-on-surface-variant text-sm">Glass, HDPE &amp; Metal</p>
+</div>
+<!-- Boxes and Retail -->
+<div class="group bg-white rounded p-6 shadow-sm hover:-translate-y-2 transition-all cursor-pointer border border-outline-variant/10">
+<img class="w-full h-48 object-cover rounded mb-4 grayscale group-hover:grayscale-0 transition-all" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDosVTCwxh5WYQYMnpxryCRaSrWLqqZH4n-4gT7jbrn-IRGnWvARre7vblF9Yre2PQQLhXJ06RL1roI7_VuL9DtLbqmDGTEzOcB5F_jHzCcq0kJ0c3tT3tLT7de1h1Bg7O1_sv6sdasGp47_2fVM7GvWROPRC6YMRBxS9nXylMoYFDZ6rgPVv24ovekeYC8QFNrrBKw40qJwjKV0U8jN-eHMmFU7vDXGypj0hto_r4mD-CSN1Bb44AFjNucmDn3ARauxfQcwWFispCQ"/>
+<h4 class="font-bold text-lg">Boxes and Retail</h4>
+<p class="text-on-surface-variant text-sm">Master Cartons &amp; Mono</p>
+</div>
+<!-- E-commerce Packaging -->
+<div class="group bg-white rounded p-6 shadow-sm hover:-translate-y-2 transition-all cursor-pointer border border-outline-variant/10">
+<img class="w-full h-48 object-cover rounded mb-4 grayscale group-hover:grayscale-0 transition-all" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBLdZhT2V30N02UkCymsQYU5QQtxJ0PCCTusqPPhoM49gVowuG976LhL7uhYrQvf1gB2VWJ2dj58S9Udv3HS4xfr8XhYgsZzlHy07NC-H45k9fazWVp9TJYEDhpqKbIG24fG6qEj0zx0MmiPpAMiqzFdmPpBftaCKMzjUR-tS8P9H1iXRBgAAa1IeiJYT2AP0FGgjSDIwEiC9IIQZ-KhKkCPTeCmvQP7kqz2cB3GFc5G2vC3n7aDpKvS8raXQdCbtZ5_BctnOjJADMG"/>
+<h4 class="font-bold text-lg">E-commerce Packaging</h4>
+<p class="text-on-surface-variant text-sm">Mailers &amp; Security Bags</p>
+</div>
+<!-- Packaging Rolls -->
+<div class="group bg-white rounded p-6 shadow-sm hover:-translate-y-2 transition-all cursor-pointer border border-outline-variant/10">
+<div class="w-full h-48 bg-surface-container flex items-center justify-center rounded mb-4 overflow-hidden">
+<span class="material-symbols-outlined text-outline-variant text-6xl group-hover:scale-110 transition-transform">sync_alt</span>
+</div>
+<h4 class="font-bold text-lg">Packaging Rolls</h4>
+<p class="text-on-surface-variant text-sm">Labels, Foils &amp; Tapes</p>
+</div>
+<!-- Labels and Accessories -->
+<div class="group bg-white rounded p-6 shadow-sm hover:-translate-y-2 transition-all cursor-pointer border border-outline-variant/10">
+<div class="w-full h-48 bg-surface-container flex items-center justify-center rounded mb-4 overflow-hidden">
+<span class="material-symbols-outlined text-outline-variant text-6xl group-hover:scale-110 transition-transform">label</span>
+</div>
+<h4 class="font-bold text-lg">Labels and Accessories</h4>
+<p class="text-on-surface-variant text-sm">Custom Branded Tags</p>
+</div>
+<!-- Sustainable Packaging -->
+<div class="group bg-white rounded p-6 shadow-sm hover:-translate-y-2 transition-all cursor-pointer border border-outline-variant/10">
+<div class="w-full h-48 bg-surface-container flex items-center justify-center rounded mb-4 overflow-hidden">
+<span class="material-symbols-outlined text-outline-variant text-6xl group-hover:scale-110 transition-transform">eco</span>
+</div>
+<h4 class="font-bold text-lg">Sustainable Packaging</h4>
+<p class="text-on-surface-variant text-sm">Bio-degradable Materials</p>
+</div>
+<!-- Premium and Gift -->
+<div class="group bg-white rounded p-6 shadow-sm hover:-translate-y-2 transition-all cursor-pointer border border-outline-variant/10">
+<div class="w-full h-48 bg-surface-container flex items-center justify-center rounded mb-4 overflow-hidden">
+<span class="material-symbols-outlined text-outline-variant text-6xl group-hover:scale-110 transition-transform">workspace_premium</span>
+</div>
+<h4 class="font-bold text-lg">Premium and Gift</h4>
+<p class="text-on-surface-variant text-sm">Luxury Finishes &amp; Textures</p>
+</div>
+</div>
+<!-- Starter Kits / Bundles -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<div class="bg-primary-container p-8 rounded border border-white/5 flex flex-col md:flex-row items-center gap-8 group">
+<div class="flex-1">
+<span class="text-[#E8A838] text-xs font-bold tracking-widest uppercase mb-2 block">Starter Kit</span>
+<h3 class="text-white text-2xl font-bold mb-4">Coffee Brand Bundle</h3>
+<div class="flex flex-wrap gap-3">
+<span class="bg-white/10 text-white px-3 py-1 text-xs rounded border border-white/20">Stand-up Pouch</span>
+<span class="bg-white/10 text-white px-3 py-1 text-xs rounded border border-white/20">Metallic Label</span>
+<span class="bg-white/10 text-white px-3 py-1 text-xs rounded border border-white/20">Shipper Box</span>
+</div>
+</div>
+<div class="w-full md:w-1/3 aspect-square bg-white/5 rounded flex items-center justify-center">
+<span class="material-symbols-outlined text-white/20 text-6xl" data-icon="inventory_2">inventory_2</span>
+</div>
+</div>
+<div class="bg-primary-container p-8 rounded border border-white/5 flex flex-col md:flex-row items-center gap-8 group">
+<div class="flex-1">
+<span class="text-[#E8A838] text-xs font-bold tracking-widest uppercase mb-2 block">Starter Kit</span>
+<h3 class="text-white text-2xl font-bold mb-4">Skincare Essentials</h3>
+<div class="flex flex-wrap gap-3">
+<span class="bg-white/10 text-white px-3 py-1 text-xs rounded border border-white/20">HDPE Bottle</span>
+<span class="bg-white/10 text-white px-3 py-1 text-xs rounded border border-white/20">Lotion Pump</span>
+<span class="bg-white/10 text-white px-3 py-1 text-xs rounded border border-white/20">Mono Carton</span>
+</div>
+</div>
+<div class="w-full md:w-1/3 aspect-square bg-white/5 rounded flex items-center justify-center">
+<span class="material-symbols-outlined text-white/20 text-6xl" data-icon="sanitizer">sanitizer</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Moving Strip 2 -->
+<div class="bg-primary-container overflow-hidden py-4 border-y border-white/10">
+<div class="animate-marquee">
+<span class="text-white font-bold tracking-[0.2em] text-sm uppercase mx-12">We are not a vendor. We are your packaging partner.</span>
+<span class="text-[#E8A838] font-bold tracking-[0.2em] text-sm uppercase mx-12">Precision Engineered Supply Chain</span>
+<span class="text-white font-bold tracking-[0.2em] text-sm uppercase mx-12">We are not a vendor. We are your packaging partner.</span>
+<span class="text-[#E8A838] font-bold tracking-[0.2em] text-sm uppercase mx-12">Precision Engineered Supply Chain</span>
+</div>
+</div>
+<!-- Procurement Perfected Section -->
+<section class="py-24 px-8 md:px-20 bg-primary-container text-white text-center relative overflow-hidden">
+<div class="max-w-7xl mx-auto relative z-10">
+<h2 class="clash-display text-4xl md:text-5xl mb-4">Procurement Perfected</h2>
+<p class="text-slate-400 text-lg mb-20 max-w-2xl mx-auto">From concept to global delivery, our process ensures zero quality compromise.</p>
+<div class="grid grid-cols-1 md:grid-cols-4 gap-12 text-left">
+<div class="relative group">
+<p class="text-white/10 font-black text-8xl mb-[-30px] font-mono group-hover:text-secondary/20 transition-colors">01</p>
+<h4 class="text-2xl font-bold mb-4 relative z-10">Browse</h4>
+<p class="text-slate-400 leading-relaxed">Select from 5000+ industry-standard SKUs or start a custom design brief.</p>
+</div>
+<div class="relative group">
+<p class="text-white/10 font-black text-8xl mb-[-30px] font-mono group-hover:text-secondary/20 transition-colors">02</p>
+<h4 class="text-2xl font-bold mb-4 relative z-10">Configure</h4>
+<p class="text-slate-400 leading-relaxed">Adjust dimensions, materials, and upload your branding assets for live preview.</p>
+</div>
+<div class="relative group">
+<p class="text-white/10 font-black text-8xl mb-[-30px] font-mono group-hover:text-secondary/20 transition-colors">03</p>
+<h4 class="text-2xl font-bold mb-4 relative z-10">We Produce + QC</h4>
+<p class="text-slate-400 leading-relaxed">Manufactured at ISO-certified facilities with 100% manual QC by PackOps experts.</p>
+</div>
+<div class="relative group">
+<p class="text-white/10 font-black text-8xl mb-[-30px] font-mono group-hover:text-secondary/20 transition-colors">04</p>
+<h4 class="text-2xl font-bold mb-4 relative z-10">Delivered</h4>
+<p class="text-slate-400 leading-relaxed">Doorstep global delivery with real-time tracking and SmartStock replenishment.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Expert Packaging Design Section -->
+<section class="py-24 px-8 md:px-20 bg-surface border-b border-outline-variant/10">
+<div class="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-16">
+<div class="lg:w-1/2">
+<span class="text-secondary font-bold tracking-widest uppercase text-sm mb-4 block">Design Intelligence</span>
+<h2 class="clash-display text-4xl mb-6">Expert Packaging Design. Ready in 5 Days.</h2>
+<p class="text-on-surface-variant text-lg mb-8 leading-relaxed">
+                    Stop guessing your dielines. Our structural engineers create production-ready files optimized for your specific SKU and factory machine specs.
+                </p>
+<div class="grid grid-cols-2 gap-6 mb-10">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary">verified</span>
+<span class="font-bold">Dielines Included</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary">speed</span>
+<span class="font-bold">5-Day Turnaround</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary">payments</span>
+<span class="font-bold">Starts @ ₹1,999</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary">view_in_ar</span>
+<span class="font-bold">3D Renderings</span>
+</div>
+</div>
+<button class="bg-primary text-white px-8 py-4 rounded font-bold hover:opacity-90 transition-all">Start Design Brief</button>
+</div>
+<div class="lg:w-1/2 w-full aspect-video bg-surface-container rounded-lg border-2 border-dashed border-outline-variant flex items-center justify-center overflow-hidden shadow-xl">
+<img alt="Design workflow schematic" class="w-full h-full object-cover grayscale" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB9c_sWlKLdq6D2t_oqjiLhHjzn7BG3NQy-XyCE9hVuUYOr9BRqvSlB_ye-W6_phxaKexpq-zsZwpjHV5m6vMiVN8AxN9cvSo1ha-BV-MHwMtXI90P5SfTvC9dtdY4VUL3tTisXALdZZZQkLePDvLRUmWnPqsnWbtip4X5j5MJpvJPMe4XnEo6LbcWfmQSTGt4mQVUU2Y1jErGyHwpEHnl_DtPUZAEIMISXGBDMvwm-bBVgJazxOobXhKadNmXDYSJJVTObACOrdj7N"/>
+</div>
+</div>
+</section>
+<!-- Savings Calculator -->
+<section class="py-24 px-8 md:px-20 bg-surface-container-low">
+<div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+<div>
+<h2 class="clash-display text-4xl mb-6">Stop overpaying for "hidden" costs.</h2>
+<p class="text-on-surface-variant mb-12">Calculate exactly how much margin you're losing to vendor fragmentation and unoptimized credit terms.</p>
+<div class="bg-white p-8 rounded border border-outline-variant/20">
+<div class="flex gap-4 mb-8">
+<button class="bg-primary-container text-white px-6 py-2 rounded font-bold text-sm">Brand/D2C</button>
+<button class="bg-surface-container-highest text-on-surface px-6 py-2 rounded font-bold text-sm">Manufacturer</button>
+</div>
+<div class="space-y-8">
+<div>
+<div class="flex justify-between mb-4">
+<label class="font-bold text-sm uppercase">Monthly Spend</label>
+<span class="font-mono text-secondary font-bold">₹25,00,000</span>
+</div>
+<input class="w-full accent-secondary h-2 bg-outline-variant rounded appearance-none cursor-pointer" type="range"/>
+</div>
+<div>
+<div class="flex justify-between mb-4">
+<label class="font-bold text-sm uppercase">Current Vendors</label>
+<span class="font-mono text-secondary font-bold">12</span>
+</div>
+<input class="w-full accent-secondary h-2 bg-outline-variant rounded appearance-none cursor-pointer" type="range"/>
+</div>
+<div class="flex items-center justify-between pt-4">
+<span class="font-bold text-sm uppercase">Using Vendor Credit?</span>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-outline-variant rounded-full peer peer-checked:after:translate-x-full peer-checked:bg-secondary after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
+</label>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-primary-container p-12 rounded text-white shadow-2xl">
+<h3 class="font-bold uppercase text-xs tracking-widest text-[#E8A838] mb-8">Estimated Annual Value</h3>
+<div class="space-y-10">
+<div>
+<p class="text-slate-400 text-sm mb-2">Hidden Markup Uncovered</p>
+<p class="font-mono text-3xl font-bold">₹12,40,000</p>
+</div>
+<div>
+<p class="text-slate-400 text-sm mb-2">Annual Efficiency Savings</p>
+<p class="clash-display text-6xl text-[#E8A838]">₹42.5 L</p>
+</div>
+<div class="pt-10 border-t border-white/10">
+<p class="text-slate-400 text-sm mb-4">Total Value Gained (Ops + Unit Cost)</p>
+<p class="font-mono text-2xl font-bold">₹54,90,000</p>
+</div>
+</div>
+<button class="w-full mt-10 bg-white text-primary-container py-4 rounded font-bold hover:bg-slate-200 transition-all">Get Detailed Audit Report</button>
+</div>
+</div>
+</section>
+<!-- Switching is Easy Section -->
+<section class="py-24 px-8 md:px-20 bg-surface">
+<div class="max-w-4xl mx-auto">
+<h2 class="clash-display text-4xl mb-4 text-center">Switching from 10+ vendors is easy.</h2>
+<p class="text-on-surface-variant text-lg text-center mb-12 max-w-2xl mx-auto">Replace the coordination chaos of multiple vendors with one managed platform. We handle the transition SKU by SKU.</p>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
+<div class="relative">
+<div class="w-16 h-16 bg-[#1B6CA8]/10 text-secondary rounded-full flex items-center justify-center mx-auto mb-6 text-2xl font-black">1</div>
+<h4 class="font-bold text-xl mb-3">Start with 1 SKU</h4>
+<p class="text-on-surface-variant text-sm">No need to move your entire catalog. Start small and see the difference.</p>
+</div>
+<div class="relative">
+<div class="w-16 h-16 bg-[#1B6CA8]/10 text-secondary rounded-full flex items-center justify-center mx-auto mb-6 text-2xl font-black">2</div>
+<h4 class="font-bold text-xl mb-3">Compare Quality</h4>
+<p class="text-on-surface-variant text-sm">Get samples and contrast them against your current supplies side-by-side.</p>
+</div>
+<div class="relative">
+<div class="w-16 h-16 bg-[#1B6CA8]/10 text-secondary rounded-full flex items-center justify-center mx-auto mb-6 text-2xl font-black">3</div>
+<h4 class="font-bold text-xl mb-3">Scale Gradually</h4>
+<p class="text-on-surface-variant text-sm">Once you trust our managed QC, roll out the rest of your inventory.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- SmartStock Section -->
+<section class="py-24 grid grid-cols-1 lg:grid-cols-2">
+<div class="bg-primary-container text-white px-8 md:px-20 py-24 flex flex-col justify-center">
+<span class="text-[#E8A838] font-bold tracking-widest mb-6 uppercase text-sm">SMARTSTOCK™ AI INVENTORY</span>
+<h2 class="clash-display text-4xl mb-8">Never run out of boxes again.</h2>
+<p class="text-slate-400 text-lg mb-10 leading-relaxed">
+                Our proprietary AI analyzes your sales velocity and lead times across our 500+ factory partners to automatically trigger replenishment. 
+                <br/><br/>
+                We hold up to <span class="text-white font-bold">4 weeks of buffer stock</span> in our regional nodes so you never face a line-stop.
+            </p>
+<ul class="space-y-4 mb-12">
+<li class="flex items-center gap-3"><span class="material-symbols-outlined text-secondary">check_circle</span> Automated JIT Replenishment</li>
+<li class="flex items-center gap-3"><span class="material-symbols-outlined text-secondary">check_circle</span> Regional Warehousing in 12 Cities</li>
+<li class="flex items-center gap-3"><span class="material-symbols-outlined text-secondary">check_circle</span> SKU Consolidation Reporting</li>
+</ul>
+<button class="bg-secondary text-white w-fit px-8 py-4 rounded font-bold">See SmartStock in Action</button>
+</div>
+<div class="bg-[#F2F3F6] relative p-12 flex items-center justify-center overflow-hidden">
+<div class="absolute inset-0 opacity-10">
+<img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAUgANrohND-TnDVMCudxm0oztNt4xuzD-ZHpC-9t1IQRoGFaqb646phqmx4ACoeHfxiN1XX-pexu9dENmzoOmnFWRXr3VQdzq1IUokf0M-BL5SIfIkL93KWaPxSxdTMbz9l6YrgYN2GStI0O97fIVHFQBjkK8LFlavmX7Aol2myLcolRXhHIcX2uM_cnv4OZeTUEvY6jNiroDdRZ1jktNmoXwRxsUOGvYRbHqCw1_bXgU381Xzw9sSRisjk6e_Eivy2P_gR8fOBnnv"/>
+</div>
+<div class="relative z-10 w-full max-w-lg bg-white p-8 rounded shadow-2xl border border-outline-variant/20">
+<div class="flex justify-between items-center mb-8">
+<h4 class="font-bold">Live Inventory Map</h4>
+<span class="flex items-center gap-2 text-xs font-bold text-secondary uppercase"><span class="w-2 h-2 rounded-full bg-secondary animate-ping"></span> Live Updates</span>
+</div>
+<div class="space-y-6">
+<div class="flex items-center justify-between p-4 bg-surface-container rounded">
+<span class="font-bold text-sm">Delhi NCR Node</span>
+<span class="font-mono text-secondary font-bold">92% Capacity</span>
+</div>
+<div class="flex items-center justify-between p-4 bg-surface-container rounded">
+<span class="font-bold text-sm">Mumbai West Node</span>
+<span class="font-mono text-secondary font-bold">87% Capacity</span>
+</div>
+<div class="flex items-center justify-between p-4 bg-surface-container rounded">
+<span class="font-bold text-sm">Bengaluru Node</span>
+<span class="font-mono text-error font-bold">42% (Replenishing)</span>
+</div>
+<div class="flex items-center justify-between p-4 bg-surface-container rounded">
+<span class="font-bold text-sm">Chennai Port Node</span>
+<span class="font-mono text-secondary font-bold">98% Capacity</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Compliance & Global Reach Section -->
+<section class="py-24 bg-primary-container text-white px-8 md:px-20 text-center">
+<h2 class="clash-display text-4xl mb-4">Uncompromising Compliance. Global Ready.</h2>
+<div class="bg-secondary/20 inline-block px-4 py-2 rounded mb-16 border border-secondary/30">
+<p class="text-sm font-bold tracking-wide">Manufactured with precision in India. Exporting to 40+ countries across the Middle East, Europe, and USA.</p>
+</div>
+<div class="flex flex-wrap justify-center gap-12 items-center opacity-70 mb-20">
+<div class="flex flex-col items-center">
+<span class="material-symbols-outlined text-5xl mb-2" data-icon="verified">verified</span>
+<p class="text-xs font-bold font-mono">ISO 9001:2015</p>
+</div>
+<div class="flex flex-col items-center">
+<span class="material-symbols-outlined text-5xl mb-2" data-icon="restaurant">restaurant</span>
+<p class="text-xs font-bold font-mono">FSSC 22000</p>
+</div>
+<div class="flex flex-col items-center">
+<span class="material-symbols-outlined text-5xl mb-2" data-icon="security">security</span>
+<p class="text-xs font-bold font-mono">BRCGS</p>
+</div>
+<div class="flex flex-col items-center">
+<span class="material-symbols-outlined text-5xl mb-2" data-icon="health_and_safety">health_and_safety</span>
+<p class="text-xs font-bold font-mono">FDA COMPLIANT</p>
+</div>
+<div class="flex flex-col items-center">
+<span class="material-symbols-outlined text-5xl mb-2" data-icon="nature_people">nature_people</span>
+<p class="text-xs font-bold font-mono">FSC CERTIFIED</p>
+</div>
+</div>
+<div class="bg-[#0F1C2C] p-12 rounded max-w-4xl mx-auto border border-white/5 shadow-2xl">
+<h4 class="font-bold mb-4">Exporting to USA, EU or MENA?</h4>
+<p class="text-slate-400 mb-8">We provide full documentation for global sustainability mandates including Plastic Tax declarations and EPR certifications.</p>
+<div class="flex flex-wrap justify-center gap-4">
+<div class="bg-white/5 px-6 py-3 rounded-full text-xs font-bold border border-white/10 uppercase tracking-widest">USA - FDA Grade</div>
+<div class="bg-white/5 px-6 py-3 rounded-full text-xs font-bold border border-white/10 uppercase tracking-widest">EU - REACH Compliant</div>
+<div class="bg-white/5 px-6 py-3 rounded-full text-xs font-bold border border-white/10 uppercase tracking-widest">MENA - SASO Ready</div>
+</div>
+</div>
+</section>
+<!-- Testimonials -->
+<section class="py-24 px-8 md:px-20 bg-surface">
+<h2 class="clash-display text-4xl mb-16 text-center">Used by India's fastest growing brands.</h2>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<!-- Card 1 -->
+<div class="bg-white p-10 rounded shadow-sm border border-outline-variant/10">
+<div class="text-[#E8A838] flex gap-1 mb-6">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<p class="text-lg italic mb-10 text-on-surface">"The consolidation of 14 vendors into 1 platform saved us <span class="text-secondary font-bold">₹3.2L annually</span> in operational overhead alone."</p>
+<div class="pt-8 border-t border-outline-variant/10">
+<p class="font-bold text-secondary uppercase font-mono text-sm">Reduced Vendors: 14 -&gt; 1</p>
+<p class="mt-2 font-bold">Procurement Head</p>
+<p class="text-on-surface-variant text-xs">Top 5 Cosmetic D2C Brand</p>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-white p-10 rounded shadow-sm border border-outline-variant/10">
+<div class="text-[#E8A838] flex gap-1 mb-6">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<p class="text-lg italic mb-10 text-on-surface">"Their automated replenishment <span class="text-secondary font-bold">reduced delays by 40%</span> in our peak season compared to last year."</p>
+<div class="pt-8 border-t border-outline-variant/10">
+<p class="font-bold text-secondary uppercase font-mono text-sm">0% Rejection Rate since 2023</p>
+<p class="mt-2 font-bold">Operations Director</p>
+<p class="text-on-surface-variant text-xs">FMCG Manufacturer</p>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-white p-10 rounded shadow-sm border border-outline-variant/10">
+<div class="text-[#E8A838] flex gap-1 mb-6">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<p class="text-lg italic mb-10 text-on-surface">"Structural redesign of master cartons <span class="text-secondary font-bold">saved us ₹1.8L in shipping</span> by reducing damage by 85%."</p>
+<div class="pt-8 border-t border-outline-variant/10">
+<p class="font-bold text-secondary uppercase font-mono text-sm">85% Damage Reduction</p>
+<p class="mt-2 font-bold">Supply Chain Manager</p>
+<p class="text-on-surface-variant text-xs">National Beverage Giant</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Final CTA -->
+<section class="py-24 px-8 md:px-20 text-center bg-primary-container relative overflow-hidden">
+<div class="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>
+<div class="relative z-10 max-w-4xl mx-auto">
+<h2 class="clash-display text-white text-5xl md:text-6xl mb-8 leading-tight">The way brands buy packaging just changed.</h2>
+<p class="text-slate-400 text-xl mb-12">Join 450+ companies optimizing their supply chain on PackOps.</p>
+<div class="flex flex-col sm:flex-row gap-6 justify-center">
+<button class="bg-[#E8A838] text-primary-container px-12 py-5 rounded font-bold text-xl hover:scale-105 transition-all">Schedule a Factory Audit</button>
+<button class="bg-white/10 text-white px-12 py-5 rounded font-bold text-xl hover:bg-white/20 transition-all">Download Product Catalog</button>
+</div>
+</div>
+</section>
+</main>
+<footer class="w-full px-12 py-16 grid grid-cols-1 md:grid-cols-4 gap-8 bg-[#F2F3F6] dark:bg-[#0D1B2A] border-t-0 font-['Space_Grotesk'] text-sm leading-relaxed">
+<div class="flex flex-col gap-6">
+<div class="text-xl font-bold text-[#0D1B2A] dark:text-white">PackOps</div>
+<p class="text-slate-600 dark:text-slate-400">Revolutionizing global packaging procurement through technology-led supply chains and managed QC.</p>
+<p class="text-slate-600 dark:text-slate-400">© 2024 PackOps. All rights reserved.</p>
+</div>
+<div class="flex flex-col gap-4">
+<h4 class="font-bold text-[#0D1B2A] dark:text-white uppercase tracking-wider text-xs">Products</h4>
+<nav class="flex flex-col gap-3">
+<a class="text-slate-600 dark:text-slate-400 hover:underline decoration-[#1B6CA8] opacity-80 hover:opacity-100 transition-opacity" href="#">Flexible Packaging</a>
+<a class="text-slate-600 dark:text-slate-400 hover:underline decoration-[#1B6CA8] opacity-80 hover:opacity-100 transition-opacity" href="#">Rigid Packaging</a>
+<a class="text-slate-600 dark:text-slate-400 hover:underline decoration-[#1B6CA8] opacity-80 hover:opacity-100 transition-opacity" href="#">Sustainable Options</a>
+<a class="text-slate-600 dark:text-slate-400 hover:underline decoration-[#1B6CA8] opacity-80 hover:opacity-100 transition-opacity" href="#">Custom Labels</a>
+</nav>
+</div>
+<div class="flex flex-col gap-4">
+<h4 class="font-bold text-[#0D1B2A] dark:text-white uppercase tracking-wider text-xs">Company</h4>
+<nav class="flex flex-col gap-3">
+<a class="text-slate-600 dark:text-slate-400 hover:underline decoration-[#1B6CA8] opacity-80 hover:opacity-100 transition-opacity" href="#">About Us</a>
+<a class="text-slate-600 dark:text-slate-400 hover:underline decoration-[#1B6CA8] opacity-80 hover:opacity-100 transition-opacity" href="#">Careers</a>
+</nav></div></footer></body></html>

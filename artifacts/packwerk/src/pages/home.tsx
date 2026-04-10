@@ -1,233 +1,765 @@
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import { Link } from "wouter";
-import { Button } from "@/components/ui/button";
-import { useListTestimonials, useGetCategorySummary } from "@workspace/api-client-react";
-import { motion, useInView } from "framer-motion";
 import { formatINR } from "@/lib/format";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
-import { Slider } from "@/components/ui/slider";
 
-const CountUp = ({ end, suffix = "", duration = 2 }) => {
-  const [count, setCount] = useState(0);
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true });
+interface IconProps {
+  icon: string;
+  className?: string;
+  style?: React.CSSProperties;
+}
 
-  useEffect(() => {
-    if (!inView) return;
-    
-    let startTime: number;
-    const animate = (time: number) => {
-      if (!startTime) startTime = time;
-      const progress = Math.min((time - startTime) / (duration * 1000), 1);
-      setCount(Math.floor(progress * end));
-      if (progress < 1) requestAnimationFrame(animate);
-    };
-    requestAnimationFrame(animate);
-  }, [inView, end, duration]);
+const MS = ({ icon, className = "", style }: IconProps) => (
+  <span className={`material-symbols-outlined ${className}`} style={style}>{icon}</span>
+);
 
-  return <span ref={ref}>{count}{suffix}</span>;
-};
+const MsFilled = ({ icon, className = "", style }: IconProps) => (
+  <span className={`material-symbols-outlined ms-filled ${className}`} style={style}>{icon}</span>
+);
+
+const MARQUEE_TEXT_1 = Array(6).fill("We are not a vendor. We are your packaging partner.");
+
+const MARQUEE_TEXT_2 = [
+  "We are not a vendor. We are your packaging partner.",
+  "Precision Engineered Supply Chain",
+  "We are not a vendor. We are your packaging partner.",
+  "Precision Engineered Supply Chain",
+  "We are not a vendor. We are your packaging partner.",
+  "Precision Engineered Supply Chain",
+];
+
+const PAIN_POINTS = [
+  {
+    icon: "schedule",
+    title: "Delays & Stock-outs",
+    desc: "Missed deadlines lead to stock-outs and lost revenue.",
+  },
+  {
+    icon: "warning",
+    title: "Inconsistency",
+    desc: "Variations in color and thickness across batches.",
+  },
+  {
+    icon: "group_off",
+    title: "Vendor Chaos",
+    desc: "Managing 20+ vendors manually is an operational nightmare.",
+  },
+  {
+    icon: "fact_check",
+    title: "Compliance Gaps",
+    desc: "Uncertified factories putting global exports at risk.",
+  },
+  {
+    icon: "credit_card_off",
+    title: "Hidden Costs",
+    desc: '"Free credit" usually hides a 15-20% markup on unit costs.',
+  },
+];
+
+const CATEGORIES = [
+  { title: "Flexible Packaging", sub: "Pouches, Films & Wraps", color: "#1B6CA8", icon: "inventory_2" },
+  { title: "Rigid Packaging", sub: "Glass, HDPE & Metal", color: "#0D1B2A", icon: "water_bottle" },
+  { title: "Boxes & Retail", sub: "Master Cartons & Mono", color: "#374151", icon: "package_2" },
+  { title: "E-commerce", sub: "Mailers & Security Bags", color: "#1e3a5f", icon: "local_shipping" },
+  { title: "Packaging Rolls", sub: "Labels, Foils & Tapes", color: "#2d3748", icon: "sync_alt" },
+  { title: "Labels & Accessories", sub: "Custom Branded Tags", color: "#1a365d", icon: "label" },
+  { title: "Sustainable Packaging", sub: "Bio-degradable Materials", color: "#14532d", icon: "eco" },
+  { title: "Premium & Gift", sub: "Luxury Finishes & Textures", color: "#92400e", icon: "workspace_premium" },
+];
+
+const STEPS = [
+  { n: "01", title: "Browse", desc: "Select from 110+ industry-standard SKUs or start a custom design brief." },
+  { n: "02", title: "Configure", desc: "Adjust dimensions, materials, and upload your branding assets for live preview." },
+  { n: "03", title: "We Produce + QC", desc: "Manufactured at ISO-certified facilities with 100% manual QC by Packwerk experts." },
+  { n: "04", title: "Delivered", desc: "Doorstep global delivery with real-time tracking and SmartStock replenishment." },
+];
+
+const TESTIMONIALS = [
+  {
+    quote: "The consolidation of 14 vendors into 1 platform saved us ₹3.2L annually in operational overhead alone.",
+    highlight: "₹3.2L annually",
+    stat: "Reduced Vendors: 14 → 1",
+    name: "Procurement Head",
+    company: "Top 5 Cosmetic D2C Brand",
+  },
+  {
+    quote: "Their automated replenishment reduced delays by 40% in our peak season compared to last year.",
+    highlight: "reduced delays by 40%",
+    stat: "0% Rejection Rate since 2023",
+    name: "Operations Director",
+    company: "FMCG Manufacturer",
+  },
+  {
+    quote: "Structural redesign of master cartons saved us ₹1.8L in shipping by reducing damage by 85%.",
+    highlight: "₹1.8L in shipping",
+    stat: "85% Damage Reduction",
+    name: "Supply Chain Manager",
+    company: "National Beverage Giant",
+  },
+];
+
+const CERTS = [
+  { icon: "verified", label: "ISO 9001:2015" },
+  { icon: "restaurant", label: "FSSC 22000" },
+  { icon: "security", label: "BRCGS" },
+  { icon: "health_and_safety", label: "FDA COMPLIANT" },
+  { icon: "nature_people", label: "FSC CERTIFIED" },
+];
 
 export default function Home() {
-  const { data: testimonials } = useListTestimonials();
-  const { data: categories } = useGetCategorySummary();
+  const [monthlySpend, setMonthlySpend] = useState(2500000);
+  const [vendors, setVendors] = useState(12);
+  const [useCredit, setUseCredit] = useState(true);
 
-  const [monthlySpend, setMonthlySpend] = useState([500000]);
-  const [vendorCount, setVendorCount] = useState("2-3");
-  const [useCredit, setUseCredit] = useState(false);
-
-  const calculateSavings = () => {
-    const spend = monthlySpend[0];
-    const savingPct = vendorCount === "1" ? 0.08 : vendorCount === "2-3" ? 0.10 : 0.12;
-    const annualSaving = spend * 12 * savingPct;
-    const creditMarkup = useCredit ? spend * 12 * 0.12 : 0;
-    const upfrontSaving = spend * 12 * 0.03;
-    const timeSaved = vendorCount === "1" ? 4 : vendorCount === "2-3" ? 8 : 14;
-    const totalValue = annualSaving + creditMarkup;
-
-    return { annualSaving, upfrontSaving, timeSaved, totalValue };
-  };
-
-  const savings = calculateSavings();
+  const hiddenMarkup = Math.round(monthlySpend * 0.12 * (vendors / 12));
+  const annualEfficiency = Math.round(monthlySpend * 12 * 0.14);
+  const totalValue = hiddenMarkup + annualEfficiency;
 
   return (
-    <div className="flex flex-col">
-      {/* Hero Section */}
-      <section className="bg-navy text-white pt-24 pb-32 px-4 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-blue to-transparent pointer-events-none"></div>
-        <div className="container mx-auto max-w-6xl relative z-10">
-          <div className="max-w-3xl">
-            <motion.h1 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="text-5xl md:text-7xl font-bold leading-tight mb-6"
-            >
-              India's Most Complete <span className="text-amber">Packaging Platform</span>
-            </motion.h1>
-            <motion.p 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-              className="text-xl md:text-2xl text-gray-300 mb-10 max-w-2xl"
-            >
-              Source premium packaging with 98% QC pass rate, 48-hour delivery, and net-60 credit for growing brands.
-            </motion.p>
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="flex flex-wrap gap-4"
-            >
-              <Link href="/quote">
-                <Button size="lg" className="bg-amber text-navy hover:bg-amber/90 font-bold px-8 h-14 text-lg rounded-full">
-                  Get a Quote
-                </Button>
-              </Link>
-              <Link href="/products">
-                <Button size="lg" variant="outline" className="border-white/20 hover:bg-white/10 text-navy bg-white hover:text-navy px-8 h-14 text-lg rounded-full">
-                  Browse Catalogue
-                </Button>
-              </Link>
-            </motion.div>
+    <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+
+      {/* ── HERO ──────────────────────────────────────────────── */}
+      <section
+        className="relative min-h-[90vh] flex flex-col justify-center px-8 md:px-20 overflow-hidden py-24"
+        style={{ background: "linear-gradient(135deg, #0D1B2A 0%, #0F1C2C 100%)" }}
+      >
+        <div className="absolute inset-0 opacity-10 pointer-events-none">
+          <svg width="100%" height="100%" preserveAspectRatio="none" viewBox="0 0 100 100">
+            <path d="M0,20 L20,0 L100,0 L100,80 L80,100 L0,100 Z" fill="none" stroke="white" strokeWidth="0.1" />
+            <path d="M10,30 L30,10 L90,10 L90,70 L70,90 L10,90 Z" fill="none" stroke="white" strokeWidth="0.1" />
+          </svg>
+        </div>
+
+        <div className="relative z-10 max-w-5xl">
+          <p className="font-bold tracking-[0.2em] mb-6 text-sm uppercase" style={{ color: "#1B6CA8" }}>
+            INDIA'S FIRST MANAGED PACKAGING PLATFORM
+          </p>
+
+          <h1
+            className="clash-display text-white text-5xl md:text-[88px] leading-[1.0] mb-8"
+          >
+            Your Packaging.<br />Sorted. Forever.
+          </h1>
+
+          <p className="text-slate-400 text-xl md:text-2xl mb-4 max-w-2xl font-light">
+            Design. Source. QC. Deliver. One platform.{" "}
+            <span className="text-white font-medium italic">Zero vendor chaos.</span>
+          </p>
+
+          <p className="text-sm md:text-base font-bold tracking-wide mb-12 uppercase flex items-center gap-2" style={{ color: "#1B6CA8" }}>
+            <span className="w-1 h-1 rounded-full inline-block" style={{ background: "#1B6CA8" }} />
+            Trusted by D2C &amp; FMCG brands across India
+          </p>
+
+          <div className="flex flex-col sm:flex-row gap-6 mb-20">
+            <Link href="/products">
+              <button
+                className="px-10 py-5 rounded font-bold text-lg flex items-center justify-center gap-2 hover:opacity-90 transition-all active:scale-95"
+                style={{ background: "#E8A838", color: "#0F1C2C" }}
+              >
+                Browse 110+ SKUs <MS icon="arrow_forward" />
+              </button>
+            </Link>
+            <Link href="/samples">
+              <button className="border-2 border-white text-white px-10 py-5 rounded font-bold text-lg hover:bg-white/10 transition-all active:scale-95">
+                Get a sample from ₹2,999
+              </button>
+            </Link>
+          </div>
+
+          {/* Trust stats */}
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-8 py-10 border-t border-white/10">
+            {[
+              { val: "110+", label: "SKUs" },
+              { val: "500+", label: "Factory Partners" },
+              { val: "40+", label: "Countries Served" },
+              { val: "QC", label: "On Every Order" },
+              { val: "₹0", label: "Hidden Charges", amber: true },
+            ].map((s) => (
+              <div key={s.label}>
+                <p
+                  className="font-mono text-2xl font-bold"
+                  style={{ fontFamily: "'JetBrains Mono', monospace", color: s.amber ? "#E8A838" : "white" }}
+                >
+                  {s.val}
+                </p>
+                <p className="text-slate-500 text-xs uppercase tracking-widest mt-1">{s.label}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="py-20 bg-surface border-b border-border">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-            <div>
-              <div className="text-4xl md:text-5xl font-bold text-navy mb-2">
-                <CountUp end={110} suffix="+" />
-              </div>
-              <div className="text-muted font-medium">Verified SKUs</div>
+      {/* ── MARQUEE 1 ─────────────────────────────────────────── */}
+      <div className="overflow-hidden py-3 border-y border-white/10" style={{ background: "#1B6CA8" }}>
+        <div className="animate-marquee">
+          {MARQUEE_TEXT_1.map((t, i) => (
+            <span key={i} className="text-white font-bold tracking-[0.2em] text-xs uppercase mx-8">{t}</span>
+          ))}
+        </div>
+      </div>
+
+      {/* ── FEATURE STRIP ─────────────────────────────────────── */}
+      <div className="py-20 px-8 border-b border-slate-200/50" style={{ background: "#F8F9FC" }}>
+        <div className="max-w-7xl mx-auto flex flex-wrap justify-center md:justify-between items-center gap-8 md:gap-4">
+          {[
+            { icon: "assignment_turned_in", label: "Multi-vendor backup" },
+            { icon: "verified_user", label: "QC owned by us" },
+            { icon: "public", label: "Global shipping" },
+            { icon: "payments", label: "Net-30 credit" },
+            { icon: "psychology", label: "AI demand forecasting" },
+            { icon: "palette", label: "Design from ₹1,999" },
+          ].map((f) => (
+            <div key={f.label} className="flex flex-col items-center text-center group">
+              <MS icon={f.icon} className="mb-3 text-3xl" style={{ color: "#1B6CA8" } as React.CSSProperties} />
+              <span className="text-sm font-bold whitespace-nowrap" style={{ color: "#191c1e" }}>{f.label}</span>
             </div>
-            <div>
-              <div className="text-4xl md:text-5xl font-bold text-navy mb-2">
-                <CountUp end={5000} suffix="+" />
+          ))}
+        </div>
+      </div>
+
+      {/* ── PAIN POINTS ───────────────────────────────────────── */}
+      <section className="py-24 px-8 md:px-20 relative" style={{ background: "#0F1C2C" }}>
+        <div className="max-w-7xl mx-auto">
+          <h2 className="clash-display text-white text-4xl mb-16 max-w-xl">
+            Traditional sourcing is broken. We fixed it.
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-0 border border-white/10 rounded overflow-hidden shadow-2xl">
+            {PAIN_POINTS.map((p, i) => (
+              <div
+                key={i}
+                className="p-8 border-r border-white/5 last:border-r-0 transition-colors cursor-default"
+                style={{ background: "#0D1B2A" }}
+                onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(27,108,168,0.2)")}
+                onMouseLeave={(e) => (e.currentTarget.style.background = "#0D1B2A")}
+              >
+                <MS icon={p.icon} className="mb-6 text-3xl" style={{ color: "#E8A838" } as React.CSSProperties} />
+                <h3 className="font-bold text-white text-xl mb-3">{p.title}</h3>
+                <p className="text-slate-400 text-sm">{p.desc}</p>
               </div>
-              <div className="text-muted font-medium">Brands Served</div>
-            </div>
-            <div>
-              <div className="text-4xl md:text-5xl font-bold text-blue mb-2">48hr</div>
-              <div className="text-muted font-medium">SmartStock Delivery</div>
-            </div>
-            <div>
-              <div className="text-4xl md:text-5xl font-bold text-success mb-2">
-                <CountUp end={98} suffix="%" />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── VS COMPARISON ─────────────────────────────────────── */}
+      <section className="py-24 px-8 md:px-20" style={{ background: "#F2F3F6" }}>
+        <div className="max-w-5xl mx-auto">
+          <h2 className="clash-display text-4xl mb-12 text-center" style={{ color: "#0D1B2A" }}>
+            Packwerk vs. The Old Way
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* Packwerk */}
+            <div className="rounded p-10 shadow-2xl border-2 relative overflow-hidden" style={{ background: "#0F1C2C", borderColor: "#1B6CA8" }}>
+              <div className="absolute top-0 right-0 text-white px-6 py-2 font-bold text-xs uppercase tracking-widest" style={{ background: "#1B6CA8" }}>
+                Recommended
               </div>
-              <div className="text-muted font-medium">QC Pass Rate</div>
+              <h3 className="text-white text-3xl font-black mb-10 flex items-center gap-3">
+                <span style={{ color: "#1B6CA8" }}>Packwerk</span> Precision
+              </h3>
+              <ul className="space-y-6">
+                {[
+                  "Redundant Production Nodes",
+                  "Managed & Liability-owned QC",
+                  "100% Transparent Unit Pricing",
+                  "Global Certification Stack",
+                  "Digital SKU Dashboard",
+                ].map((item) => (
+                  <li key={item} className="flex items-center gap-4 text-slate-200">
+                    <MsFilled icon="check_circle" className="text-xl" style={{ color: "#1B6CA8" } as React.CSSProperties} />
+                    <span className="font-medium">{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Traditional */}
+            <div className="bg-white rounded p-10 shadow-lg border opacity-60" style={{ borderColor: "rgba(196,198,204,0.3)" }}>
+              <h3 className="text-3xl font-black mb-10" style={{ color: "#191c1e" }}>Direct Vendors</h3>
+              <ul className="space-y-6">
+                {[
+                  "Single Point of Failure",
+                  "Self-certified (Conflict of Interest)",
+                  'Markup-heavy "Free" Credit',
+                  "Compliance Gaps",
+                  "Manual WhatsApp Chaos",
+                ].map((item) => (
+                  <li key={item} className="flex items-center gap-4" style={{ color: "#44474c" }}>
+                    <MS icon="cancel" className="text-xl" style={{ color: "#ba1a1a" } as React.CSSProperties} />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Calculator Section */}
-      <section className="py-24 bg-white">
-        <div className="container mx-auto px-4 max-w-6xl">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-navy mb-4">Calculate Your Savings</h2>
-            <p className="text-muted text-lg">See how much time and money you save by consolidating with Packwerk.</p>
+      {/* ── PRODUCT CATEGORIES ────────────────────────────────── */}
+      <section className="py-24 px-8 md:px-20" style={{ background: "#F8F9FC" }}>
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 gap-4">
+            <div>
+              <h2 className="clash-display text-4xl" style={{ color: "#0D1B2A" }}>Core Product Categories</h2>
+              <p className="mt-2 text-lg" style={{ color: "#44474c" }}>110+ SKUs across 8 managed hubs.</p>
+            </div>
+            <Link href="/products">
+              <button className="font-bold flex items-center gap-2 hover:underline" style={{ color: "#1B6CA8" }}>
+                View full catalog <MS icon="chevron_right" />
+              </button>
+            </Link>
           </div>
-          
-          <div className="grid md:grid-cols-2 gap-12 items-center bg-surface p-8 md:p-12 rounded-3xl border border-border shadow-sm">
-            <div className="space-y-8">
-              <div>
-                <Label className="text-base text-navy font-semibold mb-4 block">Monthly Packaging Spend: {formatINR(monthlySpend[0])}</Label>
-                <Slider
-                  min={10000}
-                  max={5000000}
-                  step={10000}
-                  value={monthlySpend}
-                  onValueChange={setMonthlySpend}
-                  className="w-full"
-                />
-                <div className="flex justify-between text-xs text-muted mt-2">
-                  <span>₹10K</span>
-                  <span>₹50L+</span>
+
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-20">
+            {CATEGORIES.map((cat) => (
+              <Link href="/products" key={cat.title}>
+                <div className="group bg-white rounded p-6 shadow-sm hover:-translate-y-2 transition-all cursor-pointer border border-slate-100">
+                  <div
+                    className="w-full h-48 rounded mb-4 flex items-center justify-center overflow-hidden transition-all"
+                    style={{ background: cat.color }}
+                  >
+                    <MS
+                      icon={cat.icon}
+                      className="text-6xl transition-transform group-hover:scale-110"
+                      style={{ color: "rgba(255,255,255,0.3)" } as React.CSSProperties}
+                    />
+                  </div>
+                  <h4 className="font-bold text-lg" style={{ color: "#191c1e" }}>{cat.title}</h4>
+                  <p className="text-sm" style={{ color: "#44474c" }}>{cat.sub}</p>
                 </div>
-              </div>
-              
-              <div>
-                <Label className="text-base text-navy font-semibold mb-4 block">Current Number of Vendors</Label>
-                <div className="flex gap-4">
-                  {["1", "2-3", "5+"].map(count => (
-                    <Button 
-                      key={count}
-                      variant={vendorCount === count ? "default" : "outline"}
-                      onClick={() => setVendorCount(count)}
-                      className={vendorCount === count ? "bg-navy" : ""}
-                    >
-                      {count}
-                    </Button>
+              </Link>
+            ))}
+          </div>
+
+          {/* Starter Kits */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="p-8 rounded border border-white/5 flex flex-col md:flex-row items-center gap-8" style={{ background: "#0F1C2C" }}>
+              <div className="flex-1">
+                <span className="text-xs font-bold tracking-widest uppercase mb-2 block" style={{ color: "#E8A838" }}>Starter Kit</span>
+                <h3 className="text-white text-2xl font-bold mb-4">Coffee Brand Bundle</h3>
+                <div className="flex flex-wrap gap-3">
+                  {["Stand-up Pouch", "Metallic Label", "Shipper Box"].map((tag) => (
+                    <span key={tag} className="px-3 py-1 text-xs rounded border text-white" style={{ background: "rgba(255,255,255,0.1)", borderColor: "rgba(255,255,255,0.2)" }}>{tag}</span>
                   ))}
                 </div>
               </div>
-              
-              <div className="flex items-center justify-between p-4 bg-white rounded-xl border border-border">
-                <div>
-                  <Label className="text-base text-navy font-semibold block">Need Net-60 Credit?</Label>
-                  <p className="text-sm text-muted">Unlock working capital for growth</p>
-                </div>
-                <Switch checked={useCredit} onCheckedChange={setUseCredit} />
+              <div className="w-full md:w-1/3 aspect-square rounded flex items-center justify-center" style={{ background: "rgba(255,255,255,0.05)" }}>
+                <MS icon="inventory_2" className="text-6xl" style={{ color: "rgba(255,255,255,0.2)" } as React.CSSProperties} />
               </div>
             </div>
-            
-            <div className="bg-navy text-white p-8 rounded-2xl">
-              <div className="mb-8">
-                <p className="text-blue-300 text-sm font-medium uppercase tracking-wider mb-2">TOTAL VALUE UNLOCKED</p>
-                <div className="text-5xl font-bold text-amber">{formatINR(savings.totalValue)}</div>
-                <p className="text-sm text-gray-400 mt-2">Annual projected value</p>
-              </div>
-              
-              <div className="space-y-4 border-t border-white/10 pt-6">
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-300">Direct Cost Savings</span>
-                  <span className="font-semibold text-lg">{formatINR(savings.annualSaving)}</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-300">Upfront 3% Discount</span>
-                  <span className="font-semibold text-lg">{formatINR(savings.upfrontSaving)}</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-300">Management Time Saved</span>
-                  <span className="font-semibold text-lg text-amber">{savings.timeSaved} hrs/mo</span>
+
+            <div className="p-8 rounded border border-white/5 flex flex-col md:flex-row items-center gap-8" style={{ background: "#0F1C2C" }}>
+              <div className="flex-1">
+                <span className="text-xs font-bold tracking-widest uppercase mb-2 block" style={{ color: "#E8A838" }}>Starter Kit</span>
+                <h3 className="text-white text-2xl font-bold mb-4">Skincare Essentials</h3>
+                <div className="flex flex-wrap gap-3">
+                  {["HDPE Bottle", "Lotion Pump", "Mono Carton"].map((tag) => (
+                    <span key={tag} className="px-3 py-1 text-xs rounded border text-white" style={{ background: "rgba(255,255,255,0.1)", borderColor: "rgba(255,255,255,0.2)" }}>{tag}</span>
+                  ))}
                 </div>
               </div>
-              
-              <Link href="/quote">
-                <Button className="w-full mt-8 bg-white text-navy hover:bg-gray-100 font-bold h-12">
-                  Start Saving Today
-                </Button>
-              </Link>
+              <div className="w-full md:w-1/3 aspect-square rounded flex items-center justify-center" style={{ background: "rgba(255,255,255,0.05)" }}>
+                <MS icon="sanitizer" className="text-6xl" style={{ color: "rgba(255,255,255,0.2)" } as React.CSSProperties} />
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Testimonials */}
-      <section className="py-24 bg-navy text-white">
-        <div className="container mx-auto px-4 max-w-6xl">
-           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Trusted by India's Best</h2>
-          </div>
-          
-          <div className="grid md:grid-cols-3 gap-8">
-            {testimonials?.map((t) => (
-              <div key={t.id} className="bg-white/5 border border-white/10 p-8 rounded-2xl">
-                <p className="text-lg italic text-gray-300 mb-6">"{t.quote_text}"</p>
-                <div>
-                  <div className="font-bold text-amber">{t.company_name}</div>
-                  <div className="text-sm text-gray-400">{t.industry} • {t.city}</div>
-                </div>
-                <div className="mt-6 pt-6 border-t border-white/10 flex justify-between items-center">
-                  <span className="text-sm text-gray-400">{t.metric_label}</span>
-                  <span className="font-bold text-success">{t.metric_value}</span>
-                </div>
+      {/* ── MARQUEE 2 ─────────────────────────────────────────── */}
+      <div className="overflow-hidden py-4 border-y border-white/10" style={{ background: "#0F1C2C" }}>
+        <div className="animate-marquee">
+          {MARQUEE_TEXT_2.map((t, i) => (
+            <span
+              key={i}
+              className="font-bold tracking-[0.2em] text-sm uppercase mx-12"
+              style={{ color: i % 2 === 0 ? "white" : "#E8A838" }}
+            >
+              {t}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* ── PROCUREMENT PERFECTED ─────────────────────────────── */}
+      <section className="py-24 px-8 md:px-20 text-white text-center relative overflow-hidden" style={{ background: "#0F1C2C" }}>
+        <div className="max-w-7xl mx-auto relative z-10">
+          <h2 className="clash-display text-4xl md:text-5xl mb-4">Procurement Perfected</h2>
+          <p className="text-slate-400 text-lg mb-20 max-w-2xl mx-auto">
+            From concept to global delivery, our process ensures zero quality compromise.
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-12 text-left">
+            {STEPS.map((step) => (
+              <div key={step.n} className="relative group">
+                <p
+                  className="font-black text-8xl mb-[-30px] font-mono transition-colors"
+                  style={{
+                    color: "rgba(255,255,255,0.08)",
+                    fontFamily: "'JetBrains Mono', monospace",
+                  }}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = "rgba(27,108,168,0.2)")}
+                  onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(255,255,255,0.08)")}
+                >
+                  {step.n}
+                </p>
+                <h4 className="text-2xl font-bold mb-4 relative z-10">{step.title}</h4>
+                <p className="text-slate-400 leading-relaxed">{step.desc}</p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── EXPERT DESIGN ─────────────────────────────────────── */}
+      <section className="py-24 px-8 md:px-20 border-b border-slate-100" style={{ background: "#F8F9FC" }}>
+        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-16">
+          <div className="lg:w-1/2">
+            <span className="font-bold tracking-widest uppercase text-sm mb-4 block" style={{ color: "#1B6CA8" }}>Design Intelligence</span>
+            <h2 className="clash-display text-4xl mb-6" style={{ color: "#0D1B2A" }}>
+              Expert Packaging Design. Ready in 5 Days.
+            </h2>
+            <p className="text-lg mb-8 leading-relaxed" style={{ color: "#44474c" }}>
+              Stop guessing your dielines. Our structural engineers create production-ready files optimized for your specific SKU and factory machine specs.
+            </p>
+            <div className="grid grid-cols-2 gap-6 mb-10">
+              {[
+                { icon: "verified", label: "Dielines Included" },
+                { icon: "speed", label: "5-Day Turnaround" },
+                { icon: "payments", label: "Starts @ ₹1,999" },
+                { icon: "view_in_ar", label: "3D Renderings" },
+              ].map((f) => (
+                <div key={f.label} className="flex items-center gap-3">
+                  <MS icon={f.icon} style={{ color: "#1B6CA8" } as React.CSSProperties} />
+                  <span className="font-bold" style={{ color: "#191c1e" }}>{f.label}</span>
+                </div>
+              ))}
+            </div>
+            <Link href="/design">
+              <button
+                className="px-8 py-4 rounded font-bold hover:opacity-90 transition-all text-white"
+                style={{ background: "#0D1B2A" }}
+              >
+                Start Design Brief
+              </button>
+            </Link>
+          </div>
+
+          <div
+            className="lg:w-1/2 w-full aspect-video rounded-lg border-2 border-dashed flex flex-col items-center justify-center overflow-hidden shadow-xl"
+            style={{ background: "#EDEEF1", borderColor: "#C4C6CC" }}
+          >
+            <MS icon="design_services" className="text-8xl mb-4" style={{ color: "#C4C6CC" } as React.CSSProperties} />
+            <p className="text-sm font-bold uppercase tracking-widest" style={{ color: "#74777d" }}>Design Workflow Schematic</p>
+          </div>
+        </div>
+      </section>
+
+      {/* ── SAVINGS CALCULATOR ────────────────────────────────── */}
+      <section className="py-24 px-8 md:px-20" style={{ background: "#F2F3F6" }}>
+        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          <div>
+            <h2 className="clash-display text-4xl mb-6" style={{ color: "#0D1B2A" }}>
+              Stop overpaying for &ldquo;hidden&rdquo; costs.
+            </h2>
+            <p className="mb-12" style={{ color: "#44474c" }}>
+              Calculate exactly how much margin you&rsquo;re losing to vendor fragmentation and unoptimized credit terms.
+            </p>
+
+            <div className="bg-white p-8 rounded border border-slate-200/60">
+              <div className="flex gap-4 mb-8">
+                <button className="text-white px-6 py-2 rounded font-bold text-sm" style={{ background: "#0F1C2C" }}>Brand / D2C</button>
+                <button className="px-6 py-2 rounded font-bold text-sm" style={{ background: "#E1E2E5", color: "#191c1e" }}>Manufacturer</button>
+              </div>
+
+              <div className="space-y-8">
+                <div>
+                  <div className="flex justify-between mb-4">
+                    <label className="font-bold text-sm uppercase">Monthly Spend</label>
+                    <span className="font-mono font-bold" style={{ color: "#1B6CA8", fontFamily: "'JetBrains Mono', monospace" }}>
+                      {formatINR(monthlySpend)}
+                    </span>
+                  </div>
+                  <input
+                    type="range"
+                    min={100000}
+                    max={10000000}
+                    step={100000}
+                    value={monthlySpend}
+                    onChange={(e) => setMonthlySpend(Number(e.target.value))}
+                    className="w-full h-2 rounded appearance-none cursor-pointer"
+                    style={{ accentColor: "#1B6CA8", background: "#C4C6CC" }}
+                  />
+                </div>
+
+                <div>
+                  <div className="flex justify-between mb-4">
+                    <label className="font-bold text-sm uppercase">Current Vendors</label>
+                    <span className="font-mono font-bold" style={{ color: "#1B6CA8", fontFamily: "'JetBrains Mono', monospace" }}>
+                      {vendors}
+                    </span>
+                  </div>
+                  <input
+                    type="range"
+                    min={1}
+                    max={30}
+                    step={1}
+                    value={vendors}
+                    onChange={(e) => setVendors(Number(e.target.value))}
+                    className="w-full h-2 rounded appearance-none cursor-pointer"
+                    style={{ accentColor: "#1B6CA8", background: "#C4C6CC" }}
+                  />
+                </div>
+
+                <div className="flex items-center justify-between pt-4">
+                  <span className="font-bold text-sm uppercase">Using Vendor Credit?</span>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      className="sr-only peer"
+                      checked={useCredit}
+                      onChange={(e) => setUseCredit(e.target.checked)}
+                    />
+                    <div
+                      className="w-11 h-6 rounded-full relative transition-colors"
+                      style={{ background: useCredit ? "#1B6CA8" : "#C4C6CC" }}
+                    >
+                      <div
+                        className="absolute top-0.5 w-5 h-5 bg-white rounded-full transition-transform"
+                        style={{ left: useCredit ? "calc(100% - 22px)" : "2px" }}
+                      />
+                    </div>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="p-12 rounded text-white shadow-2xl" style={{ background: "#0F1C2C" }}>
+            <h3 className="font-bold uppercase text-xs tracking-widest mb-8" style={{ color: "#E8A838" }}>Estimated Annual Value</h3>
+            <div className="space-y-10">
+              <div>
+                <p className="text-slate-400 text-sm mb-2">Hidden Markup Uncovered</p>
+                <p className="font-mono text-3xl font-bold" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
+                  {formatINR(hiddenMarkup)}
+                </p>
+              </div>
+              <div>
+                <p className="text-slate-400 text-sm mb-2">Annual Efficiency Savings</p>
+                <p className="clash-display text-6xl" style={{ color: "#E8A838" }}>
+                  ₹{(annualEfficiency / 100000).toFixed(1)} L
+                </p>
+              </div>
+              <div className="pt-10 border-t border-white/10">
+                <p className="text-slate-400 text-sm mb-4">Total Value Gained (Ops + Unit Cost)</p>
+                <p className="font-mono text-2xl font-bold" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
+                  {formatINR(totalValue)}
+                </p>
+              </div>
+            </div>
+            <Link href="/quote">
+              <button
+                className="w-full mt-10 py-4 rounded font-bold hover:bg-slate-200 transition-all"
+                style={{ background: "white", color: "#0F1C2C" }}
+              >
+                Get Detailed Audit Report
+              </button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ── SWITCHING IS EASY ─────────────────────────────────── */}
+      <section className="py-24 px-8 md:px-20" style={{ background: "#F8F9FC" }}>
+        <div className="max-w-4xl mx-auto">
+          <h2 className="clash-display text-4xl mb-4 text-center" style={{ color: "#0D1B2A" }}>
+            Switching from 10+ vendors is easy.
+          </h2>
+          <p className="text-lg text-center mb-12 max-w-2xl mx-auto" style={{ color: "#44474c" }}>
+            Replace the coordination chaos of multiple vendors with one managed platform. We handle the transition SKU by SKU.
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
+            {[
+              { n: "1", title: "Start with 1 SKU", desc: "No need to move your entire catalog. Start small and see the difference." },
+              { n: "2", title: "Compare Quality", desc: "Get samples and contrast them against your current supplies side-by-side." },
+              { n: "3", title: "Scale Gradually", desc: "Once you trust our managed QC, roll out the rest of your inventory." },
+            ].map((s) => (
+              <div key={s.n} className="relative">
+                <div
+                  className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6 text-2xl font-black"
+                  style={{ background: "rgba(27,108,168,0.1)", color: "#1B6CA8" }}
+                >
+                  {s.n}
+                </div>
+                <h4 className="font-bold text-xl mb-3" style={{ color: "#191c1e" }}>{s.title}</h4>
+                <p className="text-sm" style={{ color: "#44474c" }}>{s.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── SMARTSTOCK ────────────────────────────────────────── */}
+      <section className="grid grid-cols-1 lg:grid-cols-2">
+        <div className="text-white px-8 md:px-20 py-24 flex flex-col justify-center" style={{ background: "#0F1C2C" }}>
+          <span className="font-bold tracking-widest mb-6 uppercase text-sm" style={{ color: "#E8A838" }}>SMARTSTOCK™ AI INVENTORY</span>
+          <h2 className="clash-display text-4xl mb-8">Never run out of boxes again.</h2>
+          <p className="text-slate-400 text-lg mb-10 leading-relaxed">
+            Our proprietary AI analyzes your sales velocity and lead times across our 500+ factory partners to automatically trigger replenishment.
+            <br /><br />
+            We hold up to <span className="text-white font-bold">4 weeks of buffer stock</span> in our regional nodes so you never face a line-stop.
+          </p>
+          <ul className="space-y-4 mb-12">
+            {["Automated JIT Replenishment", "Regional Warehousing in 12 Cities", "SKU Consolidation Reporting"].map((item) => (
+              <li key={item} className="flex items-center gap-3">
+                <MS icon="check_circle" style={{ color: "#1B6CA8" } as React.CSSProperties} />
+                {item}
+              </li>
+            ))}
+          </ul>
+          <Link href="/quote">
+            <button
+              className="text-white w-fit px-8 py-4 rounded font-bold hover:opacity-90 transition-all"
+              style={{ background: "#1B6CA8" }}
+            >
+              See SmartStock in Action
+            </button>
+          </Link>
+        </div>
+
+        <div className="relative p-12 flex items-center justify-center overflow-hidden" style={{ background: "#F2F3F6" }}>
+          <div className="relative z-10 w-full max-w-lg bg-white p-8 rounded shadow-2xl border border-slate-200/30">
+            <div className="flex justify-between items-center mb-8">
+              <h4 className="font-bold">Live Inventory Map</h4>
+              <span className="flex items-center gap-2 text-xs font-bold uppercase" style={{ color: "#1B6CA8" }}>
+                <span className="w-2 h-2 rounded-full animate-ping inline-block" style={{ background: "#1B6CA8" }} />
+                Live Updates
+              </span>
+            </div>
+            <div className="space-y-4">
+              {[
+                { node: "Delhi NCR Node", cap: "92% Capacity", ok: true },
+                { node: "Mumbai West Node", cap: "87% Capacity", ok: true },
+                { node: "Bengaluru Node", cap: "42% (Replenishing)", ok: false },
+                { node: "Chennai Port Node", cap: "98% Capacity", ok: true },
+              ].map((row) => (
+                <div key={row.node} className="flex items-center justify-between p-4 rounded" style={{ background: "#EDEEF1" }}>
+                  <span className="font-bold text-sm">{row.node}</span>
+                  <span
+                    className="font-mono font-bold text-sm"
+                    style={{ fontFamily: "'JetBrains Mono', monospace", color: row.ok ? "#1B6CA8" : "#ba1a1a" }}
+                  >
+                    {row.cap}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── COMPLIANCE ────────────────────────────────────────── */}
+      <section className="py-24 text-white px-8 md:px-20 text-center" style={{ background: "#0F1C2C" }}>
+        <h2 className="clash-display text-4xl mb-4">Uncompromising Compliance. Global Ready.</h2>
+        <div className="inline-block px-4 py-2 rounded mb-16 border" style={{ background: "rgba(27,108,168,0.2)", borderColor: "rgba(27,108,168,0.3)" }}>
+          <p className="text-sm font-bold tracking-wide">
+            Manufactured with precision in India. Exporting to 40+ countries across the Middle East, Europe, and USA.
+          </p>
+        </div>
+
+        <div className="flex flex-wrap justify-center gap-12 items-center opacity-70 mb-20">
+          {CERTS.map((c) => (
+            <div key={c.label} className="flex flex-col items-center">
+              <MS icon={c.icon} className="text-5xl mb-2" />
+              <p className="text-xs font-bold" style={{ fontFamily: "'JetBrains Mono', monospace" }}>{c.label}</p>
+            </div>
+          ))}
+        </div>
+
+        <div className="p-12 rounded max-w-4xl mx-auto border border-white/5 shadow-2xl" style={{ background: "#0D1B2A" }}>
+          <h4 className="font-bold mb-4">Exporting to USA, EU or MENA?</h4>
+          <p className="text-slate-400 mb-8">
+            We provide full documentation for global sustainability mandates including Plastic Tax declarations and EPR certifications.
+          </p>
+          <div className="flex flex-wrap justify-center gap-4">
+            {["USA — FDA Grade", "EU — REACH Compliant", "MENA — SASO Ready"].map((tag) => (
+              <div
+                key={tag}
+                className="px-6 py-3 rounded-full text-xs font-bold border uppercase tracking-widest"
+                style={{ background: "rgba(255,255,255,0.05)", borderColor: "rgba(255,255,255,0.1)" }}
+              >
+                {tag}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── TESTIMONIALS ──────────────────────────────────────── */}
+      <section className="py-24 px-8 md:px-20" style={{ background: "#F8F9FC" }}>
+        <h2 className="clash-display text-4xl mb-16 text-center" style={{ color: "#0D1B2A" }}>
+          Used by India&rsquo;s fastest growing brands.
+        </h2>
+        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+          {TESTIMONIALS.map((t) => (
+            <div key={t.name} className="bg-white p-10 rounded shadow-sm border border-slate-100">
+              <div className="flex gap-1 mb-6" style={{ color: "#E8A838" }}>
+                {[...Array(5)].map((_, i) => (
+                  <MsFilled key={i} icon="star" className="text-xl" />
+                ))}
+              </div>
+              <p className="text-lg italic mb-10" style={{ color: "#191c1e" }}>
+                &ldquo;{t.quote.split(t.highlight).map((part, i, arr) =>
+                  i < arr.length - 1
+                    ? [part, <span key={i} className="font-bold" style={{ color: "#1B6CA8" }}>{t.highlight}</span>]
+                    : part
+                )}&rdquo;
+              </p>
+              <div className="pt-8 border-t border-slate-100">
+                <p
+                  className="font-bold uppercase text-sm"
+                  style={{ fontFamily: "'JetBrains Mono', monospace", color: "#1B6CA8" }}
+                >
+                  {t.stat}
+                </p>
+                <p className="mt-2 font-bold" style={{ color: "#191c1e" }}>{t.name}</p>
+                <p className="text-xs" style={{ color: "#44474c" }}>{t.company}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── FINAL CTA ─────────────────────────────────────────── */}
+      <section className="py-24 px-8 md:px-20 text-center relative overflow-hidden" style={{ background: "#0F1C2C" }}>
+        <div className="absolute inset-0 opacity-5 pointer-events-none"
+          style={{
+            backgroundImage: "repeating-linear-gradient(45deg, white 0, white 1px, transparent 0, transparent 50%)",
+            backgroundSize: "20px 20px",
+          }}
+        />
+        <div className="relative z-10 max-w-4xl mx-auto">
+          <h2 className="clash-display text-white text-5xl md:text-6xl mb-8 leading-tight">
+            The way brands buy packaging just changed.
+          </h2>
+          <p className="text-slate-400 text-xl mb-12">
+            Join 450+ companies optimizing their supply chain on Packwerk.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-6 justify-center">
+            <Link href="/quote">
+              <button
+                className="px-12 py-5 rounded font-bold text-xl hover:scale-105 transition-all"
+                style={{ background: "#E8A838", color: "#0F1C2C" }}
+              >
+                Schedule a Factory Audit
+              </button>
+            </Link>
+            <Link href="/products">
+              <button
+                className="text-white px-12 py-5 rounded font-bold text-xl hover:bg-white/20 transition-all"
+                style={{ background: "rgba(255,255,255,0.1)" }}
+              >
+                Download Product Catalog
+              </button>
+            </Link>
           </div>
         </div>
       </section>
