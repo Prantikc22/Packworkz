@@ -3,6 +3,7 @@ import { Link, useLocation } from "wouter";
 
 const NAV_ITEMS = [
   { href: "/products", label: "Products" },
+  { href: "/#how-it-works", label: "How It Works" },
   { href: "/industries", label: "Industries" },
   { href: "/design", label: "Design" },
   { href: "/samples", label: "Sample" },
