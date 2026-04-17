@@ -2,10 +2,10 @@ import { useState, useEffect } from "react";
 import { Link, useSearch } from "wouter";
 import { useListProducts, useGetCategorySummary } from "@workspace/api-client-react";
 import { formatINR } from "@/lib/format";
-import { getProductImage } from "@/lib/images";
 import { Loader2 } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import { SKU_IMAGES } from "@/lib/skus";
 
 const MS = ({ icon, className = "", style }: { icon: string; className?: string; style?: React.CSSProperties }) => (
   <span className={`material-symbols-outlined ${className}`} style={style}>{icon}</span>
@@ -37,8 +37,8 @@ const CATEGORY_IMAGES: Record<string, string> = {
   liquid:     "/categories/liquid.jpg",
 };
 
-function getCatImage(cat: string, name: string) {
-  return getProductImage(name, cat) || CATEGORY_IMAGES[cat] || CATEGORY_IMAGES.flexible;
+function getCatImage(cat: string) {
+  return CATEGORY_IMAGES[cat] || CATEGORY_IMAGES.flexible;
 }
 
 export default function Products() {
@@ -200,8 +200,8 @@ export default function Products() {
           ) : (
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {data?.data?.map(product => {
-                const imgUrl = product.image_url || getCatImage(product.category, product.name);
                 const code = (product.specs as any)?.code || "";
+                const imgUrl = SKU_IMAGES[code] || product.image_url || getCatImage(product.category);
                 return (
                   <Link key={product.id} href={`/products/${product.slug}`}>
                     <div className="group bg-white border border-slate-200 rounded-lg overflow-hidden hover:border-blue-300 hover:shadow-lg transition-all cursor-pointer h-full flex flex-col">
@@ -212,7 +212,7 @@ export default function Products() {
                           alt={product.name}
                           className="w-full h-full object-cover group-hover:scale-105 transition-all duration-500"
                           onError={e => {
-                            const fallback = getCatImage(product.category, product.name);
+                            const fallback = getCatImage(product.category);
                             if ((e.target as HTMLImageElement).src !== fallback) {
                               (e.target as HTMLImageElement).src = fallback;
                             }

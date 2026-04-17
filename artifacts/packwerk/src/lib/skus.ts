@@ -745,6 +745,53 @@ export const SKUS: Sku[] = [
   },
 ];
 
+// ── SKU image map (code → local asset) ──────────────────────────────────────
+export const SKU_IMAGES: Record<string, string> = {
+  // Flexible Packaging
+  "FP-101": "/skus/Standup_Pouch.jpg",
+  "FP-102": "/skus/pillowpouch.jpg",
+  "FP-103": "/skus/flatbottompouch.jpg",
+  "FP-104": "/skus/spoutpouch.jpg",
+  "FP-105": "/skus/sachet.jpg",
+  // Bottles & Containers
+  "BC-201": "/skus/plasticbottles.jpg",
+  "BC-202": "/skus/glassbottles.jpg",
+  "BC-203": "/skus/glassjar.jpg",
+  "BC-204": "/skus/cosmeticjar.jpg",
+  "BC-205": "/skus/dropperbottle.jpg",
+  "BC-206": "/skus/airlesspumpbottles.jpg",
+  // Tubes & Small Packs
+  "TS-301": "/skus/cosmetictubes.jpg",
+  "TS-302": "/skus/blisterpacks.jpg",
+  // Boxes & Cartons
+  "BX-401": "/skus/foldingbox.jpg",
+  "BX-402": "/skus/rigidbox.jpg",
+  "BX-403": "/skus/magneticbox.jpg",
+  // E-commerce
+  "EC-501": "/skus/mailerbox.jpg",
+  "EC-502": "/skus/corrugatedbox.jpg",
+  "EC-503": "/skus/foodbox.jpg",
+  "EC-504": "/skus/courierbag.jpg",
+  // Protective Packaging
+  "PR-601": "/skus/bubblewrapbox.jpg",
+  "PR-602": "/skus/foaminsert.jpg",
+  // Packaging Rolls
+  "RL-701": "/skus/printedpackagingrolls.jpg",
+  "RL-702": "/skus/laminatedrolls.jpg",
+  "RL-703": "/skus/ecofriendlyroll.jpg",
+  // Labels & Closures
+  "LC-801": "/skus/labels.jpg",
+  "LC-802": "/skus/closures.jpg",
+  "LC-803": "/skus/zipper.jpg",
+  // Sustainable Packaging
+  "SP-901": "/skus/kraftpaperpacks.jpg",
+  "SP-902": "/skus/compostablepacks.jpg",
+  "SP-903": "/skus/recycledfoodbox.jpg",
+  "SP-904": "/skus/recycledbox.jpg",
+  // Liquid Cartons
+  "LC-1001": "/skus/asepticpacks.jpg",
+};
+
 // ── Lookup helpers ──────────────────────────────────────────────────────────
 export function getSkusByCategory(category: string): Sku[] {
   return SKUS.filter(s => s.category === category);

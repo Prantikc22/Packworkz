@@ -2,7 +2,7 @@ import { useState, useMemo } from "react";
 import { Link, useLocation } from "wouter";
 import { useSubmitQuote } from "@workspace/api-client-react";
 import { useToast } from "@/hooks/use-toast";
-import { SKUS, CATEGORIES, getSkusByCategory } from "@/lib/skus";
+import { SKUS, CATEGORIES, SKU_IMAGES, getSkusByCategory } from "@/lib/skus";
 import type { Sku, VariantGroup } from "@/lib/skus";
 import {
   Loader2, CheckCircle2, ChevronDown, ChevronUp,
@@ -421,8 +421,14 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                             background: selectedSkuId === sku.id ? "rgba(27,108,168,0.04)" : "white"
                           }}
                         >
-                          <div className="w-12 h-12 rounded-lg bg-slate-100 flex items-center justify-center shrink-0">
-                            <Package className="w-6 h-6 text-slate-400" />
+                          <div className="w-14 h-14 rounded-lg bg-slate-100 shrink-0 overflow-hidden">
+                            {SKU_IMAGES[sku.code] ? (
+                              <img src={SKU_IMAGES[sku.code]} alt={sku.name} className="w-full h-full object-cover" />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center">
+                                <Package className="w-6 h-6 text-slate-400" />
+                              </div>
+                            )}
                           </div>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 mb-0.5">
