@@ -1,89 +1,115 @@
+import { useState } from "react";
 import { Link, useLocation } from "wouter";
+
+const NAV_ITEMS = [
+  { href: "/products", label: "Products" },
+  { href: "/industries", label: "Industries" },
+  { href: "/design", label: "Design" },
+  { href: "/samples", label: "Sample" },
+];
 
 export function PublicLayout({ children }: { children: React.ReactNode }) {
   const [location] = useLocation();
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
     <div className="min-h-screen flex flex-col" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-      <header className="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-8 py-4 shadow-2xl" style={{ background: "#0D1B2A" }}>
-        <Link href="/" className="text-2xl font-black tracking-tighter text-white" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
-          Packwerk
+
+      {/* ── NAV ── */}
+      <header className="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-6 md:px-10 py-0 h-[68px]"
+        style={{ background: "#0D1B2A", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+
+        <Link href="/">
+          <span className="text-xl font-black tracking-tight text-white cursor-pointer select-none" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+            PackOps
+          </span>
         </Link>
 
-        <nav className="hidden md:flex items-center gap-8" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
-          <Link
-            href="/products"
-            className={`text-sm font-bold tracking-wide uppercase transition-colors duration-200 ${location.startsWith('/products') ? 'text-[#E8A838] border-b-2 border-[#E8A838] pb-1' : 'text-slate-300 hover:text-white'}`}
-          >
-            Products
-          </Link>
-          <Link
-            href="/design"
-            className={`text-sm font-bold tracking-wide uppercase transition-colors duration-200 ${location === '/design' ? 'text-[#E8A838] border-b-2 border-[#E8A838] pb-1' : 'text-slate-300 hover:text-white'}`}
-          >
-            Design
-          </Link>
-          <Link
-            href="/samples"
-            className={`text-sm font-bold tracking-wide uppercase transition-colors duration-200 ${location === '/samples' ? 'text-[#E8A838] border-b-2 border-[#E8A838] pb-1' : 'text-slate-300 hover:text-white'}`}
-          >
-            Sample
-          </Link>
+        <nav className="hidden md:flex items-center gap-7">
+          {NAV_ITEMS.map(item => {
+            const active = location.startsWith(item.href);
+            return (
+              <Link key={item.href} href={item.href}>
+                <span
+                  className="text-xs font-bold tracking-[0.15em] uppercase cursor-pointer transition-colors duration-200"
+                  style={{ color: active ? "#E8A838" : "rgba(255,255,255,0.65)", textDecoration: active ? "underline" : "none", textUnderlineOffset: "5px" }}
+                >
+                  {item.label}
+                </span>
+              </Link>
+            );
+          })}
         </nav>
 
         <div className="flex items-center gap-4">
-          <Link
-            href="/login"
-            className="text-sm font-bold tracking-wide uppercase text-slate-300 hover:text-white transition-colors duration-200"
-            style={{ fontFamily: "'Space Grotesk', sans-serif" }}
-          >
-            Login
+          <Link href="/login">
+            <span className="hidden md:inline text-xs font-bold tracking-[0.15em] uppercase text-slate-300 hover:text-white transition-colors cursor-pointer">Login</span>
           </Link>
           <Link href="/quote">
-            <button
-              className="text-white px-6 py-2.5 rounded text-sm font-bold uppercase tracking-wide hover:opacity-90 active:scale-95 transition-all"
-              style={{ background: "#1B6CA8", fontFamily: "'Space Grotesk', sans-serif" }}
-            >
+            <button className="px-5 py-2.5 rounded text-xs font-black uppercase tracking-widest hover:opacity-90 active:scale-95 transition-all"
+              style={{ background: "#1B6CA8", color: "white" }}>
               Get Quote
             </button>
           </Link>
+
+          {/* Mobile menu toggle */}
+          <button className="md:hidden p-2 text-white" onClick={() => setMobileOpen(!mobileOpen)}>
+            <span className="material-symbols-outlined text-2xl">{mobileOpen ? "close" : "menu"}</span>
+          </button>
         </div>
       </header>
 
-      <main className="flex-1 pt-[72px]">
+      {/* Mobile menu */}
+      {mobileOpen && (
+        <div className="fixed inset-0 z-40 pt-[68px]" style={{ background: "#0D1B2A" }}>
+          <nav className="flex flex-col px-8 py-8 gap-6">
+            {NAV_ITEMS.map(item => (
+              <Link key={item.href} href={item.href} onClick={() => setMobileOpen(false)}>
+                <span className="text-2xl font-black uppercase text-white">{item.label}</span>
+              </Link>
+            ))}
+            <div className="border-t border-white/10 pt-6 flex flex-col gap-4">
+              <Link href="/login" onClick={() => setMobileOpen(false)}>
+                <span className="text-lg font-bold text-slate-300">Login</span>
+              </Link>
+              <Link href="/quote" onClick={() => setMobileOpen(false)}>
+                <button className="px-8 py-4 rounded font-bold text-sm" style={{ background: "#1B6CA8", color: "white" }}>Get Quote</button>
+              </Link>
+            </div>
+          </nav>
+        </div>
+      )}
+
+      <main className="flex-1 pt-[68px]">
         {children}
       </main>
 
-      <footer className="w-full px-12 py-16 grid grid-cols-1 md:grid-cols-4 gap-8 border-t-0 text-sm leading-relaxed" style={{ background: "#F2F3F6", fontFamily: "'Space Grotesk', sans-serif" }}>
-        <div className="flex flex-col gap-6">
-          <div className="text-xl font-bold" style={{ color: "#0D1B2A" }}>Packwerk</div>
-          <p className="text-slate-600">Revolutionizing packaging procurement through technology-led supply chains and managed QC.</p>
-          <p className="text-slate-500 text-xs">© {new Date().getFullYear()} Packwerk India. All rights reserved.</p>
+      {/* ── FOOTER ── */}
+      <footer className="px-8 md:px-16 py-16 grid grid-cols-2 md:grid-cols-4 gap-10 text-sm border-t" style={{ background: "#0D1B2A", borderColor: "rgba(255,255,255,0.06)", fontFamily: "'Space Grotesk', sans-serif" }}>
+        <div className="col-span-2 md:col-span-1 flex flex-col gap-4">
+          <span className="text-xl font-black text-white">PackOps</span>
+          <p className="text-slate-500 text-sm leading-relaxed max-w-xs">
+            High-performance industrial packaging management for the modern enterprise.
+          </p>
+          <p className="text-slate-600 text-xs">© {new Date().getFullYear()} PackOps India. All rights reserved.</p>
         </div>
-        <div className="flex flex-col gap-4">
-          <h4 className="font-bold uppercase tracking-wider text-xs" style={{ color: "#0D1B2A" }}>Products</h4>
-          <nav className="flex flex-col gap-3">
-            <Link href="/products" className="text-slate-600 hover:underline decoration-[#1B6CA8] opacity-80 hover:opacity-100 transition-opacity">Flexible Packaging</Link>
-            <Link href="/products" className="text-slate-600 hover:underline decoration-[#1B6CA8] opacity-80 hover:opacity-100 transition-opacity">Rigid Packaging</Link>
-            <Link href="/products" className="text-slate-600 hover:underline decoration-[#1B6CA8] opacity-80 hover:opacity-100 transition-opacity">Sustainable Options</Link>
-            <Link href="/products" className="text-slate-600 hover:underline decoration-[#1B6CA8] opacity-80 hover:opacity-100 transition-opacity">Custom Labels</Link>
-          </nav>
+        <div className="flex flex-col gap-3">
+          <h4 className="font-bold uppercase tracking-widest text-xs text-white">Products</h4>
+          {["Folding Cartons", "Corrugated Solutions", "Protective Inserts", "Sustainability Line"].map(l => (
+            <Link key={l} href="/products"><span className="text-slate-500 hover:text-white cursor-pointer transition-colors">{l}</span></Link>
+          ))}
         </div>
-        <div className="flex flex-col gap-4">
-          <h4 className="font-bold uppercase tracking-wider text-xs" style={{ color: "#0D1B2A" }}>Company</h4>
-          <nav className="flex flex-col gap-3">
-            <a href="#" className="text-slate-600 hover:underline decoration-[#1B6CA8] opacity-80 hover:opacity-100 transition-opacity">About Us</a>
-            <a href="#" className="text-slate-600 hover:underline decoration-[#1B6CA8] opacity-80 hover:opacity-100 transition-opacity">Quality Assurance</a>
-            <a href="#" className="text-slate-600 hover:underline decoration-[#1B6CA8] opacity-80 hover:opacity-100 transition-opacity">Careers</a>
-            <a href="#" className="text-slate-600 hover:underline decoration-[#1B6CA8] opacity-80 hover:opacity-100 transition-opacity">Contact</a>
-          </nav>
+        <div className="flex flex-col gap-3">
+          <h4 className="font-bold uppercase tracking-widest text-xs text-white">Company</h4>
+          {["About Us", "Partnerships", "Process", "Sustainability"].map(l => (
+            <a key={l} href="#" className="text-slate-500 hover:text-white transition-colors">{l}</a>
+          ))}
         </div>
-        <div className="flex flex-col gap-4">
-          <h4 className="font-bold uppercase tracking-wider text-xs" style={{ color: "#0D1B2A" }}>Legal</h4>
-          <nav className="flex flex-col gap-3">
-            <a href="#" className="text-slate-600 hover:underline decoration-[#1B6CA8] opacity-80 hover:opacity-100 transition-opacity">Terms of Service</a>
-            <a href="#" className="text-slate-600 hover:underline decoration-[#1B6CA8] opacity-80 hover:opacity-100 transition-opacity">Privacy Policy</a>
-          </nav>
+        <div className="flex flex-col gap-3">
+          <h4 className="font-bold uppercase tracking-widest text-xs text-white">Support</h4>
+          {["Contact Sales", "Technical Docs", "Documentation", "Security"].map(l => (
+            <a key={l} href="#" className="text-slate-500 hover:text-white transition-colors">{l}</a>
+          ))}
         </div>
       </footer>
     </div>

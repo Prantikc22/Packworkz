@@ -15,6 +15,8 @@ import Quote from "@/pages/quote";
 import Design from "@/pages/design";
 import Samples from "@/pages/samples";
 import Login from "@/pages/login";
+import Industries from "@/pages/industries";
+import IndustryDetail from "@/pages/industry-detail";
 
 // Dashboard Pages
 import DashboardOverview from "@/pages/dashboard/overview";
@@ -31,7 +33,6 @@ import AdminSamples from "@/pages/admin/samples";
 
 const queryClient = new QueryClient();
 
-// Auth guards
 const ProtectedRoute = ({ component: Component, layout: Layout, ...rest }: any) => {
   return (
     <Route
@@ -51,7 +52,6 @@ const AdminRoute = ({ component: Component, layout: Layout, ...rest }: any) => {
       {...rest}
       component={(props: any) => {
         const adminKey = localStorage.getItem("packwerk_admin_key");
-        // In a real app we'd verify the key. Here we just check presence or env var
         if (!adminKey && !import.meta.env.VITE_ADMIN_KEY) return <Redirect to="/" />;
         return Layout ? <Layout><Component {...props} /></Layout> : <Component {...props} />;
       }}
@@ -70,7 +70,6 @@ const PublicRoute = ({ component: Component, layout: Layout, ...rest }: any) => 
   );
 };
 
-
 function Router() {
   return (
     <Switch>
@@ -84,6 +83,8 @@ function Router() {
       <PublicRoute path="/design" component={Design} layout={PublicLayout} />
       <PublicRoute path="/samples" component={Samples} layout={PublicLayout} />
       <PublicRoute path="/login" component={Login} layout={PublicLayout} />
+      <PublicRoute path="/industries" component={Industries} layout={PublicLayout} />
+      <PublicRoute path="/industries/:slug" component={IndustryDetail} layout={PublicLayout} />
 
       {/* Dashboard Routes */}
       <ProtectedRoute path="/dashboard" component={DashboardOverview} layout={DashboardLayout} />

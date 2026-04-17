@@ -75,17 +75,26 @@ See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and pa
 
 ### Pages
 
-**Public**: `/`, `/products`, `/products/:slug`, `/quote` (6-step wizard), `/design`, `/samples`, `/login`
+**Public**: `/`, `/products`, `/products/:slug`, `/quote` (6-step wizard), `/design`, `/samples`, `/login`, `/industries`, `/industries/:slug`
 **Dashboard**: `/dashboard`, `/dashboard/orders`, `/dashboard/designs`, `/dashboard/payments`, `/dashboard/profile`
 **Admin**: `/admin/quotes`, `/admin/orders`, `/admin/designs`, `/admin/samples`
 
+### Design System (Functional Brutalism)
+
+- **Brand name**: "PackOps" (nav/UI), "Packwerk" (legal/DB)
+- **Colors**: Navy `#0D1B2A`, Container `#0F1C2C`, Blue `#1B6CA8`, Amber `#E8A838`, Surface `#F8F9FC`
+- **Fonts**: Space Grotesk (headlines), Plus Jakarta Sans (body), Manrope (numbers/stats), JetBrains Mono (dashboard stats)
+- **Images**: `src/lib/images.ts` — `getProductImage()` fallback using 8 confirmed Unsplash photo IDs mapped by category/keyword
+
 ### Key Features
 
-- 94 product SKUs with SmartStock badges, Eco badges, INR pricing
+- 110+ product SKUs across 8 categories with SmartStock/Eco badges, INR pricing, contextual images
+- Industries section: 8 verticals (food, pharma, cosmetics, ecommerce, fmcg, industrial, agriculture, electronics) with dedicated landing pages
 - 6-step quote wizard
-- Design brief request (3-step)
+- Design brief request (3-step: product type → brand assets → checkout)
 - Sample order with 3 tiers (Standard ₹2,999, Premium ₹4,999, Complex ₹7,999)
-- Customer dashboard with order tracking, design requests, invoice management, profile
+- Customer dashboard "COMMAND CENTER" with deployments table and system health
+- Savings calculator on home page (unit savings + overhead + credit + stockout formulas)
 - Admin panel for managing quotes, orders, designs, samples
 - Net-30 credit system (unlocks after 3 completed orders)
 - WhatsApp notification abstraction (silent fallback if webhook not set)
