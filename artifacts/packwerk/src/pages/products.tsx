@@ -12,15 +12,34 @@ const MS = ({ icon, className = "", style }: { icon: string; className?: string;
 );
 
 const CATEGORIES = [
-  { slug: "flexible", label: "Flexible Pouches" },
-  { slug: "rigid", label: "Rigid Packaging" },
-  { slug: "boxes", label: "Boxes & Cartons" },
-  { slug: "ecommerce", label: "E-commerce" },
-  { slug: "rolls", label: "Labels & Rolls" },
-  { slug: "accessories", label: "Accessories" },
-  { slug: "sustainable", label: "Sustainable" },
-  { slug: "premium", label: "Premium & Gift" },
+  { slug: "flexible",   label: "Flexible Packaging",    icon: "package_2" },
+  { slug: "bottles",    label: "Bottles & Containers",  icon: "local_drink" },
+  { slug: "tubes",      label: "Tubes & Small Packs",   icon: "medication" },
+  { slug: "boxes",      label: "Boxes & Cartons",       icon: "inventory_2" },
+  { slug: "ecommerce",  label: "E-commerce Packaging",  icon: "local_shipping" },
+  { slug: "protective", label: "Protective Packaging",  icon: "shield" },
+  { slug: "rolls",      label: "Packaging Rolls",       icon: "settings_input_component" },
+  { slug: "labels",     label: "Labels & Closures",     icon: "label" },
+  { slug: "sustainable",label: "Sustainable",           icon: "eco" },
+  { slug: "liquid",     label: "Liquid Cartons",        icon: "water_drop" },
 ];
+
+const CATEGORY_IMAGES: Record<string, string> = {
+  flexible:   "https://images.unsplash.com/photo-1542838132-92c53300491e?w=600&h=400&fit=crop&q=80",
+  bottles:    "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=600&h=400&fit=crop&q=80",
+  tubes:      "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=600&h=400&fit=crop&q=80",
+  boxes:      "https://images.unsplash.com/photo-1557821552-17105176677c?w=600&h=400&fit=crop&q=80",
+  ecommerce:  "https://images.unsplash.com/photo-1557821552-17105176677c?w=600&h=400&fit=crop&q=80",
+  protective: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&h=400&fit=crop&q=80",
+  rolls:      "https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=600&h=400&fit=crop&q=80",
+  labels:     "https://images.unsplash.com/photo-1542838132-92c53300491e?w=600&h=400&fit=crop&q=80",
+  sustainable:"https://images.unsplash.com/photo-1500937386664-56d1dfef3854?w=600&h=400&fit=crop&q=80",
+  liquid:     "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600&h=400&fit=crop&q=80",
+};
+
+function getCatImage(cat: string, name: string) {
+  return getProductImage(name, cat) || CATEGORY_IMAGES[cat] || CATEGORY_IMAGES.flexible;
+}
 
 export default function Products() {
   const searchStr = useSearch();
@@ -32,7 +51,6 @@ export default function Products() {
   const [isSmartStock, setIsSmartStock] = useState(false);
   const [isEco, setIsEco] = useState(false);
 
-  // Sync category from URL on mount
   useEffect(() => {
     if (initialCat) setCategory(initialCat);
   }, []);
@@ -44,16 +62,24 @@ export default function Products() {
   const { data: summary } = useGetCategorySummary();
 
   const getCategoryCount = (cat: string) => summary?.find(s => s.category === cat)?.count || 0;
+  const totalCount = summary?.reduce((acc, s) => acc + Number(s.count), 0) || 0;
 
   return (
     <div className="min-h-screen" style={{ background: "#F8F9FC", fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
 
       {/* ── Header ── */}
-      <div className="py-12 px-8 md:px-16 border-b border-slate-200 bg-white">
+      <div className="py-14 px-8 md:px-16 border-b border-slate-200 bg-white">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
           <div>
-            <p className="text-xs font-bold uppercase tracking-[0.2em] mb-2" style={{ color: "#1B6CA8" }}>110+ SKUS ACROSS 8 CATEGORIES</p>
-            <h1 className="clash-display text-4xl" style={{ color: "#0D1B2A" }}>Product Catalogue</h1>
+            <p className="text-xs font-bold uppercase tracking-[0.2em] mb-3" style={{ color: "#1B6CA8" }}>
+              33 SKUs ACROSS 10 CATEGORIES
+            </p>
+            <h1 className="text-4xl font-black" style={{ fontFamily: "'Space Grotesk', sans-serif", color: "#0D1B2A" }}>
+              Product Catalogue
+            </h1>
+            <p className="text-slate-500 mt-2 max-w-xl text-sm">
+              Every SKU is configurable — variants, dimensions, and print spec — and generates a live price range.
+            </p>
           </div>
           <div className="relative w-full md:w-80">
             <MS icon="search" className="absolute left-3 top-1/2 -translate-y-1/2 text-xl" style={{ color: "#74777d" }} />
@@ -68,25 +94,55 @@ export default function Products() {
         </div>
       </div>
 
+      {/* ── Category strip ── */}
+      {!search && (
+        <div className="bg-white border-b border-slate-100 overflow-x-auto">
+          <div className="max-w-7xl mx-auto px-8 flex gap-1 py-2">
+            <button
+              onClick={() => setCategory(undefined)}
+              className="px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all flex items-center gap-1.5"
+              style={{ background: !category ? "#0D1B2A" : "transparent", color: !category ? "white" : "#64748B" }}
+            >
+              All ({totalCount})
+            </button>
+            {CATEGORIES.map(cat => (
+              <button
+                key={cat.slug}
+                onClick={() => setCategory(cat.slug)}
+                className="px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all flex items-center gap-1.5"
+                style={{ background: category === cat.slug ? "#0D1B2A" : "transparent", color: category === cat.slug ? "white" : "#64748B" }}
+              >
+                <MS icon={cat.icon} className="text-base" />
+                {cat.label}
+                <span className="opacity-60">({getCategoryCount(cat.slug)})</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
       <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 flex flex-col lg:flex-row gap-8">
 
         {/* ── Sidebar ── */}
-        <aside className="w-full lg:w-60 shrink-0">
-          <div className="bg-white rounded border border-slate-200 p-5">
+        <aside className="w-full lg:w-56 shrink-0">
+          <div className="bg-white rounded-lg border border-slate-200 p-5 sticky top-24">
             <h3 className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: "#74777d" }}>CATEGORIES</h3>
-            <div className="space-y-1">
+            <div className="space-y-0.5">
               <button onClick={() => setCategory(undefined)}
-                className="w-full flex justify-between items-center text-sm py-2 px-3 rounded transition-all text-left"
+                className="w-full flex justify-between items-center text-sm py-2 px-3 rounded-lg transition-all text-left"
                 style={!category ? { background: "#0D1B2A", color: "white" } : { color: "#44474c" }}>
                 <span className="font-medium">All Products</span>
-                <span className="text-xs opacity-60">{data?.data?.length || 0}</span>
+                <span className="text-xs opacity-60">{totalCount}</span>
               </button>
               {CATEGORIES.map(cat => (
                 <button key={cat.slug} onClick={() => setCategory(cat.slug)}
-                  className="w-full flex justify-between items-center text-sm py-2 px-3 rounded transition-all text-left"
+                  className="w-full flex justify-between items-center text-sm py-2 px-3 rounded-lg transition-all text-left gap-2"
                   style={category === cat.slug ? { background: "#0D1B2A", color: "white" } : { color: "#44474c" }}>
-                  <span className="font-medium">{cat.label}</span>
-                  <span className="text-xs opacity-60">{getCategoryCount(cat.slug)}</span>
+                  <div className="flex items-center gap-2 min-w-0">
+                    <MS icon={cat.icon} className="text-base shrink-0" />
+                    <span className="font-medium truncate text-xs">{cat.label}</span>
+                  </div>
+                  <span className="text-xs opacity-60 shrink-0">{getCategoryCount(cat.slug)}</span>
                 </button>
               ))}
             </div>
@@ -96,7 +152,7 @@ export default function Products() {
               <div className="flex items-center justify-between gap-2">
                 <Label htmlFor="smartstock" className="cursor-pointer">
                   <p className="text-sm font-bold" style={{ color: "#0D1B2A" }}>SmartStock</p>
-                  <p className="text-xs" style={{ color: "#74777d" }}>48-hour dispatch</p>
+                  <p className="text-xs" style={{ color: "#74777d" }}>48-hr dispatch</p>
                 </Label>
                 <Switch id="smartstock" checked={isSmartStock} onCheckedChange={setIsSmartStock} />
               </div>
@@ -113,12 +169,27 @@ export default function Products() {
 
         {/* ── Product Grid ── */}
         <main className="flex-1">
+          {/* Active category heading */}
+          {category && (
+            <div className="flex items-center justify-between mb-5">
+              <div>
+                <h2 className="text-lg font-black" style={{ fontFamily: "'Space Grotesk', sans-serif", color: "#0D1B2A" }}>
+                  {CATEGORIES.find(c => c.slug === category)?.label}
+                </h2>
+                <p className="text-xs text-slate-400 mt-0.5">{getCategoryCount(category)} SKU{getCategoryCount(category) !== 1 ? "s" : ""}</p>
+              </div>
+              <button onClick={() => setCategory(undefined)} className="text-xs font-bold text-slate-400 hover:text-slate-700 transition-colors">
+                ← All Categories
+              </button>
+            </div>
+          )}
+
           {isLoading ? (
             <div className="flex justify-center items-center h-64">
               <Loader2 className="w-8 h-8 animate-spin" style={{ color: "#1B6CA8" }} />
             </div>
           ) : data?.data?.length === 0 ? (
-            <div className="text-center py-24 bg-white rounded border border-slate-200">
+            <div className="text-center py-24 bg-white rounded-lg border border-slate-200">
               <MS icon="search_off" className="text-5xl mb-3" style={{ color: "#C4C6CC" }} />
               <p className="font-bold mb-3" style={{ color: "#44474c" }}>No products found.</p>
               <button onClick={() => { setSearch(""); setCategory(undefined); setIsSmartStock(false); setIsEco(false); }}
@@ -129,18 +200,19 @@ export default function Products() {
           ) : (
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {data?.data?.map(product => {
-                const imgUrl = product.image_url || getProductImage(product.name, product.category);
+                const imgUrl = product.image_url || getCatImage(product.category, product.name);
+                const code = (product.specs as any)?.code || "";
                 return (
                   <Link key={product.id} href={`/products/${product.slug}`}>
-                    <div className="group bg-white border border-slate-200 rounded overflow-hidden hover:border-blue-300 hover:shadow-lg transition-all cursor-pointer h-full flex flex-col">
+                    <div className="group bg-white border border-slate-200 rounded-lg overflow-hidden hover:border-blue-300 hover:shadow-lg transition-all cursor-pointer h-full flex flex-col">
                       {/* Image */}
-                      <div className="h-48 overflow-hidden relative bg-slate-100">
+                      <div className="h-44 overflow-hidden relative bg-slate-100">
                         <img
                           src={imgUrl}
                           alt={product.name}
                           className="w-full h-full object-cover group-hover:scale-105 transition-all duration-500"
                           onError={e => {
-                            const fallback = getProductImage(product.name, product.category);
+                            const fallback = getCatImage(product.category, product.name);
                             if ((e.target as HTMLImageElement).src !== fallback) {
                               (e.target as HTMLImageElement).src = fallback;
                             }
@@ -154,12 +226,21 @@ export default function Products() {
                             <span className="px-2 py-0.5 rounded text-xs font-bold bg-green-500 text-white">Eco</span>
                           )}
                         </div>
+                        {code && (
+                          <div className="absolute top-3 right-3">
+                            <span className="px-2 py-0.5 rounded text-xs font-mono font-bold" style={{ background: "rgba(13,27,42,0.7)", color: "white" }}>{code}</span>
+                          </div>
+                        )}
                       </div>
 
                       {/* Info */}
                       <div className="p-5 flex flex-col flex-1">
-                        <p className="text-xs font-bold uppercase tracking-wider mb-1.5" style={{ color: "#1B6CA8" }}>{product.category}</p>
-                        <h3 className="font-bold text-base mb-1.5 line-clamp-2" style={{ color: "#0D1B2A" }}>{product.name}</h3>
+                        <p className="text-xs font-bold uppercase tracking-wider mb-1.5" style={{ color: "#1B6CA8" }}>
+                          {CATEGORIES.find(c => c.slug === product.category)?.label || product.category}
+                        </p>
+                        <h3 className="font-bold text-base mb-1.5 line-clamp-2" style={{ color: "#0D1B2A", fontFamily: "'Space Grotesk', sans-serif" }}>
+                          {product.name}
+                        </h3>
                         <p className="text-xs line-clamp-2 mb-4" style={{ color: "#74777d" }}>{product.use_case}</p>
                         <div className="mt-auto flex items-center justify-between pt-4 border-t border-slate-100">
                           <div>
@@ -168,8 +249,11 @@ export default function Products() {
                               {formatINR(product.price_min)} – {formatINR(product.price_max)}
                             </p>
                           </div>
-                          <button className="px-4 py-2 rounded text-xs font-bold text-white hover:opacity-90 transition-all" style={{ background: "#0D1B2A" }}>
-                            Quote
+                          <button
+                            onClick={e => { e.preventDefault(); window.location.href = "/quote"; }}
+                            className="px-4 py-2 rounded text-xs font-bold text-white hover:opacity-90 transition-all"
+                            style={{ background: "#1B6CA8" }}>
+                            Get Quote
                           </button>
                         </div>
                       </div>

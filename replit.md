@@ -58,7 +58,7 @@ See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and pa
 
 ### Database Tables
 
-- `products` — 94 SKUs across 8 categories
+- `products` — 33 SKUs across 10 categories (seeded via `lib/db/seed-skus.ts`)
 - `quotes` — Quote requests from businesses
 - `orders` — Production orders
 - `users_profile` — Customer accounts
@@ -88,7 +88,9 @@ See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and pa
 
 ### Key Features
 
-- 110+ product SKUs across 8 categories with SmartStock/Eco badges, INR pricing, contextual images
+- 33 product SKUs across 10 categories: Flexible Packaging (5), Bottles & Containers (6), Tubes & Small Packs (2), Boxes & Cartons (3), E-commerce (4), Protective (2), Packaging Rolls (3), Labels & Closures (3), Sustainable (4), Liquid Cartons (1)
+- SKU schema: each has `variants` (decision-oriented option groups) and `customization_fields` stored in `specs` JSONB column
+- SKU catalog defined client-side in `artifacts/packwerk/src/lib/skus.ts` and mirrored to DB via `lib/db/seed-skus.ts`
 - Industries section: 8 verticals (food, pharma, cosmetics, ecommerce, fmcg, industrial, agriculture, electronics) with dedicated landing pages
 - 6-step quote wizard
 - Design brief request (3-step: product type → brand assets → checkout)
