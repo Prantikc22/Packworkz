@@ -304,25 +304,6 @@ export default function Home() {
               </Link>
             ))}
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {[
-              { title: "Coffee Brand Bundle", tags: ["Stand-up Pouch", "Printed Roll Label", "Mailer Box"], icon: "inventory_2" },
-              { title: "Skincare Essentials", tags: ["Airless Pump Bottle", "Cosmetic Jar", "Folding Carton"], icon: "sanitizer" },
-            ].map(kit => (
-              <div key={kit.title} className="p-8 rounded border border-white/5 flex flex-col md:flex-row items-center gap-8" style={{ background: "#0F1C2C" }}>
-                <div className="flex-1">
-                  <span className="text-xs font-bold tracking-widest uppercase mb-2 block" style={{ color: "#E8A838" }}>Starter Kit</span>
-                  <h3 className="text-white text-2xl font-bold mb-4">{kit.title}</h3>
-                  <div className="flex flex-wrap gap-3">
-                    {kit.tags.map(tag => <span key={tag} className="px-3 py-1 text-xs rounded border text-white" style={{ background: "rgba(255,255,255,0.1)", borderColor: "rgba(255,255,255,0.2)" }}>{tag}</span>)}
-                  </div>
-                </div>
-                <div className="w-full md:w-1/3 aspect-square rounded flex items-center justify-center" style={{ background: "rgba(255,255,255,0.05)" }}>
-                  <MS icon={kit.icon} className="text-6xl" style={{ color: "rgba(255,255,255,0.2)" }} />
-                </div>
-              </div>
-            ))}
-          </div>
         </div>
       </section>
 
@@ -549,46 +530,38 @@ export default function Home() {
       </section>
 
       {/* ── SMARTSTOCK ───────────────────────────── */}
-      <section className="grid grid-cols-1 lg:grid-cols-2">
-        <div className="text-white px-8 md:px-20 py-24 flex flex-col justify-center" style={{ background: "#0F1C2C" }}>
-          <span className="font-bold tracking-widest mb-6 uppercase text-sm" style={{ color: "#E8A838" }}>SMARTSTOCK™ AI INVENTORY</span>
-          <h2 className="clash-display text-4xl mb-8">Never run out of boxes again.</h2>
-          <p className="text-slate-400 text-lg mb-10 leading-relaxed">
-            Our AI analyzes your sales velocity and lead times across 500+ factory partners to automatically trigger replenishment.
-            <br /><br />We hold up to <span className="text-white font-bold">4 weeks of buffer stock</span> in regional nodes so you never face a line-stop.
-          </p>
-          <ul className="space-y-4 mb-12">
-            {["Automated JIT Replenishment", "Regional Warehousing in 12 Cities", "SKU Consolidation Reporting"].map(item => (
-              <li key={item} className="flex items-center gap-3">
-                <MS icon="check_circle" style={{ color: "#1B6CA8" }} /> {item}
-              </li>
-            ))}
-          </ul>
-          <Link href="/quote">
-            <button className="text-white w-fit px-8 py-4 rounded font-bold hover:opacity-90 transition-all" style={{ background: "#1B6CA8" }}>See SmartStock in Action</button>
-          </Link>
-        </div>
-        <div className="relative p-12 flex items-center justify-center" style={{ background: "#F2F3F6" }}>
-          <div className="relative z-10 w-full max-w-lg bg-white p-8 rounded shadow-2xl border border-slate-200/30">
-            <div className="flex justify-between items-center mb-8">
-              <h4 className="font-bold">Live Inventory Map</h4>
-              <span className="flex items-center gap-2 text-xs font-bold uppercase" style={{ color: "#1B6CA8" }}>
-                <span className="w-2 h-2 rounded-full animate-ping inline-block" style={{ background: "#1B6CA8" }} />Live Updates
-              </span>
-            </div>
-            <div className="space-y-4">
-              {[
-                { node: "Delhi NCR Node", cap: "92% Capacity", ok: true },
-                { node: "Mumbai West Node", cap: "87% Capacity", ok: true },
-                { node: "Bengaluru Node", cap: "42% (Replenishing)", ok: false },
-                { node: "Chennai Port Node", cap: "98% Capacity", ok: true },
-              ].map(row => (
-                <div key={row.node} className="flex items-center justify-between p-4 rounded" style={{ background: "#EDEEF1" }}>
-                  <span className="font-bold text-sm">{row.node}</span>
-                  <span style={{ ...mono, fontSize: "0.85rem", color: row.ok ? "#1B6CA8" : "#ba1a1a" }}>{row.cap}</span>
-                </div>
+      <section className="relative overflow-hidden" style={{ background: "#0F1C2C" }}>
+        <div className="grid grid-cols-1 lg:grid-cols-2 min-h-[640px]">
+          {/* Left: content */}
+          <div className="relative z-10 text-white px-8 md:px-20 py-24 flex flex-col justify-center">
+            <span className="font-bold tracking-widest mb-6 uppercase text-sm" style={{ color: "#E8A838" }}>SMARTSTOCK™ AI INVENTORY</span>
+            <h2 className="clash-display text-4xl mb-8">Never run out of boxes again.</h2>
+            <p className="text-slate-400 text-lg mb-10 leading-relaxed">
+              Our AI analyzes your sales velocity and lead times across 500+ factory partners to automatically trigger replenishment.
+              <br /><br />We hold up to <span className="text-white font-bold">4 weeks of buffer stock</span> in regional nodes so you never face a line-stop.
+            </p>
+            <ul className="space-y-4 mb-12">
+              {["Automated JIT Replenishment", "Regional Warehousing in 12 Cities", "SKU Consolidation Reporting"].map(item => (
+                <li key={item} className="flex items-center gap-3">
+                  <MS icon="check_circle" style={{ color: "#1B6CA8" }} /> {item}
+                </li>
               ))}
-            </div>
+            </ul>
+            <Link href="/quote">
+              <button className="text-white w-fit px-8 py-4 rounded font-bold hover:opacity-90 transition-all" style={{ background: "#1B6CA8" }}>See SmartStock in Action</button>
+            </Link>
+          </div>
+          {/* Right: India logistics image — full bleed with left-edge fade */}
+          <div className="relative hidden lg:block">
+            <img
+              src="/smartstock.jpg"
+              alt="SmartStock — India logistics network"
+              className="absolute inset-0 w-full h-full object-cover object-center"
+            />
+            {/* Gradient overlay: fades left edge into dark bg, subtle bottom darkening */}
+            <div className="absolute inset-0" style={{
+              background: "linear-gradient(to right, #0F1C2C 0%, rgba(15,28,44,0.55) 35%, rgba(15,28,44,0.1) 65%, transparent 100%)"
+            }} />
           </div>
         </div>
       </section>

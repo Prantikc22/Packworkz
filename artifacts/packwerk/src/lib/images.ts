@@ -1,17 +1,14 @@
-// Curated Unsplash image URLs for packaging categories & industries
-// Format: https://images.unsplash.com/photo-{id}?w={w}&h={h}&fit=crop&q=80
-
 export const INDUSTRY_IMAGES: Record<string, string> = {
-  food: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&h=500&fit=crop&q=80",
-  beverage: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&h=500&fit=crop&q=80",
-  pharma: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=800&h=500&fit=crop&q=80",
-  cosmetics: "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=800&h=500&fit=crop&q=80",
-  ecommerce: "https://images.unsplash.com/photo-1557821552-17105176677c?w=800&h=500&fit=crop&q=80",
-  fmcg: "https://images.unsplash.com/photo-1542838132-92c53300491e?w=800&h=500&fit=crop&q=80",
-  industrial: "https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=800&h=500&fit=crop&q=80",
-  agriculture: "https://images.unsplash.com/photo-1500937386664-56d1dfef3854?w=800&h=500&fit=crop&q=80",
-  electronics: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&h=500&fit=crop&q=80",
-  homecare: "https://images.unsplash.com/photo-1563453392212-326f5e854473?w=800&h=500&fit=crop&q=80",
+  food: "/industries/food.jpg",
+  beverage: "/industries/food.jpg",
+  pharma: "/industries/pharma.jpg",
+  cosmetics: "/industries/beauty.jpg",
+  ecommerce: "/industries/ecommerce.jpg",
+  fmcg: "/industries/fmcg.jpg",
+  industrial: "/industries/industrial.jpg",
+  agriculture: "/industries/agri.jpg",
+  electronics: "/industries/electronics.jpg",
+  homecare: "/industries/fmcg.jpg",
 };
 
 // Category fallbacks use confirmed-working industry photo IDs
