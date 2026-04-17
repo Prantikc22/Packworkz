@@ -138,7 +138,7 @@ export default function Home() {
 
       {/* ── HERO ─────────────────────────────────── */}
       <section className="relative min-h-[90vh] flex flex-col justify-center px-8 md:px-20 overflow-hidden py-24"
-        style={{ background: "linear-gradient(135deg, #0D1B2A 0%, #0F1C2C 100%)" }}>
+        style={{ background: "radial-gradient(circle at 70% 40%, rgba(59,130,246,0.25), transparent 40%), linear-gradient(135deg, #020617, #0f172a, #1e3a8a, #3b82f6, #e0f2fe)" }}>
         <div className="absolute inset-0 opacity-10 pointer-events-none">
           <svg width="100%" height="100%" preserveAspectRatio="none" viewBox="0 0 100 100">
             <path d="M0,20 L20,0 L100,0 L100,80 L80,100 L0,100 Z" fill="none" stroke="white" strokeWidth="0.1" />
