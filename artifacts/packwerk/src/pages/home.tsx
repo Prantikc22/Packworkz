@@ -27,25 +27,29 @@ const PAIN_POINTS = [
 ];
 
 const CATEGORIES = [
-  { title: "Flexible Packaging", sub: "Pouches, Films & Wraps", cat: "flexible" },
-  { title: "Rigid Packaging", sub: "Glass, HDPE & Metal", cat: "rigid" },
-  { title: "Boxes & Retail", sub: "Master Cartons & Mono", cat: "boxes" },
-  { title: "E-commerce", sub: "Mailers & Security Bags", cat: "ecommerce" },
-  { title: "Packaging Rolls", sub: "Labels, Foils & Tapes", cat: "rolls" },
-  { title: "Labels & Accessories", sub: "Custom Branded Tags", cat: "accessories" },
-  { title: "Sustainable Packaging", sub: "Bio-degradable Materials", cat: "sustainable" },
-  { title: "Premium & Gift", sub: "Luxury Finishes & Textures", cat: "premium" },
+  { title: "Flexible Packaging",    sub: "Stand-up, Pillow & Flat Bottom Pouches", cat: "flexible",    skus: 5  },
+  { title: "Bottles & Containers",  sub: "Plastic, Glass, Cosmetic & Airless",     cat: "bottles",     skus: 6  },
+  { title: "Tubes & Small Packs",   sub: "Cosmetic Tubes & Blister Packs",         cat: "tubes",       skus: 2  },
+  { title: "Boxes & Cartons",       sub: "Folding, Rigid & Magnetic Closure",      cat: "boxes",       skus: 3  },
+  { title: "E-commerce Packaging",  sub: "Mailers, Corrugated & Courier Bags",     cat: "ecommerce",   skus: 4  },
+  { title: "Protective Packaging",  sub: "Bubble Wrap, Air Pillows & Foam",        cat: "protective",  skus: 2  },
+  { title: "Packaging Rolls",       sub: "Printed, Laminated & Barrier Films",     cat: "rolls",       skus: 3  },
+  { title: "Labels & Closures",     sub: "Labels, Caps, Pumps & Spout Fitments",   cat: "labels",      skus: 3  },
+  { title: "Sustainable Packaging", sub: "Kraft, Compostable, Recycled & Bagasse", cat: "sustainable", skus: 4, eco: true },
+  { title: "Liquid Cartons",        sub: "Aseptic Brick & Gable Top Cartons",      cat: "liquid",      skus: 1  },
 ];
 
 const CAT_IMAGES: Record<string, string> = {
-  flexible: "https://images.unsplash.com/photo-1606166187734-a4cb74079037?w=400&h=280&fit=crop&q=80",
-  rigid: "https://images.unsplash.com/photo-1589365278144-c9e705f843ba?w=400&h=280&fit=crop&q=80",
-  boxes: "https://images.unsplash.com/photo-1553413077-190dd305871c?w=400&h=280&fit=crop&q=80",
-  ecommerce: "https://images.unsplash.com/photo-1531973576160-7125cd663d86?w=400&h=280&fit=crop&q=80",
-  rolls: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=400&h=280&fit=crop&q=80",
-  accessories: "https://images.unsplash.com/photo-1574634534894-89d7576c8259?w=400&h=280&fit=crop&q=80",
-  sustainable: "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=400&h=280&fit=crop&q=80",
-  premium: "https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=400&h=280&fit=crop&q=80",
+  flexible:   "https://images.unsplash.com/photo-1606166187734-a4cb74079037?w=400&h=280&fit=crop&q=80",
+  bottles:    "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=400&h=280&fit=crop&q=80",
+  tubes:      "https://images.unsplash.com/photo-1522338140262-f46f5913618a?w=400&h=280&fit=crop&q=80",
+  boxes:      "https://images.unsplash.com/photo-1553413077-190dd305871c?w=400&h=280&fit=crop&q=80",
+  ecommerce:  "https://images.unsplash.com/photo-1531973576160-7125cd663d86?w=400&h=280&fit=crop&q=80",
+  protective: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=400&h=280&fit=crop&q=80",
+  rolls:      "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=280&fit=crop&q=80",
+  labels:     "https://images.unsplash.com/photo-1574634534894-89d7576c8259?w=400&h=280&fit=crop&q=80",
+  sustainable:"https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=400&h=280&fit=crop&q=80",
+  liquid:     "https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=400&h=280&fit=crop&q=80",
 };
 
 const INDUSTRIES = [
@@ -60,7 +64,7 @@ const INDUSTRIES = [
 ];
 
 const STEPS = [
-  { n: "01", title: "Browse", desc: "Select from 110+ industry-standard SKUs or start a custom design brief." },
+  { n: "01", title: "Browse", desc: "Select from 33 curated SKUs across 10 categories, or start a custom design brief." },
   { n: "02", title: "Configure", desc: "Adjust dimensions, materials, and upload your branding assets." },
   { n: "03", title: "We Produce + QC", desc: "Manufactured at ISO-certified facilities with 100% manual QC." },
   { n: "04", title: "Delivered", desc: "Doorstep delivery with real-time tracking and SmartStock replenishment." },
@@ -159,7 +163,7 @@ export default function Home() {
           <div className="flex flex-col sm:flex-row gap-6 mb-20">
             <Link href="/products">
               <button className="px-10 py-5 rounded font-bold text-lg flex items-center justify-center gap-2 hover:opacity-90 transition-all active:scale-95" style={{ background: "#E8A838", color: "#0F1C2C" }}>
-                Browse 110+ SKUs <MS icon="arrow_forward" />
+                Browse 33 SKUs <MS icon="arrow_forward" />
               </button>
             </Link>
             <Link href="/samples">
@@ -170,7 +174,7 @@ export default function Home() {
           </div>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-8 py-10 border-t border-white/10">
             {[
-              { val: "110+", label: "SKUs" },
+              { val: "33", label: "SKUs" },
               { val: "500+", label: "Factory Partners" },
               { val: "40+", label: "Countries Served" },
               { val: "QC", label: "On Every Order" },
@@ -274,7 +278,7 @@ export default function Home() {
           <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 gap-4">
             <div>
               <h2 className="clash-display text-4xl" style={{ color: "#0D1B2A" }}>Core Product Categories</h2>
-              <p className="mt-2 text-lg" style={{ color: "#44474c" }}>110+ SKUs across 8 managed hubs.</p>
+              <p className="mt-2 text-lg" style={{ color: "#44474c" }}>33 curated SKUs across 10 managed categories.</p>
             </div>
             <Link href="/products">
               <button className="font-bold flex items-center gap-2 hover:underline" style={{ color: "#1B6CA8" }}>
@@ -282,27 +286,42 @@ export default function Home() {
               </button>
             </Link>
           </div>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-20">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5 mb-20">
             {CATEGORIES.map((cat) => (
               <Link href={`/products?category=${cat.cat}`} key={cat.title}>
-                <div className="group bg-white rounded p-6 shadow-sm hover:-translate-y-2 transition-all cursor-pointer border border-slate-100">
-                  <div className="w-full h-48 rounded mb-4 overflow-hidden bg-slate-100">
+                <div
+                  className="group rounded p-5 shadow-sm hover:-translate-y-2 transition-all cursor-pointer border relative overflow-hidden"
+                  style={cat.eco
+                    ? { background: "#f0faf3", borderColor: "#22c55e", borderWidth: 2 }
+                    : { background: "white", borderColor: "#e2e8f0" }
+                  }
+                >
+                  {cat.eco && (
+                    <div className="absolute top-3 right-3 flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-widest" style={{ background: "#dcfce7", color: "#15803d" }}>
+                      <MS icon="eco" style={{ fontSize: "12px" }} /> ECO
+                    </div>
+                  )}
+                  <div className="w-full h-36 rounded mb-4 overflow-hidden bg-slate-100 relative">
                     <img
                       src={CAT_IMAGES[cat.cat]}
                       alt={cat.title}
-                      className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
+                      className={`w-full h-full object-cover transition-all duration-500 ${cat.eco ? "group-hover:scale-105" : "grayscale group-hover:grayscale-0"}`}
                     />
+                    {cat.eco && (
+                      <div className="absolute inset-0 pointer-events-none" style={{ background: "linear-gradient(135deg, rgba(34,197,94,0.15) 0%, transparent 60%)" }} />
+                    )}
                   </div>
-                  <h4 className="font-bold text-lg" style={{ color: "#191c1e" }}>{cat.title}</h4>
-                  <p className="text-sm" style={{ color: "#44474c" }}>{cat.sub}</p>
+                  <h4 className="font-bold text-sm leading-tight mb-1" style={{ color: cat.eco ? "#15803d" : "#191c1e" }}>{cat.title}</h4>
+                  <p className="text-xs leading-snug" style={{ color: cat.eco ? "#16a34a" : "#44474c" }}>{cat.sub}</p>
+                  <p className="text-xs font-bold mt-2" style={{ color: cat.eco ? "#22c55e" : "#1B6CA8", fontFamily: "'Manrope', sans-serif" }}>{cat.skus} SKU{cat.skus !== 1 ? "s" : ""}</p>
                 </div>
               </Link>
             ))}
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {[
-              { title: "Coffee Brand Bundle", tags: ["Stand-up Pouch", "Metallic Label", "Shipper Box"], icon: "inventory_2" },
-              { title: "Skincare Essentials", tags: ["HDPE Bottle", "Lotion Pump", "Mono Carton"], icon: "sanitizer" },
+              { title: "Coffee Brand Bundle", tags: ["Stand-up Pouch", "Printed Roll Label", "Mailer Box"], icon: "inventory_2" },
+              { title: "Skincare Essentials", tags: ["Airless Pump Bottle", "Cosmetic Jar", "Folding Carton"], icon: "sanitizer" },
             ].map(kit => (
               <div key={kit.title} className="p-8 rounded border border-white/5 flex flex-col md:flex-row items-center gap-8" style={{ background: "#0F1C2C" }}>
                 <div className="flex-1">
