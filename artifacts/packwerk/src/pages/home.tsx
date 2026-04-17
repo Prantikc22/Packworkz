@@ -35,21 +35,21 @@ const CATEGORIES = [
   { title: "Protective Packaging",  sub: "Bubble Wrap, Air Pillows & Foam",        cat: "protective",  skus: 2  },
   { title: "Packaging Rolls",       sub: "Printed, Laminated & Barrier Films",     cat: "rolls",       skus: 3  },
   { title: "Labels & Closures",     sub: "Labels, Caps, Pumps & Spout Fitments",   cat: "labels",      skus: 3  },
-  { title: "Sustainable Packaging", sub: "Kraft, Compostable, Recycled & Bagasse", cat: "sustainable", skus: 4, eco: true },
+  { title: "Sustainable Packaging", sub: "Kraft, Compostable, Recycled & Bagasse", cat: "sustainable", skus: 4 },
   { title: "Liquid Cartons",        sub: "Aseptic Brick & Gable Top Cartons",      cat: "liquid",      skus: 1  },
 ];
 
 const CAT_IMAGES: Record<string, string> = {
-  flexible:   "https://images.unsplash.com/photo-1606166187734-a4cb74079037?w=400&h=280&fit=crop&q=80",
-  bottles:    "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=400&h=280&fit=crop&q=80",
-  tubes:      "https://images.unsplash.com/photo-1522338140262-f46f5913618a?w=400&h=280&fit=crop&q=80",
-  boxes:      "https://images.unsplash.com/photo-1553413077-190dd305871c?w=400&h=280&fit=crop&q=80",
-  ecommerce:  "https://images.unsplash.com/photo-1531973576160-7125cd663d86?w=400&h=280&fit=crop&q=80",
-  protective: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=400&h=280&fit=crop&q=80",
-  rolls:      "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=280&fit=crop&q=80",
-  labels:     "https://images.unsplash.com/photo-1574634534894-89d7576c8259?w=400&h=280&fit=crop&q=80",
-  sustainable:"https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=400&h=280&fit=crop&q=80",
-  liquid:     "https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=400&h=280&fit=crop&q=80",
+  flexible:   "/categories/flexiblepacks.jpg",
+  bottles:    "/categories/rigidpacks.jpg",
+  tubes:      "/categories/tubes.jpg",
+  boxes:      "https://images.unsplash.com/photo-1553413077-190dd305871c?w=600&h=400&fit=crop&q=75",
+  ecommerce:  "/categories/ecom.jpg",
+  protective: "/categories/protectivepacks.jpg",
+  rolls:      "/categories/printedrolls.jpg",
+  labels:     "/categories/closures.jpg",
+  sustainable:"/categories/sustainable.jpg",
+  liquid:     "/categories/liquid.jpg",
 };
 
 const INDUSTRIES = [
@@ -289,31 +289,17 @@ export default function Home() {
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5 mb-20">
             {CATEGORIES.map((cat) => (
               <Link href={`/products?category=${cat.cat}`} key={cat.title}>
-                <div
-                  className="group rounded p-5 shadow-sm hover:-translate-y-2 transition-all cursor-pointer border relative overflow-hidden"
-                  style={cat.eco
-                    ? { background: "#f0faf3", borderColor: "#22c55e", borderWidth: 2 }
-                    : { background: "white", borderColor: "#e2e8f0" }
-                  }
-                >
-                  {cat.eco && (
-                    <div className="absolute top-3 right-3 flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-widest" style={{ background: "#dcfce7", color: "#15803d" }}>
-                      <MS icon="eco" style={{ fontSize: "12px" }} /> ECO
-                    </div>
-                  )}
-                  <div className="w-full h-36 rounded mb-4 overflow-hidden bg-slate-100 relative">
+                <div className="group bg-white rounded p-5 shadow-sm hover:-translate-y-2 transition-all cursor-pointer border border-slate-100">
+                  <div className="w-full h-36 rounded mb-4 overflow-hidden bg-slate-100">
                     <img
                       src={CAT_IMAGES[cat.cat]}
                       alt={cat.title}
-                      className={`w-full h-full object-cover transition-all duration-500 ${cat.eco ? "group-hover:scale-105" : "grayscale group-hover:grayscale-0"}`}
+                      className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
                     />
-                    {cat.eco && (
-                      <div className="absolute inset-0 pointer-events-none" style={{ background: "linear-gradient(135deg, rgba(34,197,94,0.15) 0%, transparent 60%)" }} />
-                    )}
                   </div>
-                  <h4 className="font-bold text-sm leading-tight mb-1" style={{ color: cat.eco ? "#15803d" : "#191c1e" }}>{cat.title}</h4>
-                  <p className="text-xs leading-snug" style={{ color: cat.eco ? "#16a34a" : "#44474c" }}>{cat.sub}</p>
-                  <p className="text-xs font-bold mt-2" style={{ color: cat.eco ? "#22c55e" : "#1B6CA8", fontFamily: "'Manrope', sans-serif" }}>{cat.skus} SKU{cat.skus !== 1 ? "s" : ""}</p>
+                  <h4 className="font-bold text-sm leading-tight mb-1" style={{ color: "#191c1e" }}>{cat.title}</h4>
+                  <p className="text-xs leading-snug" style={{ color: "#44474c" }}>{cat.sub}</p>
+                  <p className="text-xs font-bold mt-2" style={{ color: "#1B6CA8", fontFamily: "'Manrope', sans-serif" }}>{cat.skus} SKU{cat.skus !== 1 ? "s" : ""}</p>
                 </div>
               </Link>
             ))}

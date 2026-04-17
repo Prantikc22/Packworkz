@@ -25,16 +25,16 @@ const CATEGORIES = [
 ];
 
 const CATEGORY_IMAGES: Record<string, string> = {
-  flexible:   "https://images.unsplash.com/photo-1542838132-92c53300491e?w=600&h=400&fit=crop&q=80",
-  bottles:    "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=600&h=400&fit=crop&q=80",
-  tubes:      "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=600&h=400&fit=crop&q=80",
-  boxes:      "https://images.unsplash.com/photo-1557821552-17105176677c?w=600&h=400&fit=crop&q=80",
-  ecommerce:  "https://images.unsplash.com/photo-1557821552-17105176677c?w=600&h=400&fit=crop&q=80",
-  protective: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&h=400&fit=crop&q=80",
-  rolls:      "https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=600&h=400&fit=crop&q=80",
-  labels:     "https://images.unsplash.com/photo-1542838132-92c53300491e?w=600&h=400&fit=crop&q=80",
-  sustainable:"https://images.unsplash.com/photo-1500937386664-56d1dfef3854?w=600&h=400&fit=crop&q=80",
-  liquid:     "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600&h=400&fit=crop&q=80",
+  flexible:   "/categories/flexiblepacks.jpg",
+  bottles:    "/categories/rigidpacks.jpg",
+  tubes:      "/categories/tubes.jpg",
+  boxes:      "https://images.unsplash.com/photo-1557821552-17105176677c?w=600&h=400&fit=crop&q=75",
+  ecommerce:  "/categories/ecom.jpg",
+  protective: "/categories/protectivepacks.jpg",
+  rolls:      "/categories/printedrolls.jpg",
+  labels:     "/categories/closures.jpg",
+  sustainable:"/categories/sustainable.jpg",
+  liquid:     "/categories/liquid.jpg",
 };
 
 function getCatImage(cat: string, name: string) {
