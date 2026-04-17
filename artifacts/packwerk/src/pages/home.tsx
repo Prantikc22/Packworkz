@@ -138,7 +138,7 @@ export default function Home() {
 
       {/* ── HERO ─────────────────────────────────── */}
       <section className="relative min-h-[90vh] flex flex-col justify-center px-8 md:px-20 overflow-hidden py-24"
-        style={{ background: "radial-gradient(circle at 70% 40%, rgba(59,130,246,0.25), transparent 40%), linear-gradient(135deg, #020617, #0f172a, #1e3a8a, #3b82f6, #e0f2fe)" }}>
+        style={{ background: "radial-gradient(circle at 70% 40%, rgba(59,130,246,0.18), transparent 45%), linear-gradient(135deg, #020617 0%, #0f172a 35%, #1e3a8a 65%, #1d4ed8 85%, #2563eb 100%)" }}>
         <div className="absolute inset-0 opacity-10 pointer-events-none">
           <svg width="100%" height="100%" preserveAspectRatio="none" viewBox="0 0 100 100">
             <path d="M0,20 L20,0 L100,0 L100,80 L80,100 L0,100 Z" fill="none" stroke="white" strokeWidth="0.1" />
@@ -146,18 +146,18 @@ export default function Home() {
           </svg>
         </div>
         <div className="relative z-10 max-w-5xl">
-          <p className="font-bold tracking-[0.2em] mb-6 text-sm uppercase" style={{ color: "#1B6CA8" }}>
+          <p className="font-bold tracking-[0.2em] mb-6 text-sm uppercase" style={{ color: "#93c5fd" }}>
             INDIA'S FIRST MANAGED PACKAGING PLATFORM
           </p>
           <h1 className="clash-display text-white text-5xl md:text-[88px] leading-[1.0] mb-8">
             Your Packaging.<br />Sorted. Forever.
           </h1>
-          <p className="text-slate-400 text-xl md:text-2xl mb-4 max-w-2xl font-light">
+          <p className="text-blue-100 text-xl md:text-2xl mb-4 max-w-2xl font-light">
             Design. Source. QC. Deliver. One platform.{" "}
             <span className="text-white font-medium italic">Zero vendor chaos.</span>
           </p>
-          <p className="text-sm md:text-base font-bold tracking-wide mb-12 uppercase flex items-center gap-2" style={{ color: "#1B6CA8" }}>
-            <span className="w-1 h-1 rounded-full inline-block" style={{ background: "#1B6CA8" }} />
+          <p className="text-sm md:text-base font-bold tracking-wide mb-12 uppercase flex items-center gap-2" style={{ color: "#93c5fd" }}>
+            <span className="w-1 h-1 rounded-full inline-block" style={{ background: "#93c5fd" }} />
             Trusted by D2C &amp; FMCG brands across India
           </p>
           <div className="flex flex-col sm:flex-row gap-6 mb-20">
@@ -167,12 +167,12 @@ export default function Home() {
               </button>
             </Link>
             <Link href="/samples">
-              <button className="border-2 border-white text-white px-10 py-5 rounded font-bold text-lg hover:bg-white/10 transition-all active:scale-95">
+              <button className="border-2 border-white/60 text-white px-10 py-5 rounded font-bold text-lg hover:bg-white/10 transition-all active:scale-95">
                 Get a sample from ₹2,999
               </button>
             </Link>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-8 py-10 border-t border-white/10">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-8 py-10 border-t border-white/15">
             {[
               { val: "33", label: "SKUs" },
               { val: "500+", label: "Factory Partners" },
@@ -182,7 +182,7 @@ export default function Home() {
             ].map((s) => (
               <div key={s.label}>
                 <p style={{ ...mono, color: s.amber ? "#E8A838" : "white", fontSize: "1.5rem" }}>{s.val}</p>
-                <p className="text-slate-500 text-xs uppercase tracking-widest mt-1">{s.label}</p>
+                <p className="text-blue-200 text-xs uppercase tracking-widest mt-1 opacity-80">{s.label}</p>
               </div>
             ))}
           </div>
