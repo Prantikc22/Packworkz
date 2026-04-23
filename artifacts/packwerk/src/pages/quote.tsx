@@ -4,6 +4,7 @@ import { useSubmitQuote } from "@workspace/api-client-react";
 import { useToast } from "@/hooks/use-toast";
 import { SKUS, CATEGORIES, SKU_IMAGES, getSkusByCategory } from "@/lib/skus";
 import type { Sku, VariantGroup } from "@/lib/skus";
+import { openRazorpay } from "@/lib/razorpay";
 import {
   Loader2, CheckCircle2, ChevronDown, ChevronUp,
   Upload, Palette, X, Truck, Zap, Warehouse, ArrowRight, Shield, Package
@@ -221,9 +222,12 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
   const [pincode, setPincode] = useState("");
 
   // ── Sample ───────────────────────────────────────────────────────────────
-  const [sampleRequested, setSampleRequested] = useState(false);
-  const [sampleTier, setSampleTier] = useState("standard");
+  const [sampleOption, setSampleOption] = useState<"express" | "standard" | "none">("none");
   const [notes, setNotes] = useState("");
+
+  // ── Payments ──────────────────────────────────────────────────────────────
+  const [designPaid, setDesignPaid] = useState(false);
+  const [designPaying, setDesignPaying] = useState(false);
 
   const submitMutation = useSubmitQuote();
 
@@ -267,7 +271,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
           product_id: selectedSkuId,
           product_name: selectedSku?.name || selectedSkuId,
           quantity: qty, artwork_status: artworkOption,
-          sample_requested: sampleRequested, sample_tier: sampleTier
+          sample_requested: sampleOption !== "none", sample_tier: sampleOption === "express" ? "premium" : sampleOption === "standard" ? "standard" : "none"
         }]
       }
     }, {
@@ -519,9 +523,30 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                       </div>
                     )}
                     {artworkOption === "design" && (
-                      <div className="mt-4 p-4 rounded-lg text-sm" style={{ background: "rgba(27,108,168,0.06)", border: "1px solid rgba(27,108,168,0.15)" }}>
-                        <span className="font-bold" style={{ color: "#1B6CA8" }}>Design services: ₹1,999</span>
-                        <span className="text-slate-500"> — Print-ready files in 5 business days, fully adjusted against production order.</span>
+                      <div className="mt-4 p-4 rounded-lg" style={{ background: "rgba(27,108,168,0.05)", border: "1px solid rgba(27,108,168,0.15)" }}>
+                        {designPaid ? (
+                          <div className="flex items-center gap-2 text-sm font-bold" style={{ color: "#16a34a" }}>
+                            <CheckCircle2 className="w-5 h-5" />
+                            Design fee paid — ₹1,999 ✓ Our team will contact you within 24 hrs.
+                          </div>
+                        ) : (
+                          <div>
+                            <p className="text-sm font-bold mb-1" style={{ color: "#1B6CA8" }}>Design Services — ₹1,999</p>
+                            <p className="text-xs text-slate-500 mb-3">Print-ready dieline + artwork in 5 business days. Fully adjusted against your production order.</p>
+                            <button
+                              disabled={designPaying}
+                              onClick={async () => {
+                                setDesignPaying(true);
+                                try {
+                                  await openRazorpay({ amount: 199900, description: "Packaging Design Service", notes: { service: "design" }, onSuccess: () => setDesignPaid(true), onDismiss: () => setDesignPaying(false) });
+                                } catch { setDesignPaying(false); }
+                              }}
+                              className="px-5 py-2 rounded text-sm font-bold transition-all hover:opacity-90 active:scale-95"
+                              style={{ background: "#1B6CA8", color: "white" }}>
+                              {designPaying ? "Opening payment…" : "Pay ₹1,999 to Book Design"}
+                            </button>
+                          </div>
+                        )}
                       </div>
                     )}
                   </AccordionItem>
@@ -594,6 +619,33 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                       <div className="text-xs text-slate-300 mt-1">PDF, AI, SVG — max 50MB per file</div>
                     </div>
                   )}
+                  {artworkOption === "design" && (
+                    <div className="p-5 rounded-lg" style={{ background: "rgba(27,108,168,0.05)", border: "1px solid rgba(27,108,168,0.15)" }}>
+                      {designPaid ? (
+                        <div className="flex items-center gap-2 text-sm font-bold" style={{ color: "#16a34a" }}>
+                          <CheckCircle2 className="w-5 h-5" />
+                          Design fee paid — ₹1,999 ✓ Our team will contact you within 24 hrs.
+                        </div>
+                      ) : (
+                        <div>
+                          <p className="text-sm font-bold mb-1" style={{ color: "#1B6CA8" }}>Design Services — ₹1,999</p>
+                          <p className="text-xs text-slate-500 mb-3">Print-ready dieline + artwork in 5 business days. Fully adjusted against your production order.</p>
+                          <button
+                            disabled={designPaying}
+                            onClick={async () => {
+                              setDesignPaying(true);
+                              try {
+                                await openRazorpay({ amount: 199900, description: "Packaging Design Service", notes: { service: "design" }, onSuccess: () => setDesignPaid(true), onDismiss: () => setDesignPaying(false) });
+                              } catch { setDesignPaying(false); }
+                            }}
+                            className="px-6 py-2.5 rounded-lg text-sm font-bold transition-all hover:opacity-90 active:scale-95"
+                            style={{ background: "#1B6CA8", color: "white" }}>
+                            {designPaying ? "Opening payment…" : "Pay ₹1,999 to Book Design"}
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               </>
             )}
@@ -638,33 +690,80 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
             {stepNum === 5 && (
               <>
                 <StepHeader step={5} total={6} title="Sample Request" />
-                <div className="bg-white rounded-lg border border-slate-200 p-6 space-y-6">
-                  <p className="text-sm text-slate-500">Get a physical sample before bulk production. Sampling fee fully adjusted against your production order.</p>
-                  <div className="flex items-center gap-3">
-                    <button onClick={() => setSampleRequested(!sampleRequested)}
-                      className="w-6 h-6 rounded border-2 flex items-center justify-center transition-all shrink-0"
-                      style={{ borderColor: sampleRequested ? "#1B6CA8" : "#CBD5E1", background: sampleRequested ? "#1B6CA8" : "white" }}>
-                      {sampleRequested && <svg className="w-3.5 h-3.5" viewBox="0 0 12 12" fill="none"><path d="M10 3L5 8.5 2 5.5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>}
-                    </button>
-                    <span className="font-bold text-slate-800 text-sm">Yes, request a physical sample</span>
-                  </div>
-                  {sampleRequested && (
-                    <div className="grid grid-cols-3 gap-4">
-                      {([
-                        { id: "standard", name: "Standard", price: "₹2,999", desc: "1–2 samples, basic spec verification" },
-                        { id: "premium", name: "Premium", price: "₹4,999", desc: "3–5 samples, full print+structure test" },
-                        { id: "complex", name: "Complex", price: "₹7,999", desc: "Full production run test, destructive testing" },
-                      ]).map(tier => (
-                        <button key={tier.id} onClick={() => setSampleTier(tier.id)}
-                          className="p-4 rounded-lg border-2 text-left transition-all"
-                          style={{ borderColor: sampleTier === tier.id ? "#1B6CA8" : "#E2E8F0", background: sampleTier === tier.id ? "rgba(27,108,168,0.04)" : "white" }}>
-                          <div className="font-black text-sm text-slate-800 mb-1">{tier.name}</div>
-                          <div className="font-black mb-2" style={{ fontFamily: "'Manrope', sans-serif", color: "#1B6CA8" }}>{tier.price}</div>
-                          <div className="text-xs text-slate-400">{tier.desc}</div>
+                <div className="bg-white rounded-lg border border-slate-200 p-6">
+                  <p className="text-sm text-slate-500 mb-6">Get a physical sample before bulk production. Sampling fee fully adjusted against your production order.</p>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {/* Card A: Express */}
+                    <div
+                      className="p-5 rounded-xl border-2 cursor-pointer transition-all"
+                      style={{ borderColor: sampleOption === "express" ? "#E8A838" : "#E2E8F0", background: sampleOption === "express" ? "rgba(232,168,56,0.04)" : "white" }}
+                      onClick={() => setSampleOption("express")}
+                    >
+                      <div className="flex items-start justify-between mb-3">
+                        <span className="text-xs font-black uppercase tracking-wider px-2 py-1 rounded" style={{ background: "#E8A838", color: "#0D1B2A" }}>EXPRESS</span>
+                        {sampleOption === "express" && <CheckCircle2 className="w-5 h-5" style={{ color: "#E8A838" }} />}
+                      </div>
+                      <p className="font-black text-slate-800 mb-1">Express Sample Kit</p>
+                      <p className="font-black text-lg mb-3" style={{ color: "#E8A838" }}>₹4,999</p>
+                      <ul className="space-y-1 mb-4">
+                        {["3–5 samples", "Priority manufacturing", "5-day delivery", "Full print + structure test"].map(f => (
+                          <li key={f} className="text-xs text-slate-500 flex items-center gap-1.5">
+                            <span style={{ color: "#E8A838" }}>✓</span> {f}
+                          </li>
+                        ))}
+                      </ul>
+                      {sampleOption === "express" && (
+                        <button
+                          onClick={async (e) => {
+                            e.stopPropagation();
+                            try {
+                              await openRazorpay({ amount: 499900, description: "Express Sample Kit", notes: { service: "sample_express" }, onSuccess: () => {} });
+                            } catch {}
+                          }}
+                          className="w-full py-2.5 rounded-lg text-sm font-bold transition-all hover:brightness-110"
+                          style={{ background: "#E8A838", color: "#0D1B2A" }}>
+                          Pay ₹4,999 — Book Express Slot
                         </button>
-                      ))}
+                      )}
                     </div>
-                  )}
+
+                    {/* Card B: Standard */}
+                    <div
+                      className="p-5 rounded-xl border-2 cursor-pointer transition-all"
+                      style={{ borderColor: sampleOption === "standard" ? "#1B6CA8" : "#E2E8F0", background: sampleOption === "standard" ? "rgba(27,108,168,0.04)" : "white" }}
+                      onClick={() => setSampleOption("standard")}
+                    >
+                      <div className="flex items-start justify-between mb-3">
+                        <span className="text-xs font-black uppercase tracking-wider px-2 py-1 rounded" style={{ background: "rgba(27,108,168,0.12)", color: "#1B6CA8" }}>STANDARD</span>
+                        {sampleOption === "standard" && <CheckCircle2 className="w-5 h-5" style={{ color: "#1B6CA8" }} />}
+                      </div>
+                      <p className="font-black text-slate-800 mb-1">Standard Sample</p>
+                      <p className="font-black text-lg mb-3" style={{ color: "#1B6CA8" }}>₹2,999</p>
+                      <ul className="space-y-1 mb-4">
+                        {["1–2 samples", "Standard manufacturing", "10-day delivery", "Basic spec verification"].map(f => (
+                          <li key={f} className="text-xs text-slate-500 flex items-center gap-1.5">
+                            <span style={{ color: "#1B6CA8" }}>✓</span> {f}
+                          </li>
+                        ))}
+                      </ul>
+                      <p className="text-xs text-slate-400">Pay on delivery. Sample fee adjusted against production order.</p>
+                    </div>
+
+                    {/* Card C: No Sample */}
+                    <div
+                      className="p-5 rounded-xl border-2 cursor-pointer transition-all"
+                      style={{ borderColor: sampleOption === "none" ? "#94A3B8" : "#E2E8F0", background: sampleOption === "none" ? "rgba(148,163,184,0.06)" : "white" }}
+                      onClick={() => setSampleOption("none")}
+                    >
+                      <div className="flex items-start justify-between mb-3">
+                        <span className="text-xs font-black uppercase tracking-wider px-2 py-1 rounded" style={{ background: "rgba(148,163,184,0.15)", color: "#64748B" }}>SKIP</span>
+                        {sampleOption === "none" && <CheckCircle2 className="w-5 h-5" style={{ color: "#94A3B8" }} />}
+                      </div>
+                      <p className="font-black text-slate-800 mb-1">Skip for Now</p>
+                      <p className="font-black text-lg mb-3 text-slate-400">Free</p>
+                      <p className="text-xs text-slate-500">Proceed directly to bulk production. You can request a sample later from your dashboard.</p>
+                    </div>
+                  </div>
                 </div>
               </>
             )}
@@ -697,7 +796,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                         }),
                         ["Artwork", artworkOption === "upload" ? "Upload Ready" : artworkOption === "design" ? "Design Service (+₹1,999)" : "No Artwork"],
                         ["Delivery", deliveryOption === "standard" ? "Standard Pro (Free)" : deliveryOption === "blitz" ? "Blitz Logistics (+₹240)" : "Warehouse Hold (₹15/mo)"],
-                        ["Sample", sampleRequested ? `Yes — ${sampleTier.charAt(0).toUpperCase() + sampleTier.slice(1)}` : "Not requested"],
+                        ["Sample", sampleOption === "express" ? "Express Kit — ₹4,999" : sampleOption === "standard" ? "Standard — ₹2,999" : "Skipped"],
                       ].map(([k, v]) => (
                         <div key={String(k)} className="flex justify-between text-sm">
                           <span className="text-slate-400">{k}</span>

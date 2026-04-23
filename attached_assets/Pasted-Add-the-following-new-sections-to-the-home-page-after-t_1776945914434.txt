@@ -1,0 +1,1112 @@
+Add the following new sections to the home page 
+after the existing hero and 
+"why not go to vendor" sections.
+Also make specific updates to existing sections.
+Do everything in this single instruction.
+
+---
+
+CHANGE 1: HERO SECTION UPDATE
+
+Add a client logo marquee strip 
+directly below the existing trust stats strip.
+Must be visible without scrolling on desktop.
+
+Label (muted white, 11px, uppercase, tracked):
+"TRUSTED BY BRANDS ACROSS INDIA"
+
+Horizontal auto-scrolling marquee 
+of text pills.
+Style each pill:
+background: rgba(255,255,255,0.08)
+border: 1px solid rgba(255,255,255,0.15)
+border-radius: 999px
+padding: 6px 16px
+color: white
+font-size: 13px
+
+Pills content:
+Zestful Foods · 
+Dermatica India · 
+NatureCraft Organics · 
+QuickShip Commerce · 
+Bloom Skincare · 
+Spice Route Foods · 
+Urban Nest Home · 
+ClearDerm Pharma · 
+EcoWear India · 
+Harvest Organics · 
+PurePet Foods · 
+Artisan Chai Co.
+
+Marquee CSS:
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.marquee-track {
+  display: flex;
+  gap: 12px;
+  animation: marquee 30s linear infinite;
+  width: max-content;
+}
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+Duplicate the pill list inside 
+.marquee-track so it loops seamlessly.
+
+---
+
+CHANGE 2: REMOVE VIETNAM EVERYWHERE
+
+Search entire codebase for 
+the word "Vietnam" — remove every instance.
+Do not replace with anything.
+All manufacturing is India-based only.
+
+---
+
+NEW SECTION A: THE [BRAND] ADVANTAGE
+(Insert after hero, 
+before any other sections)
+
+White background. Full width.
+
+Eyebrow (electric blue #1B6CA8, 
+uppercase, tracked, 12px):
+"THE [BRAND] ADVANTAGE"
+
+Headline (navy #0D1B2A, 52px, 
+Clash Display or Plus Jakarta Sans Bold):
+"Why the best packaging brands
+choose a platform over a vendor."
+
+Now build an INTERACTIVE ORBITAL DIAGRAM.
+This replaces any card grid 
+for features entirely.
+
+Layout:
+Outer container: 
+full width, min-height 600px,
+display flex, 
+align-items center, 
+justify-content center,
+position relative.
+
+Centre node:
+width: 180px
+height: 180px
+border-radius: 50%
+background: #0D1B2A
+display flex, 
+align-items center, 
+justify-content center,
+flex-direction column
+position: absolute
+z-index: 10
+Box shadow animation:
+@keyframes pulse-glow {
+  0%, 100% { 
+    box-shadow: 0 0 0 0 
+    rgba(27,108,168,0.4); 
+  }
+  50% { 
+    box-shadow: 0 0 0 20px 
+    rgba(27,108,168,0); 
+  }
+}
+animation: pulse-glow 3s ease infinite;
+
+Inside centre node:
+Brand name in white, 
+bold, 16px, text-align center.
+Below: "Your Packaging OS" 
+in #1B6CA8, 11px, 
+uppercase, tracked.
+
+Orbital ring:
+width: 500px
+height: 500px
+border-radius: 50%
+border: 1px dashed rgba(27,108,168,0.3)
+position: absolute
+(purely visual, not interactive)
+
+8 feature nodes placed 
+at equal intervals around the ring.
+Use trigonometry to position:
+angle for each node = 
+(index * 45) - 90 degrees
+x = centre_x + radius * cos(angle)
+y = centre_y + radius * sin(angle)
+radius = 250px
+
+Each node structure:
+Outer wrapper div:
+position: absolute
+width: 80px
+height: 80px
+transform: translate(-50%, -50%)
+cursor: pointer
+
+Circle:
+width: 80px
+height: 80px
+border-radius: 50%
+background: #0D1B2A
+border: 2px solid #1B6CA8
+display flex
+align-items center
+justify-content center
+transition: transform 0.2s, 
+border-color 0.2s
+
+Icon inside circle:
+Lucide icon, 
+color: #E8A838 (amber)
+size: 24px
+
+Label below circle:
+font-size: 11px
+font-weight: 600
+color: #0D1B2A
+text-align: center
+margin-top: 8px
+max-width: 80px
+line-height: 1.3
+
+Hover on any node:
+circle scales to 1.15
+border-color changes to #E8A838
+Detail panel slides in 
+from right with 
+opacity 0→1 and 
+translateX(20px→0)
+
+Detail panel:
+position: absolute
+right: 0
+top: 50%
+transform: translateY(-50%)
+width: 360px
+background: white
+border-left: 3px solid #E8A838
+border-radius: 12px
+padding: 28px
+box-shadow: 
+0 8px 32px rgba(13,27,42,0.12)
+
+Detail panel content structure:
+Feature title: 
+navy, 20px, bold, margin-bottom 8px
+
+Feature body: 
+muted #64748B, 15px, 
+line-height 1.6, margin-bottom 16px
+
+Amber stat line:
+background: rgba(232,168,56,0.1)
+border-radius: 8px
+padding: 10px 14px
+color: #0D1B2A
+font-size: 14px
+font-weight: 600
+
+8 nodes with this data:
+
+Node 1 (top, 12 o'clock):
+Icon: GitBranch (network)
+Label: "Multi-Vendor Backup"
+Detail title: "3 backup vendors. Always."
+Detail body: "Every order has 3 qualified 
+vendors assigned simultaneously. 
+If your primary vendor misses 
+a deadline — a backup ships without delay. 
+Your production line never waits."
+Amber stat: "0 orders delayed due to vendor failure"
+
+Node 2 (top-right, 1:30):
+Icon: ShieldCheck
+Label: "End-to-End QC"
+Detail title: "We inspect. You approve."
+Detail body: "Pre-production sample approval. 
+Mid-production check on orders above ₹2L. 
+Pre-dispatch inspection on every order. 
+We own the quality outcome — not your vendor."
+Amber stat: "98.7% QC first-pass rate"
+
+Node 3 (right, 3 o'clock):
+Icon: Truck
+Label: "Logistics Owned"
+Detail title: "Door to door. Tracked."
+Detail body: "We manage factory pickup, 
+interstate freight, customs documentation, 
+and last-mile delivery. 
+Real-time tracking in your dashboard 
+at every stage."
+Amber stat: "40+ countries delivered to"
+
+Node 4 (bottom-right, 4:30):
+Icon: CreditCard
+Label: "Net-30 Credit"
+Detail title: "Credit you earn. Not beg for."
+Detail body: "New clients start on advance terms. 
+After 3 completed orders apply for 
+net-30 credit up to ₹5L. 
+Or pay upfront and save 3% 
+on every order. Your call."
+Amber stat: "3% saved = ₹30,000/yr on ₹10L spend"
+
+Node 5 (bottom, 6 o'clock):
+Icon: Cpu
+Label: "PackOS Technology"
+Detail title: "Your packaging runs on PackOS."
+Detail body: "Factory matching, production tracking, 
+QC checkpoints, SmartStock inventory, 
+and logistics — all in one dashboard. 
+No WhatsApp chasing. No guesswork."
+Amber stat: "Real-time tracking. Always."
+
+Node 6 (bottom-left, 7:30):
+Icon: Globe
+Label: "Global Compliance"
+Detail title: "Your buyer never rejects us."
+Detail body: "ISO 9001, FSSC 22000, BRC, FDA, FSC — 
+all factory partners certified. 
+Export documentation included with every order. 
+International buyers cleared."
+Amber stat: "5 global certifications on every order"
+
+Node 7 (left, 9 o'clock):
+Icon: Paintbrush
+Label: "Packaging Design"
+Detail title: "Brief us. Done in 5 days."
+Detail body: "₹1,999 for print-ready packaging design. 
+Structural dieline + artwork + source files. 
+Works for every SKU including sustainable packs. 
+Fully adjusted against your first order."
+Amber stat: "₹1,999. Adjusted against first order."
+
+Node 8 (top-left, 10:30):
+Icon: Leaf
+Label: "Sustainable SKUs"
+Detail title: "Eco is not an afterthought."
+Detail body: "12 certified sustainable SKUs 
+available at scale. 
+All fully customisable with your brand design. 
+Food-safe, leak-proof, and 
+EPR compliant — 
+built for Indian brands that mean it."
+Amber stat: "12 sustainable SKUs. All customisable."
+
+MOBILE FALLBACK 
+(screens below 768px):
+Hide the orbital diagram entirely.
+Show a vertical accordion instead.
+Each accordion row:
+- Amber left border
+- Feature name as row header (bold, navy)
+- Tap to expand detail content
+- Amber stat shown at bottom of expanded panel
+Same 8 features, same content.
+
+Animate nodes on page load:
+Each node animates in with 
+scale 0 → 1 
+and opacity 0 → 1
+staggered 100ms apart
+using CSS animation or 
+Intersection Observer.
+
+---
+
+NEW SECTION B: SUSTAINABLE PACKAGING
+
+Dark forest green background: #0D3B2E
+Full width.
+
+Eyebrow (light green #86EFAC, 
+uppercase, tracked, 12px):
+"SUSTAINABLE PACKAGING"
+
+Headline (white, 52px, Clash Display):
+"The future of packaging
+is already here."
+
+Below headline (white italic, 16px, 
+max-width 600px, muted):
+"Every sustainable SKU is fully customisable 
+with your brand design — 
+colours, logo, artwork, finishes. 
+Food-safe. Leak-proof. 
+Built for Indian conditions."
+
+6 SKU cards in 2x3 grid
+(background: rgba(255,255,255,0.06)
+border: 1px solid rgba(255,255,255,0.12)
+border-radius: 12px
+padding: 20px
+color: white):
+
+Card 1 — Kraft Stand-Up Pouch:
+Body: "FSC certified kraft outer with 
+food-safe inner liner. 
+Leak-proof seal — 
+carries spices, dry food, 
+snacks, and Indian grocery products 
+without any seepage. 
+Available with resealable zipper."
+Badges (small pills, 
+light green background 20% opacity, 
+light green text):
+"Food Safe" "Leak Proof" 
+"Recyclable" "Customisable"
+Price: "From ₹6.50/unit"
+
+Card 2 — Compostable Courier Bag:
+Body: "TUV Austria certified compostable. 
+Water-resistant outer surface. 
+Tamper-evident adhesive seal. 
+For D2C brands whose packaging 
+needs to match their sustainability story."
+Badges: "Water Resistant" 
+"Tamper Evident" "Compostable"
+Price: "From ₹12/unit"
+
+Card 3 — Bagasse Food Tray:
+Body: "100% sugarcane waste. 
+Microwave safe up to 5 minutes. 
+Oil and water resistant — 
+no leaking, no sogging, 
+even with gravies and curries. 
+Ideal for QSR and cloud kitchens."
+Badges: "Microwave Safe" 
+"Oil Resistant" "Leak Proof"
+Price: "From ₹5/unit"
+
+Card 4 — Recycled Corrugated Box:
+Body: "80-100% recycled board content. 
+FSC certified. 
+Full exterior print surface 
+for brand experience. 
+Same structural strength as virgin board. 
+For e-commerce and export shipping."
+Badges: "FSC Certified" 
+"Full Printable" "Export Grade"
+Price: "From ₹22/unit"
+
+Card 5 — Mono-material PE Pouch:
+Body: "Single-material construction — 
+fully recyclable in standard 
+plastic recycling streams. 
+EPR compliant. Available as flat pouch, 
+stand-up, or courier bag format. 
+Printable with your brand design."
+Badges: "EPR Compliant" 
+"Fully Recyclable" "Customisable"
+Price: "From ₹4/unit"
+
+Card 6 — Paper Bubble Mailer:
+Body: "Honeycomb kraft paper cushioning 
+replaces plastic bubble wrap entirely. 
+Water-resistant outer coating. 
+100% kerbside recyclable. 
+Printable exterior for 
+unboxing brand experience."
+Badges: "Water Resistant" 
+"No Plastic" "Fully Printable"
+Price: "From ₹18/unit"
+
+Below the 6 cards:
+Full-width dark card 
+(rgba(255,255,255,0.05), 
+rounded 12px, padding 24px):
+
+Left: 
+white text 14px bold:
+"All sustainable packaging includes:"
+
+Right: 3 columns:
+Column 1:
+✓ Food grade certified
+✓ Leak proof tested
+
+Column 2:
+✓ Custom brand printing
+✓ EPR documentation
+
+Column 3:
+✓ D2C and FMCG scale MOQs
+✓ Indian manufacturer verified
+
+Checkmarks: #86EFAC (light green)
+Text: rgba(255,255,255,0.85)
+Font: 13px
+
+Below this info card:
+CTA button (amber #E8A838, navy text, 
+large, border-radius 8px):
+"See all 12 sustainable SKUs →"
+Links to /sustainable
+
+White text below button (13px, muted):
+"Full certification documentation 
+included with every order 
+for your ESG reporting."
+
+---
+
+NEW SECTION C: PACKOS TECHNOLOGY
+
+Navy #0D1B2A background. Full width.
+Padding: 100px vertical.
+
+Eyebrow (electric blue, uppercase, tracked):
+"POWERED BY PACKOS"
+
+Headline (white, 52px, Clash Display):
+"The operating system
+for your packaging."
+
+Subheadline (rgba(255,255,255,0.6), 
+18px, max-width 500px, centred):
+"PackOS runs every order — 
+from factory matching 
+to your door."
+
+5-node horizontal flow:
+Display: flex
+Align-items: center
+Justify-content: center
+Gap: 0
+Max-width: 900px
+Margin: 60px auto 0
+
+Each node:
+Circle (60px diameter):
+background: #1B6CA8
+border-radius: 50%
+display flex
+align-items center
+justify-content center
+Lucide icon inside: white, 22px
+
+Below circle:
+Node name: white, 13px, bold, 
+text-align center, margin-top 8px
+
+Below name:
+Node description: 
+rgba(255,255,255,0.55), 
+11px, text-align center, 
+max-width 100px, 
+line-height 1.4
+
+Between each node:
+Animated connector line:
+height: 2px
+flex: 1
+background: 
+linear-gradient(90deg, 
+#1B6CA8, #E8A838)
+position: relative
+overflow: hidden
+
+Moving dot animation on the line:
+::after pseudo-element
+width: 8px, height: 8px
+border-radius: 50%
+background: #E8A838
+position: absolute
+top: -3px
+animation: flow 2s linear infinite
+@keyframes flow {
+  0% { left: -8px; }
+  100% { left: 100%; }
+}
+Stagger each line's 
+animation-delay by 0.4s.
+
+5 nodes:
+
+Node 1:
+Icon: Search
+Name: "SmartMatch"
+Desc: "AI picks the right factory for your SKU"
+
+Node 2:
+Icon: Activity
+Name: "Production Track"
+Desc: "Live milestones from factory floor"
+
+Node 3:
+Icon: ShieldCheck
+Name: "QC Engine"
+Desc: "Photo evidence at every checkpoint"
+
+Node 4:
+Icon: Package
+Name: "SmartStock"
+Desc: "Pre-positioned inventory near you"
+
+Node 5:
+Icon: MapPin
+Name: "LogiTrack"
+Desc: "Real-time from dispatch to delivery"
+
+Below the 5 nodes (60px margin top):
+3 amber stat callouts 
+in a row (no cards, just numbers):
+
+"48 hrs"
+caption: "SmartStock SKU delivery"
+
+"100%"
+caption: "QC inspected before dispatch"
+
+"₹0"
+caption: "Hidden charges. Ever."
+
+Number style: 
+#E8A838, 48px, 
+Clash Display or Plus Jakarta Sans Bold
+
+Caption style: 
+rgba(255,255,255,0.55), 13px, 
+uppercase, tracked
+
+---
+
+NEW SECTION D: FACTORY NETWORK AND MAP
+
+White background. Full width.
+Padding: 100px vertical.
+
+Eyebrow (electric blue, uppercase, tracked):
+"OUR NETWORK"
+
+Headline (navy, 48px):
+"Manufactured in India.
+Delivered everywhere."
+
+Split layout:
+Left 40%:
+
+3 stat blocks (stacked, 
+spacing 32px between):
+
+Stat 1:
+Number: "500+"
+amber, 52px, bold
+Label: "Verified factory partners"
+muted, 14px
+
+Stat 2:
+Number: "1"
+amber, 52px, bold
+Label: "Owned manufacturing facility"
+muted, 14px
+Sub-label (electric blue, 12px):
+"Flexo + Rotogravure · Indore, India"
+
+Stat 3:
+Number: "40+"
+amber, 52px, bold
+Label: "Countries we deliver to"
+muted, 14px
+
+Below stats:
+Navy card (padding 20px, 
+border-radius 12px):
+Left border: 3px solid #E8A838
+White text, 14px, line-height 1.7:
+"Unlike other platforms, 
+we have skin in the game. 
+Our owned manufacturing facility 
+handles flexographic and 
+rotogravure printing — 
+giving us direct cost control 
+on your most-used flexible 
+and printed SKUs."
+
+Right 60%:
+World map SVG (use a 
+clean minimal world map — 
+light grey landmasses #E2EAF4, 
+white ocean background):
+
+India:
+Large amber dot (#E8A838, 14px)
+Amber glow pulse animation
+Label: "Manufacturing Hub" 
+(navy, 11px, bold)
+
+From India: 
+draw 6 curved SVG path lines 
+(stroke: #1B6CA8, 
+stroke-width: 1.5, 
+stroke-dasharray: 4 4,
+opacity: 0.6)
+to these destinations:
+UAE (Middle East)
+UK (Europe)
+USA (North America)
+Singapore (Southeast Asia)
+Nigeria (West Africa)
+Australia
+
+Each destination:
+Small electric blue dot (8px)
+No labels on destinations — 
+keep it clean.
+
+Animate the paths:
+stroke-dashoffset animation 
+from full length to 0
+duration: 2s each
+stagger 300ms apart
+triggered by Intersection Observer 
+when section enters viewport.
+
+Below the split layout:
+Full width amber band 
+(#E8A838 background, navy text):
+Centred, padding 24px:
+"Your packaging cost drops 
+the moment you stop sourcing locally 
+and start sourcing smarter."
+
+---
+
+NEW SECTION E: CUSTOMER TESTIMONIALS
+
+White background.
+Eyebrow (electric blue, uppercase): 
+"WHAT BRANDS SAY"
+
+Headline (navy, 48px):
+"Brands that switched.
+Never looked back."
+
+3 testimonial cards 
+(white, 
+border: 1px solid #E2EAF4, 
+border-top: 3px solid #E8A838,
+border-radius: 12px,
+padding: 28px,
+transition: transform 0.2s,
+hover: translateY(-4px)):
+
+Card 1:
+Avatar: navy circle, 
+white initials "ZF", 44px
+Company: "Zestful Foods"
+Location + industry: 
+"Mumbai · D2C Snacks"
+Stars: 5 (amber ★★★★★, 14px)
+Quote (italic, #64748B, 15px, 
+line-height 1.7):
+"We were managing 7 vendors 
+for our packaging. 
+With [BRAND], it's one call, 
+one invoice, one team. 
+Our packaging errors dropped to zero."
+Amber metric pill 
+(amber bg 10%, amber text, 
+rounded, 13px bold, margin-top 16px):
+"7 vendors → 1 platform"
+
+Card 2:
+Avatar: navy circle, 
+white initials "DI"
+Company: "Dermatica India"
+Location: "Bangalore · Cosmetics D2C"
+Stars: ★★★★★
+Quote: "The QC process alone 
+was worth the switch. 
+Our previous vendor passed 
+defective units consistently. 
+[BRAND]'s pre-dispatch check 
+caught everything before it reached us."
+Metric: "₹3.8L saved in Year 1"
+
+Card 3:
+Avatar: navy circle, 
+white initials "NC"
+Company: "NatureCraft Organics"
+Location: "Pune · Organic Food Brand"
+Stars: ★★★★★
+Quote: "We needed FSC certified 
+kraft packaging with compostability 
+certification for our export buyer. 
+[BRAND] sourced, certified, 
+and delivered in 14 days. 
+No other vendor came close."
+Metric: "14 days · Fully certified"
+
+Below cards:
+3 platform stats centred 
+(count-up on scroll):
+
+"₹2.4Cr+"
+"Annual savings generated"
+navy, 44px bold | muted caption
+
+"1,200+"
+"Orders delivered on time"
+
+"98.7%"
+"QC first-pass rate"
+
+---
+
+NEW SECTION F: CERTIFICATIONS STRIP
+
+Navy #0D1B2A background.
+Compact — padding 48px vertical.
+Centred layout.
+
+Text (rgba(255,255,255,0.6), 
+12px, uppercase, tracked, 
+margin-bottom 24px):
+"EVERY FACTORY PARTNER. EVERY ORDER. CERTIFIED."
+
+5 certification pills in a row 
+(flex, gap 16px, justify-content center):
+Each pill:
+background: rgba(255,255,255,0.08)
+border: 1px solid rgba(255,255,255,0.2)
+border-radius: 999px
+padding: 10px 20px
+color: white
+font-size: 13px
+font-weight: 600
+
+Pills:
+ISO 9001:2015
+FSSC 22000
+BRC Packaging
+US FDA Compliant
+FSC Certified
+
+Below pills 
+(rgba(255,255,255,0.4), 12px, margin-top 16px):
+"Certification documentation 
+provided with every order."
+
+---
+
+NEW SECTION G: FINAL CTA
+
+Full width. 
+Background: linear-gradient(135deg, 
+#0D1B2A 0%, #1B3A5C 100%)
+
+Very subtle background texture:
+Repeating geometric pattern 
+(tiny box outlines, 
+opacity 0.03, white)
+Use CSS background-image with 
+an SVG data URI of a small box shape.
+
+Centred content:
+Headline (white, 64px, Clash Display):
+"Packaging sorted.
+Forever."
+
+Subheadline 
+(rgba(255,255,255,0.65), 20px, 
+max-width 500px, 
+margin: 16px auto 40px):
+"Join brands across India and 40+ countries 
+who have already simplified 
+their packaging supply chain."
+
+Two CTAs side by side:
+Primary (background: #E8A838, 
+color: #0D1B2A, 
+padding: 16px 36px,
+font-size: 16px,
+font-weight: 700,
+border-radius: 8px,
+hover: brightness 1.05):
+"Browse 110+ SKUs →"
+
+Secondary (background: transparent,
+border: 2px solid rgba(255,255,255,0.4),
+color: white,
+padding: 16px 36px,
+font-size: 16px,
+border-radius: 8px,
+hover: border-color white):
+"WhatsApp us"
+(onclick opens: 
+https://wa.me/[YOUR_NUMBER]
+?text=Hi%2C%20I%20want%20to%20simplify%20my%20packaging.)
+
+Trust strip below buttons 
+(margin-top 32px,
+display flex,
+gap 32px,
+justify-content center,
+flex-wrap wrap):
+Each item: 
+rgba(255,255,255,0.5), 13px
+"Quote in 48 hours"
+"No commitment until you approve"
+"Sample from ₹2,999"
+"Design from ₹1,999"
+Separated by · 
+
+---
+
+QUOTE FLOW UPDATE: STEP 4 SAMPLE LOGIC
+
+In /quote Step 4 
+replace the existing sample UI with this:
+
+Headline: "Want to check quality first?"
+Subheadline (muted, 14px):
+"Order a physical sample 
+before committing to a full run. 
+Fee fully adjusted against 
+your first order above ₹50,000."
+
+Show 3 option cards 
+(full width stacked, 
+click to select, 
+selected state: 
+amber border + amber background 5%):
+
+OPTION A 
+(show only if all selected products 
+are standard in-catalogue SKUs — 
+check is_smartstock or 
+sample_tier != 'not_required'):
+Card border: #E2EAF4
+Selected border: #E8A838
+Title (navy, bold): 
+"Order a standard sample — charge now"
+Price badge (amber): "₹2,999"
+Body (muted, 13px): 
+"Physical sample dispatched in 5-7 days. 
+Charged via Razorpay immediately. 
+Adjusted against first order above ₹50,000."
+On select:
+Show Razorpay button inline below card.
+On Razorpay success:
+Create sample_request record in Supabase.
+Set quote_data.sample_paid = true.
+Set quote_data.sample_id = generated ID.
+Continue to Step 5 automatically.
+
+OPTION B:
+Title: "Include sample cost in my quote"
+Price badge (navy): "Custom pricing"
+Body: "For custom specifications, 
+we'll price your sample 
+as part of the quote we send you. 
+Charged after you approve the quote."
+On select:
+Set quote_data.sample_requested = true.
+Set quote_data.sample_type = 'custom'.
+No payment now.
+Continue to Step 5 on Next click.
+
+OPTION C:
+Title: "No sample — proceed to quote"
+Body: "I'm confident in the spec. 
+Just send me the quote."
+On select:
+Set quote_data.sample_requested = false.
+Continue to Step 5 on Next click.
+
+---
+
+QUOTE FLOW UPDATE: STEP 3 DESIGN LOGIC
+
+In Step 3 Artwork section:
+When user selects 
+"I need design — ₹1,999":
+
+Show Razorpay payment button inline.
+Amount: 199900 paise (₹1,999).
+On Razorpay success:
+Generate design_id (DES-YYYY-XXXXX).
+Create design_request record in Supabase:
+  contact_name: from Step 5 later
+  (store in quote_data for now)
+  amount_paid: 1999
+  razorpay_payment_id: from callback
+  status: 'paid'
+  product_id: from selected product
+Set quote_data.design_paid = true.
+Set quote_data.design_id = design_id.
+Show green success state on card:
+"Design brief purchased ✓ 
+ID: DES-YYYY-XXXXX
+Complete your brief after 
+submitting your quote."
+Continue to Step 4 on Next click.
+
+On quote confirmation screen 
+(/quote/confirmed/[quote_id]):
+If quote_data.design_paid = true:
+Show additional card below the 
+quote confirmation:
+Background: #F8F9FC
+Border-left: 3px solid #1B6CA8
+Title (navy, bold): 
+"Complete your design brief"
+Body (muted): 
+"Your designer needs a few details 
+to get started. 
+Takes 3 minutes."
+CTA (electric blue, outlined button):
+"Complete design brief →"
+Links to /design/brief/[design_id]
+
+---
+
+CREATE: /sustainable PAGE
+
+This page is standalone 
+with its own strong identity.
+Same nav as rest of site.
+
+Hero section:
+Background: #0D3B2E (dark forest green)
+Min-height: 70vh
+Padding: 100px 0
+
+Eyebrow (light green, uppercase): 
+"SUSTAINABLE PACKAGING"
+
+Headline (white, 64px, Clash Display):
+"Packaging that doesn't
+cost the planet."
+
+Subheadline (rgba(255,255,255,0.7), 20px):
+"12 certified sustainable SKUs. 
+All customisable with your brand design. 
+Food-safe, leak-proof, and built 
+for Indian brands that 
+take sustainability seriously."
+
+3 stat pills in a row 
+(same pill style as client marquee 
+but light green tint):
+"12 Sustainable SKUs" · 
+"EPR Compliant" · 
+"Full Certification Docs Included"
+
+CTA (amber, large):
+"Browse sustainable SKUs →"
+(smooth scroll to product grid below)
+
+Product grid section:
+White background.
+Show all 12 sustainable products 
+from the products table 
+(WHERE is_eco = true AND is_active = true).
+Same card component as /products 
+but with green accent colour 
+instead of navy.
+Each card shows 
+the food-safe / leak-proof badges 
+where applicable.
+
+Certifications section:
+Light surface #F8F9FC background.
+Headline (navy): 
+"Every sustainable SKU is certified."
+
+5 certification cards 
+(white, green left border):
+TUV Austria OK Compost
+BPI Certified Compostable
+FSC Certified (Forest Stewardship Council)
+GRS — Global Recycled Standard
+ISO 14001 Environmental Management
+
+Each card: 
+cert name bold, 
+one line explaining 
+what it means in plain language.
+
+EPR compliance section:
+Dark green #0D3B2E background.
+Headline (white): 
+"EPR compliance — we handle it."
+Body (rgba(255,255,255,0.7), 17px):
+"Extended Producer Responsibility 
+regulations now require Indian brands 
+to report and offset 
+their plastic packaging footprint. 
+Every sustainable SKU order 
+comes with full EPR 
+compliance documentation — 
+ready for your annual filing."
+CTA (amber):
+"Talk to our sustainability team →"
+Opens WhatsApp: 
+https://wa.me/[YOUR_NUMBER]
+?text=Hi%2C%20I%20need%20help%20with%20sustainable%20packaging%20and%20EPR%20compliance.
+
+Final CTA (same as home page final CTA):
+"Ready to make the switch?"
+"Browse all 12 sustainable SKUs →" 
+(amber button)
+
+---
+
+FLOATING WHATSAPP BUTTON
+
+Add to every page globally 
+(in the layout component, 
+not page-by-page):
+
+Position: fixed
+Bottom: 24px
+Right: 24px
+Z-index: 1000
+
+Style:
+width: 56px
+height: 56px
+border-radius: 50%
+background: #25D366
+display: flex
+align-items: center
+justify-content: center
+box-shadow: 0 4px 20px rgba(37,211,102,0.4)
+cursor: pointer
+transition: transform 0.2s
+
+Hover: scale(1.1)
+
+Icon: WhatsApp SVG icon, white, 28px.
+
+onClick: 
+window.open(
+'https://wa.me/[YOUR_NUMBER]
+?text=Hi%2C%20I%20want%20to%20know%20more%20about%20your%20packaging%20platform.',
+'_blank')
+
+Add a tooltip that appears 
+on hover (above the button):
+"Chat with us"
+Background: #0D1B2A
+Color: white
+Font-size: 12px
+Border-radius: 6px
+Padding: 4px 10px
+
+---
+
+REPLACE [YOUR_NUMBER] throughout 
+with the actual WhatsApp number 
+in international format 
+without + sign: 
+91XXXXXXXXXX

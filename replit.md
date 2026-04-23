@@ -54,6 +54,9 @@ See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and pa
 | `ADMIN_KEY` | Admin panel access key (default: `packwerk-admin-2024`) |
 | `VITE_ADMIN_KEY` | Frontend admin key (same value) |
 | `WHATSAPP_WEBHOOK_URL` | Optional webhook for WhatsApp notifications |
+| `RAZORPAY_KEY_ID` | Razorpay API key ID (test: rzp_test_SgvQEkLJbWTRYs) |
+| `RAZORPAY_KEY_SECRET` | Razorpay secret key (test) |
+| `VITE_RAZORPAY_KEY_ID` | Frontend Razorpay key (same as KEY_ID) |
 | `SUPABASE_URL` / `SUPABASE_ANON_KEY` | Supabase credentials (stored but using Replit DB) |
 
 ### Database Tables
@@ -75,7 +78,7 @@ See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and pa
 
 ### Pages
 
-**Public**: `/`, `/products`, `/products/:slug`, `/quote` (6-step wizard), `/design`, `/samples`, `/login`, `/industries`, `/industries/:slug`
+**Public**: `/`, `/products`, `/products/:slug`, `/quote` (6-step wizard), `/design`, `/samples`, `/login`, `/industries`, `/industries/:slug`, `/sustainable`
 **Dashboard**: `/dashboard`, `/dashboard/orders`, `/dashboard/designs`, `/dashboard/payments`, `/dashboard/profile`
 **Admin**: `/admin/quotes`, `/admin/orders`, `/admin/designs`, `/admin/samples`
 
@@ -88,16 +91,19 @@ See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and pa
 
 ### Key Features
 
-- 33 product SKUs across 10 categories: Flexible Packaging (5), Bottles & Containers (6), Tubes & Small Packs (2), Boxes & Cartons (3), E-commerce (4), Protective (2), Packaging Rolls (3), Labels & Closures (3), Sustainable (4), Liquid Cartons (1)
+- 33 product SKUs across 10 categories; `/sustainable` page showcases all 12 certified eco SKUs
 - SKU schema: each has `variants` (decision-oriented option groups) and `customization_fields` stored in `specs` JSONB column
 - SKU catalog defined client-side in `artifacts/packwerk/src/lib/skus.ts` and mirrored to DB via `lib/db/seed-skus.ts`
 - Industries section: 8 verticals (food, pharma, cosmetics, ecommerce, fmcg, industrial, agriculture, electronics) with dedicated landing pages
-- 6-step quote wizard
-- Design brief request (3-step: product type → brand assets → checkout)
-- Sample order with 3 tiers (Standard ₹2,999, Premium ₹4,999, Complex ₹7,999)
+- 6-step quote wizard with Razorpay integration: Step 3 (design ₹1,999), Step 5 (Express sample ₹4,999)
+- Razorpay API route: `POST /api/payments/create-order` + `POST /api/payments/verify` in `api-server/src/routes/payments.ts`
+- Frontend Razorpay utility: `artifacts/packwerk/src/lib/razorpay.ts` (openRazorpay function)
+- 7 new home sections: BrandAdvantage (orbital + accordion), Sustainable, PackOS (5-node flow), FactoryNetwork (world map SVG), Testimonials, Certifications, Final CTA (Section G)
+- Client logo marquee in hero section with 12 sample brand names
+- Global WhatsApp float button (bottom-right, #25D366) in PublicLayout.tsx
 - Customer dashboard "COMMAND CENTER" with deployments table and system health
 - Savings calculator on home page (unit savings + overhead + credit + stockout formulas)
 - Admin panel for managing quotes, orders, designs, samples
 - Net-30 credit system (unlocks after 3 completed orders)
-- WhatsApp notification abstraction (silent fallback if webhook not set)
-- INR formatting throughout
+- CSS animations: pulse-glow, slideIn, flow-dot (for orbital/PackOS sections), marquee-track (client logos)
+- INR formatting throughout; WhatsApp placeholder number: 919999999999 (update when ready)

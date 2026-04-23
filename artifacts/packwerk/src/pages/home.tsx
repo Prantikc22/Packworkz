@@ -2,6 +2,20 @@ import { useState, useEffect, useRef } from "react";
 import { Link } from "wouter";
 import { formatINR } from "@/lib/format";
 import { INDUSTRY_IMAGES } from "@/lib/images";
+import BrandAdvantageSection from "@/components/home/BrandAdvantageSection";
+import SustainableSection from "@/components/home/SustainableSection";
+import PackOSSection from "@/components/home/PackOSSection";
+import FactoryNetworkSection from "@/components/home/FactoryNetworkSection";
+import TestimonialsSection from "@/components/home/TestimonialsSection";
+import CertificationsSection from "@/components/home/CertificationsSection";
+
+const WHATSAPP_NUM = "919999999999";
+
+const CLIENT_PILLS = [
+  "Zestful Foods", "Dermatica India", "NatureCraft Organics", "QuickShip Commerce",
+  "Bloom Skincare", "Spice Route Foods", "Urban Nest Home", "ClearDerm Pharma",
+  "EcoWear India", "Harvest Organics", "PurePet Foods", "Artisan Chai Co.",
+];
 
 interface IconProps {
   icon: string;
@@ -260,6 +274,27 @@ export default function Home() {
               </div>
             ))}
           </div>
+
+          {/* ── Client logo marquee ── */}
+          <div className="mt-10 overflow-hidden" style={{ borderTop: "1px solid rgba(255,255,255,0.12)", paddingTop: 20 }}>
+            <p className="text-center text-xs font-bold tracking-[0.25em] uppercase mb-5" style={{ color: "rgba(255,255,255,0.5)" }}>
+              Trusted by D2C, FMCG &amp; Pharma brands
+            </p>
+            <div style={{ overflow: "hidden" }}>
+              <div className="marquee-track">
+                {[...CLIENT_PILLS, ...CLIENT_PILLS].map((name, i) => (
+                  <span key={i} className="font-bold text-sm px-5 py-2.5 rounded-full" style={{
+                    background: "rgba(255,255,255,0.08)",
+                    border: "1px solid rgba(255,255,255,0.15)",
+                    color: "white",
+                    whiteSpace: "nowrap",
+                    flexShrink: 0,
+                  }}>{name}</span>
+                ))}
+              </div>
+            </div>
+          </div>
+
         </div>
       </section>
 
@@ -311,6 +346,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* ── BRAND ADVANTAGE ──────────────────────── */}
+      <BrandAdvantageSection />
 
       {/* ── VS COMPARISON ────────────────────────── */}
       <section className="py-24 px-8 md:px-20" style={{ background: "#F2F3F6" }}>
@@ -640,6 +678,21 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ── SUSTAINABLE ──────────────────────────── */}
+      <SustainableSection />
+
+      {/* ── PACKOS TECHNOLOGY ────────────────────── */}
+      <PackOSSection />
+
+      {/* ── FACTORY NETWORK ──────────────────────── */}
+      <FactoryNetworkSection />
+
+      {/* ── TESTIMONIALS ─────────────────────────── */}
+      <TestimonialsSection />
+
+      {/* ── CERTIFICATIONS ───────────────────────── */}
+      <CertificationsSection />
+
       {/* ── COMPLIANCE ───────────────────────────── */}
       <section className="py-24 text-white px-8 md:px-20 text-center" style={{ background: "linear-gradient(150deg, #020617 0%, #0f172a 55%, #0d1d5a 100%)" }}>
         <h2 className="clash-display text-4xl mb-4">Uncompromising Compliance. Global Ready.</h2>
@@ -691,15 +744,38 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── FINAL CTA ────────────────────────────── */}
-      <section className="py-24 px-8 md:px-20 text-center relative overflow-hidden" style={{ background: "linear-gradient(135deg, #020617 0%, #0f172a 40%, #1e3a8a 100%)" }}>
-        <div className="absolute inset-0 opacity-5 pointer-events-none" style={{ backgroundImage: "repeating-linear-gradient(45deg, white 0, white 1px, transparent 0, transparent 50%)", backgroundSize: "20px 20px" }} />
+      {/* ── FINAL CTA (Section G) ─────────────────── */}
+      <section className="py-28 px-8 md:px-20 text-center relative overflow-hidden" style={{ background: "linear-gradient(135deg, #020617 0%, #0f172a 50%, #1e3a8a 100%)" }}>
+        <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: "repeating-linear-gradient(45deg, rgba(255,255,255,0.03) 0, rgba(255,255,255,0.03) 1px, transparent 0, transparent 50%)", backgroundSize: "20px 20px" }} />
         <div className="relative z-10 max-w-4xl mx-auto">
-          <h2 className="clash-display text-white text-5xl md:text-6xl mb-8 leading-tight">The way brands buy packaging just changed.</h2>
-          <p className="text-slate-400 text-xl mb-12">Join 450+ companies optimizing their supply chain on Packwerk.</p>
-          <div className="flex flex-col sm:flex-row gap-6 justify-center">
-            <Link href="/quote"><button className="px-12 py-5 rounded font-bold text-xl hover:scale-105 transition-all" style={{ background: "#E8A838", color: "#0F1C2C" }}>Schedule a Factory Audit</button></Link>
-            <Link href="/products"><button className="text-white px-12 py-5 rounded font-bold text-xl hover:bg-white/20 transition-all" style={{ background: "rgba(255,255,255,0.1)" }}>Download Product Catalog</button></Link>
+          <p className="font-bold tracking-[0.25em] text-xs uppercase mb-6" style={{ color: "#1B6CA8" }}>START TODAY</p>
+          <h2 className="clash-display text-white mb-8 leading-tight" style={{ fontSize: "clamp(2.5rem,6vw,4rem)" }}>
+            Stop sourcing.<br />Start building.
+          </h2>
+          <p className="mb-4 text-lg" style={{ color: "rgba(255,255,255,0.7)", maxWidth: 540, margin: "0 auto 32px" }}>
+            Get your first custom packaging quote in under 5 minutes. No sales calls. No minimum commitment.
+          </p>
+
+          <div className="flex flex-col sm:flex-row gap-5 justify-center mb-12">
+            <Link href="/quote">
+              <button className="px-12 py-5 rounded-lg font-bold text-xl hover:brightness-110 active:scale-95 transition-all" style={{ background: "#E8A838", color: "#0D1B2A" }}>
+                Get a Quote — Free
+              </button>
+            </Link>
+            <a href={`https://wa.me/${WHATSAPP_NUM}?text=Hi%20PackOps%2C%20I%20want%20to%20discuss%20packaging%20for%20my%20brand.`} target="_blank" rel="noopener noreferrer">
+              <button className="px-12 py-5 rounded-lg font-bold text-xl hover:bg-white/20 active:scale-95 transition-all" style={{ background: "rgba(255,255,255,0.1)", color: "white", border: "1px solid rgba(255,255,255,0.2)" }}>
+                WhatsApp Us
+              </button>
+            </a>
+          </div>
+
+          <div className="flex flex-wrap justify-center gap-6">
+            {["Zero hidden charges", "QC inspected. Always.", "India's largest verified network", "Delivered to 40+ countries"].map((item) => (
+              <span key={item} className="flex items-center gap-2 text-sm" style={{ color: "rgba(255,255,255,0.65)" }}>
+                <span style={{ color: "#E8A838", fontWeight: 700 }}>✓</span>
+                {item}
+              </span>
+            ))}
           </div>
         </div>
       </section>
