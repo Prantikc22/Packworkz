@@ -85,7 +85,7 @@ export default function Industries() {
     <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
 
       {/* ── Hero ── */}
-      <section className="py-24 px-8 md:px-20" style={{ background: "#0D1B2A" }}>
+      <section className="py-24 px-8 md:px-20" style={{ background: "#020617" }}>
         <div className="max-w-4xl">
           <p className="font-bold tracking-[0.2em] text-xs uppercase mb-4" style={{ color: "#1B6CA8" }}>INDUSTRY SOLUTIONS</p>
           <h1 className="clash-display text-white mb-6" style={{ fontSize: "clamp(2.5rem,6vw,4.5rem)", lineHeight: 1.05 }}>
@@ -138,7 +138,7 @@ export default function Industries() {
       </section>
 
       {/* ── CTA ── */}
-      <section className="py-20 px-8 text-center" style={{ background: "#0F1C2C" }}>
+      <section className="py-20 px-8 text-center" style={{ background: "#0f172a" }}>
         <p className="font-bold tracking-widest uppercase text-xs mb-4" style={{ color: "#E8A838" }}>SECTOR-SPECIFIC CONSULTATION</p>
         <h2 className="clash-display text-white text-4xl mb-6">Don&rsquo;t see your sector?</h2>
         <p className="text-slate-400 max-w-xl mx-auto mb-10">Our team has built bespoke packaging solutions for 50+ niche verticals. Contact our sector leads.</p>

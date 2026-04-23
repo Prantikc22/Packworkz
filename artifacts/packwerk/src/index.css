@@ -39,7 +39,7 @@
   --color-destructive-foreground: hsl(var(--destructive-foreground));
   --color-destructive-border: var(--destructive-border);
 
-  --color-navy: #0D1B2A;
+  --color-navy: #020617;
   --color-blue: #1B6CA8;
   --color-amber: #E8A838;
   --color-bg: #FFFFFF;
@@ -368,7 +368,7 @@
 }
 
 .hero-gradient {
-  background: linear-gradient(135deg, #0D1B2A 0%, #0F1C2C 100%);
+  background: linear-gradient(135deg, #020617 0%, #0f172a 100%);
 }
 
 .glass-panel {

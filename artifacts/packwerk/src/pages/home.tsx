@@ -190,7 +190,7 @@ export default function Home() {
       </section>
 
       {/* ── MARQUEE 1 ────────────────────────────── */}
-      <div className="overflow-hidden py-3 border-y border-white/10" style={{ background: "#1B6CA8" }}>
+      <div className="overflow-hidden py-3 border-y border-white/10" style={{ background: "#1e3a8a" }}>
         <div className="animate-marquee">
           {MARQUEE_1.map((t, i) => (
             <span key={i} className="text-white font-bold tracking-[0.2em] text-xs uppercase mx-8">{t}</span>
@@ -218,7 +218,7 @@ export default function Home() {
       </div>
 
       {/* ── PAIN POINTS ──────────────────────────── */}
-      <section className="py-24 px-8 md:px-20" style={{ background: "#0F1C2C" }}>
+      <section className="py-24 px-8 md:px-20" style={{ background: "#0f172a" }}>
         <div className="max-w-7xl mx-auto">
           <h2 className="clash-display text-white text-4xl mb-16 max-w-xl">
             Traditional sourcing is broken. We fixed it.
@@ -226,9 +226,9 @@ export default function Home() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-0 border border-white/10 rounded overflow-hidden shadow-2xl">
             {PAIN_POINTS.map((p, i) => (
               <div key={i} className="p-8 border-r border-white/5 last:border-r-0 transition-colors cursor-default"
-                style={{ background: "#0D1B2A" }}
+                style={{ background: "#020617" }}
                 onMouseEnter={e => (e.currentTarget.style.background = "rgba(27,108,168,0.2)")}
-                onMouseLeave={e => (e.currentTarget.style.background = "#0D1B2A")}>
+                onMouseLeave={e => (e.currentTarget.style.background = "#020617")}>
                 <MS icon={p.icon} className="mb-6 text-3xl" style={{ color: "#E8A838" }} />
                 <h3 className="font-bold text-white text-xl mb-3">{p.title}</h3>
                 <p className="text-slate-400 text-sm">{p.desc}</p>
@@ -245,7 +245,7 @@ export default function Home() {
             Packwerk vs. The Old Way
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="rounded p-10 shadow-2xl border-2 relative overflow-hidden" style={{ background: "#0F1C2C", borderColor: "#1B6CA8" }}>
+            <div className="rounded p-10 shadow-2xl border-2 relative overflow-hidden" style={{ background: "#0f172a", borderColor: "#1B6CA8" }}>
               <div className="absolute top-0 right-0 text-white px-6 py-2 font-bold text-xs uppercase tracking-widest" style={{ background: "#1B6CA8" }}>Recommended</div>
               <h3 className="text-white text-3xl font-black mb-10"><span style={{ color: "#1B6CA8" }}>Packwerk</span> Precision</h3>
               <ul className="space-y-6">
@@ -308,7 +308,7 @@ export default function Home() {
       </section>
 
       {/* ── INDUSTRIES ───────────────────────────── */}
-      <section className="py-24 px-8 md:px-20" style={{ background: "#0D1B2A" }}>
+      <section className="py-24 px-8 md:px-20" style={{ background: "#020617" }}>
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-4">
             <div>
@@ -339,7 +339,7 @@ export default function Home() {
       </section>
 
       {/* ── MARQUEE 2 ────────────────────────────── */}
-      <div className="overflow-hidden py-4 border-y border-white/10" style={{ background: "#0F1C2C" }}>
+      <div className="overflow-hidden py-4 border-y border-white/10" style={{ background: "#0f172a" }}>
         <div className="animate-marquee">
           {MARQUEE_2.map((t, i) => (
             <span key={i} className="font-bold tracking-[0.2em] text-sm uppercase mx-12" style={{ color: i % 2 === 0 ? "white" : "#E8A838" }}>{t}</span>
@@ -348,7 +348,7 @@ export default function Home() {
       </div>
 
       {/* ── PROCUREMENT PERFECTED ────────────────── */}
-      <section className="py-24 px-8 md:px-20 text-white text-center" style={{ background: "#0F1C2C" }}>
+      <section className="py-24 px-8 md:px-20 text-white text-center" style={{ background: "#0f172a" }}>
         <div className="max-w-7xl mx-auto">
           <h2 className="clash-display text-4xl md:text-5xl mb-4">Procurement Perfected</h2>
           <p className="text-slate-400 text-lg mb-20 max-w-2xl mx-auto">From concept to global delivery, our process ensures zero quality compromise.</p>
@@ -384,7 +384,7 @@ export default function Home() {
               ))}
             </div>
             <Link href="/design">
-              <button className="px-8 py-4 rounded font-bold hover:opacity-90 transition-all text-white" style={{ background: "#0D1B2A" }}>Start Design Brief</button>
+              <button className="px-8 py-4 rounded font-bold hover:opacity-90 transition-all text-white" style={{ background: "#020617" }}>Start Design Brief</button>
             </Link>
           </div>
           <div className="lg:w-1/2 w-full rounded-lg overflow-hidden shadow-xl">
@@ -462,7 +462,7 @@ export default function Home() {
           </div>
 
           {/* Results Panel */}
-          <div className="p-10 rounded text-white shadow-2xl" style={{ background: "#0F1C2C" }}>
+          <div className="p-10 rounded text-white shadow-2xl" style={{ background: "#0f172a" }}>
             <p className="font-bold uppercase text-xs tracking-widest mb-6" style={{ color: "#E8A838" }}>Your Annual Savings Breakdown</p>
             <div className="space-y-6 mb-8">
               <div className="flex justify-between items-start pb-4 border-b border-white/10">
@@ -530,7 +530,7 @@ export default function Home() {
       </section>
 
       {/* ── SMARTSTOCK ───────────────────────────── */}
-      <section className="relative overflow-hidden" style={{ background: "#0F1C2C" }}>
+      <section className="relative overflow-hidden" style={{ background: "#0f172a" }}>
         <div className="grid grid-cols-1 lg:grid-cols-2 min-h-[640px]">
           {/* Left: content */}
           <div className="relative z-10 text-white px-8 md:px-20 py-24 flex flex-col justify-center">
@@ -560,14 +560,14 @@ export default function Home() {
             />
             {/* Gradient overlay: fades left edge into dark bg, subtle bottom darkening */}
             <div className="absolute inset-0" style={{
-              background: "linear-gradient(to right, #0F1C2C 0%, rgba(15,28,44,0.55) 35%, rgba(15,28,44,0.1) 65%, transparent 100%)"
+              background: "linear-gradient(to right, #0f172a 0%, rgba(15,23,42,0.55) 35%, rgba(15,23,42,0.1) 65%, transparent 100%)"
             }} />
           </div>
         </div>
       </section>
 
       {/* ── COMPLIANCE ───────────────────────────── */}
-      <section className="py-24 text-white px-8 md:px-20 text-center" style={{ background: "#0F1C2C" }}>
+      <section className="py-24 text-white px-8 md:px-20 text-center" style={{ background: "#0f172a" }}>
         <h2 className="clash-display text-4xl mb-4">Uncompromising Compliance. Global Ready.</h2>
         <div className="inline-block px-4 py-2 rounded mb-16 border" style={{ background: "rgba(27,108,168,0.2)", borderColor: "rgba(27,108,168,0.3)" }}>
           <p className="text-sm font-bold">Manufactured with precision in India. Exporting to 40+ countries across the Middle East, Europe, and USA.</p>
@@ -580,7 +580,7 @@ export default function Home() {
             </div>
           ))}
         </div>
-        <div className="p-12 rounded max-w-4xl mx-auto border border-white/5 shadow-2xl" style={{ background: "#0D1B2A" }}>
+        <div className="p-12 rounded max-w-4xl mx-auto border border-white/5 shadow-2xl" style={{ background: "#020617" }}>
           <h4 className="font-bold mb-4">Exporting to USA, EU or MENA?</h4>
           <p className="text-slate-400 mb-8">Full documentation for global sustainability mandates including Plastic Tax declarations and EPR certifications.</p>
           <div className="flex flex-wrap justify-center gap-4">
@@ -618,7 +618,7 @@ export default function Home() {
       </section>
 
       {/* ── FINAL CTA ────────────────────────────── */}
-      <section className="py-24 px-8 md:px-20 text-center relative overflow-hidden" style={{ background: "#0F1C2C" }}>
+      <section className="py-24 px-8 md:px-20 text-center relative overflow-hidden" style={{ background: "#0f172a" }}>
         <div className="absolute inset-0 opacity-5 pointer-events-none" style={{ backgroundImage: "repeating-linear-gradient(45deg, white 0, white 1px, transparent 0, transparent 50%)", backgroundSize: "20px 20px" }} />
         <div className="relative z-10 max-w-4xl mx-auto">
           <h2 className="clash-display text-white text-5xl md:text-6xl mb-8 leading-tight">The way brands buy packaging just changed.</h2>

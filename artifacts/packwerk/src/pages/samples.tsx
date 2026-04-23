@@ -70,11 +70,11 @@ export default function Samples() {
 
       {/* ── HERO ─────────────────────────────────── */}
       <section className="relative min-h-[65vh] flex flex-col justify-center px-8 md:px-20 overflow-hidden"
-        style={{ background: "linear-gradient(135deg, #0D1B2A 0%, #0F1C2C 100%)" }}>
+        style={{ background: "linear-gradient(135deg, #020617 0%, #0f172a 50%, #1e3a8a 100%)" }}>
         <div className="absolute inset-0 opacity-30">
           <img src="https://images.unsplash.com/photo-1566576912321-d58ddd7a6088?w=1400&h=700&fit=crop&q=60"
             alt="" className="w-full h-full object-cover" />
-          <div className="absolute inset-0" style={{ background: "rgba(13,27,42,0.85)" }} />
+          <div className="absolute inset-0" style={{ background: "rgba(2,6,23,0.85)" }} />
         </div>
         <div className="relative z-10 max-w-3xl py-24">
           <p className="font-bold tracking-[0.25em] text-xs uppercase mb-6" style={{ color: "#1B6CA8" }}>PHYSICAL VALIDATION</p>
@@ -134,7 +134,7 @@ export default function Samples() {
                 key={tier.name}
                 className="rounded-lg p-8 relative overflow-hidden flex flex-col"
                 style={tier.dark
-                  ? { background: "#0D1B2A", border: "2px solid #1B6CA8" }
+                  ? { background: "#020617", border: "2px solid #1B6CA8" }
                   : { background: "white", border: "1px solid #E7E8EB" }}
               >
                 {tier.badge && (
@@ -177,7 +177,7 @@ export default function Samples() {
                       className="w-full py-3.5 rounded font-bold text-sm uppercase tracking-wide hover:opacity-90 active:scale-95 transition-all"
                       style={tier.dark
                         ? { background: "#E8A838", color: "#0F1C2C" }
-                        : { background: "#0D1B2A", color: "white" }}
+                        : { background: "#020617", color: "white" }}
                     >
                       {tier.cta}
                     </button>
@@ -208,7 +208,7 @@ export default function Samples() {
       </section>
 
       {/* ── CTA ──────────────────────────────────── */}
-      <section className="py-20 px-8 text-center" style={{ background: "#0D1B2A" }}>
+      <section className="py-20 px-8 text-center" style={{ background: "#020617" }}>
         <h2 className="clash-display text-white text-4xl mb-6">Ready to touch your brand?</h2>
         <Link href="/products">
           <button className="flex items-center gap-3 px-10 py-5 rounded font-bold uppercase tracking-wide text-base hover:opacity-90 active:scale-95 transition-all mx-auto" style={{ background: "#E8A838", color: "#0F1C2C" }}>

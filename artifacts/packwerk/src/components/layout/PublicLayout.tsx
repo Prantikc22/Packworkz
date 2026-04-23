@@ -18,7 +18,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
 
       {/* ── NAV ── */}
       <header className="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-6 md:px-10 py-0 h-[68px]"
-        style={{ background: "#0D1B2A", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+        style={{ background: "#020617", borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
 
         <Link href="/">
           <span className="text-xl font-black tracking-tight text-white cursor-pointer select-none" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
@@ -62,7 +62,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <div className="fixed inset-0 z-40 pt-[68px]" style={{ background: "#0D1B2A" }}>
+        <div className="fixed inset-0 z-40 pt-[68px]" style={{ background: "#020617" }}>
           <nav className="flex flex-col px-8 py-8 gap-6">
             {NAV_ITEMS.map(item => (
               <Link key={item.href} href={item.href} onClick={() => setMobileOpen(false)}>
@@ -86,7 +86,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
       </main>
 
       {/* ── FOOTER ── */}
-      <footer className="px-8 md:px-16 py-16 grid grid-cols-2 md:grid-cols-4 gap-10 text-sm border-t" style={{ background: "#0D1B2A", borderColor: "rgba(255,255,255,0.06)", fontFamily: "'Space Grotesk', sans-serif" }}>
+      <footer className="px-8 md:px-16 py-16 grid grid-cols-2 md:grid-cols-4 gap-10 text-sm border-t" style={{ background: "#020617", borderColor: "rgba(255,255,255,0.08)", fontFamily: "'Space Grotesk', sans-serif" }}>
         <div className="col-span-2 md:col-span-1 flex flex-col gap-4">
           <span className="text-xl font-black text-white">PackOps</span>
           <p className="text-slate-500 text-sm leading-relaxed max-w-xs">
