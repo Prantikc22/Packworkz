@@ -3,11 +3,8 @@ import { Link } from "wouter";
 import { formatINR } from "@/lib/format";
 import { INDUSTRY_IMAGES } from "@/lib/images";
 import BrandAdvantageSection from "@/components/home/BrandAdvantageSection";
-import SustainableSection from "@/components/home/SustainableSection";
 import PackOSSection from "@/components/home/PackOSSection";
-import FactoryNetworkSection from "@/components/home/FactoryNetworkSection";
 import TestimonialsSection from "@/components/home/TestimonialsSection";
-import CertificationsSection from "@/components/home/CertificationsSection";
 
 const WHATSAPP_NUM = "919999999999";
 
@@ -306,46 +303,6 @@ export default function Home() {
           ))}
         </div>
       </div>
-
-      {/* ── FEATURE STRIP ────────────────────────── */}
-      <div className="py-20 px-8 border-b border-slate-200/50" style={{ background: "#F8F9FC" }}>
-        <div className="max-w-7xl mx-auto flex flex-wrap justify-center md:justify-between items-center gap-8">
-          {[
-            { icon: "assignment_turned_in", label: "Multi-vendor backup" },
-            { icon: "verified_user", label: "QC owned by us" },
-            { icon: "public", label: "Global shipping" },
-            { icon: "payments", label: "Net-30 credit" },
-            { icon: "psychology", label: "AI demand forecasting" },
-            { icon: "palette", label: "Design from ₹1,999" },
-          ].map((f) => (
-            <div key={f.label} className="flex flex-col items-center text-center group">
-              <MS icon={f.icon} className="mb-3 text-3xl" style={{ color: "#1B6CA8" }} />
-              <span className="text-sm font-bold whitespace-nowrap" style={{ color: "#191c1e" }}>{f.label}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* ── PAIN POINTS ──────────────────────────── */}
-      <section className="py-24 px-8 md:px-20" style={{ background: "linear-gradient(150deg, #020617 0%, #0f172a 55%, #0d1d5a 100%)" }}>
-        <div className="max-w-7xl mx-auto">
-          <h2 className="clash-display text-white text-4xl mb-16 max-w-xl">
-            Traditional sourcing is broken. We fixed it.
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-0 border border-white/10 rounded overflow-hidden shadow-2xl">
-            {PAIN_POINTS.map((p, i) => (
-              <div key={i} className="p-8 border-r border-white/5 last:border-r-0 transition-colors cursor-default"
-                style={{ background: "#020617" }}
-                onMouseEnter={e => (e.currentTarget.style.background = "rgba(27,108,168,0.2)")}
-                onMouseLeave={e => (e.currentTarget.style.background = "#020617")}>
-                <MS icon={p.icon} className="mb-6 text-3xl" style={{ color: "#E8A838" }} />
-                <h3 className="font-bold text-white text-xl mb-3">{p.title}</h3>
-                <p className="text-slate-400 text-sm">{p.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* ── BRAND ADVANTAGE ──────────────────────── */}
       <BrandAdvantageSection />
@@ -678,20 +635,11 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── SUSTAINABLE ──────────────────────────── */}
-      <SustainableSection />
-
       {/* ── PACKOS TECHNOLOGY ────────────────────── */}
       <PackOSSection />
 
-      {/* ── FACTORY NETWORK ──────────────────────── */}
-      <FactoryNetworkSection />
-
       {/* ── TESTIMONIALS ─────────────────────────── */}
       <TestimonialsSection />
-
-      {/* ── CERTIFICATIONS ───────────────────────── */}
-      <CertificationsSection />
 
       {/* ── COMPLIANCE ───────────────────────────── */}
       <section className="py-24 text-white px-8 md:px-20 text-center" style={{ background: "linear-gradient(150deg, #020617 0%, #0f172a 55%, #0d1d5a 100%)" }}>

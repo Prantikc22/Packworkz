@@ -17,7 +17,6 @@ import Samples from "@/pages/samples";
 import Login from "@/pages/login";
 import Industries from "@/pages/industries";
 import IndustryDetail from "@/pages/industry-detail";
-import Sustainable from "@/pages/sustainable";
 
 // Dashboard Pages
 import DashboardOverview from "@/pages/dashboard/overview";
@@ -86,7 +85,6 @@ function Router() {
       <PublicRoute path="/login" component={Login} layout={PublicLayout} />
       <PublicRoute path="/industries" component={Industries} layout={PublicLayout} />
       <PublicRoute path="/industries/:slug" component={IndustryDetail} layout={PublicLayout} />
-      <PublicRoute path="/sustainable" component={Sustainable} layout={PublicLayout} />
 
       {/* Dashboard Routes */}
       <ProtectedRoute path="/dashboard" component={DashboardOverview} layout={DashboardLayout} />
