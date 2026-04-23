@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link } from "wouter";
 import { formatINR } from "@/lib/format";
 import { INDUSTRY_IMAGES } from "@/lib/images";
@@ -123,6 +123,46 @@ function calcSavings(spend: number, vendors: number, useCredit: boolean, hadStoc
   return { unitSavings, overheadSavings, creditSavings, stockoutSavings, total, roiMonths };
 }
 
+// ── Count-up animation ──────────────────────────────────────────
+function CountUp({ target, suffix = "", prefix = "", duration = 1800 }: {
+  target: number; suffix?: string; prefix?: string; duration?: number;
+}) {
+  const [count, setCount] = useState(0);
+  const [started, setStarted] = useState(false);
+  const ref = useRef<HTMLSpanElement>(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || started) return;
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        setStarted(true);
+        let t0: number | null = null;
+        const step = (ts: number) => {
+          if (!t0) t0 = ts;
+          const p = Math.min((ts - t0) / duration, 1);
+          const ease = 1 - Math.pow(1 - p, 3);
+          setCount(Math.floor(ease * target));
+          if (p < 1) requestAnimationFrame(step);
+        };
+        requestAnimationFrame(step);
+        observer.disconnect();
+      }
+    }, { threshold: 0.5 });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [target, duration, started]);
+  return <span ref={ref}>{prefix}{count}{suffix}</span>;
+}
+
+const HERO_FLOAT_CARDS = [
+  { title: "Flexible Packaging",  icon: "inventory_2",    skus: 5,  pos: { top: "2%",    left: "4%" },   delay: "0s"    },
+  { title: "E-commerce Packs",    icon: "local_shipping", skus: 4,  pos: { top: "6%",    right: "2%" },  delay: "0.9s"  },
+  { title: "Sustainable",         icon: "eco",            skus: 4,  pos: { top: "44%",   right: "0%" },  delay: "1.5s"  },
+  { title: "Boxes & Cartons",     icon: "view_in_ar",     skus: 3,  pos: { bottom: "30%",left: "0%" },   delay: "0.4s"  },
+  { title: "Labels & Closures",   icon: "label",          skus: 3,  pos: { bottom: "8%", left: "20%" },  delay: "1.1s"  },
+  { title: "Protective Packs",    icon: "security",       skus: 2,  pos: { bottom: "18%",right: "6%" },  delay: "0.2s"  },
+];
+
 export default function Home() {
   const [spend, setSpend] = useState(2500000);
   const [vendors, setVendors] = useState(7);
@@ -145,43 +185,77 @@ export default function Home() {
             <path d="M10,30 L30,10 L90,10 L90,70 L70,90 L10,90 Z" fill="none" stroke="white" strokeWidth="0.1" />
           </svg>
         </div>
-        <div className="relative z-10 max-w-5xl">
-          <p className="font-bold tracking-[0.2em] mb-6 text-sm uppercase" style={{ color: "#93c5fd" }}>
-            INDIA'S FIRST MANAGED PACKAGING PLATFORM
-          </p>
-          <h1 className="clash-display text-white text-5xl md:text-[88px] leading-[1.0] mb-8">
-            Your Packaging.<br />Sorted. Forever.
-          </h1>
-          <p className="text-blue-100 text-xl md:text-2xl mb-4 max-w-2xl font-light">
-            Design. Source. QC. Deliver. One platform.{" "}
-            <span className="text-white font-medium italic">Zero vendor chaos.</span>
-          </p>
-          <p className="text-sm md:text-base font-bold tracking-wide mb-12 uppercase flex items-center gap-2" style={{ color: "#93c5fd" }}>
-            <span className="w-1 h-1 rounded-full inline-block" style={{ background: "#93c5fd" }} />
-            Trusted by D2C &amp; FMCG brands across India
-          </p>
-          <div className="flex flex-col sm:flex-row gap-6 mb-20">
-            <Link href="/products">
-              <button className="px-10 py-5 rounded font-bold text-lg flex items-center justify-center gap-2 hover:opacity-90 transition-all active:scale-95" style={{ background: "#E8A838", color: "#0F1C2C" }}>
-                Browse 33 SKUs <MS icon="arrow_forward" />
-              </button>
-            </Link>
-            <Link href="/samples">
-              <button className="border-2 border-white/60 text-white px-10 py-5 rounded font-bold text-lg hover:bg-white/10 transition-all active:scale-95">
-                Get a sample from ₹2,999
-              </button>
-            </Link>
+
+        <div className="relative z-10 w-full max-w-7xl mx-auto">
+          {/* Two-column layout */}
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_460px] gap-12 xl:gap-20 items-center mb-14">
+
+            {/* ── Left: content ── */}
+            <div>
+              <p className="font-bold tracking-[0.2em] mb-6 text-sm uppercase" style={{ color: "#93c5fd" }}>
+                INDIA'S FIRST MANAGED PACKAGING PLATFORM
+              </p>
+              <h1 className="clash-display text-white text-5xl md:text-[80px] xl:text-[88px] leading-[1.0] mb-8">
+                Your Packaging.<br />Sorted. Forever.
+              </h1>
+              <p className="text-blue-100 text-xl md:text-2xl mb-4 max-w-xl font-light">
+                Design. Source. QC. Deliver. One platform.{" "}
+                <span className="text-white font-medium italic">Zero vendor chaos.</span>
+              </p>
+              <p className="text-sm md:text-base font-bold tracking-wide mb-10 uppercase flex items-center gap-2" style={{ color: "#93c5fd" }}>
+                <span className="w-1 h-1 rounded-full inline-block" style={{ background: "#93c5fd" }} />
+                Built for D2C, FMCG &amp; Pharma Brands Globally
+              </p>
+              <div className="flex flex-col sm:flex-row gap-5">
+                <Link href="/products">
+                  <button className="px-10 py-5 rounded font-bold text-lg flex items-center justify-center gap-2 hover:opacity-90 transition-all active:scale-95 whitespace-nowrap" style={{ background: "#E8A838", color: "#0F1C2C" }}>
+                    Browse 110+ SKUs <MS icon="arrow_forward" />
+                  </button>
+                </Link>
+                <Link href="/samples">
+                  <button className="border-2 border-white/60 text-white px-10 py-5 rounded font-bold text-lg hover:bg-white/10 transition-all active:scale-95">
+                    Get a sample from ₹2,999
+                  </button>
+                </Link>
+              </div>
+            </div>
+
+            {/* ── Right: floating category cards ── */}
+            <div className="hidden lg:block relative h-[500px]">
+              {HERO_FLOAT_CARDS.map((card) => (
+                <div
+                  key={card.title}
+                  className="float-card absolute rounded-2xl px-5 py-4 w-[172px] cursor-default select-none"
+                  style={{
+                    ...card.pos,
+                    background: "rgba(255,255,255,0.08)",
+                    backdropFilter: "blur(14px)",
+                    WebkitBackdropFilter: "blur(14px)",
+                    border: "1px solid rgba(255,255,255,0.15)",
+                    animationDelay: card.delay,
+                  }}
+                >
+                  <span className="material-symbols-outlined text-2xl mb-2 block" style={{ color: "#93c5fd" }}>{card.icon}</span>
+                  <p className="text-white font-bold text-sm leading-tight mb-1">{card.title}</p>
+                  <p className="text-blue-300 text-xs">{card.skus} SKUs available</p>
+                </div>
+              ))}
+            </div>
           </div>
+
+          {/* ── Stats strip ── */}
           <div className="grid grid-cols-2 md:grid-cols-5 gap-8 py-10 border-t border-white/15">
-            {[
-              { val: "33", label: "SKUs" },
-              { val: "500+", label: "Factory Partners" },
-              { val: "40+", label: "Countries Served" },
-              { val: "QC", label: "On Every Order" },
-              { val: "₹0", label: "Hidden Charges", amber: true },
-            ].map((s) => (
+            {([
+              { target: 110, suffix: "+", label: "SKUs" },
+              { target: 500, suffix: "+", label: "Factory Partners" },
+              { target: 40,  suffix: "+", label: "Countries Served" },
+              { target: 100, suffix: "%", label: "QC Inspected" },
+              { amber: true,              label: "Hidden Charges", fixed: "₹0" },
+            ] as Array<{ target?: number; suffix?: string; label: string; amber?: boolean; fixed?: string }>).map((s) => (
               <div key={s.label}>
-                <p style={{ ...mono, color: s.amber ? "#E8A838" : "white", fontSize: "1.5rem" }}>{s.val}</p>
+                <p style={{ ...mono, color: s.amber ? "#E8A838" : "white", fontSize: "1.5rem" }}>
+                  {s.fixed ?? <CountUp target={s.target!} suffix={s.suffix} />}
+                </p>
                 <p className="text-blue-200 text-xs uppercase tracking-widest mt-1 opacity-80">{s.label}</p>
               </div>
             ))}
@@ -218,7 +292,7 @@ export default function Home() {
       </div>
 
       {/* ── PAIN POINTS ──────────────────────────── */}
-      <section className="py-24 px-8 md:px-20" style={{ background: "#0f172a" }}>
+      <section className="py-24 px-8 md:px-20" style={{ background: "linear-gradient(150deg, #020617 0%, #0f172a 55%, #0d1d5a 100%)" }}>
         <div className="max-w-7xl mx-auto">
           <h2 className="clash-display text-white text-4xl mb-16 max-w-xl">
             Traditional sourcing is broken. We fixed it.
@@ -278,7 +352,7 @@ export default function Home() {
           <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 gap-4">
             <div>
               <h2 className="clash-display text-4xl" style={{ color: "#0D1B2A" }}>Core Product Categories</h2>
-              <p className="mt-2 text-lg" style={{ color: "#44474c" }}>33 curated SKUs across 10 managed categories.</p>
+              <p className="mt-2 text-lg" style={{ color: "#44474c" }}>110+ curated SKUs across 10 managed categories.</p>
             </div>
             <Link href="/products">
               <button className="font-bold flex items-center gap-2 hover:underline" style={{ color: "#1B6CA8" }}>
@@ -308,7 +382,7 @@ export default function Home() {
       </section>
 
       {/* ── INDUSTRIES ───────────────────────────── */}
-      <section className="py-24 px-8 md:px-20" style={{ background: "#020617" }}>
+      <section className="py-24 px-8 md:px-20" style={{ background: "linear-gradient(150deg, #020617 0%, #0a1840 100%)" }}>
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-4">
             <div>
@@ -348,7 +422,7 @@ export default function Home() {
       </div>
 
       {/* ── PROCUREMENT PERFECTED ────────────────── */}
-      <section className="py-24 px-8 md:px-20 text-white text-center" style={{ background: "#0f172a" }}>
+      <section className="py-24 px-8 md:px-20 text-white text-center" style={{ background: "linear-gradient(150deg, #020617 0%, #0f172a 55%, #0d1d5a 100%)" }}>
         <div className="max-w-7xl mx-auto">
           <h2 className="clash-display text-4xl md:text-5xl mb-4">Procurement Perfected</h2>
           <p className="text-slate-400 text-lg mb-20 max-w-2xl mx-auto">From concept to global delivery, our process ensures zero quality compromise.</p>
@@ -530,7 +604,7 @@ export default function Home() {
       </section>
 
       {/* ── SMARTSTOCK ───────────────────────────── */}
-      <section className="relative overflow-hidden" style={{ background: "#0f172a" }}>
+      <section className="relative overflow-hidden" style={{ background: "linear-gradient(150deg, #020617 0%, #0f172a 55%, #0d1d5a 100%)" }}>
         <div className="grid grid-cols-1 lg:grid-cols-2 min-h-[640px]">
           {/* Left: content */}
           <div className="relative z-10 text-white px-8 md:px-20 py-24 flex flex-col justify-center">
@@ -567,7 +641,7 @@ export default function Home() {
       </section>
 
       {/* ── COMPLIANCE ───────────────────────────── */}
-      <section className="py-24 text-white px-8 md:px-20 text-center" style={{ background: "#0f172a" }}>
+      <section className="py-24 text-white px-8 md:px-20 text-center" style={{ background: "linear-gradient(150deg, #020617 0%, #0f172a 55%, #0d1d5a 100%)" }}>
         <h2 className="clash-display text-4xl mb-4">Uncompromising Compliance. Global Ready.</h2>
         <div className="inline-block px-4 py-2 rounded mb-16 border" style={{ background: "rgba(27,108,168,0.2)", borderColor: "rgba(27,108,168,0.3)" }}>
           <p className="text-sm font-bold">Manufactured with precision in India. Exporting to 40+ countries across the Middle East, Europe, and USA.</p>
@@ -618,7 +692,7 @@ export default function Home() {
       </section>
 
       {/* ── FINAL CTA ────────────────────────────── */}
-      <section className="py-24 px-8 md:px-20 text-center relative overflow-hidden" style={{ background: "#0f172a" }}>
+      <section className="py-24 px-8 md:px-20 text-center relative overflow-hidden" style={{ background: "linear-gradient(135deg, #020617 0%, #0f172a 40%, #1e3a8a 100%)" }}>
         <div className="absolute inset-0 opacity-5 pointer-events-none" style={{ backgroundImage: "repeating-linear-gradient(45deg, white 0, white 1px, transparent 0, transparent 50%)", backgroundSize: "20px 20px" }} />
         <div className="relative z-10 max-w-4xl mx-auto">
           <h2 className="clash-display text-white text-5xl md:text-6xl mb-8 leading-tight">The way brands buy packaging just changed.</h2>

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 
 const NAV_ITEMS = [
@@ -12,13 +12,24 @@ const NAV_ITEMS = [
 export function PublicLayout({ children }: { children: React.ReactNode }) {
   const [location] = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 40);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  const navStyle: React.CSSProperties = scrolled
+    ? { background: "rgba(2,6,23,0.72)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)", borderBottom: "1px solid rgba(255,255,255,0.1)", transition: "all 0.3s ease" }
+    : { background: "#020617", borderBottom: "1px solid rgba(255,255,255,0.08)", transition: "all 0.3s ease" };
 
   return (
     <div className="min-h-screen flex flex-col" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
 
       {/* ── NAV ── */}
       <header className="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-6 md:px-10 py-0 h-[68px]"
-        style={{ background: "#020617", borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
+        style={navStyle}>
 
         <Link href="/">
           <span className="text-xl font-black tracking-tight text-white cursor-pointer select-none" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
