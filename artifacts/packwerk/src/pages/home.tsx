@@ -202,7 +202,7 @@ function CountUp({ target, suffix = "", prefix = "", duration = 1500 }: {
 function CaseDetail({ cs }: { cs: typeof CASE_STUDIES[0] }) {
   return (
     <div style={{
-      background: "#F8F9FC", border: "1px solid #E2EAF4", borderRadius: 16,
+      background: "#F8F9FC", border: "1px solid #E2EAF4", borderRadius: 0,
       padding: "44px 48px", minHeight: 380,
       animation: "caseFadeIn 0.25s ease",
     }}>
@@ -236,7 +236,7 @@ function CaseDetail({ cs }: { cs: typeof CASE_STUDIES[0] }) {
         {cs.metrics.map((m) => (
           <div key={m.label} style={{
             flex: 1, background: "white", border: "1px solid #E2EAF4",
-            borderRadius: 10, padding: "16px 20px", textAlign: "center",
+            borderRadius: 0, padding: "16px 20px", textAlign: "center",
           }}>
             <p style={{ color: "#E8A838", fontSize: 26, fontWeight: 700, lineHeight: 1 }}>{m.val}</p>
             <p style={{ color: "#64748B", fontSize: 12, marginTop: 4 }}>{m.label}</p>
@@ -316,12 +316,12 @@ export default function Home() {
               </p>
               <div className="flex flex-col sm:flex-row gap-5">
                 <Link href="/products">
-                  <button className="px-10 py-5 rounded font-bold text-lg flex items-center justify-center gap-2 hover:opacity-90 transition-all active:scale-95 whitespace-nowrap" style={{ background: "#E8A838", color: "#0F1C2C" }}>
+                  <button className="px-10 py-5 font-bold text-lg flex items-center justify-center gap-2 hover:opacity-90 transition-all active:scale-95 whitespace-nowrap" style={{ background: "#E8A838", color: "#0F1C2C" }}>
                     Browse 110+ SKUs <MS icon="arrow_forward" />
                   </button>
                 </Link>
                 <Link href="/samples">
-                  <button className="border-2 border-white/60 text-white px-10 py-5 rounded font-bold text-lg hover:bg-white/10 transition-all active:scale-95">
+                  <button className="border-2 border-white/60 text-white px-10 py-5 font-bold text-lg hover:bg-white/10 transition-all active:scale-95">
                     Get a sample from ₹2,999
                   </button>
                 </Link>
@@ -332,7 +332,7 @@ export default function Home() {
               {HERO_FLOAT_CARDS.map((card) => (
                 <div
                   key={card.title}
-                  className="float-card absolute rounded-2xl px-5 py-4 w-[172px] cursor-default select-none"
+                  className="float-card absolute px-5 py-4 w-[172px] cursor-default select-none"
                   style={{
                     ...card.pos,
                     background: "rgba(255,255,255,0.08)",
@@ -415,7 +415,7 @@ export default function Home() {
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5"
             style={{
               gap: 1, background: "#E2EAF4",
-              border: "1px solid #E2EAF4", borderRadius: 16, overflow: "hidden",
+              border: "1px solid #E2EAF4", borderRadius: 0, overflow: "hidden",
             }}
           >
             {PAIN_POINTS.map((p, i) => (
@@ -457,7 +457,7 @@ export default function Home() {
             This question comes up every time. Here is the honest answer.
           </p>
 
-          <div style={{ maxWidth: 960, margin: "0 auto", borderRadius: 16, overflow: "hidden", boxShadow: "0 4px 32px rgba(13,27,42,0.08)" }}>
+          <div style={{ maxWidth: 960, margin: "0 auto", borderRadius: 0, overflow: "hidden", boxShadow: "0 4px 32px rgba(13,27,42,0.08)" }}>
             {/* Header row */}
             <div style={{ display: "grid", gridTemplateColumns: "2fr 1.5fr 1.5fr", borderBottom: "1px solid #E2EAF4" }}>
               <div style={{ background: "#F8F9FC", padding: "20px 28px" }} />
@@ -568,7 +568,7 @@ export default function Home() {
             <Link href="/how-it-works">
               <button style={{
                 background: "rgba(232,168,56,0.1)", border: "1px solid #E8A838",
-                borderRadius: 999, padding: "10px 24px",
+                borderRadius: 2, padding: "10px 24px",
                 color: "#0D1B2A", fontSize: 14, fontWeight: 600,
                 cursor: "pointer",
               }}>
@@ -636,8 +636,8 @@ export default function Home() {
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5">
             {CATEGORIES.map((cat) => (
               <Link href={`/products?category=${cat.cat}`} key={cat.title}>
-                <div className="group bg-white rounded p-5 shadow-sm hover:-translate-y-2 transition-all cursor-pointer border" style={{ borderColor: "#E2EAF4" }}>
-                  <div className="w-full h-36 rounded mb-4 overflow-hidden bg-slate-100">
+                <div className="group bg-white p-5 shadow-sm hover:-translate-y-2 transition-all cursor-pointer border" style={{ borderColor: "#E2EAF4" }}>
+                  <div className="w-full h-36 mb-4 overflow-hidden bg-slate-100">
                     <img
                       src={CAT_IMAGES[cat.cat]}
                       alt={cat.title}
@@ -682,7 +682,7 @@ export default function Home() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {INDUSTRIES.map((ind) => (
               <Link href={`/industries/${ind.slug}`} key={ind.slug}>
-                <div className="group relative rounded overflow-hidden cursor-pointer h-52">
+                <div className="group relative overflow-hidden cursor-pointer h-52">
                   <img src={ind.img} alt={ind.label} className="w-full h-full object-cover brightness-50 group-hover:brightness-75 group-hover:scale-105 transition-all duration-500" />
                   <div className="absolute inset-0 flex flex-col justify-end p-5">
                     <MS icon={ind.icon} className="text-2xl mb-2" style={{ color: "#E8A838" }} />
@@ -731,7 +731,7 @@ export default function Home() {
               ))}
             </ul>
             <Link href="/quote">
-              <button className="text-white w-fit px-8 py-4 rounded font-bold hover:opacity-90 transition-all" style={{ background: "#1B6CA8" }}>
+              <button className="text-white w-fit px-8 py-4 font-bold hover:opacity-90 transition-all" style={{ background: "#1B6CA8" }}>
                 See SmartStock in Action
               </button>
             </Link>
@@ -767,7 +767,7 @@ export default function Home() {
             <Link href="/products?category=sustainable">
               <button style={{
                 background: "#86EFAC", color: "#0D3B2E",
-                padding: "12px 28px", borderRadius: 8, fontSize: 15, fontWeight: 700,
+                padding: "12px 28px", borderRadius: 0, fontSize: 15, fontWeight: 700,
                 border: "none", cursor: "pointer",
               }}
                 onMouseEnter={e => { (e.currentTarget as HTMLElement).style.filter = "brightness(0.95)"; }}
@@ -830,7 +830,7 @@ export default function Home() {
                     style={{
                       background: isActive ? "rgba(232,168,56,0.04)" : "white",
                       border: `1px solid ${isActive ? "#E8A838" : "#E2EAF4"}`,
-                      borderRadius: 12, padding: "20px 24px",
+                      borderRadius: 0, padding: "20px 24px",
                       cursor: "pointer", position: "relative", overflow: "hidden",
                       transition: "all 0.2s",
                       boxShadow: isActive ? "0 2px 12px rgba(232,168,56,0.12)" : "none",
@@ -855,7 +855,7 @@ export default function Home() {
                     <p style={{ color: "#64748B", fontSize: 12, marginTop: 3 }}>{cs.industry}</p>
                     <div style={{
                       display: "inline-block", marginTop: 10,
-                      background: "rgba(232,168,56,0.1)", borderRadius: 999,
+                      background: "rgba(232,168,56,0.1)", borderRadius: 0,
                       padding: "4px 10px",
                     }}>
                       <span style={{ color: "#E8A838", fontSize: 12, fontWeight: 700 }}>{cs.metric}</span>
@@ -889,7 +889,7 @@ export default function Home() {
           <div style={{
             maxWidth: 900, margin: "0 auto",
             background: "white", border: "1px solid #E2EAF4",
-            borderRadius: 20, padding: "48px",
+            borderRadius: 0, padding: "48px",
             boxShadow: "0 4px 24px rgba(13,27,42,0.06)",
           }}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-14 items-start">
@@ -925,7 +925,7 @@ export default function Home() {
                         onClick={() => setVendorBucket(opt)}
                         style={{
                           border: `1px solid ${vendorBucket === opt ? "#0D1B2A" : "#E2EAF4"}`,
-                          borderRadius: 999, padding: "8px 20px",
+                          borderRadius: 0, padding: "8px 20px",
                           fontSize: 14, cursor: "pointer",
                           background: vendorBucket === opt ? "#0D1B2A" : "white",
                           color: vendorBucket === opt ? "white" : "#64748B",
@@ -950,7 +950,7 @@ export default function Home() {
                         onClick={() => setUseCredit(opt)}
                         style={{
                           border: `1px solid ${useCredit === opt ? "#0D1B2A" : "#E2EAF4"}`,
-                          borderRadius: 999, padding: "8px 20px",
+                          borderRadius: 0, padding: "8px 20px",
                           fontSize: 14, cursor: "pointer",
                           background: useCredit === opt ? "#0D1B2A" : "white",
                           color: useCredit === opt ? "white" : "#64748B",
@@ -989,7 +989,7 @@ export default function Home() {
                           <div style={{
                             position: "absolute", bottom: 24, left: -90, width: 200,
                             background: "#0D1B2A", color: "white", fontSize: 12,
-                            padding: "8px 12px", borderRadius: 8, zIndex: 100, lineHeight: 1.5,
+                            padding: "8px 12px", borderRadius: 2, zIndex: 100, lineHeight: 1.5,
                             boxShadow: "0 4px 16px rgba(0,0,0,0.2)",
                           }}>
                             Credit pricing is typically 10–15% above cash price. This is embedded in your vendor's per-unit quote.
@@ -1021,7 +1021,7 @@ export default function Home() {
                 <Link href="/quote">
                   <button style={{
                     width: "100%", background: "#E8A838", color: "#0D1B2A",
-                    padding: 14, borderRadius: 8, fontSize: 15, fontWeight: 700,
+                    padding: 14, borderRadius: 0, fontSize: 15, fontWeight: 700,
                     border: "none", cursor: "pointer",
                   }}>
                     Get a quote — see real prices →
@@ -1065,7 +1065,7 @@ export default function Home() {
           <div style={{ display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap" }}>
             <Link href="/products">
               <button
-                style={{ background: "#E8A838", color: "#0D1B2A", padding: "16px 36px", borderRadius: 8, fontSize: 16, fontWeight: 700, border: "none", cursor: "pointer" }}
+                style={{ background: "#E8A838", color: "#0D1B2A", padding: "16px 36px", borderRadius: 0, fontSize: 16, fontWeight: 700, border: "none", cursor: "pointer" }}
                 onMouseEnter={e => { (e.currentTarget as HTMLElement).style.filter = "brightness(1.08)"; }}
                 onMouseLeave={e => { (e.currentTarget as HTMLElement).style.filter = "brightness(1)"; }}
               >
@@ -1077,7 +1077,7 @@ export default function Home() {
                 style={{
                   background: "transparent", color: "white",
                   border: "2px solid rgba(255,255,255,0.3)",
-                  padding: "16px 36px", borderRadius: 8, fontSize: 16, fontWeight: 600, cursor: "pointer",
+                  padding: "16px 36px", borderRadius: 0, fontSize: 16, fontWeight: 600, cursor: "pointer",
                 }}
                 onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = "white"; }}
                 onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(255,255,255,0.3)"; }}
