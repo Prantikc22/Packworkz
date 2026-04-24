@@ -1,0 +1,1166 @@
+Complete homepage restructure.
+Follow this exactly.
+Delete anything not in this list.
+Do not add anything not specified here.
+
+---
+
+FINAL PAGE STRUCTURE
+In this exact order:
+1. Nav
+2. Hero (keep existing — do not touch)
+3. Client marquee (keep existing)
+4. Pain points section
+5. Comparison table section
+6. How It Works section (process)
+7. Stats strip
+8. Product categories grid
+9. Advantage orbital diagram 
+   (keep existing — do not touch)
+10. Sustainable packaging band
+11. Case studies section
+12. Savings calculator section
+13. Final CTA section
+14. Footer
+
+Delete every other section 
+that is not in this list.
+If there are duplicate sections — 
+keep only the first instance and 
+delete the rest.
+
+---
+
+SECTION 4: PAIN POINTS
+(rebuild if poorly designed)
+
+Background: #FFFFFF
+Padding: 100px 0
+
+Eyebrow: "THE PROBLEM"
+style: color #1B6CA8, 11px, 
+600 weight, 2px letter-spacing, 
+uppercase, display block, 
+margin-bottom 14px
+
+Headline: "Traditional sourcing is broken.
+We fixed it."
+style: #0D1B2A, 52px, 700, 
+line-height 1.15, margin-bottom 56px
+
+5 cards in a grid:
+display: grid
+grid-template-columns: repeat(5, 1fr)
+gap: 1px
+background: #E2EAF4
+border: 1px solid #E2EAF4
+border-radius: 16px
+overflow: hidden
+
+Each card:
+background: #FFFFFF
+padding: 32px 24px
+transition: background 0.2s
+
+Hover: background: #F8F9FC
+
+Red dot at top of each card:
+width: 8px, height: 8px
+border-radius: 50%
+background: #EF4444
+display: block
+margin-bottom: 24px
+
+Card title: #0D1B2A, 15px, 700, 
+margin-bottom 10px
+
+Card body: #64748B, 13px, 
+line-height 1.65
+
+Cards:
+1. Title: "Vendor delays"
+   Body: "Promised 10 days. 
+   It's been 3 weeks. 
+   Your production line is waiting."
+
+2. Title: "Quality roulette"
+   Body: "Perfect last batch. 
+   Rejected this batch. 
+   Same vendor. No explanation."
+
+3. Title: "Vendor overload"
+   Body: "6 vendors for 6 SKUs. 
+   Coordination costs 
+   2 full days every month."
+
+4. Title: "Compliance gaps"
+   Body: "Your export buyer needs 
+   FDA certs. Your vendor 
+   doesn't have them."
+
+5. Title: "Credit illusion"
+   Body: "Their 'free' credit 
+   is 12% higher per unit. 
+   You always pay for it."
+
+Below cards, text-align center, 
+margin-top 40px:
+"We built PackOps to eliminate 
+every single one of these."
+style: #0D1B2A, 22px, 700
+
+---
+
+SECTION 5: COMPARISON TABLE
+(rebuild if poorly designed)
+
+Background: #F8F9FC
+Padding: 100px 0
+
+Eyebrow: "THE HONEST COMPARISON"
+
+Headline: "Why not just call 
+a vendor directly?"
+52px, #0D1B2A, 700
+
+Subheadline:
+"This question comes up every time. 
+Here is the honest answer."
+#64748B, 18px, max-width 520px,
+margin: 16px 0 48px
+
+Table container:
+max-width: 960px
+margin: 0 auto
+border-radius: 16px
+overflow: hidden
+box-shadow: 0 4px 32px 
+rgba(13,27,42,0.08)
+
+Table uses CSS Grid throughout.
+No HTML <table> element.
+Each row: 
+display: grid
+grid-template-columns: 2fr 1.5fr 1.5fr
+border-bottom: 1px solid #E2EAF4
+
+HEADER ROW:
+Cell 1: background #F8F9FC, 
+padding 20px 28px, empty
+
+Cell 2: background #0D1B2A, 
+padding 20px 28px, 
+text-align center
+Content:
+"PackOps" 
+white, 16px, 700
+"Managed Platform"
+#1B6CA8, 11px, uppercase, 
+tracked, margin-top 4px
+
+Cell 3: background #E8ECF2,
+padding 20px 28px,
+text-align center
+Content:
+"Direct Vendor"
+#475569, 16px, 700
+"Traditional Approach"
+#94A3B8, 11px, uppercase, tracked
+
+8 DATA ROWS:
+Alternating: white and #FAFBFC
+
+Each row cell 1:
+padding: 18px 28px
+color: #0D1B2A, 14px, 600
+
+Each row cell 2:
+padding: 18px 28px
+text-align: center
+background: rgba(13,27,42,0.015)
+✓ in #22C55E, 18px, 700
+Detail text below in 
+#64748B, 12px, line-height 1.4,
+max-width 150px, margin 4px auto 0
+
+Each row cell 3:
+padding: 18px 28px
+text-align: center
+✗ in #EF4444, 18px, 700
+Detail text in #94A3B8, 12px
+
+Rows:
+1. Label: "Backup coverage"
+   ✓: "3 backup vendors per order"
+   ✗: "One vendor. Their delay is your delay."
+
+2. Label: "QC ownership"
+   ✓: "We inspect every dispatch"
+   ✗: "Vendor checks their own work"
+
+3. Label: "True cost of credit"
+   ✓: "Transparent pricing + 3% upfront discount"
+   ✗: "Credit = 10–15% higher per unit"
+
+4. Label: "SKU range"
+   ✓: "110+ SKUs. One invoice."
+   ✗: "One category. Source the rest yourself."
+
+5. Label: "Compliance docs"
+   ✓: "ISO, BRC, FDA, FSC. Export-ready."
+   ✗: "Varies. Risk is yours."
+
+6. Label: "Packaging design"
+   ✓: "₹1,999. Files yours forever."
+   ✗: "Mostly unavailable."
+
+7. Label: "Order tracking"
+   ✓: "Real-time dashboard."
+   ✗: "WhatsApp messages."
+
+8. Label: "Problem resolution"
+   ✓: "48-hour resolution guarantee."
+   ✗: "Call them. Hope they answer."
+
+FOOTER ROW of table:
+grid-column: 1 / -1
+background: #E8A838
+padding: 18px 28px
+text-align: center
+color: #0D1B2A, 15px, 700:
+"Even with their credit — 
+we are still the better financial choice."
+
+---
+
+SECTION 6: HOW IT WORKS
+
+Background: #FFFFFF
+Padding: 100px 0
+
+Eyebrow: "THE PROCESS"
+
+Headline: "From brief to delivered.
+Every time."
+52px, #0D1B2A, 700
+
+Subheadline:
+"Four steps. Zero ambiguity. 
+One team responsible for all of it."
+#64748B, 18px, max-width 480px,
+margin: 16px 0 64px
+
+4 steps in a horizontal layout:
+display: grid
+grid-template-columns: repeat(4, 1fr)
+gap: 0
+position: relative
+max-width: 1000px
+margin: 0 auto
+
+Connecting line between steps:
+position: absolute
+top: 28px (centre of icon)
+left: calc(12.5%)
+right: calc(12.5%)
+height: 1px
+background: linear-gradient(90deg, 
+#E2EAF4, #1B6CA8, #E8A838, #E2EAF4)
+z-index: 0
+
+Each step:
+position: relative
+z-index: 1
+text-align: center
+padding: 0 16px
+
+Step circle:
+width: 56px, height: 56px
+border-radius: 50%
+margin: 0 auto 24px
+display: flex
+align-items: center
+justify-content: center
+Steps 1,2: background #0D1B2A
+Steps 3,4: background #1B6CA8
+Lucide icon inside: white, 22px
+
+Step number (above circle):
+color: #E8A838, 11px, 700,
+uppercase, tracked
+margin-bottom: 8px
+
+Step title:
+#0D1B2A, 17px, 700
+margin-bottom: 8px
+
+Step description:
+#64748B, 13px, line-height 1.6
+
+4 steps:
+
+Step 1:
+Number label: "Step 01"
+Icon: Search
+Title: "Configure and Quote"
+Desc: "Browse 110+ SKUs, 
+configure your spec, 
+and submit a quote request. 
+We respond in 48 hours."
+
+Step 2:
+Number label: "Step 02"
+Icon: GitBranch
+Title: "We Source and Match"
+Desc: "PackOS matches your SKU 
+to the best available factory 
+from our verified network. 
+3 backup vendors assigned."
+
+Step 3:
+Number label: "Step 03"
+Icon: ShieldCheck
+Title: "QC at Every Stage"
+Desc: "Pre-production sample. 
+In-process check. 
+Pre-dispatch inspection. 
+You see photo evidence."
+
+Step 4:
+Number label: "Step 04"
+Icon: Truck
+Title: "Delivered and Tracked"
+Desc: "Door to door logistics. 
+Real-time tracking in 
+your dashboard. 
+India or global."
+
+Below 4 steps (margin-top: 56px, 
+text-align: center):
+Amber pill button:
+background: rgba(232,168,56,0.1)
+border: 1px solid #E8A838
+border-radius: 999px
+padding: 10px 24px
+color: #0D1B2A
+font-size: 14px
+font-weight: 600
+cursor: pointer
+Text: "See the full process →"
+Links to /how-it-works
+
+---
+
+SECTION 7: STATS STRIP
+
+Background: #F8F9FC
+Border-top: 1px solid #E2EAF4
+Border-bottom: 1px solid #E2EAF4
+Padding: 56px 0
+
+display: flex
+justify-content: center
+align-items: center
+gap: 80px
+max-width: 900px
+margin: 0 auto
+
+3 stats with vertical dividers between:
+
+Between each stat:
+width: 1px, height: 52px
+background: #E2EAF4
+
+Stat 1:
+"500+"
+color: #E8A838, 52px, 700
+"Verified factory partners"
+#64748B, 14px, margin-top 4px
+
+Stat 2:
+"1"
+#E8A838, 52px, 700
+"Owned manufacturing facility"
+#64748B, 14px
+"Flexo + Rotogravure · Indore"
+#1B6CA8, 11px, margin-top 3px
+
+Stat 3:
+"40+"
+#E8A838, 52px, 700
+"Countries delivered to"
+#64748B, 14px
+
+Count-up animation on scroll:
+IntersectionObserver, 
+trigger once, 1.5s, ease-out
+
+---
+
+SECTION 8: PRODUCT CATEGORIES GRID
+(keep if already built, 
+just add the design line below)
+
+After the product categories grid,
+add this line:
+
+margin-top: 32px
+text-align: center
+color: #64748B, 15px:
+"Need packaging design before ordering? "
+Inline link (color: #1B6CA8, 
+text-decoration underline,
+font-weight 600):
+"Get print-ready artwork from ₹1,999 →"
+href: /design
+
+---
+
+SECTION 9: ORBITAL ADVANTAGE DIAGRAM
+Keep exactly as built. Do not touch.
+
+---
+
+SECTION 10: SUSTAINABLE PACKAGING BAND
+(compact — not a full section)
+
+Background: #0D3B2E
+Padding: 72px 0
+
+display: grid
+grid-template-columns: 1fr 1fr
+gap: 80px
+align-items: center
+max-width: 1100px
+margin: 0 auto
+padding-left: 40px
+padding-right: 40px
+
+Left side:
+Eyebrow: "SUSTAINABLE PACKAGING"
+color: #86EFAC, 11px, 
+uppercase, tracked
+
+Headline: "Eco packaging 
+at real scale."
+white, 44px, 700, line-height 1.2,
+margin: 14px 0 20px
+
+Body (rgba(255,255,255,0.7), 16px, 
+line-height 1.7):
+"12 certified sustainable SKUs. 
+All customisable with your brand design. 
+Food-safe, leak-proof, 
+and built for Indian brands 
+that take sustainability seriously. 
+Full EPR compliance documentation 
+included with every order."
+
+CTA (margin-top: 28px):
+background: #86EFAC
+color: #0D3B2E
+padding: 12px 28px
+border-radius: 8px
+font-size: 15px
+font-weight: 700
+border: none
+cursor: pointer
+hover: brightness(0.95)
+Text: "See all sustainable SKUs →"
+href: /sustainable
+
+Right side:
+3 rows, each row showing 
+one sustainability claim:
+
+Row style:
+display: flex
+align-items: flex-start
+gap: 14px
+margin-bottom: 24px
+
+Each row:
+Left: circle icon 
+(background rgba(134,239,172,0.15),
+width 40px, height 40px,
+border-radius 50%,
+display flex, align-items center,
+Lucide icon: #86EFAC, 18px)
+
+Right:
+Title: white, 14px, 700
+Desc: rgba(255,255,255,0.6), 13px
+
+Row 1: Icon: Leaf
+Title: "12 certified sustainable SKUs"
+Desc: "Kraft, compostable, 
+recycled, and mono-material"
+
+Row 2: Icon: Droplets
+Title: "Food-safe and leak-proof"
+Desc: "Tested for spices, 
+gravies, and Indian food products"
+
+Row 3: Icon: FileCheck
+Title: "EPR compliance included"
+Desc: "Full documentation 
+for your annual filing"
+
+---
+
+SECTION 11: CASE STUDIES
+
+Background: #FFFFFF
+Padding: 100px 0
+
+Eyebrow: "CLIENT RESULTS"
+
+Headline: "Brands that switched.
+Numbers that speak."
+52px, #0D1B2A, 700
+margin-bottom: 56px
+
+Layout:
+display: grid
+grid-template-columns: 280px 1fr
+gap: 24px
+max-width: 1100px
+margin: 0 auto
+align-items: start
+
+LEFT COLUMN (selector cards):
+display: flex
+flex-direction: column
+gap: 12px
+
+3 selector cards:
+Each card:
+background: white
+border: 1px solid #E2EAF4
+border-radius: 12px
+padding: 20px 24px
+cursor: pointer
+transition: all 0.2s
+
+Active state:
+border-color: #E8A838
+background: rgba(232,168,56,0.04)
+box-shadow: 0 2px 12px 
+rgba(232,168,56,0.12)
+
+Left border accent (active only):
+position: absolute, left 0, 
+top 0, bottom 0, width 3px,
+background: #E8A838,
+border-radius: 3px 0 0 3px
+
+Card content:
+Company initials avatar:
+width 36px, height 36px
+border-radius 50%
+background #0D1B2A
+color white, 14px, 700
+margin-bottom 10px
+
+Company name: 
+#0D1B2A, 15px, 700
+
+Industry + city:
+#64748B, 12px, margin-top 3px
+
+Metric pill (amber bg 10%, 
+amber text, 
+border-radius 999px,
+padding 4px 10px,
+font-size 12px, 700,
+margin-top 10px,
+display inline-block):
+Shows the key metric
+
+3 cards:
+
+Card 1 (default active):
+Initials: "ZF"
+Company: "Zestful Foods"
+Industry: "D2C Snacks · Mumbai"
+Metric: "7 vendors → 1 platform"
+
+Card 2:
+Initials: "DI"
+Company: "Dermatica India"
+Industry: "Cosmetics · Bangalore"
+Metric: "₹3.8L saved in Year 1"
+
+Card 3:
+Initials: "NC"
+Company: "NatureCraft Organics"
+Industry: "Organic Food · Pune"
+Metric: "14 days · Fully certified"
+
+RIGHT COLUMN (detail card):
+background: #F8F9FC
+border: 1px solid #E2EAF4
+border-radius: 16px
+padding: 44px 48px
+min-height: 360px
+position: relative
+
+When selector card clicked:
+Fade out old content (opacity 0, 
+100ms), update content, 
+fade in (opacity 1, 200ms)
+
+Detail card content structure:
+
+Top row:
+Left: company name (#0D1B2A, 22px, 700)
+Right: 5 amber stars ★★★★★ (16px)
+
+Industry + location tag:
+background: #E2EAF4
+border-radius: 999px
+padding: 4px 12px
+color: #64748B, 12px
+display: inline-block
+margin: 10px 0 28px
+
+Three content blocks 
+separated by thin dividers:
+
+Block 1:
+Label: "THE CHALLENGE"
+#1B6CA8, 10px, uppercase, 
+tracked, margin-bottom 8px
+Body: quote text, 
+#0D1B2A, 15px, 
+line-height 1.7, 
+font-style italic
+
+Block 2:
+Label: "WHAT WE DID"
+same label style
+Body: action text, 
+#64748B, 14px, line-height 1.7
+
+Block 3:
+Label: "THE RESULT"
+same label style
+Body: result text, 
+#0D1B2A, 14px, 700
+
+Bottom row (margin-top: 32px):
+3 metric boxes side by side
+(background white, 
+border 1px solid #E2EAF4, 
+border-radius 10px,
+padding 16px 20px,
+text-align center):
+Metric number: #E8A838, 28px, 700
+Metric label: #64748B, 12px, 
+margin-top 4px
+
+3 case study data objects:
+
+CASE STUDY 1 (Zestful Foods):
+challenge: "We were managing 7 different 
+packaging vendors for our snack range. 
+Every month was a coordination nightmare — 
+delays from one vendor cascaded 
+across our entire production schedule."
+what_we_did: "Consolidated all 7 SKUs 
+onto the PackOps platform. 
+Assigned backup vendors for each. 
+Integrated their reorder into 
+the dashboard with SmartStock pre-positioning."
+result: "Single point of contact for 
+all packaging. Zero production delays 
+in the first 6 months. 
+Quality consistent across every batch."
+metrics:
+  - value: "7 → 1" label: "Vendors managed"
+  - value: "₹0" label: "Production delays"
+  - value: "6 mo" label: "Zero quality issues"
+
+CASE STUDY 2 (Dermatica India):
+challenge: "Our previous vendor's QC 
+was self-certified. 
+We received two batches with 
+print registration errors 
+that our retail partners rejected. 
+The cost of returns was significant."
+what_we_did: "Moved cosmetic jar 
+and carton orders to PackOps. 
+Pre-dispatch inspection with 
+photo evidence on every batch. 
+Design also migrated — 
+artwork now stored on platform."
+result: "Zero QC rejections 
+in 14 months. 
+Artwork errors eliminated because 
+print-ready files are standardised. 
+Net saving vs previous vendor."
+metrics:
+  - value: "0" label: "QC rejections"
+  - value: "₹3.8L" label: "Annual saving"
+  - value: "14 mo" label: "Perfect record"
+
+CASE STUDY 3 (NatureCraft Organics):
+challenge: "We needed FSC certified 
+kraft pouches with compostability 
+certification for a UK export order. 
+Our local vendor couldn't provide 
+the documentation and 
+we nearly lost the contract."
+what_we_did: "Sourced FSC certified 
+kraft stand-up pouches from our 
+verified sustainable packaging network. 
+Provided full export documentation 
+including FSC chain of custody certificate."
+result: "UK export order fulfilled 
+on time with full certification. 
+Buyer has since placed 
+3 repeat orders. 
+Sustainable packaging now 
+standard across their range."
+metrics:
+  - value: "14d" label: "Sourced and shipped"
+  - value: "3x" label: "Repeat orders won"
+  - value: "100%" label: "Certs provided"
+
+Store these 3 objects in a 
+const caseStudies array in the component.
+Active index = 0 by default.
+Clicking a selector card 
+updates active index.
+Right panel re-renders with new data.
+
+---
+
+SECTION 12: SAVINGS CALCULATOR
+
+Background: #F8F9FC
+Padding: 100px 0
+
+Eyebrow: "THE NUMBERS"
+
+Headline: "How much is vendor 
+chaos costing you?"
+52px, #0D1B2A, 700
+margin-bottom: 16px
+
+Subheadline:
+"Most brands overpay by 8–15% 
+without realising it. 
+Calculate your real cost."
+#64748B, 18px, margin-bottom 56px
+
+Calculator card:
+max-width: 900px
+margin: 0 auto
+background: white
+border: 1px solid #E2EAF4
+border-radius: 20px
+padding: 48px
+box-shadow: 0 4px 24px 
+rgba(13,27,42,0.06)
+
+display: grid
+grid-template-columns: 1fr 1fr
+gap: 56px
+align-items: start
+
+LEFT SIDE — inputs:
+
+Input 1:
+Label: "Monthly packaging spend"
+#0D1B2A, 14px, 600, margin-bottom 16px
+
+Slider:
+type: range
+min: 50000, max: 5000000, step: 10000
+default: 500000
+Custom styled:
+  track: #E2EAF4
+  filled track: #E8A838
+  thumb: #0D1B2A, 20px circle
+Below slider: 
+current value formatted 
+in Indian number format
+#E8A838, 22px, 700, 
+text-align center, margin-top 8px
+
+Input 2:
+Label: "Vendors you currently manage"
+margin-top: 32px, margin-bottom 12px
+
+3 option pills:
+display: flex, gap: 8px
+
+Each pill:
+border: 1px solid #E2EAF4
+border-radius: 999px
+padding: 8px 20px
+font-size: 14px
+cursor: pointer
+transition: all 0.15s
+
+Unselected: bg white, color #64748B
+Selected: bg #0D1B2A, 
+         color white, 
+         border-color #0D1B2A
+
+Options: "Just 1" · "2 to 4" · "5+"
+Default selected: "2 to 4"
+
+Input 3:
+Label: "Do you receive credit from vendor?"
+margin-top: 28px, margin-bottom 12px
+
+2 option pills:
+"Yes" · "No"
+Default: "Yes"
+
+RIGHT SIDE — outputs:
+All values update instantly 
+as inputs change.
+
+Calculation logic:
+const saving_pct = 
+  vendors === 'Just 1' ? 0.08 :
+  vendors === '2 to 4' ? 0.10 : 0.12
+
+const annual_spend = 
+  monthly_spend * 12
+
+const annual_saving = 
+  annual_spend * saving_pct
+
+const credit_markup = 
+  credit === 'Yes' ? 
+  annual_spend * 0.12 : 0
+
+const upfront_saving = 
+  annual_spend * 0.03
+
+const total_value = 
+  annual_saving + credit_markup
+
+const time_saved = 
+  vendors === 'Just 1' ? 4 :
+  vendors === '2 to 4' ? 8 : 14
+
+Format all values with 
+Intl.NumberFormat('en-IN', 
+{style:'currency', currency:'INR', 
+maximumFractionDigits: 0})
+
+Output layout:
+4 metric rows, 
+each with a left label 
+and right value:
+
+Row 1:
+Label: "Estimated annual saving"
+Value: ₹[annual_saving]
+Value style: #22C55E, 28px, 700
+
+Row 2 (show only if credit = Yes):
+Label: "Hidden credit markup you pay"
+Value: +₹[credit_markup]
+Value style: #EF4444, 24px, 700
+Tooltip icon next to label:
+hover shows: 
+"Credit pricing is typically 
+10–15% above cash price. 
+This is embedded in your 
+vendor's per-unit quote."
+
+Row 3:
+Label: "Extra saving if you pay upfront"
+Value: +₹[upfront_saving]
+Value style: #E8A838, 22px, 700
+
+Divider line
+
+Row 4 (total):
+Label: "Total annual value"
+Label style: #0D1B2A, 16px, 700
+Value: ₹[total_value]
+Value style: #0D1B2A, 36px, 700
+
+Below metrics, margin-top 24px:
+Label: "Time saved per month"
+Value: [time_saved] hours
+
+CTA button below 
+(full width of right panel):
+background: #E8A838
+color: #0D1B2A
+padding: 14px
+border-radius: 8px
+font-size: 15px, 700
+margin-top: 28px
+Text: "Get a quote — see real prices →"
+href: /quote
+
+Small text below button 
+(#94A3B8, 12px, text-align center):
+"Estimates based on industry averages. 
+Actual savings confirmed in your quote."
+
+---
+
+SECTION 13: FINAL CTA
+
+Background: linear-gradient(135deg, 
+#0D1B2A 0%, #0F2744 100%)
+
+Subtle box pattern texture:
+background-image repeating SVG boxes 
+at opacity 0.03 (as specified before)
+
+Padding: 120px 0
+Text-align: center
+
+Eyebrow: "GET STARTED"
+color: #1B6CA8
+
+Headline: "Packaging sorted.
+Forever."
+white, 64px, 700, line-height 1.1
+margin-bottom: 20px
+
+Subheadline:
+"Join brands across India and 40+ countries 
+who have simplified their 
+packaging supply chain."
+rgba(255,255,255,0.6), 19px
+max-width: 460px
+margin: 0 auto 48px
+line-height: 1.6
+
+Two CTAs:
+display: flex, gap: 16px, 
+justify-content: center
+
+Primary: 
+bg #E8A838, color #0D1B2A,
+padding 16px 36px,
+border-radius 8px, 16px, 700
+hover: brightness(1.08)
+"Browse 110+ SKUs →"
+href: /products
+
+Secondary:
+bg transparent, color white,
+border: 2px solid rgba(255,255,255,0.3),
+padding 16px 36px,
+border-radius 8px, 16px, 600
+hover: border-color white
+"WhatsApp Us"
+Opens WhatsApp link
+
+Trust strip below (margin-top: 40px):
+Items separated by · 
+rgba(255,255,255,0.45), 13px:
+"Quote in 48 hours" · 
+"No commitment until you approve" · 
+"Sample from ₹2,999" · 
+"Design from ₹1,999"
+
+---
+
+SECTION 14: FOOTER
+
+Background: #080F1A
+Padding: 60px 0 32px
+
+Container: 
+max-width 1200px, 
+margin 0 auto, 
+padding 0 40px
+
+4 columns (grid, 
+grid-template-columns: 
+2fr 1.5fr 1.5fr 1.5fr):
+
+Column 1:
+"PackOps" 
+white, 22px, 700, 
+margin-bottom 10px
+
+"India's first managed 
+packaging platform. 
+Design. Source. QC. Deliver."
+rgba(255,255,255,0.5), 14px,
+line-height 1.6, max-width 200px
+
+Social row (margin-top 20px):
+LinkedIn + Instagram icons
+rgba(255,255,255,0.4), 
+hover: white, 18px, gap 16px
+
+Column 2:
+Label: "PRODUCTS"
+rgba(255,255,255,0.4), 11px,
+uppercase, tracked, 
+margin-bottom 16px
+
+Links (rgba(255,255,255,0.7), 
+14px, hover white, line-height 2):
+Flexible Packaging
+Rigid Packaging
+Boxes and Retail
+E-commerce Packaging
+Sustainable Packaging
+Premium and Gift
+
+Column 3:
+Label: "COMPANY"
+Links:
+About Us
+How It Works
+Industries
+Sustainability
+Global Shipping
+Blog
+
+Column 4:
+Label: "GET STARTED"
+Links:
+Browse Products
+Get a Quote
+Order a Sample
+Packaging Design
+Login
+WhatsApp Us
+
+Bottom bar:
+border-top: 1px solid rgba(255,255,255,0.08)
+padding-top: 28px
+margin-top: 48px
+display: flex
+justify-content: space-between
+align-items: center
+flex-wrap: wrap
+gap: 16px
+
+Left:
+"© 2026 PackOps India. 
+All rights reserved."
+rgba(255,255,255,0.35), 12px
+
+Centre:
+5 cert badges in a row:
+Each:
+background rgba(255,255,255,0.06)
+border 1px solid rgba(255,255,255,0.12)
+border-radius 4px
+padding 4px 10px
+color rgba(255,255,255,0.5)
+font-size 10px, 600
+
+ISO 9001 · FSSC 22000 · 
+BRC · FDA · FSC
+
+Right:
+"Privacy Policy · Terms"
+rgba(255,255,255,0.35), 12px
+links with hover: white
+
+---
+
+GLOBAL DESIGN RULES
+Apply to every section on the page.
+If any existing section violates 
+these — fix it automatically.
+
+Fonts: Plus Jakarta Sans only.
+Two weights: 400 (body) and 700 (bold).
+No other weights, no other families.
+
+Icons: Lucide React only.
+No emoji. No other icon libraries.
+
+Colours — only these:
+#0D1B2A (navy)
+#1B6CA8 (blue)
+#E8A838 (amber)
+#FFFFFF (white)
+#F8F9FC (surface)
+#64748B (muted text)
+#E2EAF4 (border)
+#22C55E (success)
+#EF4444(danger)
+#0D3B2E (dark green — 
+         sustainable section only)
+
+Section backgrounds in order:
+white → #F8F9FC → white → 
+#F8F9FC → white → 
+white → #0D3B2E → 
+white → #F8F9FC → 
+dark navy gradient → #080F1A
+
+Section padding: 100px 0 (all)
+Exception: stats strip 56px 0
+Exception: sustainable band 72px 0
+Exception: footer 60px 0 32px
+
+Container: max-width 1200px, 
+margin 0 auto, padding 0 40px
+
+Eyebrow style (every section):
+color: #1B6CA8
+font-size: 11px
+font-weight: 600
+letter-spacing: 2px
+text-transform: uppercase
+display: block
+margin-bottom: 14px
+
+Cards:
+border: 1px solid #E2EAF4
+border-radius: 12px
+No coloured card borders 
+unless specifically instructed
+Hover: translateY(-2px), 
+transition 0.2s ease
+
+No stock photography anywhere.
+No gradient backgrounds 
+on white sections.
+No random coloured sections 
+not in the specified list.
+No shadows heavier than:
+box-shadow: 0 4px 24px 
+rgba(13,27,42,0.08)
+
+Mobile breakpoint at 768px:
+5-column pain point cards 
+→ 2x3 grid then 1 column
+4-column process steps 
+→ 2x2 grid
+2-column calculator 
+→ 1 column stacked
+2-column sustainable band 
+→ 1 column stacked
+Case studies 2-column layout 
+→ selector on top, 
+  detail below, 
+  selector becomes horizontal scroll
+
+WhatsApp floating button:
+position: fixed
+bottom: 24px, right: 24px
+z-index: 1000
+width: 56px, height: 56px
+border-radius: 50%
+background: #25D366
+box-shadow: 0 4px 20px 
+rgba(37,211,102,0.4)
+cursor: pointer
+Lucide MessageCircle icon, 
+white, 26px
+hover: scale(1.1), transition 0.2s
+onClick: open WhatsApp link

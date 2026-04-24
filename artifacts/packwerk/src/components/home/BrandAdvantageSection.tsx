@@ -1,238 +1,314 @@
 import { useState, useEffect, useRef } from "react";
-import {
-  GitBranch, ShieldCheck, Truck, CreditCard, Cpu, Globe, Paintbrush, Leaf,
-} from "lucide-react";
+import { GitBranch, ShieldCheck, Truck, CreditCard, Globe, Paintbrush } from "lucide-react";
 
 const NODES = [
   {
     icon: GitBranch,
-    label: "Multi-Vendor\nBackup",
+    label: "Multi-Vendor Backup",
+    stat: "Zero delays due to vendor failure",
     title: "3 backup vendors. Always.",
     body: "Every order has 3 qualified vendors assigned simultaneously. If your primary vendor misses a deadline — a backup ships without delay. Your production line never waits.",
-    stat: "0 orders delayed due to vendor failure",
   },
   {
     icon: ShieldCheck,
-    label: "End-to-End\nQC",
+    label: "End-to-End QC",
+    stat: "98.7% QC first-pass rate",
     title: "We inspect. You approve.",
     body: "Pre-production sample approval. Mid-production check on orders above ₹2L. Pre-dispatch inspection on every order. We own the quality outcome — not your vendor.",
-    stat: "98.7% QC first-pass rate",
-  },
-  {
-    icon: Truck,
-    label: "Logistics\nOwned",
-    title: "Door to door. Tracked.",
-    body: "We manage factory pickup, interstate freight, customs documentation, and last-mile delivery. Real-time tracking in your dashboard at every stage.",
-    stat: "40+ countries delivered to",
-  },
-  {
-    icon: CreditCard,
-    label: "Net-30\nCredit",
-    title: "Credit you earn. Not beg for.",
-    body: "New clients start on advance terms. After 3 completed orders apply for net-30 credit up to ₹5L. Or pay upfront and save 3% on every order. Your call.",
-    stat: "3% saved = ₹30,000/yr on ₹10L spend",
-  },
-  {
-    icon: Cpu,
-    label: "PackOS\nTechnology",
-    title: "Your packaging runs on PackOS.",
-    body: "Factory matching, production tracking, QC checkpoints, SmartStock inventory, and logistics — all in one dashboard. No WhatsApp chasing. No guesswork.",
-    stat: "Real-time tracking. Always.",
   },
   {
     icon: Globe,
-    label: "Global\nCompliance",
+    label: "Global Compliance",
+    stat: "5 global certifications on every order",
     title: "Your buyer never rejects us.",
     body: "ISO 9001, FSSC 22000, BRC, FDA, FSC — all factory partners certified. Export documentation included with every order. International buyers cleared.",
-    stat: "5 global certifications on every order",
+  },
+  {
+    icon: CreditCard,
+    label: "Net-30 Credit",
+    stat: "3% saved = ₹30,000/yr on ₹10L spend",
+    title: "Credit you earn. Not beg for.",
+    body: "New clients start on advance terms. After 3 completed orders apply for Net-30 credit up to ₹5L. Or pay upfront and save 3% on every order.",
+  },
+  {
+    icon: Truck,
+    label: "Logistics Owned",
+    stat: "40+ countries delivered to",
+    title: "Door to door. Tracked.",
+    body: "We manage factory pickup, interstate freight, customs documentation, and last-mile delivery. Real-time tracking in your dashboard at every stage.",
   },
   {
     icon: Paintbrush,
-    label: "Packaging\nDesign",
+    label: "Packaging Design",
+    stat: "₹1,999 · adjusted against first order",
     title: "Brief us. Done in 5 days.",
     body: "₹1,999 for print-ready packaging design. Structural dieline + artwork + source files. Works for every SKU including sustainable packs. Fully adjusted against your first order.",
-    stat: "₹1,999. Adjusted against first order.",
-  },
-  {
-    icon: Leaf,
-    label: "Sustainable\nSKUs",
-    title: "Eco is not an afterthought.",
-    body: "12 certified sustainable SKUs available at scale. All fully customisable with your brand design. Food-safe, leak-proof, and EPR compliant — built for Indian brands that mean it.",
-    stat: "12 sustainable SKUs. All customisable.",
   },
 ];
 
-const RING_R = 250;
-const CX = 300;
-const CY = 300;
+const CX = -20;
+const CY = 250;
+const RADII = [165, 245, 325];
 
-function nodePos(i: number) {
-  const angleDeg = i * 45 - 90;
-  const angle = (angleDeg * Math.PI) / 180;
-  return {
-    x: CX + RING_R * Math.cos(angle),
-    y: CY + RING_R * Math.sin(angle),
-  };
-}
+const RING_PLAN = [
+  { ringIdx: 2, y: 55 },
+  { ringIdx: 1, y: 140 },
+  { ringIdx: 0, y: 210 },
+  { ringIdx: 0, y: 290 },
+  { ringIdx: 1, y: 360 },
+  { ringIdx: 2, y: 445 },
+];
+
+const POSITIONS = RING_PLAN.map(({ ringIdx, y }) => {
+  const r = RADII[ringIdx];
+  const dy = y - CY;
+  const dx = Math.sqrt(Math.max(0, r * r - dy * dy));
+  return { x: CX + dx, y };
+});
+
+const TEXT_X = 298;
 
 export default function BrandAdvantageSection() {
-  const [active, setActive] = useState<number | null>(null);
+  const [active, setActive] = useState(0);
   const [visible, setVisible] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
-  const [accordionOpen, setAccordionOpen] = useState<number | null>(null);
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) setVisible(true); }, { threshold: 0.2 });
+    const obs = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) setVisible(true);
+    }, { threshold: 0.15 });
     obs.observe(el);
     return () => obs.disconnect();
   }, []);
 
-  const activeNode = active !== null ? NODES[active] : null;
+  const activeNode = NODES[active];
 
   return (
-    <section className="py-24 px-8 md:px-20" style={{ background: "white" }}>
-      <div className="max-w-7xl mx-auto">
-        <p className="font-bold tracking-[0.2em] text-xs uppercase mb-4" style={{ color: "#1B6CA8" }}>
-          THE PACKOPS ADVANTAGE
-        </p>
-        <h2 className="clash-display mb-6" style={{ color: "#0D1B2A", fontSize: "clamp(2rem,4vw,3.25rem)", lineHeight: 1.1, maxWidth: 720 }}>
-          Why the best packaging brands choose a platform over a vendor.
-        </h2>
+    <section style={{ background: "white", padding: "100px 0" }}>
+      <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 40px" }}>
 
-        {/* ── Desktop: Orbital Diagram ── */}
-        <div ref={ref} className="hidden md:flex items-center justify-center relative" style={{ minHeight: 600 }}>
-          {/* Orbital ring */}
-          <div className="absolute" style={{
-            width: 500, height: 500,
-            borderRadius: "50%",
-            border: "1px dashed rgba(27,108,168,0.3)",
-            left: "50%", top: "50%",
-            transform: "translate(-50%, -50%)",
-          }} />
+        <div ref={ref} className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
 
-          {/* Centre node */}
-          <div className="absolute flex flex-col items-center justify-center z-10" style={{
-            width: 180, height: 180,
-            borderRadius: "50%",
-            background: "#0D1B2A",
-            left: "50%", top: "50%",
-            transform: "translate(-50%, -50%)",
-            animation: "pulse-glow 3s ease infinite",
-          }}>
-            <span className="font-bold text-white text-base text-center leading-tight">PackOps</span>
-            <span className="font-bold uppercase tracking-widest mt-1" style={{ color: "#1B6CA8", fontSize: 10 }}>
-              Your Packaging OS
-            </span>
-          </div>
-
-          {/* Feature nodes */}
-          {NODES.map((node, i) => {
-            const { x, y } = nodePos(i);
-            const Icon = node.icon;
-            const isActive = active === i;
-            const delay = i * 100;
-            return (
-              <div
-                key={i}
-                className="absolute cursor-pointer"
-                style={{
-                  left: `calc(50% + ${x - CX}px)`,
-                  top: `calc(50% + ${y - CY}px)`,
-                  width: 80, height: 80,
-                  transform: "translate(-50%, -50%)",
-                  opacity: visible ? 1 : 0,
-                  scale: visible ? "1" : "0",
-                  transition: `opacity 0.4s ease ${delay}ms, scale 0.4s ease ${delay}ms`,
-                }}
-                onMouseEnter={() => setActive(i)}
-                onMouseLeave={() => setActive(null)}
-              >
-                <div style={{
-                  width: 80, height: 80,
-                  borderRadius: "50%",
-                  background: "#0D1B2A",
-                  border: `2px solid ${isActive ? "#E8A838" : "#1B6CA8"}`,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  transform: isActive ? "scale(1.15)" : "scale(1)",
-                  transition: "transform 0.2s, border-color 0.2s",
-                }}>
-                  <Icon size={24} color="#E8A838" />
-                </div>
-                <div style={{
-                  fontSize: 11, fontWeight: 600,
-                  color: "#0D1B2A", textAlign: "center",
-                  marginTop: 8, maxWidth: 80, lineHeight: 1.3,
-                  whiteSpace: "pre-line",
-                }}>
-                  {node.label}
-                </div>
-              </div>
-            );
-          })}
-
-          {/* Detail panel */}
-          {activeNode && (
-            <div style={{
-              position: "absolute",
-              right: 0,
-              top: "50%",
-              transform: "translateY(-50%)",
-              width: 360,
-              background: "white",
-              borderLeft: "3px solid #E8A838",
-              borderRadius: 12,
-              padding: 28,
-              boxShadow: "0 8px 32px rgba(13,27,42,0.12)",
-              opacity: 1,
-              animation: "slideIn 0.2s ease",
-              zIndex: 20,
+          {/* ── Left: Heading + Active Detail ── */}
+          <div>
+            <span style={{
+              color: "#1B6CA8", fontSize: 11, fontWeight: 600,
+              letterSpacing: "2px", textTransform: "uppercase",
+              display: "block", marginBottom: 14,
             }}>
-              <h3 className="font-bold mb-2" style={{ color: "#0D1B2A", fontSize: 20 }}>{activeNode.title}</h3>
-              <p className="mb-4 leading-relaxed" style={{ color: "#64748B", fontSize: 15, lineHeight: 1.6 }}>{activeNode.body}</p>
+              THE PACKOPS ADVANTAGE
+            </span>
+            <h2 style={{
+              color: "#0D1B2A", fontSize: "clamp(2rem, 3.5vw, 3rem)",
+              fontWeight: 700, lineHeight: 1.1, marginBottom: 20, maxWidth: 440,
+            }}>
+              Why the best packaging brands choose a platform over a vendor.
+            </h2>
+            <p style={{ color: "#64748B", fontSize: 15, lineHeight: 1.7, marginBottom: 36, maxWidth: 420 }}>
+              PackOps is not another vendor. It is a managed platform with backup coverage, owned QC, global compliance, and real-time visibility — all in one place.
+            </p>
+
+            <div
+              key={active}
+              style={{
+                borderLeft: "3px solid #E8A838",
+                paddingLeft: 20,
+                animation: "fadeInLeft 0.2s ease",
+              }}
+            >
+              <p style={{ color: "#0D1B2A", fontWeight: 700, fontSize: 18, marginBottom: 10 }}>
+                {activeNode.title}
+              </p>
+              <p style={{ color: "#64748B", fontSize: 14, lineHeight: 1.7, marginBottom: 14 }}>
+                {activeNode.body}
+              </p>
               <div style={{
                 background: "rgba(232,168,56,0.1)",
-                borderRadius: 8, padding: "10px 14px",
-                color: "#0D1B2A", fontSize: 14, fontWeight: 600,
+                borderRadius: 8, padding: "8px 14px", display: "inline-block",
               }}>
-                {activeNode.stat}
+                <span style={{ color: "#0D1B2A", fontSize: 13, fontWeight: 600 }}>
+                  {activeNode.stat}
+                </span>
               </div>
             </div>
-          )}
-        </div>
+          </div>
 
-        {/* ── Mobile: Accordion ── */}
-        <div className="md:hidden mt-8 space-y-3">
-          {NODES.map((node, i) => {
-            const Icon = node.icon;
-            const open = accordionOpen === i;
-            return (
-              <div key={i} style={{ borderLeft: `3px solid ${open ? "#E8A838" : "#E2EAF4"}`, borderRadius: "0 8px 8px 0", background: "white", border: "1px solid #E2EAF4", borderLeftWidth: 3, borderLeftColor: open ? "#E8A838" : "#E2EAF4" }}>
-                <button
-                  className="w-full flex items-center gap-3 px-4 py-4 text-left"
-                  onClick={() => setAccordionOpen(open ? null : i)}
+          {/* ── Right: SVG Arc Diagram (desktop) ── */}
+          <div
+            className="hidden lg:block"
+            style={{
+              position: "relative", height: 500,
+              opacity: visible ? 1 : 0,
+              transition: "opacity 0.6s ease",
+            }}
+          >
+            <svg
+              viewBox="0 0 560 500"
+              width="100%"
+              height="100%"
+              style={{ overflow: "visible" }}
+            >
+              {/* Concentric circle arcs */}
+              {RADII.map((r, i) => (
+                <circle
+                  key={i}
+                  cx={CX}
+                  cy={CY}
+                  r={r}
+                  fill="none"
+                  stroke="#E2EAF4"
+                  strokeWidth="1"
+                />
+              ))}
+
+              {/* Nodes + lines + labels */}
+              {NODES.map((node, i) => {
+                const pos = POSITIONS[i];
+                const isActive = active === i;
+                const Icon = node.icon;
+                return (
+                  <g
+                    key={i}
+                    style={{ cursor: "pointer" }}
+                    onMouseEnter={() => setActive(i)}
+                  >
+                    {/* Dashed connector line */}
+                    <line
+                      x1={pos.x + 23}
+                      y1={pos.y}
+                      x2={TEXT_X - 6}
+                      y2={pos.y}
+                      stroke={isActive ? "#E8A838" : "#C8D5E8"}
+                      strokeWidth="1"
+                      strokeDasharray="4 3"
+                      style={{ transition: "stroke 0.2s" }}
+                    />
+
+                    {/* Node circle */}
+                    <circle
+                      cx={pos.x}
+                      cy={pos.y}
+                      r={22}
+                      fill={isActive ? "#1B6CA8" : "#0D1B2A"}
+                      style={{ transition: "fill 0.2s, r 0.2s" }}
+                    />
+
+                    {/* Hover ring */}
+                    {isActive && (
+                      <circle
+                        cx={pos.x}
+                        cy={pos.y}
+                        r={29}
+                        fill="none"
+                        stroke="rgba(27,108,168,0.2)"
+                        strokeWidth="1.5"
+                      />
+                    )}
+
+                    {/* Icon via foreignObject */}
+                    <foreignObject
+                      x={pos.x - 12}
+                      y={pos.y - 12}
+                      width={24}
+                      height={24}
+                      style={{ pointerEvents: "none", overflow: "visible" }}
+                    >
+                      <div
+                        style={{
+                          width: 24, height: 24,
+                          display: "flex", alignItems: "center", justifyContent: "center",
+                        }}
+                      >
+                        <Icon size={13} color="white" strokeWidth={2.5} />
+                      </div>
+                    </foreignObject>
+
+                    {/* Invisible large hover target */}
+                    <circle cx={pos.x} cy={pos.y} r={34} fill="transparent" />
+
+                    {/* Label */}
+                    <text
+                      x={TEXT_X}
+                      y={pos.y - 3}
+                      fill={isActive ? "#0D1B2A" : "#374151"}
+                      fontSize={13}
+                      fontWeight={isActive ? 700 : 600}
+                      fontFamily="'Plus Jakarta Sans', sans-serif"
+                      style={{ transition: "fill 0.2s" }}
+                    >
+                      {node.label}
+                    </text>
+
+                    {/* Stat sub-label */}
+                    <text
+                      x={TEXT_X}
+                      y={pos.y + 14}
+                      fill={isActive ? "#1B6CA8" : "#94A3B8"}
+                      fontSize={11}
+                      fontFamily="'Plus Jakarta Sans', sans-serif"
+                      style={{ transition: "fill 0.2s" }}
+                    >
+                      {node.stat.length > 34 ? node.stat.slice(0, 34) + "…" : node.stat}
+                    </text>
+                  </g>
+                );
+              })}
+            </svg>
+
+            <style>{`
+              @keyframes fadeInLeft {
+                from { opacity: 0; transform: translateX(-8px); }
+                to   { opacity: 1; transform: translateX(0); }
+              }
+            `}</style>
+          </div>
+
+          {/* ── Mobile: Accordion list ── */}
+          <div className="lg:hidden space-y-3">
+            {NODES.map((node, i) => {
+              const Icon = node.icon;
+              const open = active === i;
+              return (
+                <div
+                  key={i}
+                  onClick={() => setActive(open ? 0 : i)}
+                  style={{
+                    border: `1px solid ${open ? "#E8A838" : "#E2EAF4"}`,
+                    borderLeft: `3px solid ${open ? "#E8A838" : "#E2EAF4"}`,
+                    borderRadius: "0 10px 10px 0",
+                    background: "white",
+                    overflow: "hidden",
+                    cursor: "pointer",
+                    transition: "border-color 0.2s",
+                  }}
                 >
-                  <div style={{ width: 40, height: 40, borderRadius: "50%", background: "#0D1B2A", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                    <Icon size={18} color="#E8A838" />
-                  </div>
-                  <span className="font-bold" style={{ color: "#0D1B2A", fontSize: 14, whiteSpace: "pre-line" }}>{node.label.replace("\n", " ")}</span>
-                  <span className="ml-auto text-slate-400">{open ? "−" : "+"}</span>
-                </button>
-                {open && (
-                  <div className="px-4 pb-4 pt-1">
-                    <p className="font-bold mb-2" style={{ color: "#0D1B2A" }}>{node.title}</p>
-                    <p className="mb-3" style={{ color: "#64748B", fontSize: 14, lineHeight: 1.6 }}>{node.body}</p>
-                    <div style={{ background: "rgba(232,168,56,0.1)", borderRadius: 8, padding: "8px 12px", color: "#0D1B2A", fontSize: 13, fontWeight: 600 }}>
-                      {node.stat}
+                  <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "16px 20px" }}>
+                    <div style={{
+                      width: 40, height: 40, borderRadius: "50%",
+                      background: open ? "#1B6CA8" : "#0D1B2A",
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      flexShrink: 0, transition: "background 0.2s",
+                    }}>
+                      <Icon size={18} color="white" />
                     </div>
+                    <span style={{ fontWeight: 700, color: "#0D1B2A", fontSize: 15 }}>{node.label}</span>
+                    <span style={{ marginLeft: "auto", color: "#94A3B8", fontSize: 20, lineHeight: 1 }}>{open ? "−" : "+"}</span>
                   </div>
-                )}
-              </div>
-            );
-          })}
+                  {open && (
+                    <div style={{ padding: "0 20px 18px" }}>
+                      <p style={{ fontWeight: 700, color: "#0D1B2A", marginBottom: 6, fontSize: 15 }}>{node.title}</p>
+                      <p style={{ color: "#64748B", fontSize: 14, lineHeight: 1.65, marginBottom: 10 }}>{node.body}</p>
+                      <div style={{ background: "rgba(232,168,56,0.1)", borderRadius: 8, padding: "8px 12px", display: "inline-block" }}>
+                        <span style={{ color: "#0D1B2A", fontSize: 13, fontWeight: 600 }}>{node.stat}</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
     </section>
