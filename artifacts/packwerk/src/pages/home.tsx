@@ -24,14 +24,15 @@ const MS = ({ icon, className = "", style }: IconProps) => (
 const MARQUEE_1 = Array(8).fill("We are not a vendor. We are your packaging partner.");
 
 const CUSTOMER_LOGOS = [
-  { name: "Mamaearth",        abbr: "ME",  color: "#2C7A0F" },
-  { name: "Nykaa",            abbr: "NK",  color: "#E91E8C" },
-  { name: "WOW Skin Science", abbr: "WOW", color: "#0047AB" },
-  { name: "Himalaya",         abbr: "H",   color: "#006341" },
-  { name: "Sugar Cosmetics",  abbr: "SG",  color: "#C0392B" },
-  { name: "Dabur",            abbr: "D",   color: "#E67E22" },
-  { name: "mCaffeine",        abbr: "mC",  color: "#4A235A" },
-  { name: "boAt",             abbr: "bT",  color: "#1A1A1A" },
+  { name: "Plum",             file: "/images/logos/plum.png" },
+  { name: "The Souled Store", file: "/images/logos/souledstore.png" },
+  { name: "Neeman's",         file: "/images/logos/neemans.png" },
+  { name: "MVMT",             file: "/images/logos/mvmt.gif" },
+  { name: "CosIQ",            file: "/images/logos/cosiq.png" },
+  { name: "Juicy Chemistry",  file: "/images/logos/juicychemistry.png" },
+  { name: "Mogu Mogu",        file: "/images/logos/mogumogi.png" },
+  { name: "Olipop",           file: "/images/logos/olipop.webp" },
+  { name: "Voltas",           file: "/images/logos/voltas.png" },
 ];
 
 const HERO_CARDS = [
@@ -438,10 +439,12 @@ export default function Home() {
                         position: "absolute",
                         ...card.pos,
                         width: card.width,
-                        background: "rgba(8,18,36,0.88)",
+                        background: "rgba(255,255,255,0.07)",
+                        backdropFilter: "blur(20px)",
+                        WebkitBackdropFilter: "blur(20px)",
                         border: card.greenBorder
                           ? "1px solid rgba(74,222,128,0.3)"
-                          : "1px solid rgba(255,255,255,0.14)",
+                          : "1px solid rgba(255,255,255,0.18)",
                         overflow: "hidden",
                         cursor: "pointer",
                         animation: heroLoaded ? card.floatAnim : "none",
@@ -459,28 +462,22 @@ export default function Home() {
                         el.style.animationPlayState = "running";
                       }}
                     >
-                      {/* Category image at top */}
-                      <div style={{ width: "100%", height: 88, position: "relative", overflow: "hidden" }}>
-                        <img
-                          src={CAT_IMAGES[card.slug]}
-                          alt={card.title}
-                          style={{ width: "100%", height: "100%", objectFit: "cover", filter: "brightness(0.6) saturate(0.75)" }}
-                          onError={e => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
-                        />
-                        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, transparent 30%, rgba(8,18,36,0.9) 100%)" }} />
-                        {card.greenBorder && (
-                          <div style={{ position: "absolute", top: 8, right: 8, background: "rgba(34,197,94,0.18)", border: "1px solid rgba(34,197,94,0.35)", padding: "2px 8px" }}>
-                            <span style={{ color: "#4ade80", fontSize: 9, fontWeight: 700, letterSpacing: "0.5px" }}>⚡ FAST</span>
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Content */}
-                      <div style={{ padding: "12px 16px 14px" }}>
-                        <p style={{ color: "rgba(255,255,255,0.94)", fontSize: 13, fontWeight: 700, marginBottom: 3 }}>
+                      {/* Glassmorphism card content */}
+                      <div style={{ padding: "18px 16px 16px" }}>
+                        {/* Icon box */}
+                        <div style={{
+                          width: 38, height: 38,
+                          background: card.greenBorder ? "rgba(74,222,128,0.15)" : "rgba(232,168,56,0.13)",
+                          border: `1px solid ${card.greenBorder ? "rgba(74,222,128,0.35)" : "rgba(232,168,56,0.28)"}`,
+                          display: "flex", alignItems: "center", justifyContent: "center",
+                          marginBottom: 12,
+                        }}>
+                          <card.Icon size={17} color={card.greenBorder ? "#4ade80" : "#E8A838"} strokeWidth={1.8} />
+                        </div>
+                        <p style={{ color: "rgba(255,255,255,0.93)", fontSize: 13, fontWeight: 700, marginBottom: 3, lineHeight: 1.25 }}>
                           {card.title}
                         </p>
-                        <p style={{ color: "rgba(255,255,255,0.4)", fontSize: 11 }}>
+                        <p style={{ color: "rgba(255,255,255,0.38)", fontSize: 11 }}>
                           {card.count}
                         </p>
                       </div>
@@ -522,63 +519,76 @@ export default function Home() {
       </div>
 
       {/* ══════════════════════════════════════════════════════════ */}
-      {/*  SECTION 3B — OUR CUSTOMERS (marquee)                     */}
+      {/*  SECTION 3B — OUR CUSTOMERS (2-col: text + marquee)      */}
       {/* ══════════════════════════════════════════════════════════ */}
-      <section style={{ background: "#FFFFFF", borderBottom: "1px solid #E2EAF4", padding: "64px 0", overflow: "hidden" }}>
-        {/* Heading */}
-        <div style={{ textAlign: "center", marginBottom: 44, padding: "0 40px" }}>
-          <p style={{ color: "#1B6CA8", fontSize: 11, fontWeight: 600, letterSpacing: "2px", textTransform: "uppercase", marginBottom: 10 }}>
-            OUR CUSTOMERS
-          </p>
-          <h2 style={{ color: "#0D1B2A", fontSize: 28, fontWeight: 700, lineHeight: 1.25 }}>
-            Trusted by D2C, FMCG &amp; Pharma brands worldwide.
-          </h2>
-        </div>
+      <section style={{ background: "#FFFFFF", borderBottom: "1px solid #E2EAF4", padding: "72px 0", overflow: "hidden" }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 40px", display: "grid", gridTemplateColumns: "1fr 1.5fr", gap: 72, alignItems: "center" }}>
 
-        {/* Row 1 — standard speed */}
-        <div style={{ overflow: "hidden", marginBottom: 14 }}>
-          <div className="logo-row">
-            {[...CUSTOMER_LOGOS, ...CUSTOMER_LOGOS].map((logo, i) => (
-              <div key={i} style={{
-                display: "flex", flexDirection: "column", alignItems: "center", gap: 8,
-                minWidth: 140, padding: "0 24px",
-                borderRight: "1px solid #E2EAF4",
-              }}>
-                <div style={{
-                  width: 56, height: 56,
-                  background: logo.color + "12",
-                  border: `1px solid ${logo.color}28`,
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                }}>
-                  <span style={{ color: logo.color, fontSize: 13, fontWeight: 800, letterSpacing: "-0.5px" }}>{logo.abbr}</span>
-                </div>
-                <span style={{ color: "#94A3B8", fontSize: 11, fontWeight: 600, whiteSpace: "nowrap" }}>{logo.name}</span>
+          {/* Left: text */}
+          <div>
+            <p style={{ color: "#1B6CA8", fontSize: 11, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", marginBottom: 16 }}>
+              OUR CUSTOMERS
+            </p>
+            <h2 style={{ color: "#0D1B2A", fontSize: 34, fontWeight: 800, lineHeight: 1.15, marginBottom: 18 }}>
+              Trusted by India's fastest-growing brands.
+            </h2>
+            <p style={{ color: "#475569", fontSize: 15, lineHeight: 1.75, marginBottom: 32 }}>
+              From D2C beauty &amp; wellness to FMCG and pharma — India's leading brands rely on PackOps for consistent, compliant, beautiful packaging.
+            </p>
+            <div style={{ display: "flex", gap: 36, alignItems: "center" }}>
+              <div>
+                <p style={{ color: "#0D1B2A", fontSize: 30, fontWeight: 800, lineHeight: 1, marginBottom: 4 }}>220+</p>
+                <p style={{ color: "#94A3B8", fontSize: 12, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.5px" }}>Brands served</p>
               </div>
-            ))}
+              <div style={{ width: 1, height: 44, background: "#E2EAF4" }} />
+              <div>
+                <p style={{ color: "#0D1B2A", fontSize: 30, fontWeight: 800, lineHeight: 1, marginBottom: 4 }}>98.7%</p>
+                <p style={{ color: "#94A3B8", fontSize: 12, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.5px" }}>On-time delivery</p>
+              </div>
+            </div>
           </div>
-        </div>
 
-        {/* Row 2 — slower, reversed order */}
-        <div style={{ overflow: "hidden" }}>
-          <div className="logo-row-slow">
-            {[...[...CUSTOMER_LOGOS].reverse(), ...[...CUSTOMER_LOGOS].reverse()].map((logo, i) => (
-              <div key={i} style={{
-                display: "flex", flexDirection: "column", alignItems: "center", gap: 8,
-                minWidth: 140, padding: "0 24px",
-                borderRight: "1px solid #E2EAF4",
-              }}>
-                <div style={{
-                  width: 56, height: 56,
-                  background: logo.color + "12",
-                  border: `1px solid ${logo.color}28`,
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                }}>
-                  <span style={{ color: logo.color, fontSize: 13, fontWeight: 800, letterSpacing: "-0.5px" }}>{logo.abbr}</span>
-                </div>
-                <span style={{ color: "#94A3B8", fontSize: 11, fontWeight: 600, whiteSpace: "nowrap" }}>{logo.name}</span>
+          {/* Right: 2-row logo marquee */}
+          <div style={{
+            overflow: "hidden",
+            maskImage: "linear-gradient(to right, transparent 0%, black 14%, black 86%, transparent 100%)",
+            WebkitMaskImage: "linear-gradient(to right, transparent 0%, black 14%, black 86%, transparent 100%)",
+          }}>
+            {/* Row 1 — standard speed */}
+            <div style={{ overflow: "hidden", marginBottom: 16 }}>
+              <div className="logo-row">
+                {[...CUSTOMER_LOGOS, ...CUSTOMER_LOGOS].map((logo, i) => (
+                  <div key={i} style={{
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    padding: "0 32px", flexShrink: 0, height: 60,
+                  }}>
+                    <img
+                      src={logo.file} alt={logo.name}
+                      style={{ maxHeight: 38, maxWidth: 130, objectFit: "contain", display: "block" }}
+                    />
+                  </div>
+                ))}
               </div>
-            ))}
+            </div>
+
+            {/* Row 2 — slower, reversed */}
+            <div style={{ overflow: "hidden" }}>
+              <div className="logo-row-slow">
+                {[...[...CUSTOMER_LOGOS].reverse(), ...[...CUSTOMER_LOGOS].reverse()].map((logo, i) => (
+                  <div key={i} style={{
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    padding: "0 32px", flexShrink: 0, height: 60,
+                  }}>
+                    <img
+                      src={logo.file} alt={logo.name}
+                      style={{ maxHeight: 38, maxWidth: 130, objectFit: "contain", display: "block" }}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
+
         </div>
       </section>
 
