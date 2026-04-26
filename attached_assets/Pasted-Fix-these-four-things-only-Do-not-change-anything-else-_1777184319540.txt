@@ -1,0 +1,454 @@
+Fix these four things only.
+Do not change anything else.
+
+---
+
+FIX 1: FINAL CTA TRUST STRIP
+
+The trust strip below the CTA buttons 
+is breaking into multiple lines. Fix it.
+
+Replace the current trust strip 
+with this single-line implementation:
+
+margin-top: 40px
+display: flex
+justify-content: center
+align-items: center
+gap: 24px
+flex-wrap: nowrap
+
+4 items in one row:
+Each item:
+color: rgba(255,255,255,0.5)
+font-size: 13px
+white-space: nowrap
+
+Between each item — 
+a separator element:
+content: "·"
+color: rgba(255,255,255,0.2)
+font-size: 16px
+
+4 items:
+"Quote in 48 hours"
+"No commitment until you approve"
+"Sample from ₹2,999"
+"Design from ₹1,999"
+
+If the viewport is too narrow 
+for all 4 on one line,
+reduce font-size to 12px first.
+If still too narrow, 
+show only first 2 items 
+on mobile (hide last 2 
+with display:none below 640px).
+
+Do NOT use flex-wrap: wrap.
+This is what causes the 
+3-line break. Must stay on one row.
+
+---
+
+FIX 2: CALCULATOR LEFT PANEL WHITESPACE
+
+The left panel has too much 
+empty space between elements.
+Make these spacing changes:
+
+1. Reduce top padding of left panel from 
+   whatever it currently is to: 36px
+   
+2. Reduce bottom padding to: 36px
+
+3. Reduce the margin between 
+   the slider value display 
+   and "Vendors you currently manage" label
+   from current value to: margin-top: 24px
+
+4. Reduce the margin between 
+   the vendor pills row 
+   and "Do you use vendor credit?" label
+   from current value to: margin-top: 20px
+
+5. The slider itself — 
+   reduce margin-bottom below slider 
+   to 12px (the gap between 
+   slider and value display)
+
+These 5 changes compact the left panel 
+so it feels proportional to 
+the right panel without empty space.
+
+Do not change the right panel at all.
+
+---
+
+FIX 3: CASE STUDY SECTION — 
+FULL REDESIGN WITH AUTO-ROTATION
+
+Rebuild this section completely 
+with these exact specifications.
+
+Section:
+background: #FFFFFF
+padding: 100px 0
+
+Eyebrow + headline same as before:
+"CLIENT RESULTS" eyebrow
+"Brands that switched. 
+Numbers that speak." headline
+
+Main layout:
+display: grid
+grid-template-columns: 300px 1fr
+gap: 28px
+max-width: 1100px
+margin: 56px auto 0
+align-items: start
+
+LEFT COLUMN:
+display: flex
+flex-direction: column
+gap: 12px
+align-self: start
+(this prevents stretching)
+
+3 selector cards:
+
+Base card style:
+background: white
+border: 1px solid #E2EAF4
+border-radius: 14px
+padding: 22px 24px
+cursor: pointer
+transition: all 0.3s ease
+position: relative
+overflow: hidden
+
+INACTIVE state:
+border-color: #E2EAF4
+background: white
+
+ACTIVE state:
+border-color: #E8A838
+background: #FFFBF0
+box-shadow: 0 4px 20px 
+  rgba(232,168,56,0.15)
+
+Active card left accent bar:
+position: absolute
+left: 0, top: 0, bottom: 0
+width: 3px
+background: #E8A838
+border-radius: 3px 0 0 3px
+
+Auto-rotation progress bar 
+(shown only on active card):
+position: absolute
+bottom: 0, left: 0
+height: 2px
+background: #E8A838
+border-radius: 0 0 0 0
+animation: progress-fill 4s linear forwards
+@keyframes progress-fill {
+  from { width: 0%; }
+  to { width: 100%; }
+}
+Reset and restart when card changes.
+
+Card content:
+Avatar circle:
+width: 38px, height: 38px
+border-radius: 50%
+background: #0D1B2A
+color: white
+font-size: 13px, 700
+display flex, 
+align-items center, 
+justify-content center
+margin-bottom: 12px
+
+Company name:
+#0D1B2A, 15px, 700
+margin-bottom: 3px
+
+Industry · City:
+#64748B, 12px
+
+Metric pill:
+display: inline-block
+margin-top: 10px
+background: rgba(232,168,56,0.1)
+border: 1px solid rgba(232,168,56,0.3)
+border-radius: 999px
+padding: 4px 12px
+color: #92600A
+font-size: 12px, 600
+
+3 cards data:
+Card 1: "ZF" | Zestful Foods | 
+        D2C Snacks · Mumbai | 
+        "7 vendors → 1 platform"
+Card 2: "DI" | Dermatica India | 
+        Cosmetics · Bangalore | 
+        "₹3.8L saved in Year 1"
+Card 3: "NC" | NatureCraft Organics | 
+        Organic Food · Pune | 
+        "14 days · Fully certified"
+
+AUTO-ROTATION LOGIC:
+useEffect with setInterval, 4000ms.
+Cycles: 0 → 1 → 2 → 0 → repeat.
+Clicking a card:
+  Resets the interval timer.
+  Sets that card as active immediately.
+  Restarts the 4s countdown from 0.
+
+RIGHT PANEL:
+background: #F8F9FC
+border: 1px solid #E2EAF4
+border-top: 3px solid #E8A838
+border-radius: 16px
+padding: 44px 48px
+
+Content transitions:
+When active card changes:
+opacity 0 → opacity 1
+translateY(8px) → translateY(0)
+duration: 250ms, ease-out
+(animate the inner content div, 
+not the panel itself)
+
+Right panel content structure:
+
+TOP ROW:
+display flex, 
+justify-content space-between,
+align-items flex-start
+margin-bottom: 20px
+
+Left: 
+Company name: #0D1B2A, 24px, 700
+
+Right: 
+5 amber stars
+color: #E8A838, 18px
+letter-spacing: 2px
+
+Industry tag:
+display: inline-block
+background: #E2EAF4
+border-radius: 999px
+padding: 5px 14px
+color: #64748B, 12px
+margin-bottom: 32px
+
+THREE CONTENT BLOCKS:
+Separated by:
+height: 1px
+background: #E8ECF4
+margin: 24px 0
+
+Each block:
+Label:
+color: #1B6CA8
+font-size: 10px, 700
+letter-spacing: 2px
+uppercase
+margin-bottom: 10px
+
+Content text for 
+"THE CHALLENGE" and "WHAT WE DID":
+color: #64748B, 15px, 
+line-height 1.75, font-style italic
+
+Content text for "THE RESULT":
+color: #0D1B2A, 15px, 
+line-height 1.75, font-weight 600
+
+METRIC BOXES ROW:
+display: grid
+grid-template-columns: repeat(3, 1fr)
+gap: 12px
+margin-top: 32px
+
+Each box:
+background: white
+border: 1px solid #E2EAF4
+border-radius: 10px
+padding: 18px 20px
+text-align: center
+
+Metric value:
+color: #E8A838
+font-size: 26px, 700
+line-height: 1
+
+Metric label:
+color: #64748B, 12px
+margin-top: 6px
+
+3 case study data objects 
+(same content as before):
+
+caseStudies = [
+  {
+    initials: "ZF",
+    company: "Zestful Foods",
+    tag: "D2C Snacks · Mumbai",
+    metric: "7 vendors → 1 platform",
+    challenge: "We were managing 7 different 
+    packaging vendors for our snack range. 
+    Every month was a coordination nightmare — 
+    delays from one vendor cascaded across 
+    our entire production schedule.",
+    whatWeDid: "Consolidated all 7 SKUs onto 
+    the PackOps platform. Assigned backup 
+    vendors for each. Integrated reorders 
+    into the dashboard with SmartStock.",
+    result: "Single point of contact for all 
+    packaging. Zero production delays 
+    in the first 6 months. Quality consistent 
+    across every batch.",
+    metrics: [
+      { value: "7→1", label: "Vendors managed" },
+      { value: "₹0", label: "Production delays" },
+      { value: "6 mo", label: "Zero QC issues" }
+    ]
+  },
+  {
+    initials: "DI",
+    company: "Dermatica India",
+    tag: "Cosmetics · Bangalore",
+    metric: "₹3.8L saved in Year 1",
+    challenge: "Our previous vendor's QC was 
+    self-certified. Two batches with print 
+    registration errors were rejected by 
+    our retail partners. Returns were costly.",
+    whatWeDid: "Moved cosmetic jar and carton 
+    orders to PackOps. Pre-dispatch inspection 
+    with photo evidence on every batch. 
+    Artwork standardised on platform.",
+    result: "Zero QC rejections in 14 months. 
+    Artwork errors eliminated. 
+    Net saving vs previous vendor.",
+    metrics: [
+      { value: "0", label: "QC rejections" },
+      { value: "₹3.8L", label: "Annual saving" },
+      { value: "14 mo", label: "Perfect record" }
+    ]
+  },
+  {
+    initials: "NC",
+    company: "NatureCraft Organics",
+    tag: "Organic Food · Pune",
+    metric: "14 days · Fully certified",
+    challenge: "We needed FSC certified kraft 
+    pouches with compostability certification 
+    for a UK export order. Our local vendor 
+    couldn't provide documentation.",
+    whatWeDid: "Sourced FSC certified kraft 
+    stand-up pouches from our sustainable 
+    packaging network. Provided full export 
+    documentation including FSC chain 
+    of custody certificate.",
+    result: "UK export order fulfilled on time. 
+    Buyer has placed 3 repeat orders. 
+    Sustainable packaging now standard 
+    across their range.",
+    metrics: [
+      { value: "14d", label: "Sourced & shipped" },
+      { value: "3×", label: "Repeat orders" },
+      { value: "100%", label: "Certs provided" }
+    ]
+  }
+]
+
+---
+
+FIX 4: SUSTAINABLE PACKAGING SECTION
+WITH MIDJOURNEY IMAGE BACKGROUND
+
+Update this section to accept 
+a background image.
+
+The section currently has 
+a CSS pattern background.
+Replace the background treatment 
+with this:
+
+Step 1 — Image background:
+Add an <img> element as the 
+first child of the section:
+position: absolute
+inset: 0
+width: 100%, height: 100%
+object-fit: cover
+object-position: center
+z-index: 0
+src: "/images/sustainable-bg.jpg"
+alt: ""
+(User will add this image file 
+to the /public/images folder)
+
+Step 2 — Dark overlay on top of image:
+position: absolute
+inset: 0
+background: rgba(10, 51, 38, 0.78)
+z-index: 1
+
+Step 3 — Subtle gradient on top of overlay:
+position: absolute
+inset: 0
+background: 
+  radial-gradient(
+    ellipse 60% 70% at 85% 15%,
+    rgba(34,197,94,0.15) 0%,
+    transparent 60%
+  )
+z-index: 2
+
+Step 4 — All content:
+position: relative
+z-index: 3
+(wrap all text and CTA in 
+a div with this z-index)
+
+Step 5 — Section must have:
+position: relative
+overflow: hidden
+
+Until the Midjourney image is ready,
+keep the current dark green 
+solid background as fallback:
+background: #0A3326
+
+The image will automatically replace 
+the solid colour once 
+/public/images/sustainable-bg.jpg 
+is added.
+
+Also reduce the leaf SVG pattern opacity 
+from 0.06 to 0 for now 
+(the leaves icon pattern 
+is too distracting — 
+the Midjourney image will 
+provide better texture).
+
+For the CTA button in this section:
+Change from the current mint green style to:
+background: #E8A838
+color: #0D1B2A  
+padding: 13px 28px
+border-radius: 8px
+font-size: 15px, 700
+border: none
+cursor: pointer
+hover: brightness(1.08)
+Text: "See all sustainable SKUs →"
+
+Amber CTA on dark green 
+is much stronger than 
+green-on-green which 
+gets lost currently.

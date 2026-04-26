@@ -4,7 +4,7 @@ import { INDUSTRY_IMAGES } from "@/lib/images";
 import BrandAdvantageSection from "@/components/home/BrandAdvantageSection";
 import {
   Search, GitBranch, ShieldCheck, Truck,
-  Leaf, Droplets, FileCheck,
+  Leaf, Droplets, FileCheck, ArrowRight,
 } from "lucide-react";
 
 const WHATSAPP_NUM = "919999999999";
@@ -111,14 +111,14 @@ const HOW_IT_WORKS_STEPS = [
     Icon: ShieldCheck,
     title: "QC at Every Stage",
     desc: "Pre-production sample. In-process check. Pre-dispatch inspection. You see photo evidence.",
-    bg: "#1B6CA8",
+    bg: "#0D1B2A",
   },
   {
     num: "Step 04",
     Icon: Truck,
     title: "Delivered and Tracked",
     desc: "Door to door logistics. Real-time tracking in your dashboard. India or global.",
-    bg: "#1B6CA8",
+    bg: "#0D1B2A",
   },
 ];
 
@@ -483,11 +483,11 @@ export default function Home() {
             This question comes up every time. Here is the honest answer.
           </p>
 
-          <div style={{ maxWidth: 960, margin: "0 auto", borderRadius: 0, overflow: "hidden", boxShadow: "0 4px 32px rgba(13,27,42,0.08)" }}>
+          <div style={{ maxWidth: 820, margin: "0 auto", borderRadius: 0, overflow: "hidden", boxShadow: "0 4px 32px rgba(13,27,42,0.08)" }}>
             {/* Header row */}
             <div style={{ display: "grid", gridTemplateColumns: "2fr 1.5fr 1.5fr", borderBottom: "1px solid #E2EAF4" }}>
               <div style={{ background: "#F8F9FC", padding: "20px 28px" }} />
-              <div style={{ background: "#0D1B2A", padding: "20px 28px", textAlign: "center" }}>
+              <div style={{ background: "#0D1B2A", padding: "20px 28px", textAlign: "center", borderRadius: "12px 0 0 0", borderBottom: "2px solid #E8A838" }}>
                 <p style={{ color: "white", fontSize: 16, fontWeight: 700 }}>PackOps</p>
                 <p style={{ color: "#1B6CA8", fontSize: 11, textTransform: "uppercase", letterSpacing: "1.5px", marginTop: 4 }}>Managed Platform</p>
               </div>
@@ -516,14 +516,14 @@ export default function Home() {
                   background: i % 2 === 0 ? "white" : "#FAFBFC",
                 }}
               >
-                <div style={{ padding: "18px 28px", color: "#0D1B2A", fontSize: 14, fontWeight: 600, display: "flex", alignItems: "center" }}>
+                <div style={{ padding: "14px 28px", color: "#0D1B2A", fontSize: 14, fontWeight: 600, display: "flex", alignItems: "center" }}>
                   {row.label}
                 </div>
-                <div style={{ padding: "18px 28px", textAlign: "center", background: "rgba(13,27,42,0.015)" }}>
+                <div style={{ padding: "14px 28px", textAlign: "center", background: "rgba(13,27,42,0.015)" }}>
                   <p style={{ color: "#22C55E", fontSize: 18, fontWeight: 700, lineHeight: 1 }}>✓</p>
                   <p style={{ color: "#64748B", fontSize: 12, lineHeight: 1.4, maxWidth: 150, margin: "4px auto 0" }}>{row.good}</p>
                 </div>
-                <div style={{ padding: "18px 28px", textAlign: "center" }}>
+                <div style={{ padding: "14px 28px", textAlign: "center" }}>
                   <p style={{ color: "#EF4444", fontSize: 18, fontWeight: 700, lineHeight: 1 }}>✗</p>
                   <p style={{ color: "#94A3B8", fontSize: 12, lineHeight: 1.4, maxWidth: 150, margin: "4px auto 0" }}>{row.bad}</p>
                 </div>
@@ -545,13 +545,13 @@ export default function Home() {
       {/* ══════════════════════════════════════════════════════════ */}
       <section style={{ background: "#FFFFFF", padding: "100px 0" }}>
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 40px" }}>
-          <span style={{ color: "#1B6CA8", fontSize: 11, fontWeight: 600, letterSpacing: "2px", textTransform: "uppercase", display: "block", marginBottom: 14 }}>
+          <span style={{ color: "#1B6CA8", fontSize: 11, fontWeight: 600, letterSpacing: "2px", textTransform: "uppercase", display: "block", marginBottom: 14, textAlign: "center" }}>
             THE PROCESS
           </span>
-          <h2 style={{ color: "#0D1B2A", fontSize: "clamp(2rem,4vw,3.25rem)", fontWeight: 700, lineHeight: 1.1, marginBottom: 16 }}>
+          <h2 style={{ color: "#0D1B2A", fontSize: "clamp(2rem,4vw,3.25rem)", fontWeight: 700, lineHeight: 1.1, marginBottom: 16, textAlign: "center" }}>
             From brief to delivered.<br />Every time.
           </h2>
-          <p style={{ color: "#64748B", fontSize: 18, maxWidth: 480, marginBottom: 64, lineHeight: 1.6 }}>
+          <p style={{ color: "#64748B", fontSize: 18, maxWidth: 600, margin: "0 auto 64px", lineHeight: 1.6, textAlign: "center" }}>
             Four steps. Zero ambiguity. One team responsible for all of it.
           </p>
 
@@ -562,9 +562,9 @@ export default function Home() {
             {/* Connecting line */}
             <div className="hidden md:block" style={{
               position: "absolute", top: 28,
-              left: "calc(12.5%)", right: "calc(12.5%)",
+              left: "12.5%", right: "12.5%",
               height: 1,
-              background: "linear-gradient(90deg, #E2EAF4, #1B6CA8, #E8A838, #E2EAF4)",
+              background: "#E2EAF4",
               zIndex: 0,
             }} />
 
@@ -577,11 +577,11 @@ export default function Home() {
                   </p>
                   <div style={{
                     width: 56, height: 56, borderRadius: "50%",
-                    background: step.bg,
+                    background: "#0D1B2A",
                     display: "flex", alignItems: "center", justifyContent: "center",
                     margin: "0 auto 24px",
                   }}>
-                    <Icon size={22} color="white" />
+                    <Icon size={22} color="#E8A838" />
                   </div>
                   <h3 style={{ color: "#0D1B2A", fontSize: 17, fontWeight: 700, marginBottom: 8 }}>{step.title}</h3>
                   <p style={{ color: "#64748B", fontSize: 13, lineHeight: 1.6 }}>{step.desc}</p>
@@ -590,16 +590,32 @@ export default function Home() {
             })}
           </div>
 
-          <div style={{ marginTop: 56, textAlign: "center" }}>
+          <div style={{ marginTop: 48, textAlign: "center" }}>
             <Link href="/how-it-works">
-              <button style={{
-                background: "rgba(232,168,56,0.1)", border: "1px solid #E8A838",
-                borderRadius: 2, padding: "10px 24px",
-                color: "#0D1B2A", fontSize: 14, fontWeight: 600,
-                cursor: "pointer",
-              }}>
-                See the full process →
-              </button>
+              <span
+                style={{
+                  display: "inline-flex", alignItems: "center", gap: 6,
+                  color: "#1B6CA8", fontSize: 15, fontWeight: 600,
+                  textDecoration: "none", border: "none", background: "none",
+                  cursor: "pointer", padding: 0,
+                  transition: "color 0.2s",
+                }}
+                onMouseEnter={e => {
+                  const el = e.currentTarget as HTMLElement;
+                  el.style.color = "#0D1B2A";
+                  const arrow = el.querySelector(".hiw-arrow") as HTMLElement;
+                  if (arrow) arrow.style.transform = "translateX(4px)";
+                }}
+                onMouseLeave={e => {
+                  const el = e.currentTarget as HTMLElement;
+                  el.style.color = "#1B6CA8";
+                  const arrow = el.querySelector(".hiw-arrow") as HTMLElement;
+                  if (arrow) arrow.style.transform = "translateX(0)";
+                }}
+              >
+                See the full process
+                <ArrowRight className="hiw-arrow" size={16} color="currentColor" style={{ transition: "transform 0.2s" }} />
+              </span>
             </Link>
           </div>
         </div>
@@ -618,11 +634,11 @@ export default function Home() {
             {[
               { target: 500, suffix: "+", label: "Verified factory partners", sub: null },
               { target: 1, suffix: "", label: "Owned manufacturing facility", sub: "Flexo + Rotogravure · Indore" },
-              { target: 40, suffix: "+", label: "Countries delivered to", sub: null },
+              { target: 40, suffix: "+", label: "Countries served", sub: null },
             ].map((stat, i) => (
               <div key={i} style={{ display: "flex", alignItems: "center", gap: 0 }}>
                 {i > 0 && (
-                  <div className="hidden md:block" style={{ width: 1, height: 52, background: "#E2EAF4", margin: "0 80px" }} />
+                  <div className="hidden md:block" style={{ width: 1, height: 52, background: "#E2EAF4", margin: "0 64px" }} />
                 )}
                 <div style={{ textAlign: "center", padding: "16px 0" }}>
                   <p style={{ color: "#E8A838", fontSize: 52, fontWeight: 700, lineHeight: 1 }}>

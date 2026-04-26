@@ -1,0 +1,436 @@
+Fix these three sections only.
+Do not change anything else.
+
+---
+
+FIX 1: HOW IT WORKS SECTION
+
+Make these specific changes:
+
+1. Centre-align the headline and subheadline.
+   They are currently left-aligned 
+   while the steps below are centred.
+   Fix: text-align: center on both.
+   max-width: 600px, margin: 0 auto 
+   for the subheadline.
+
+2. Fix the connecting line between steps.
+   The line currently changes colour 
+   partway through — looks broken.
+   Replace the entire connecting line with:
+   position: absolute
+   top: 28px
+   left: 12.5%
+   right: 12.5%
+   height: 1px
+   background: #E2EAF4
+   z-index: 0
+   
+   Single flat grey line. 
+   No gradient. No colour change.
+   Simple and clean.
+
+3. Replace the "See the full process" button.
+   Remove the current outline box style.
+   Replace with a text link style:
+   display: inline-flex
+   align-items: center
+   gap: 6px
+   color: #1B6CA8
+   font-size: 15px
+   font-weight: 600
+   text-decoration: none
+   border: none
+   background: none
+   cursor: pointer
+   padding: 0
+   margin-top: 48px
+   
+   Add a Lucide ArrowRight icon 
+   after the text:
+   size: 16px, color: #1B6CA8
+   
+   Hover: 
+   color: #0D1B2A
+   icon translates right 4px 
+   with transition 0.2s
+   
+   Text: "See the full process →"
+   href: /how-it-works
+   
+   Wrap in a div:
+   text-align: center
+   margin-top: 48px
+
+4. Step circles — make all 4 consistent.
+   Currently steps vary in colour.
+   All 4 circles:
+   background: #0D1B2A
+   width: 56px, height: 56px
+   border-radius: 50%
+   Icon inside: color #E8A838, size 22px
+   
+   This makes all steps feel 
+   like one coherent system.
+
+---
+
+FIX 2: STATS STRIP
+
+Two changes only:
+
+1. Fix the "Countries delivered to" 
+   text wrapping.
+   Add white-space: nowrap to 
+   "Countries delivered to" label.
+   If it still wraps at this viewport,
+   change the text to:
+   "Countries served"
+   (shorter, same meaning)
+
+2. Reduce the gap between the 3 stats
+   from whatever it currently is to:
+   gap: 64px
+   (slightly tighter — 
+   looks better proportionally)
+
+---
+
+FIX 3: COMPARISON TABLE
+
+Three changes only:
+
+1. Reduce row height.
+   Find all data rows in the table.
+   Change padding from current value to:
+   padding: 14px 28px
+   (top and bottom 14px, 
+   not whatever it currently is)
+   This tightens the table significantly.
+
+2. Fix the header row PackOps column.
+   The dark navy header feels 
+   disconnected from the table body.
+   Change the PackOps header cell to:
+   background: #0D1B2A
+   border-radius: 12px 0 0 0
+   
+   Add a thin amber bottom border 
+   to the header cell only:
+   border-bottom: 2px solid #E8A838
+   
+   This creates a visual anchor 
+   connecting the header to the 
+   green checkmarks below.
+
+3. Reduce the overall table max-width.
+   Current max-width is too wide — 
+   rows feel stretched.
+   Change to:
+   max-width: 820px
+   margin: 0 auto
+   
+   This makes the three columns 
+   feel appropriately proportioned 
+   rather than stretched across 
+   the full page width.
+
+---
+
+ALSO: /how-it-works PAGE CONTENT
+
+Create or update the /how-it-works page 
+with this content structure.
+This is what "See the full process" links to.
+
+Page hero:
+Background: #0D1B2A
+Padding: 80px 0
+Text-align: center
+
+Eyebrow: "THE PROCESS"
+color: #E8A838
+
+Headline: "How every PackOps order works."
+white, 52px, 700
+
+Subheadline:
+"Four stages. Zero ambiguity. 
+One team responsible for all of it."
+rgba(255,255,255,0.6), 18px
+
+Then 4 expanded step sections 
+on white background.
+Each step section:
+max-width: 900px
+margin: 0 auto
+padding: 72px 40px
+border-bottom: 1px solid #E2EAF4
+
+Layout per step:
+display: grid
+grid-template-columns: 280px 1fr
+gap: 64px
+align-items: start
+
+Left side:
+Step number label:
+color: #E8A838, 11px, 
+600, uppercase, tracked
+
+Step icon circle:
+width: 64px, height: 64px
+border-radius: 50%
+background: #0D1B2A
+display flex, 
+align-items center, 
+justify-content center
+Lucide icon: color #E8A838, 26px
+margin: 16px 0
+
+Step title:
+#0D1B2A, 28px, 700
+line-height: 1.2
+
+Right side:
+Step description (intro):
+#64748B, 17px, line-height 1.7
+margin-bottom: 28px
+
+Sub-steps list:
+display: flex
+flex-direction: column
+gap: 16px
+
+Each sub-step:
+display: flex
+align-items: flex-start
+gap: 14px
+
+Left dot:
+width: 8px, height: 8px
+border-radius: 50%
+background: #E8A838
+flex-shrink: 0
+margin-top: 6px
+
+Right text:
+#0D1B2A, 15px, 600 
+(sub-step title)
+below: #64748B, 14px, 
+line-height 1.6 (detail)
+
+4 steps with sub-steps:
+
+STEP 01 — Configure and Quote:
+Icon: Search
+Intro: "Start by browsing our catalogue 
+of 110+ SKUs or describing 
+what you need. 
+No sales call required. 
+No commitment until you approve."
+
+Sub-steps:
+1. "Browse or describe"
+   "Find your SKU in our catalogue 
+   or tell us what you need — 
+   we'll source it."
+2. "Configure your spec"
+   "Select material, dimensions, 
+   print type, and quantity. 
+   Live price estimate updates 
+   as you configure."
+3. "Submit your quote request"
+   "Takes under 5 minutes. 
+   We review every quote manually 
+   and respond within 48 hours."
+4. "Receive itemised quote"
+   "Detailed breakdown of pricing, 
+   timeline, and payment terms. 
+   You approve before anything starts."
+
+STEP 02 — We Source and Match:
+Icon: GitBranch
+Intro: "Once you approve the quote, 
+PackOS gets to work. 
+We don't just assign one vendor — 
+we assign the best one 
+with backups in place."
+
+Sub-steps:
+1. "SmartMatch factory selection"
+   "PackOS matches your SKU spec 
+   to the most suitable factory 
+   from our verified network."
+2. "3 backup vendors assigned"
+   "Two additional qualified vendors 
+   are confirmed for your order. 
+   If the primary delays — 
+   a backup ships immediately."
+3. "Pre-production sample"
+   "A physical sample is produced 
+   and sent to you for approval 
+   before bulk production begins."
+4. "You approve before bulk run"
+   "No bulk production starts 
+   without your sign-off on 
+   the sample. Your control."
+
+STEP 03 — QC at Every Stage:
+Icon: ShieldCheck
+Intro: "Quality is not your vendor's job. 
+It's ours. 
+Three checkpoints on every order 
+before anything leaves the factory."
+
+Sub-steps:
+1. "Pre-production approval"
+   "Sample approved by you. 
+   Colour, dimensions, material, 
+   and print quality confirmed 
+   against spec."
+2. "In-process inspection"
+   "For orders above ₹2L, 
+   our QC team checks 
+   mid-production batches. 
+   Issues caught before 
+   they scale."
+3. "Pre-dispatch photo check"
+   "Every single order. 
+   Photo evidence uploaded 
+   to your dashboard 
+   before dispatch."
+4. "You see everything"
+   "Photos, batch records, 
+   and QC sign-off documents 
+   available in your dashboard. 
+   No surprises."
+
+STEP 04 — Delivered and Tracked:
+Icon: Truck
+Intro: "We manage factory pickup, 
+interstate freight, 
+customs documentation 
+for exports, and last-mile delivery. 
+One team. One tracking link."
+
+Sub-steps:
+1. "Factory pickup coordinated"
+   "We arrange collection 
+   directly from the factory. 
+   You don't coordinate with anyone."
+2. "Real-time tracking"
+   "Live tracking link in your dashboard 
+   from the moment goods are dispatched. 
+   Updated at every milestone."
+3. "Export documentation handled"
+   "For international orders — 
+   shipping bill, certificate of origin, 
+   packing list, and customs docs 
+   all managed by our team."
+4. "Delivered and confirmed"
+   "Delivery confirmation uploaded 
+   to your dashboard. 
+   Invoice generated. 
+   Reorder available in one click."
+
+After the 4 steps:
+FAQ section
+Background: #F8F9FC
+Padding: 80px 0
+Max-width: 720px, margin: 0 auto
+
+Headline: "Common questions"
+#0D1B2A, 36px, 700, 
+margin-bottom 40px
+
+6 FAQ items as an accordion:
+Each item:
+border-bottom: 1px solid #E2EAF4
+padding: 20px 0
+
+Question row:
+display flex, 
+justify-content space-between
+cursor pointer
+font-size: 16px, 600, #0D1B2A
+
+ChevronDown icon: 
+#64748B, 18px
+Rotates 180deg when open
+
+Answer (shown when open):
+color: #64748B, 15px, 
+line-height 1.7
+padding: 12px 0 4px
+animation: fade-in 0.2s ease
+
+6 FAQs:
+
+Q1: "What is the minimum order quantity?"
+A: "MOQ varies by SKU — 
+from 200 units for premium rigid boxes 
+to 10,000 units for standard 
+flexible pouches. 
+Every product page shows the exact MOQ. 
+If you need a smaller quantity, 
+order a sample first."
+
+Q2: "How does the 48-hour quote work?"
+A: "After you submit a quote request, 
+our team reviews your spec manually, 
+sources competing quotes 
+from our vendor network, 
+and sends you an itemised quote 
+within 48 business hours. 
+No automated responses. 
+A real person handles every quote."
+
+Q3: "Can I get credit terms?"
+A: "Yes — after 3 completed orders 
+you can apply for net-30 credit 
+up to ₹5L. 
+New clients start on 
+50% advance, 50% before dispatch. 
+If you pay 100% upfront, 
+you get a 3% discount on every order."
+
+Q4: "Do you handle export orders?"
+A: "Yes. We deliver to 40+ countries. 
+All factory partners are 
+internationally certified — 
+ISO 9001, FSSC 22000, BRC, 
+FDA, and FSC. 
+We handle all export documentation 
+including shipping bill, 
+certificate of origin, 
+and customs paperwork."
+
+Q5: "What happens if my order has a quality issue?"
+A: "We own the quality outcome. 
+If goods fail to meet 
+the approved sample standard, 
+we replace at no cost. 
+Our pre-dispatch inspection 
+is designed to catch issues 
+before they ever reach you — 
+but if something does get through, 
+raise a ticket in your dashboard 
+and our team responds within 24 hours."
+
+Q6: "Can I order packaging design separately?"
+A: "Yes. Packaging design starts at ₹1,999 
+and is completely independent 
+of a production order. 
+You get a structural dieline, 
+print-ready artwork, 
+and all source files. 
+The fee is fully adjusted 
+against your first production order 
+above ₹50,000."
+
+Final CTA on this page 
+(same style as homepage final CTA):
+"Ready to place your first order?"
+"Get a quote →" amber button
+"WhatsApp us" outlined button
