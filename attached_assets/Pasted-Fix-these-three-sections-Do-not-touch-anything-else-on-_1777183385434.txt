@@ -1,0 +1,246 @@
+Fix these three sections. 
+Do not touch anything else on the page.
+
+---
+
+FIX 1: FINAL CTA SECTION
+
+The current CTA section does not match 
+the hero's visual energy. Rebuild it completely.
+
+Background:
+Use the SAME gradient direction and colours 
+as the hero section.
+background: linear-gradient(135deg, 
+  #0D1B2A 0%, 
+  #0F2744 40%, 
+  #1B3A5C 100%)
+
+Add the SAME subtle geometric box pattern 
+as the hero (if the hero has it):
+background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='0.5' y='0.5' width='59' height='59' rx='3' fill='none' stroke='white' stroke-opacity='0.04'/%3E%3C/svg%3E")
+background-size: 60px 60px
+
+Add a radial gradient overlay for depth:
+position: absolute, inset: 0
+background: radial-gradient(
+  ellipse 80% 60% at 50% 100%,
+  rgba(27,108,168,0.25) 0%,
+  transparent 70%
+)
+pointer-events: none, z-index: 0
+
+All content inside: 
+position relative, z-index 1
+
+Padding: 140px 0
+Text-align: center
+
+Eyebrow:
+"READY TO START"
+color: #E8A838 
+(amber — visible on dark bg)
+font-size: 11px, 600, 
+letter-spacing: 2.5px, uppercase
+margin-bottom: 20px
+
+Headline:
+"Packaging sorted.
+Forever."
+color: #FFFFFF
+font-size: 72px, 700
+line-height: 1.05
+letter-spacing: -2px
+margin-bottom: 24px
+
+Subheadline:
+"Join brands across India and 40+ countries 
+who have simplified their 
+packaging supply chain."
+color: rgba(255,255,255,0.6)
+font-size: 19px
+max-width: 440px
+margin: 0 auto 52px
+line-height: 1.65
+
+Two CTAs:
+display: flex
+gap: 16px
+justify-content: center
+align-items: center
+
+Button 1 (primary — amber):
+background: #E8A838
+color: #0D1B2A
+padding: 18px 44px
+border-radius: 10px
+font-size: 16px, 700
+border: none
+cursor: pointer
+white-space: nowrap
+box-shadow: 0 8px 32px 
+  rgba(232,168,56,0.35)
+transition: all 0.2s
+hover: 
+  transform: translateY(-2px)
+  box-shadow: 0 12px 40px 
+    rgba(232,168,56,0.45)
+Text: "Browse 110+ SKUs →"
+href: /products
+
+Button 2 (secondary — outlined):
+background: transparent
+color: white
+padding: 18px 44px
+border-radius: 10px
+font-size: 16px, 600
+border: 1.5px solid rgba(255,255,255,0.3)
+cursor: pointer
+white-space: nowrap
+transition: all 0.2s
+hover: 
+  border-color: rgba(255,255,255,0.8)
+  background: rgba(255,255,255,0.05)
+Text: "WhatsApp Us"
+onClick: open WhatsApp
+
+IMPORTANT: Both buttons must be 
+EXACTLY the same height and 
+EXACTLY the same padding.
+Do not let one be wider than the other 
+unless the text is longer.
+Use padding not min-width to control size.
+
+Trust strip (margin-top: 48px):
+display: flex
+gap: 32px
+justify-content: center
+align-items: center
+flex-wrap: wrap
+
+Each item:
+display: flex
+align-items: center
+gap: 8px
+color: rgba(255,255,255,0.45)
+font-size: 13px
+
+Small dot separator between items:
+color: rgba(255,255,255,0.2)
+font-size: 6px
+
+4 items:
+"Quote in 48 hours"
+"No commitment until you approve"
+"Sample from ₹2,999"
+"Design from ₹1,999"
+
+---
+
+FIX 2: CASE STUDY SECTION — TWO SMALL FIXES ONLY
+
+Do not rebuild this section.
+Make only these two changes:
+
+Change 1:
+The right detail panel needs a 
+top border accent.
+Add to the right panel card:
+border-top: 3px solid #E8A838
+(keep all other borders as they are)
+
+Change 2:
+The left column selector cards 
+are stretching to match 
+the right panel height.
+Fix by adding to the left column:
+align-self: start
+
+This prevents the left column 
+from stretching beyond 
+its natural content height.
+
+---
+
+FIX 3: SUSTAINABLE PACKAGING SECTION
+
+Do not change the layout, 
+text content, or CTA.
+Only change the background treatment.
+
+Remove the flat solid #0D3B2E background.
+
+Replace with this layered background:
+
+Layer 1 (base):
+background: #0A3326
+
+Layer 2 (radial depth — CSS):
+Add as a ::before pseudo-element
+or an absolutely positioned div:
+position: absolute
+inset: 0
+background: 
+  radial-gradient(
+    ellipse 70% 80% at 85% 20%,
+    rgba(34, 197, 94, 0.12) 0%,
+    transparent 60%
+  ),
+  radial-gradient(
+    ellipse 50% 60% at 10% 80%,
+    rgba(6, 78, 59, 0.8) 0%,
+    transparent 50%
+  )
+pointer-events: none
+z-index: 0
+
+Layer 3 (organic SVG texture):
+Add as another absolutely 
+positioned div on top of layer 2:
+position: absolute
+inset: 0
+opacity: 0.06
+z-index: 0
+pointer-events: none
+background-image: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M40 8 C20 8 8 20 8 40 C8 55 18 67 32 72 C28 60 30 45 40 38 C50 45 52 60 48 72 C62 67 72 55 72 40 C72 20 60 8 40 8 Z' fill='white' opacity='1'/%3E%3C/svg%3E")
+background-size: 80px 80px
+background-repeat: repeat
+
+Layer 4 (bottom fade):
+Add as another absolutely 
+positioned div:
+position: absolute
+bottom: 0, left: 0, right: 0
+height: 120px
+background: linear-gradient(
+  to bottom,
+  transparent,
+  rgba(10, 51, 38, 0.6)
+)
+pointer-events: none
+z-index: 0
+
+Make sure the section itself has:
+position: relative
+overflow: hidden
+
+Make sure ALL text content 
+and the CTA button are inside 
+a div with:
+position: relative
+z-index: 1
+
+This ensures text sits above 
+all background layers.
+
+The leaf pattern should feel like 
+watermark-level subtle — 
+barely perceptible, 
+just enough to add organic texture 
+without distracting from the text.
+
+If the section currently has 
+padding-top and padding-bottom, 
+increase both by 16px 
+to give the background 
+more room to breathe.

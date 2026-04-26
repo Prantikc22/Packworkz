@@ -203,6 +203,7 @@ function CaseDetail({ cs }: { cs: typeof CASE_STUDIES[0] }) {
   return (
     <div style={{
       background: "#F8F9FC", border: "1px solid #E2EAF4", borderRadius: 0,
+      borderTop: "3px solid #E8A838",
       padding: "44px 48px", minHeight: 380,
       animation: "caseFadeIn 0.25s ease",
     }}>
@@ -773,10 +774,36 @@ export default function Home() {
       {/* ══════════════════════════════════════════════════════════ */}
       {/*  SECTION 10 — SUSTAINABLE PACKAGING BAND                  */}
       {/* ══════════════════════════════════════════════════════════ */}
-      <section style={{ background: "#0D3B2E", padding: "72px 0" }}>
+      <section style={{ background: "#0A3326", padding: "88px 0", position: "relative", overflow: "hidden" }}>
+
+        {/* Layer 2: Radial depth */}
+        <div style={{
+          position: "absolute", inset: 0, pointerEvents: "none", zIndex: 0,
+          background: `
+            radial-gradient(ellipse 70% 80% at 85% 20%, rgba(34,197,94,0.12) 0%, transparent 60%),
+            radial-gradient(ellipse 50% 60% at 10% 80%, rgba(6,78,59,0.8) 0%, transparent 50%)
+          `,
+        }} />
+
+        {/* Layer 3: Leaf SVG texture */}
+        <div style={{
+          position: "absolute", inset: 0, opacity: 0.06, zIndex: 0, pointerEvents: "none",
+          backgroundImage: `url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M40 8 C20 8 8 20 8 40 C8 55 18 67 32 72 C28 60 30 45 40 38 C50 45 52 60 48 72 C62 67 72 55 72 40 C72 20 60 8 40 8 Z' fill='white' opacity='1'/%3E%3C/svg%3E")`,
+          backgroundSize: "80px 80px",
+          backgroundRepeat: "repeat",
+        }} />
+
+        {/* Layer 4: Bottom fade */}
+        <div style={{
+          position: "absolute", bottom: 0, left: 0, right: 0,
+          height: 120, pointerEvents: "none", zIndex: 0,
+          background: "linear-gradient(to bottom, transparent, rgba(10,51,38,0.6))",
+        }} />
+
+        {/* Content */}
         <div
           className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center"
-          style={{ maxWidth: 1100, margin: "0 auto", padding: "0 40px" }}
+          style={{ maxWidth: 1100, margin: "0 auto", padding: "0 40px", position: "relative", zIndex: 1 }}
         >
           {/* Left */}
           <div>
@@ -845,7 +872,7 @@ export default function Home() {
 
           <div className="grid grid-cols-1 md:grid-cols-[280px_1fr] gap-6 items-start" style={{ maxWidth: 1100, margin: "0 auto" }}>
             {/* Left: selector cards */}
-            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 12, alignSelf: "start" }}>
               {CASE_STUDIES.map((cs, i) => {
                 const isActive = activeCase === i;
                 return (
@@ -1151,54 +1178,134 @@ export default function Home() {
       {/* ══════════════════════════════════════════════════════════ */}
       <section
         className="relative overflow-hidden"
-        style={{ background: "linear-gradient(135deg, #0D1B2A 0%, #0F2744 100%)", padding: "120px 0", textAlign: "center" }}
+        style={{
+          background: "linear-gradient(135deg, #0D1B2A 0%, #0F2744 40%, #1B3A5C 100%)",
+          backgroundImage: `linear-gradient(135deg, #0D1B2A 0%, #0F2744 40%, #1B3A5C 100%), url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='0.5' y='0.5' width='59' height='59' rx='3' fill='none' stroke='white' stroke-opacity='0.04'/%3E%3C/svg%3E")`,
+          backgroundSize: "auto, 60px 60px",
+          padding: "140px 0",
+          textAlign: "center",
+        }}
       >
+        {/* Box pattern overlay */}
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
-            backgroundImage: "repeating-linear-gradient(45deg, rgba(255,255,255,0.03) 0, rgba(255,255,255,0.03) 1px, transparent 0, transparent 50%)",
-            backgroundSize: "20px 20px",
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='0.5' y='0.5' width='59' height='59' rx='3' fill='none' stroke='white' stroke-opacity='0.04'/%3E%3C/svg%3E")`,
+            backgroundSize: "60px 60px",
           }}
         />
-        <div className="relative z-10" style={{ maxWidth: 600, margin: "0 auto", padding: "0 40px" }}>
-          <span style={{ color: "#1B6CA8", fontSize: 11, fontWeight: 600, letterSpacing: "2px", textTransform: "uppercase", display: "block", marginBottom: 20 }}>
-            GET STARTED
+
+        {/* Radial depth overlay */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            zIndex: 0,
+            background: "radial-gradient(ellipse 80% 60% at 50% 100%, rgba(27,108,168,0.25) 0%, transparent 70%)",
+          }}
+        />
+
+        {/* Content */}
+        <div className="relative" style={{ zIndex: 1, maxWidth: 600, margin: "0 auto", padding: "0 40px" }}>
+
+          {/* Eyebrow */}
+          <span style={{
+            color: "#E8A838", fontSize: 11, fontWeight: 600,
+            letterSpacing: "2.5px", textTransform: "uppercase",
+            display: "block", marginBottom: 20,
+          }}>
+            READY TO START
           </span>
-          <h2 style={{ color: "white", fontSize: "clamp(2.5rem,6vw,4rem)", fontWeight: 700, lineHeight: 1.1, marginBottom: 20 }}>
+
+          {/* Headline */}
+          <h2 style={{
+            color: "#FFFFFF", fontSize: 72, fontWeight: 700,
+            lineHeight: 1.05, letterSpacing: "-2px", marginBottom: 24,
+          }}>
             Packaging sorted.<br />Forever.
           </h2>
-          <p style={{ color: "rgba(255,255,255,0.6)", fontSize: 19, maxWidth: 460, margin: "0 auto 48px", lineHeight: 1.6 }}>
+
+          {/* Subheadline */}
+          <p style={{
+            color: "rgba(255,255,255,0.6)", fontSize: 19,
+            maxWidth: 440, margin: "0 auto 52px", lineHeight: 1.65,
+          }}>
             Join brands across India and 40+ countries who have simplified their packaging supply chain.
           </p>
 
-          <div style={{ display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap" }}>
+          {/* CTAs */}
+          <div style={{ display: "flex", gap: 16, justifyContent: "center", alignItems: "center", flexWrap: "wrap" }}>
             <Link href="/products">
               <button
-                style={{ background: "#E8A838", color: "#0D1B2A", padding: "16px 36px", borderRadius: 0, fontSize: 16, fontWeight: 700, border: "none", cursor: "pointer" }}
-                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.filter = "brightness(1.08)"; }}
-                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.filter = "brightness(1)"; }}
+                style={{
+                  background: "#E8A838", color: "#0D1B2A",
+                  padding: "18px 44px", borderRadius: 10,
+                  fontSize: 16, fontWeight: 700,
+                  border: "none", cursor: "pointer",
+                  whiteSpace: "nowrap",
+                  boxShadow: "0 8px 32px rgba(232,168,56,0.35)",
+                  transition: "all 0.2s",
+                }}
+                onMouseEnter={e => {
+                  const el = e.currentTarget as HTMLElement;
+                  el.style.transform = "translateY(-2px)";
+                  el.style.boxShadow = "0 12px 40px rgba(232,168,56,0.45)";
+                }}
+                onMouseLeave={e => {
+                  const el = e.currentTarget as HTMLElement;
+                  el.style.transform = "translateY(0)";
+                  el.style.boxShadow = "0 8px 32px rgba(232,168,56,0.35)";
+                }}
               >
                 Browse 110+ SKUs →
               </button>
             </Link>
-            <a href={`https://wa.me/${WHATSAPP_NUM}?text=Hi%20PackOps%2C%20I%27d%20like%20to%20discuss%20packaging.`} target="_blank" rel="noopener noreferrer">
+
+            <a
+              href={`https://wa.me/${WHATSAPP_NUM}?text=Hi%20PackOps%2C%20I%27d%20like%20to%20discuss%20packaging.`}
+              target="_blank" rel="noopener noreferrer"
+            >
               <button
                 style={{
                   background: "transparent", color: "white",
-                  border: "2px solid rgba(255,255,255,0.3)",
-                  padding: "16px 36px", borderRadius: 0, fontSize: 16, fontWeight: 600, cursor: "pointer",
+                  padding: "18px 44px", borderRadius: 10,
+                  fontSize: 16, fontWeight: 600,
+                  border: "1.5px solid rgba(255,255,255,0.3)",
+                  cursor: "pointer", whiteSpace: "nowrap",
+                  transition: "all 0.2s",
                 }}
-                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = "white"; }}
-                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(255,255,255,0.3)"; }}
+                onMouseEnter={e => {
+                  const el = e.currentTarget as HTMLElement;
+                  el.style.borderColor = "rgba(255,255,255,0.8)";
+                  el.style.background = "rgba(255,255,255,0.05)";
+                }}
+                onMouseLeave={e => {
+                  const el = e.currentTarget as HTMLElement;
+                  el.style.borderColor = "rgba(255,255,255,0.3)";
+                  el.style.background = "transparent";
+                }}
               >
                 WhatsApp Us
               </button>
             </a>
           </div>
 
-          <p style={{ color: "rgba(255,255,255,0.45)", fontSize: 13, marginTop: 40 }}>
-            Quote in 48 hours &nbsp;·&nbsp; No commitment until you approve &nbsp;·&nbsp; Sample from ₹2,999 &nbsp;·&nbsp; Design from ₹1,999
-          </p>
+          {/* Trust strip */}
+          <div style={{
+            display: "flex", gap: 20, justifyContent: "center",
+            alignItems: "center", flexWrap: "wrap", marginTop: 48,
+          }}>
+            {["Quote in 48 hours", "No commitment until you approve", "Sample from ₹2,999", "Design from ₹1,999"].map((item, i) => (
+              <div key={item} style={{ display: "flex", alignItems: "center", gap: 20 }}>
+                {i > 0 && (
+                  <span style={{ color: "rgba(255,255,255,0.2)", fontSize: 6 }}>●</span>
+                )}
+                <span style={{ color: "rgba(255,255,255,0.45)", fontSize: 13 }}>
+                  {item}
+                </span>
+              </div>
+            ))}
+          </div>
+
         </div>
       </section>
 
