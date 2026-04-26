@@ -97,6 +97,7 @@ const CAT_IMAGES: Record<string, string> = {
   labels:      "/categories/closures.jpg",
   sustainable: "/categories/sustainable.jpg",
   liquid:      "/categories/liquid.jpg",
+  premium:     "https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=600&h=400&fit=crop&q=75",
 };
 
 const INDUSTRIES = [
@@ -259,7 +260,7 @@ function CaseDetail({ cs }: { cs: typeof CASE_STUDIES[0] }) {
 
         {/* Industry tag */}
         <span style={{
-          display: "inline-block", background: "#E2EAF4", borderRadius: 999,
+          display: "inline-block", background: "#E2EAF4",
           padding: "5px 14px", color: "#64748B", fontSize: 12, marginBottom: 32,
         }}>{cs.industry}</span>
 
@@ -318,7 +319,9 @@ export default function Home() {
   const [useCredit, setUseCredit] = useState<CreditOption>("Yes");
   const [activeCase, setActiveCase] = useState(0);
   const [heroLoaded, setHeroLoaded] = useState(false);
+  const [stepsVisible, setStepsVisible] = useState(false);
   const caseIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const processRef = useRef<HTMLDivElement>(null);
 
   const startCaseRotation = () => {
     if (caseIntervalRef.current) clearInterval(caseIntervalRef.current);
@@ -335,6 +338,16 @@ export default function Home() {
   useEffect(() => {
     const t = setTimeout(() => setHeroLoaded(true), 100);
     return () => clearTimeout(t);
+  }, []);
+
+  useEffect(() => {
+    const el = processRef.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) { setStepsVisible(true); obs.disconnect(); }
+    }, { threshold: 0.15 });
+    obs.observe(el);
+    return () => obs.disconnect();
   }, []);
 
   const calc = calcNewSavings(monthlySpend, vendorBucket, useCredit);
@@ -417,84 +430,64 @@ export default function Home() {
             </div>
 
             <div className="hidden lg:block relative h-[500px]">
-              {/* Background image layer */}
-              <div style={{
-                position: "absolute", inset: 0,
-                backgroundImage: "url('/images/hero-packaging-bg.jpg')",
-                backgroundSize: "cover", backgroundPosition: "center",
-                zIndex: 0, opacity: 0.3,
-              }} />
-              {/* Cards container */}
-              <div style={{ position: "relative", zIndex: 1, width: "100%", height: "100%" }}>
-                {HERO_CARDS.map((card) => {
-                  const Icon = card.Icon;
-                  return (
-                    <Link key={card.title} href={`/products?category=${card.slug}`}>
-                      <div
-                        style={{
-                          position: "absolute",
-                          ...card.pos,
-                          width: card.width,
-                          backdropFilter: "blur(12px)",
-                          WebkitBackdropFilter: "blur(12px)",
-                          background: "rgba(255,255,255,0.07)",
-                          border: card.greenBorder
-                            ? "1px solid rgba(74,222,128,0.2)"
-                            : "1px solid rgba(255,255,255,0.12)",
-                          padding: "20px 22px",
-                          cursor: "pointer",
-                          animation: heroLoaded ? card.floatAnim : "none",
-                          opacity: heroLoaded ? 1 : 0,
-                          transition: `opacity 0.6s ease ${card.entranceDelay}`,
-                        }}
-                        onMouseEnter={e => {
-                          const el = e.currentTarget as HTMLElement;
-                          el.style.background = "rgba(255,255,255,0.12)";
-                          el.style.borderColor = card.greenBorder
-                            ? "rgba(74,222,128,0.4)"
-                            : "rgba(232,168,56,0.4)";
-                          el.style.animationPlayState = "paused";
-                        }}
-                        onMouseLeave={e => {
-                          const el = e.currentTarget as HTMLElement;
-                          el.style.background = "rgba(255,255,255,0.07)";
-                          el.style.borderColor = card.greenBorder
-                            ? "rgba(74,222,128,0.2)"
-                            : "rgba(255,255,255,0.12)";
-                          el.style.animationPlayState = "running";
-                        }}
-                      >
-                        <div style={{
-                          width: 36, height: 36,
-                          background: "rgba(232,168,56,0.15)",
-                          display: "flex", alignItems: "center", justifyContent: "center",
-                          marginBottom: 14,
-                        }}>
-                          <Icon size={18} color="#E8A838" />
-                        </div>
-                        <p style={{ color: "rgba(255,255,255,0.92)", fontSize: 14, fontWeight: 700, marginBottom: 4 }}>
-                          {card.title}
-                        </p>
-                        <p style={{ color: "rgba(255,255,255,0.45)", fontSize: 12 }}>
-                          {card.count}
-                        </p>
-                        {card.badge && (
-                          <div style={{
-                            display: "inline-block", marginTop: 10,
-                            background: "rgba(34,197,94,0.15)",
-                            border: "1px solid rgba(34,197,94,0.3)",
-                            padding: "3px 10px",
-                          }}>
-                            <span style={{ color: "#4ade80", fontSize: 10, fontWeight: 600, letterSpacing: "0.5px" }}>
-                              ⚡ Ships in 48hrs
-                            </span>
+              {HERO_CARDS.map((card) => {
+                return (
+                  <Link key={card.title} href={`/products?category=${card.slug}`}>
+                    <div
+                      style={{
+                        position: "absolute",
+                        ...card.pos,
+                        width: card.width,
+                        background: "rgba(8,18,36,0.88)",
+                        border: card.greenBorder
+                          ? "1px solid rgba(74,222,128,0.3)"
+                          : "1px solid rgba(255,255,255,0.14)",
+                        overflow: "hidden",
+                        cursor: "pointer",
+                        animation: heroLoaded ? card.floatAnim : "none",
+                        opacity: heroLoaded ? 1 : 0,
+                        transition: `opacity 0.6s ease ${card.entranceDelay}`,
+                      }}
+                      onMouseEnter={e => {
+                        const el = e.currentTarget as HTMLElement;
+                        el.style.borderColor = card.greenBorder ? "rgba(74,222,128,0.5)" : "rgba(232,168,56,0.5)";
+                        el.style.animationPlayState = "paused";
+                      }}
+                      onMouseLeave={e => {
+                        const el = e.currentTarget as HTMLElement;
+                        el.style.borderColor = card.greenBorder ? "rgba(74,222,128,0.3)" : "rgba(255,255,255,0.14)";
+                        el.style.animationPlayState = "running";
+                      }}
+                    >
+                      {/* Category image at top */}
+                      <div style={{ width: "100%", height: 88, position: "relative", overflow: "hidden" }}>
+                        <img
+                          src={CAT_IMAGES[card.slug]}
+                          alt={card.title}
+                          style={{ width: "100%", height: "100%", objectFit: "cover", filter: "brightness(0.6) saturate(0.75)" }}
+                          onError={e => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
+                        />
+                        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, transparent 30%, rgba(8,18,36,0.9) 100%)" }} />
+                        {card.greenBorder && (
+                          <div style={{ position: "absolute", top: 8, right: 8, background: "rgba(34,197,94,0.18)", border: "1px solid rgba(34,197,94,0.35)", padding: "2px 8px" }}>
+                            <span style={{ color: "#4ade80", fontSize: 9, fontWeight: 700, letterSpacing: "0.5px" }}>⚡ FAST</span>
                           </div>
                         )}
                       </div>
-                    </Link>
-                  );
-                })}
-              </div>
+
+                      {/* Content */}
+                      <div style={{ padding: "12px 16px 14px" }}>
+                        <p style={{ color: "rgba(255,255,255,0.94)", fontSize: 13, fontWeight: 700, marginBottom: 3 }}>
+                          {card.title}
+                        </p>
+                        <p style={{ color: "rgba(255,255,255,0.4)", fontSize: 11 }}>
+                          {card.count}
+                        </p>
+                      </div>
+                    </div>
+                  </Link>
+                );
+              })}
             </div>
           </div>
 
@@ -529,69 +522,62 @@ export default function Home() {
       </div>
 
       {/* ══════════════════════════════════════════════════════════ */}
-      {/*  SECTION 3B — OUR CUSTOMERS                               */}
+      {/*  SECTION 3B — OUR CUSTOMERS (marquee)                     */}
       {/* ══════════════════════════════════════════════════════════ */}
-      <section style={{ background: "#FFFFFF", borderBottom: "1px solid #E2EAF4", padding: "72px 0" }}>
-        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 64px" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 80 }}>
-            {/* Left: heading */}
-            <div style={{ flexShrink: 0, width: 280 }}>
-              <p style={{
-                color: "#1B6CA8", fontSize: 11, fontWeight: 600,
-                letterSpacing: "2px", textTransform: "uppercase",
-                marginBottom: 16,
-              }}>
-                OUR CUSTOMERS
-              </p>
-              <h2 style={{
-                color: "#0D1B2A", fontSize: 28, fontWeight: 700,
-                lineHeight: 1.25, marginBottom: 12,
-              }}>
-                Brands across India and globally trust PackOps.
-              </h2>
-              <p style={{ color: "#64748B", fontSize: 14, lineHeight: 1.6 }}>
-                D2C, FMCG &amp; Pharma brands rely on us to source, QC and deliver their packaging.
-              </p>
-            </div>
+      <section style={{ background: "#FFFFFF", borderBottom: "1px solid #E2EAF4", padding: "64px 0", overflow: "hidden" }}>
+        {/* Heading */}
+        <div style={{ textAlign: "center", marginBottom: 44, padding: "0 40px" }}>
+          <p style={{ color: "#1B6CA8", fontSize: 11, fontWeight: 600, letterSpacing: "2px", textTransform: "uppercase", marginBottom: 10 }}>
+            OUR CUSTOMERS
+          </p>
+          <h2 style={{ color: "#0D1B2A", fontSize: 28, fontWeight: 700, lineHeight: 1.25 }}>
+            Trusted by D2C, FMCG &amp; Pharma brands worldwide.
+          </h2>
+        </div>
 
-            {/* Right: logo grid */}
-            <div style={{
-              flex: 1,
-              display: "grid",
-              gridTemplateColumns: "repeat(4, 1fr)",
-              gap: "0",
-              border: "1px solid #E2EAF4",
-            }}>
-              {CUSTOMER_LOGOS.map((logo, i) => (
-                <div
-                  key={logo.name}
-                  style={{
-                    padding: "28px 20px",
-                    display: "flex", flexDirection: "column",
-                    alignItems: "center", justifyContent: "center", gap: 8,
-                    borderRight: i % 4 !== 3 ? "1px solid #E2EAF4" : "none",
-                    borderBottom: i < 4 ? "1px solid #E2EAF4" : "none",
-                    transition: "background 0.2s",
-                  }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "#F8F9FC"; }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "white"; }}
-                >
-                  <div style={{
-                    width: 40, height: 40,
-                    background: logo.color + "18",
-                    border: `1px solid ${logo.color}30`,
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                  }}>
-                    <span style={{ color: logo.color, fontSize: 12, fontWeight: 800, letterSpacing: "-0.5px" }}>
-                      {logo.abbr}
-                    </span>
-                  </div>
-                  <span style={{ color: "#64748B", fontSize: 11, fontWeight: 600, letterSpacing: "0.02em", textAlign: "center" }}>
-                    {logo.name}
-                  </span>
+        {/* Row 1 — standard speed */}
+        <div style={{ overflow: "hidden", marginBottom: 14 }}>
+          <div className="logo-row">
+            {[...CUSTOMER_LOGOS, ...CUSTOMER_LOGOS].map((logo, i) => (
+              <div key={i} style={{
+                display: "flex", flexDirection: "column", alignItems: "center", gap: 8,
+                minWidth: 140, padding: "0 24px",
+                borderRight: "1px solid #E2EAF4",
+              }}>
+                <div style={{
+                  width: 56, height: 56,
+                  background: logo.color + "12",
+                  border: `1px solid ${logo.color}28`,
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                }}>
+                  <span style={{ color: logo.color, fontSize: 13, fontWeight: 800, letterSpacing: "-0.5px" }}>{logo.abbr}</span>
                 </div>
-              ))}
-            </div>
+                <span style={{ color: "#94A3B8", fontSize: 11, fontWeight: 600, whiteSpace: "nowrap" }}>{logo.name}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Row 2 — slower, reversed order */}
+        <div style={{ overflow: "hidden" }}>
+          <div className="logo-row-slow">
+            {[...[...CUSTOMER_LOGOS].reverse(), ...[...CUSTOMER_LOGOS].reverse()].map((logo, i) => (
+              <div key={i} style={{
+                display: "flex", flexDirection: "column", alignItems: "center", gap: 8,
+                minWidth: 140, padding: "0 24px",
+                borderRight: "1px solid #E2EAF4",
+              }}>
+                <div style={{
+                  width: 56, height: 56,
+                  background: logo.color + "12",
+                  border: `1px solid ${logo.color}28`,
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                }}>
+                  <span style={{ color: logo.color, fontSize: 13, fontWeight: 800, letterSpacing: "-0.5px" }}>{logo.abbr}</span>
+                </div>
+                <span style={{ color: "#94A3B8", fontSize: 11, fontWeight: 600, whiteSpace: "nowrap" }}>{logo.name}</span>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -648,7 +634,7 @@ export default function Home() {
             THE HONEST COMPARISON
           </span>
           <h2 style={{ color: "#0D1B2A", fontSize: "clamp(2rem,4vw,3.25rem)", fontWeight: 700, lineHeight: 1.1, marginBottom: 16 }}>
-            Why not just call<br />a vendor directly?
+            Why brands switch<br />to PackOps.
           </h2>
           <p style={{ color: "#64748B", fontSize: 18, maxWidth: 520, marginBottom: 48, lineHeight: 1.6 }}>
             This question comes up every time. Here is the honest answer.
@@ -712,121 +698,107 @@ export default function Home() {
       </section>
 
       {/* ══════════════════════════════════════════════════════════ */}
-      {/*  SECTION 6 — HOW IT WORKS                                 */}
+      {/*  SECTION 6 — HOW IT WORKS (dark animated timeline)        */}
       {/* ══════════════════════════════════════════════════════════ */}
-      <section style={{ background: "#FFFFFF", padding: "100px 0" }}>
+      <section style={{ background: "#0A1628", padding: "100px 0" }}>
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 40px" }}>
-          <span style={{ color: "#1B6CA8", fontSize: 11, fontWeight: 600, letterSpacing: "2px", textTransform: "uppercase", display: "block", marginBottom: 14, textAlign: "center" }}>
-            THE PROCESS
-          </span>
-          <h2 style={{ color: "#0D1B2A", fontSize: "clamp(2rem,4vw,3.25rem)", fontWeight: 700, lineHeight: 1.1, marginBottom: 16, textAlign: "center" }}>
-            From brief to delivered.<br />Every time.
-          </h2>
-          <p style={{ color: "#64748B", fontSize: 18, maxWidth: 600, margin: "0 auto 64px", lineHeight: 1.6, textAlign: "center" }}>
-            Four steps. Zero ambiguity. One team responsible for all of it.
-          </p>
+          {/* Heading */}
+          <div style={{ textAlign: "center", marginBottom: 80 }}>
+            <span style={{ color: "#E8A838", fontSize: 11, fontWeight: 600, letterSpacing: "2px", textTransform: "uppercase", display: "block", marginBottom: 14 }}>
+              THE PROCESS
+            </span>
+            <h2 style={{ color: "white", fontSize: "clamp(2rem,4vw,3.25rem)", fontWeight: 700, lineHeight: 1.1, marginBottom: 16 }}>
+              From brief to delivered.<br />Every time.
+            </h2>
+            <p style={{ color: "rgba(255,255,255,0.4)", fontSize: 18, maxWidth: 480, margin: "0 auto", lineHeight: 1.6 }}>
+              Four steps. Zero ambiguity. One team responsible for all of it.
+            </p>
+          </div>
 
-          <div
-            className="grid grid-cols-1 md:grid-cols-4"
-            style={{ border: "1px solid #E2EAF4" }}
-          >
-            {HOW_IT_WORKS_STEPS.map((step, i) => {
-              const Icon = step.Icon;
-              return (
-                <div
-                  key={i}
-                  style={{
-                    borderRight: i < 3 ? "1px solid #E2EAF4" : "none",
-                    background: "white",
-                    display: "flex", flexDirection: "column",
-                  }}
-                >
-                  {/* Amber top strip */}
-                  <div style={{ height: 3, background: "#E8A838" }} />
-                  <div style={{ padding: "28px 24px", flex: 1 }}>
+          {/* Timeline track */}
+          <div ref={processRef} style={{ position: "relative" }}>
+            {/* Horizontal connector line */}
+            <div style={{
+              position: "absolute",
+              top: 56,
+              left: "calc(12.5% + 32px)",
+              right: "calc(12.5% + 32px)",
+              height: 1,
+              background: "linear-gradient(to right, rgba(232,168,56,0.6), rgba(232,168,56,0.2), rgba(232,168,56,0.6))",
+              zIndex: 0,
+            }} />
+
+            <div className="grid grid-cols-2 md:grid-cols-4" style={{ gap: 0 }}>
+              {HOW_IT_WORKS_STEPS.map((step, i) => {
+                const Icon = step.Icon;
+                return (
+                  <div
+                    key={i}
+                    style={{
+                      padding: "0 32px",
+                      textAlign: "center",
+                      opacity: stepsVisible ? 1 : 0,
+                      transform: stepsVisible ? "translateY(0)" : "translateY(32px)",
+                      transition: `opacity 0.55s ease ${i * 0.13}s, transform 0.55s ease ${i * 0.13}s`,
+                    }}
+                  >
+                    {/* Step label */}
                     <p style={{
-                      color: "#E8A838", fontSize: 11, fontWeight: 700,
-                      textTransform: "uppercase", letterSpacing: "1.5px", marginBottom: 20,
+                      color: "#E8A838", fontSize: 10, fontWeight: 700,
+                      letterSpacing: "2px", textTransform: "uppercase",
+                      marginBottom: 16,
                     }}>
                       {step.num}
                     </p>
+
+                    {/* Icon box */}
                     <div style={{
-                      width: 44, height: 44,
-                      background: "#0D1B2A",
+                      width: 64, height: 64,
+                      background: "#E8A838",
                       display: "flex", alignItems: "center", justifyContent: "center",
-                      marginBottom: 20,
+                      margin: "0 auto 32px",
+                      position: "relative", zIndex: 1,
+                      boxShadow: "0 0 0 8px rgba(232,168,56,0.12)",
                     }}>
-                      <Icon size={20} color="#E8A838" />
+                      <Icon size={26} color="#0A1628" strokeWidth={2.5} />
                     </div>
-                    <h3 style={{ color: "#0D1B2A", fontSize: 16, fontWeight: 700, marginBottom: 10 }}>{step.title}</h3>
-                    <p style={{ color: "#64748B", fontSize: 13, lineHeight: 1.65, margin: 0 }}>{step.desc}</p>
+
+                    {/* Title */}
+                    <h3 style={{
+                      color: "white", fontSize: 15, fontWeight: 700,
+                      marginBottom: 12, textTransform: "uppercase",
+                      letterSpacing: "0.5px", lineHeight: 1.3,
+                    }}>
+                      {step.title}
+                    </h3>
+
+                    {/* Description */}
+                    <p style={{
+                      color: "rgba(255,255,255,0.42)", fontSize: 13,
+                      lineHeight: 1.7, margin: 0,
+                    }}>
+                      {step.desc}
+                    </p>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
 
-          <div style={{ marginTop: 48, textAlign: "center" }}>
+          <div style={{ marginTop: 64, textAlign: "center" }}>
             <Link href="/how-it-works">
-              <span
-                style={{
-                  display: "inline-flex", alignItems: "center", gap: 6,
-                  color: "#1B6CA8", fontSize: 15, fontWeight: 600,
-                  textDecoration: "none", border: "none", background: "none",
-                  cursor: "pointer", padding: 0,
-                  transition: "color 0.2s",
-                }}
-                onMouseEnter={e => {
-                  const el = e.currentTarget as HTMLElement;
-                  el.style.color = "#0D1B2A";
-                  const arrow = el.querySelector(".hiw-arrow") as HTMLElement;
-                  if (arrow) arrow.style.transform = "translateX(4px)";
-                }}
-                onMouseLeave={e => {
-                  const el = e.currentTarget as HTMLElement;
-                  el.style.color = "#1B6CA8";
-                  const arrow = el.querySelector(".hiw-arrow") as HTMLElement;
-                  if (arrow) arrow.style.transform = "translateX(0)";
-                }}
-              >
+              <span style={{
+                display: "inline-flex", alignItems: "center", gap: 8,
+                color: "#E8A838", fontSize: 14, fontWeight: 600,
+                cursor: "pointer",
+                borderBottom: "1px solid rgba(232,168,56,0.3)",
+                paddingBottom: 2,
+                transition: "border-color 0.2s",
+              }}>
                 See the full process
-                <ArrowRight className="hiw-arrow" size={16} color="currentColor" style={{ transition: "transform 0.2s" }} />
+                <ArrowRight size={15} />
               </span>
             </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════════════════════ */}
-      {/*  SECTION 7 — STATS STRIP                                  */}
-      {/* ══════════════════════════════════════════════════════════ */}
-      <section style={{
-        background: "linear-gradient(135deg, #020617 0%, #0f172a 35%, #1e3a8a 65%, #1d4ed8 85%, #2563eb 100%)",
-        padding: "72px 0",
-      }}>
-        <div style={{ maxWidth: 1000, margin: "0 auto", padding: "0 40px" }}>
-          <div className="grid grid-cols-2 md:grid-cols-4" style={{ gap: 0 }}>
-            {[
-              { target: 500, suffix: "+", label: "Manufacturing Partners" },
-              { target: 1,   suffix: "",  label: "Owned Manufacturing Facility" },
-              { target: 220, suffix: "+", label: "Customers Globally" },
-              { target: 10,  suffix: "+", label: "Compliances" },
-            ].map((stat, i) => (
-              <div
-                key={i}
-                style={{
-                  textAlign: "center", padding: "24px 16px",
-                  borderRight: i < 3 ? "1px solid rgba(255,255,255,0.12)" : "none",
-                }}
-              >
-                <p style={{ color: "#E8A838", fontSize: 52, fontWeight: 700, lineHeight: 1 }}>
-                  <CountUp target={stat.target} suffix={stat.suffix} />
-                </p>
-                <p style={{ color: "rgba(255,255,255,0.6)", fontSize: 13, marginTop: 8, textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: 500 }}>
-                  {stat.label}
-                </p>
-              </div>
-            ))}
           </div>
         </div>
       </section>
@@ -1036,7 +1008,7 @@ export default function Home() {
                 <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 14 }}>
                   <div style={{
                     background: "rgba(134,239,172,0.15)", width: 40, height: 40,
-                    borderRadius: "50%", display: "flex", alignItems: "center",
+                    display: "flex", alignItems: "center",
                     justifyContent: "center", flexShrink: 0,
                   }}>
                     <Icon size={18} color="#86EFAC" />
@@ -1088,7 +1060,7 @@ export default function Home() {
                     {isActive && (
                       <div style={{
                         position: "absolute", left: 0, top: 0, bottom: 0,
-                        width: 3, background: "#E8A838", borderRadius: "3px 0 0 3px",
+                        width: 3, background: "#E8A838",
                       }} />
                     )}
 
@@ -1101,9 +1073,9 @@ export default function Home() {
                       }} />
                     )}
 
-                    {/* Avatar */}
+                    {/* Avatar — sharp square */}
                     <div style={{
-                      width: 38, height: 38, borderRadius: "50%",
+                      width: 38, height: 38,
                       background: "#0D1B2A", color: "white",
                       fontSize: 13, fontWeight: 700,
                       display: "flex", alignItems: "center", justifyContent: "center",
@@ -1115,12 +1087,11 @@ export default function Home() {
                     <p style={{ color: "#0D1B2A", fontSize: 15, fontWeight: 700, marginBottom: 3 }}>{cs.company}</p>
                     <p style={{ color: "#64748B", fontSize: 12 }}>{cs.industry}</p>
 
-                    {/* Metric pill */}
+                    {/* Metric tag — sharp */}
                     <div style={{
                       display: "inline-block", marginTop: 10,
                       background: "rgba(232,168,56,0.1)",
                       border: "1px solid rgba(232,168,56,0.3)",
-                      borderRadius: 999,
                       padding: "4px 12px",
                     }}>
                       <span style={{ color: "#92600A", fontSize: 12, fontWeight: 600 }}>{cs.metric}</span>
@@ -1128,6 +1099,33 @@ export default function Home() {
                   </div>
                 );
               })}
+
+              {/* 4th slot: CTA */}
+              <div style={{
+                background: "#0D1B2A",
+                border: "1px solid rgba(232,168,56,0.2)",
+                padding: "22px 24px",
+                display: "flex", flexDirection: "column", justifyContent: "center",
+              }}>
+                <p style={{ color: "#E8A838", fontSize: 10, fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", marginBottom: 12 }}>
+                  YOUR BRAND
+                </p>
+                <p style={{ color: "white", fontSize: 15, fontWeight: 700, marginBottom: 8, lineHeight: 1.3 }}>
+                  Could your story be next?
+                </p>
+                <p style={{ color: "rgba(255,255,255,0.45)", fontSize: 12, lineHeight: 1.55, marginBottom: 18 }}>
+                  Join 220+ brands that simplified their packaging with PackOps.
+                </p>
+                <Link href="/quote">
+                  <button style={{
+                    background: "#E8A838", color: "#0D1B2A",
+                    padding: "10px 20px", fontSize: 13, fontWeight: 700,
+                    border: "none", cursor: "pointer",
+                  }}>
+                    Get a quote →
+                  </button>
+                </Link>
+              </div>
             </div>
 
             {/* Right: detail card */}
@@ -1392,11 +1390,8 @@ export default function Home() {
       <section
         className="relative overflow-hidden"
         style={{
-          background: "linear-gradient(135deg, #0D1B2A 0%, #0F2744 40%, #1B3A5C 100%)",
-          backgroundImage: `linear-gradient(135deg, #0D1B2A 0%, #0F2744 40%, #1B3A5C 100%), url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='0.5' y='0.5' width='59' height='59' rx='3' fill='none' stroke='white' stroke-opacity='0.04'/%3E%3C/svg%3E")`,
-          backgroundSize: "auto, 60px 60px",
+          background: "radial-gradient(circle at 30% 60%, rgba(59,130,246,0.18), transparent 45%), linear-gradient(135deg, #020617 0%, #0f172a 35%, #1e3a8a 65%, #1d4ed8 85%, #2563eb 100%)",
           padding: "140px 0",
-          textAlign: "center",
         }}
       >
         {/* Box pattern overlay */}
@@ -1418,7 +1413,10 @@ export default function Home() {
         />
 
         {/* Content */}
-        <div className="relative" style={{ zIndex: 1, maxWidth: 600, margin: "0 auto", padding: "0 40px", textAlign: "center" }}>
+        <div className="relative" style={{
+          zIndex: 1, maxWidth: 640, margin: "0 auto", padding: "0 32px",
+          display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center",
+        }}>
 
           {/* Eyebrow */}
           <span style={{
@@ -1431,17 +1429,16 @@ export default function Home() {
 
           {/* Headline */}
           <h2 style={{
-            color: "#FFFFFF", fontSize: "clamp(2.4rem, 5vw, 56px)", fontWeight: 700,
-            lineHeight: 1.05, letterSpacing: "-1.5px", marginBottom: 24,
-            whiteSpace: "nowrap",
+            color: "#FFFFFF", fontSize: "clamp(2.2rem, 5vw, 54px)", fontWeight: 700,
+            lineHeight: 1.08, letterSpacing: "-1.5px", marginBottom: 24,
           }}>
             Packaging sorted. Forever.
           </h2>
 
           {/* Subheadline */}
           <p style={{
-            color: "rgba(255,255,255,0.6)", fontSize: 19,
-            maxWidth: 440, margin: "0 auto 52px", lineHeight: 1.65,
+            color: "rgba(255,255,255,0.6)", fontSize: 18,
+            maxWidth: 460, marginBottom: 52, lineHeight: 1.65,
           }}>
             Join brands across India and 40+ countries who have simplified their packaging supply chain.
           </p>
@@ -1506,7 +1503,7 @@ export default function Home() {
           {/* Trust strip */}
           <div style={{
             display: "flex", justifyContent: "center", alignItems: "center",
-            gap: 16, flexWrap: "nowrap", marginTop: 40,
+            gap: 12, flexWrap: "wrap", marginTop: 40,
           }}>
             {["Quote in 48 hours", "No commitment until you approve", "Sample from ₹2,999", "Design from ₹1,999"].map((item, i) => (
               <div key={item} style={{ display: "flex", alignItems: "center", gap: 16 }}>
