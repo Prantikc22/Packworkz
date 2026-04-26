@@ -152,9 +152,11 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const navStyle: React.CSSProperties = scrolled
-    ? { background: "rgba(2,6,23,0.72)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)", borderBottom: "1px solid rgba(255,255,255,0.1)", transition: "all 0.3s ease" }
-    : { background: "#020617", borderBottom: "1px solid rgba(255,255,255,0.08)", transition: "all 0.3s ease" };
+  const navStyle: React.CSSProperties = {
+    background: "#020617",
+    borderBottom: scrolled ? "1px solid rgba(255,255,255,0.12)" : "1px solid rgba(255,255,255,0.08)",
+    transition: "border-color 0.3s ease",
+  };
 
   return (
     <div className="min-h-screen flex flex-col" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>

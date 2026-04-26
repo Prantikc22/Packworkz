@@ -23,16 +23,20 @@ const MS = ({ icon, className = "", style }: IconProps) => (
 
 const MARQUEE_1 = Array(8).fill("We are not a vendor. We are your packaging partner.");
 
-const CUSTOMER_LOGOS = [
+const LOGO_ROW_1 = [
   { name: "Plum",             file: "/images/logos/plum.png" },
   { name: "The Souled Store", file: "/images/logos/souledstore.png" },
   { name: "Neeman's",         file: "/images/logos/neemans.png" },
   { name: "MVMT",             file: "/images/logos/mvmt.gif" },
   { name: "CosIQ",            file: "/images/logos/cosiq.png" },
+  { name: "Rage Coffee",      file: "/images/logos/ragecoffee.png" },
+];
+const LOGO_ROW_2 = [
   { name: "Juicy Chemistry",  file: "/images/logos/juicychemistry.png" },
   { name: "Mogu Mogu",        file: "/images/logos/mogumogi.png" },
   { name: "Olipop",           file: "/images/logos/olipop.webp" },
   { name: "Voltas",           file: "/images/logos/voltas.png" },
+  { name: "Pilgrim",          file: "/images/logos/pilgrim.png" },
 ];
 
 const HERO_CARDS = [
@@ -554,34 +558,36 @@ export default function Home() {
             maskImage: "linear-gradient(to right, transparent 0%, black 14%, black 86%, transparent 100%)",
             WebkitMaskImage: "linear-gradient(to right, transparent 0%, black 14%, black 86%, transparent 100%)",
           }}>
-            {/* Row 1 — standard speed */}
-            <div style={{ overflow: "hidden", marginBottom: 16 }}>
+            {/* Row 1 — standard speed, unique set */}
+            <div style={{ overflow: "hidden", marginBottom: 20 }}>
               <div className="logo-row">
-                {[...CUSTOMER_LOGOS, ...CUSTOMER_LOGOS].map((logo, i) => (
+                {[...LOGO_ROW_1, ...LOGO_ROW_1].map((logo, i) => (
                   <div key={i} style={{
+                    width: 160, height: 72, flexShrink: 0,
                     display: "flex", alignItems: "center", justifyContent: "center",
-                    padding: "0 32px", flexShrink: 0, height: 60,
+                    marginRight: 2,
                   }}>
                     <img
                       src={logo.file} alt={logo.name}
-                      style={{ maxHeight: 38, maxWidth: 130, objectFit: "contain", display: "block" }}
+                      style={{ width: "100%", height: "100%", objectFit: "contain", display: "block" }}
                     />
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Row 2 — slower, reversed */}
+            {/* Row 2 — slower, different set */}
             <div style={{ overflow: "hidden" }}>
               <div className="logo-row-slow">
-                {[...[...CUSTOMER_LOGOS].reverse(), ...[...CUSTOMER_LOGOS].reverse()].map((logo, i) => (
+                {[...LOGO_ROW_2, ...LOGO_ROW_2].map((logo, i) => (
                   <div key={i} style={{
+                    width: 160, height: 72, flexShrink: 0,
                     display: "flex", alignItems: "center", justifyContent: "center",
-                    padding: "0 32px", flexShrink: 0, height: 60,
+                    marginRight: 2,
                   }}>
                     <img
                       src={logo.file} alt={logo.name}
-                      style={{ maxHeight: 38, maxWidth: 130, objectFit: "contain", display: "block" }}
+                      style={{ width: "100%", height: "100%", objectFit: "contain", display: "block" }}
                     />
                   </div>
                 ))}
@@ -1046,9 +1052,9 @@ export default function Home() {
             Brands that switched.<br />Numbers that speak.
           </h2>
 
-          <div style={{ display: "grid", gridTemplateColumns: "300px 1fr", gap: 28, maxWidth: 1100, margin: "56px auto 0", alignItems: "start" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "300px 1fr", gap: 28, maxWidth: 1100, margin: "56px auto 0", alignItems: "stretch" }}>
             {/* Left: selector cards */}
-            <div style={{ display: "flex", flexDirection: "column", gap: 12, alignSelf: "start" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
               {CASE_STUDIES.map((cs, i) => {
                 const isActive = activeCase === i;
                 return (
@@ -1110,12 +1116,13 @@ export default function Home() {
                 );
               })}
 
-              {/* 4th slot: CTA */}
+              {/* 4th slot: CTA — stretches to match right card height */}
               <div style={{
                 background: "#0D1B2A",
                 border: "1px solid rgba(232,168,56,0.2)",
                 padding: "22px 24px",
                 display: "flex", flexDirection: "column", justifyContent: "center",
+                flex: 1,
               }}>
                 <p style={{ color: "#E8A838", fontSize: 10, fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", marginBottom: 12 }}>
                   YOUR BRAND
@@ -1177,7 +1184,6 @@ export default function Home() {
             maxWidth: 880, margin: "0 auto",
             background: "#FFFFFF",
             border: "1px solid #E2EAF4",
-            borderRadius: 20,
             overflow: "hidden",
             boxShadow: "0 8px 40px rgba(13,27,42,0.08)",
           }}>

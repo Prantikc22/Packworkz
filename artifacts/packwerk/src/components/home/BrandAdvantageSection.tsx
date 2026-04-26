@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { GitBranch, ShieldCheck, Truck, CreditCard, Globe } from "lucide-react";
+import { Link } from "wouter";
 
 const NODES = [
   {
@@ -239,7 +240,7 @@ export default function BrandAdvantageSection() {
             })}
 
             {/* Step dots */}
-            <div style={{ display: "flex", gap: 6, paddingTop: 20 }}>
+            <div style={{ display: "flex", gap: 6, paddingTop: 20, marginBottom: 24 }}>
               {NODES.map((_, i) => (
                 <div
                   key={i}
@@ -252,6 +253,31 @@ export default function BrandAdvantageSection() {
                   }}
                 />
               ))}
+            </div>
+
+            {/* Small CTA */}
+            <div style={{
+              background: "#0D1B2A",
+              padding: "20px 24px",
+              display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16,
+            }}>
+              <div>
+                <p style={{ color: "white", fontSize: 14, fontWeight: 700, marginBottom: 3 }}>
+                  Ready to switch from vendor to platform?
+                </p>
+                <p style={{ color: "rgba(255,255,255,0.45)", fontSize: 12 }}>
+                  Get your quote in 48 hours. No commitment.
+                </p>
+              </div>
+              <Link href="/quote">
+                <button style={{
+                  background: "#E8A838", color: "#0D1B2A",
+                  padding: "11px 22px", fontSize: 13, fontWeight: 800,
+                  border: "none", cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0,
+                }}>
+                  Get Quote →
+                </button>
+              </Link>
             </div>
           </div>
 
