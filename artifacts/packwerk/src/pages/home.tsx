@@ -202,54 +202,56 @@ function CountUp({ target, suffix = "", prefix = "", duration = 1500 }: {
 function CaseDetail({ cs }: { cs: typeof CASE_STUDIES[0] }) {
   return (
     <div style={{
-      background: "#F8F9FC", border: "1px solid #E2EAF4", borderRadius: 0,
+      background: "#F8F9FC",
+      border: "1px solid #E2EAF4",
       borderTop: "3px solid #E8A838",
-      padding: "44px 48px", minHeight: 380,
-      animation: "caseFadeIn 0.25s ease",
+      borderRadius: 16,
+      padding: "44px 48px",
+      minHeight: 380,
     }}>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 4 }}>
-        <span style={{ color: "#0D1B2A", fontSize: 22, fontWeight: 700 }}>{cs.company}</span>
-        <span style={{ color: "#E8A838", fontSize: 16, letterSpacing: 2 }}>★★★★★</span>
-      </div>
-      <span style={{
-        display: "inline-block", background: "#E2EAF4", borderRadius: 999,
-        padding: "4px 12px", color: "#64748B", fontSize: 12, margin: "8px 0 28px",
-      }}>{cs.industry}</span>
+      <div key={cs.company} style={{ animation: "caseFadeIn 0.25s ease-out" }}>
+        {/* Top row */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 20 }}>
+          <span style={{ color: "#0D1B2A", fontSize: 24, fontWeight: 700 }}>{cs.company}</span>
+          <span style={{ color: "#E8A838", fontSize: 18, letterSpacing: 2 }}>★★★★★</span>
+        </div>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+        {/* Industry tag */}
+        <span style={{
+          display: "inline-block", background: "#E2EAF4", borderRadius: 999,
+          padding: "5px 14px", color: "#64748B", fontSize: 12, marginBottom: 32,
+        }}>{cs.industry}</span>
+
+        {/* Content blocks */}
         {[
-          { label: "THE CHALLENGE", text: cs.challenge, italic: true, color: "#0D1B2A" },
-          { label: "WHAT WE DID",   text: cs.whatWeDid, italic: false, color: "#64748B" },
-          { label: "THE RESULT",    text: cs.result,    italic: false, color: "#0D1B2A", bold: true },
+          { label: "THE CHALLENGE", text: cs.challenge, italic: true,  color: "#64748B",  bold: false },
+          { label: "WHAT WE DID",   text: cs.whatWeDid, italic: true,  color: "#64748B",  bold: false },
+          { label: "THE RESULT",    text: cs.result,    italic: false, color: "#0D1B2A",  bold: true  },
         ].map((block, i) => (
-          <div key={i} style={{ paddingTop: i > 0 ? 20 : 0, borderTop: i > 0 ? "1px solid #E2EAF4" : "none" }}>
-            <p style={{ color: "#1B6CA8", fontSize: 10, fontWeight: 600, letterSpacing: "2px", textTransform: "uppercase", marginBottom: 8 }}>
+          <div key={i}>
+            {i > 0 && <div style={{ height: 1, background: "#E8ECF4", margin: "24px 0" }} />}
+            <p style={{ color: "#1B6CA8", fontSize: 10, fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", marginBottom: 10 }}>
               {block.label}
             </p>
-            <p style={{ color: block.color, fontSize: 15, lineHeight: 1.7, fontStyle: block.italic ? "italic" : "normal", fontWeight: (block as { bold?: boolean }).bold ? 700 : 400 }}>
+            <p style={{ color: block.color, fontSize: 15, lineHeight: 1.75, fontStyle: block.italic ? "italic" : "normal", fontWeight: block.bold ? 600 : 400 }}>
               {block.text}
             </p>
           </div>
         ))}
-      </div>
 
-      <div style={{ display: "flex", gap: 12, marginTop: 32 }}>
-        {cs.metrics.map((m) => (
-          <div key={m.label} style={{
-            flex: 1, background: "white", border: "1px solid #E2EAF4",
-            borderRadius: 0, padding: "16px 20px", textAlign: "center",
-          }}>
-            <p style={{ color: "#E8A838", fontSize: 26, fontWeight: 700, lineHeight: 1 }}>{m.val}</p>
-            <p style={{ color: "#64748B", fontSize: 12, marginTop: 4 }}>{m.label}</p>
-          </div>
-        ))}
+        {/* Metric boxes */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12, marginTop: 32 }}>
+          {cs.metrics.map((m) => (
+            <div key={m.label} style={{
+              background: "white", border: "1px solid #E2EAF4",
+              borderRadius: 10, padding: "18px 20px", textAlign: "center",
+            }}>
+              <p style={{ color: "#E8A838", fontSize: 26, fontWeight: 700, lineHeight: 1 }}>{m.val}</p>
+              <p style={{ color: "#64748B", fontSize: 12, marginTop: 6 }}>{m.label}</p>
+            </div>
+          ))}
+        </div>
       </div>
-      <style>{`
-        @keyframes caseFadeIn {
-          from { opacity: 0; transform: translateY(6px); }
-          to   { opacity: 1; transform: translateY(0); }
-        }
-      `}</style>
     </div>
   );
 }
@@ -274,6 +276,19 @@ export default function Home() {
   const [vendorBucket, setVendorBucket] = useState<VendorBucket>("2 to 4");
   const [useCredit, setUseCredit] = useState<CreditOption>("Yes");
   const [activeCase, setActiveCase] = useState(0);
+  const caseIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const startCaseRotation = () => {
+    if (caseIntervalRef.current) clearInterval(caseIntervalRef.current);
+    caseIntervalRef.current = setInterval(() => {
+      setActiveCase(prev => (prev + 1) % CASE_STUDIES.length);
+    }, 4000);
+  };
+
+  useEffect(() => {
+    startCaseRotation();
+    return () => { if (caseIntervalRef.current) clearInterval(caseIntervalRef.current); };
+  }, []);
 
   const calc = calcNewSavings(monthlySpend, vendorBucket, useCredit);
 
@@ -792,34 +807,35 @@ export default function Home() {
       {/* ══════════════════════════════════════════════════════════ */}
       <section style={{ background: "#0A3326", padding: "88px 0", position: "relative", overflow: "hidden" }}>
 
-        {/* Layer 2: Radial depth */}
+        {/* Layer 1: Photo background */}
+        <img
+          src="/images/sustainable-bg.jpg"
+          alt=""
+          style={{
+            position: "absolute", inset: 0,
+            width: "100%", height: "100%",
+            objectFit: "cover", objectPosition: "center",
+            zIndex: 0,
+          }}
+        />
+
+        {/* Layer 2: Dark overlay */}
         <div style={{
-          position: "absolute", inset: 0, pointerEvents: "none", zIndex: 0,
-          background: `
-            radial-gradient(ellipse 70% 80% at 85% 20%, rgba(34,197,94,0.12) 0%, transparent 60%),
-            radial-gradient(ellipse 50% 60% at 10% 80%, rgba(6,78,59,0.8) 0%, transparent 50%)
-          `,
+          position: "absolute", inset: 0,
+          background: "rgba(10,51,38,0.78)",
+          zIndex: 1,
         }} />
 
-        {/* Layer 3: Leaf SVG texture */}
+        {/* Layer 3: Subtle radial accent */}
         <div style={{
-          position: "absolute", inset: 0, opacity: 0.06, zIndex: 0, pointerEvents: "none",
-          backgroundImage: `url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M40 8 C20 8 8 20 8 40 C8 55 18 67 32 72 C28 60 30 45 40 38 C50 45 52 60 48 72 C62 67 72 55 72 40 C72 20 60 8 40 8 Z' fill='white' opacity='1'/%3E%3C/svg%3E")`,
-          backgroundSize: "80px 80px",
-          backgroundRepeat: "repeat",
-        }} />
-
-        {/* Layer 4: Bottom fade */}
-        <div style={{
-          position: "absolute", bottom: 0, left: 0, right: 0,
-          height: 120, pointerEvents: "none", zIndex: 0,
-          background: "linear-gradient(to bottom, transparent, rgba(10,51,38,0.6))",
+          position: "absolute", inset: 0, pointerEvents: "none", zIndex: 2,
+          background: "radial-gradient(ellipse 60% 70% at 85% 15%, rgba(34,197,94,0.15) 0%, transparent 60%)",
         }} />
 
         {/* Content */}
         <div
           className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center"
-          style={{ maxWidth: 1100, margin: "0 auto", padding: "0 40px", position: "relative", zIndex: 1 }}
+          style={{ maxWidth: 1100, margin: "0 auto", padding: "0 40px", position: "relative", zIndex: 3 }}
         >
           {/* Left */}
           <div>
@@ -833,12 +849,13 @@ export default function Home() {
               12 certified sustainable SKUs. All customisable with your brand design. Food-safe, leak-proof, and built for Indian brands that take sustainability seriously. Full EPR compliance documentation included with every order.
             </p>
             <Link href="/products?category=sustainable">
-              <button style={{
-                background: "#86EFAC", color: "#0D3B2E",
-                padding: "12px 28px", borderRadius: 0, fontSize: 15, fontWeight: 700,
-                border: "none", cursor: "pointer",
-              }}
-                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.filter = "brightness(0.95)"; }}
+              <button
+                style={{
+                  background: "#E8A838", color: "#0D1B2A",
+                  padding: "13px 28px", borderRadius: 8, fontSize: 15, fontWeight: 700,
+                  border: "none", cursor: "pointer",
+                }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.filter = "brightness(1.08)"; }}
                 onMouseLeave={e => { (e.currentTarget as HTMLElement).style.filter = "brightness(1)"; }}
               >
                 See all sustainable SKUs →
@@ -882,11 +899,11 @@ export default function Home() {
           <span style={{ color: "#1B6CA8", fontSize: 11, fontWeight: 600, letterSpacing: "2px", textTransform: "uppercase", display: "block", marginBottom: 14 }}>
             CLIENT RESULTS
           </span>
-          <h2 style={{ color: "#0D1B2A", fontSize: "clamp(2rem,4vw,3.25rem)", fontWeight: 700, lineHeight: 1.1, marginBottom: 56 }}>
+          <h2 style={{ color: "#0D1B2A", fontSize: "clamp(2rem,4vw,3.25rem)", fontWeight: 700, lineHeight: 1.1, marginBottom: 0 }}>
             Brands that switched.<br />Numbers that speak.
           </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-[280px_1fr] gap-6 items-start" style={{ maxWidth: 1100, margin: "0 auto" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "300px 1fr", gap: 28, maxWidth: 1100, margin: "56px auto 0", alignItems: "start" }}>
             {/* Left: selector cards */}
             <div style={{ display: "flex", flexDirection: "column", gap: 12, alignSelf: "start" }}>
               {CASE_STUDIES.map((cs, i) => {
@@ -894,39 +911,59 @@ export default function Home() {
                 return (
                   <div
                     key={i}
-                    onClick={() => setActiveCase(i)}
+                    onClick={() => { setActiveCase(i); startCaseRotation(); }}
                     style={{
-                      background: isActive ? "rgba(232,168,56,0.04)" : "white",
+                      background: isActive ? "#FFFBF0" : "white",
                       border: `1px solid ${isActive ? "#E8A838" : "#E2EAF4"}`,
-                      borderRadius: 0, padding: "20px 24px",
-                      cursor: "pointer", position: "relative", overflow: "hidden",
-                      transition: "all 0.2s",
-                      boxShadow: isActive ? "0 2px 12px rgba(232,168,56,0.12)" : "none",
+                      borderRadius: 14,
+                      padding: "22px 24px",
+                      cursor: "pointer",
+                      position: "relative",
+                      overflow: "hidden",
+                      transition: "all 0.3s ease",
+                      boxShadow: isActive ? "0 4px 20px rgba(232,168,56,0.15)" : "none",
                     }}
                   >
+                    {/* Left accent bar */}
                     {isActive && (
                       <div style={{
                         position: "absolute", left: 0, top: 0, bottom: 0,
                         width: 3, background: "#E8A838", borderRadius: "3px 0 0 3px",
                       }} />
                     )}
+
+                    {/* Auto-rotation progress bar */}
+                    {isActive && (
+                      <div style={{
+                        position: "absolute", bottom: 0, left: 0,
+                        height: 2, background: "#E8A838",
+                        animation: "progress-fill 4s linear forwards",
+                      }} />
+                    )}
+
+                    {/* Avatar */}
                     <div style={{
-                      width: 36, height: 36, borderRadius: "50%",
+                      width: 38, height: 38, borderRadius: "50%",
                       background: "#0D1B2A", color: "white",
-                      fontSize: 14, fontWeight: 700,
+                      fontSize: 13, fontWeight: 700,
                       display: "flex", alignItems: "center", justifyContent: "center",
-                      marginBottom: 10,
+                      marginBottom: 12,
                     }}>
                       {cs.initials}
                     </div>
-                    <p style={{ color: "#0D1B2A", fontSize: 15, fontWeight: 700 }}>{cs.company}</p>
-                    <p style={{ color: "#64748B", fontSize: 12, marginTop: 3 }}>{cs.industry}</p>
+
+                    <p style={{ color: "#0D1B2A", fontSize: 15, fontWeight: 700, marginBottom: 3 }}>{cs.company}</p>
+                    <p style={{ color: "#64748B", fontSize: 12 }}>{cs.industry}</p>
+
+                    {/* Metric pill */}
                     <div style={{
                       display: "inline-block", marginTop: 10,
-                      background: "rgba(232,168,56,0.1)", borderRadius: 0,
-                      padding: "4px 10px",
+                      background: "rgba(232,168,56,0.1)",
+                      border: "1px solid rgba(232,168,56,0.3)",
+                      borderRadius: 999,
+                      padding: "4px 12px",
                     }}>
-                      <span style={{ color: "#E8A838", fontSize: 12, fontWeight: 700 }}>{cs.metric}</span>
+                      <span style={{ color: "#92600A", fontSize: 12, fontWeight: 600 }}>{cs.metric}</span>
                     </div>
                   </div>
                 );
@@ -986,7 +1023,7 @@ export default function Home() {
                 className="calc-left"
                 style={{
                   background: "#FFFFFF",
-                  padding: "48px 44px",
+                  padding: "36px 44px",
                   borderRight: "1px solid #E2EAF4",
                 }}
               >
@@ -1009,7 +1046,7 @@ export default function Home() {
                   }}
                 />
 
-                <div style={{ marginTop: 14, textAlign: "center" }}>
+                <div style={{ marginTop: 12, textAlign: "center" }}>
                   <span style={{ color: "#0D1B2A", fontSize: 26, fontWeight: 700 }}>
                     {inr(monthlySpend)}
                   </span>
@@ -1019,7 +1056,7 @@ export default function Home() {
                 </div>
 
                 {/* Divider */}
-                <div style={{ height: 1, background: "#F1F5F9", margin: "32px 0" }} />
+                <div style={{ height: 1, background: "#F1F5F9", margin: "24px 0" }} />
 
                 {/* Input 2: Vendors */}
                 <label style={{
@@ -1052,7 +1089,7 @@ export default function Home() {
                 </div>
 
                 {/* Divider */}
-                <div style={{ height: 1, background: "#F1F5F9", margin: "24px 0" }} />
+                <div style={{ height: 1, background: "#F1F5F9", margin: "20px 0" }} />
 
                 {/* Input 3: Credit */}
                 <label style={{
@@ -1307,15 +1344,15 @@ export default function Home() {
 
           {/* Trust strip */}
           <div style={{
-            display: "flex", gap: 20, justifyContent: "center",
-            alignItems: "center", flexWrap: "wrap", marginTop: 48,
+            display: "flex", justifyContent: "center", alignItems: "center",
+            gap: 24, flexWrap: "nowrap", marginTop: 40,
           }}>
             {["Quote in 48 hours", "No commitment until you approve", "Sample from ₹2,999", "Design from ₹1,999"].map((item, i) => (
-              <div key={item} style={{ display: "flex", alignItems: "center", gap: 20 }}>
+              <div key={item} style={{ display: "flex", alignItems: "center", gap: 24 }}>
                 {i > 0 && (
-                  <span style={{ color: "rgba(255,255,255,0.2)", fontSize: 6 }}>●</span>
+                  <span style={{ color: "rgba(255,255,255,0.2)", fontSize: 16, lineHeight: 1 }}>·</span>
                 )}
-                <span style={{ color: "rgba(255,255,255,0.45)", fontSize: 13 }}>
+                <span style={{ color: "rgba(255,255,255,0.5)", fontSize: 13, whiteSpace: "nowrap" }}>
                   {item}
                 </span>
               </div>
