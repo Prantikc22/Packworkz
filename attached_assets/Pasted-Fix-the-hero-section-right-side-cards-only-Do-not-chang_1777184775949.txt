@@ -1,0 +1,290 @@
+Fix the hero section right-side cards only.
+Do not change the left side text, 
+CTAs, headline, or anything else.
+
+---
+
+STEP 1: RESTRUCTURE THE CARD LAYOUT
+
+Remove the current rigid 2-column grid layout 
+for the cards.
+
+Replace with absolute positioning 
+so cards float at different depths:
+
+Right side container:
+position: relative
+width: 100%
+height: 100%
+(fills the right 50% of hero)
+
+Add a background image layer:
+position: absolute
+inset: 0
+background-image: 
+  url('/images/hero-packaging-bg.jpg')
+background-size: cover
+background-position: center
+z-index: 0
+opacity: 0.3
+(This is where the Midjourney image goes.
+Until image is ready, 
+keep this div present but invisible —
+opacity: 0 — 
+so adding the image later is trivial)
+
+Cards container:
+position: relative
+z-index: 1
+width: 100%
+height: 100%
+(Cards are positioned absolutely within this)
+
+---
+
+STEP 2: REDESIGN EACH CARD
+
+Each card base style:
+position: absolute
+backdrop-filter: blur(12px)
+-webkit-backdrop-filter: blur(12px)
+background: rgba(255, 255, 255, 0.07)
+border: 1px solid rgba(255, 255, 255, 0.12)
+border-radius: 16px
+padding: 20px 22px
+cursor: pointer
+transition: 
+  transform 0.3s ease,
+  background 0.3s ease,
+  border-color 0.3s ease
+
+Hover state on each card:
+background: rgba(255, 255, 255, 0.12)
+border-color: rgba(232, 168, 56, 0.4)
+transform: translateY(-4px) !important
+(override the float animation temporarily)
+
+Card inner content:
+Icon wrapper:
+width: 36px, height: 36px
+border-radius: 10px
+background: rgba(232, 168, 56, 0.15)
+display: flex
+align-items: center, justify-content: center
+margin-bottom: 14px
+
+Lucide icon inside:
+color: #E8A838
+size: 18px
+
+Category name:
+color: rgba(255,255,255,0.92)
+font-size: 14px, 700
+margin-bottom: 4px
+
+SKU count:
+color: rgba(255,255,255,0.45)
+font-size: 12px
+
+SmartStock badge 
+(show on 2 of the 6 cards):
+display: inline-block
+margin-top: 10px
+background: rgba(34,197,94,0.15)
+border: 1px solid rgba(34,197,94,0.3)
+border-radius: 999px
+padding: 3px 10px
+color: #4ade80
+font-size: 10px, 600
+letter-spacing: 0.5px
+"⚡ Ships in 48hrs"
+
+---
+
+STEP 3: POSITION 6 CARDS
+
+These exact positions 
+create a staggered, 
+floating depth effect.
+All positions relative to 
+the right-side container:
+
+Card 1 — Flexible Packaging:
+top: 5%
+left: 10%
+width: 180px
+Icon: Package (Lucide)
+Name: "Flexible Packaging"
+Count: "15 SKUs"
+SmartStock badge: YES
+
+Card 2 — E-commerce Packs:
+top: 3%
+left: 52%
+width: 170px
+Icon: ShoppingBag
+Name: "E-commerce Packs"
+Count: "17 SKUs"
+SmartStock badge: YES
+
+Card 3 — Boxes & Cartons:
+top: 38%
+left: 5%
+width: 175px
+Icon: Box
+Name: "Boxes & Cartons"
+Count: "9 SKUs"
+
+Card 4 — Sustainable:
+top: 35%
+left: 55%
+width: 165px
+Icon: Leaf
+Name: "Sustainable"
+Count: "12 SKUs"
+(Add a subtle green tint 
+to this card's border:
+border-color: rgba(74,222,128,0.2))
+
+Card 5 — Labels & Closures:
+top: 68%
+left: 12%
+width: 175px
+Icon: Tag
+Name: "Labels & Closures"
+Count: "14 SKUs"
+
+Card 6 — Premium & Gift:
+top: 65%
+left: 52%
+width: 170px
+Icon: Gift
+Name: "Premium & Gift"
+Count: "10 SKUs"
+
+Each card links to 
+/products?category=[relevant-slug]
+on click.
+
+---
+
+STEP 4: FLOATING ANIMATIONS
+
+Each card gets a unique 
+floating animation — 
+slow, smooth, organic.
+
+@keyframes float-1 {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+@keyframes float-2 {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-14px); }
+}
+@keyframes float-3 {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+@keyframes float-4 {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-12px); }
+}
+@keyframes float-5 {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-9px); }
+}
+@keyframes float-6 {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-11px); }
+}
+
+Assign to cards:
+Card 1: animation: float-1 6s ease-in-out infinite
+Card 2: animation: float-2 7s ease-in-out infinite; animation-delay: -2s
+Card 3: animation: float-3 5.5s ease-in-out infinite; animation-delay: -1s
+Card 4: animation: float-4 6.5s ease-in-out infinite; animation-delay: -3s
+Card 5: animation: float-5 7.5s ease-in-out infinite; animation-delay: -1.5s
+Card 6: animation: float-6 6s ease-in-out infinite; animation-delay: -4s
+
+The negative animation-delays 
+start each card mid-animation 
+so they never float in sync — 
+looks completely organic.
+
+On hover: 
+pause animation:
+animation-play-state: paused
+
+---
+
+STEP 5: ENTRANCE ANIMATION
+
+When page loads, 
+cards animate in from below:
+
+Each card starts:
+opacity: 0
+transform: translateY(30px)
+
+Then transitions to:
+opacity: 1
+transform: translateY(0)
+transition: opacity 0.6s ease, 
+            transform 0.6s ease
+
+Stagger the delays:
+Card 1: transition-delay: 0.3s
+Card 2: transition-delay: 0.5s
+Card 3: transition-delay: 0.4s
+Card 4: transition-delay: 0.7s
+Card 5: transition-delay: 0.6s
+Card 6: transition-delay: 0.8s
+
+Trigger by adding a class 
+'loaded' to the container 
+after component mounts:
+
+useEffect(() => {
+  setTimeout(() => {
+    container.classList.add('loaded')
+  }, 100)
+}, [])
+
+.loaded .card {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+---
+
+STEP 6: MOBILE
+
+Below 1024px:
+Hide the floating cards entirely 
+(display: none on the cards container).
+The hero left side takes full width.
+The background texture image 
+(if added) shows at low opacity 
+behind the text.
+
+Below 768px:
+Hero section min-height: auto
+Padding top: 80px, bottom: 60px
+
+---
+
+STEP 7: ADD MIDJOURNEY IMAGE LATER
+
+Once you have the Midjourney image:
+1. Name it: hero-packaging-bg.jpg
+2. Place in: /public/images/
+3. The image layer 
+   (currently opacity: 0) 
+   will automatically become visible.
+4. Change its opacity to 0.25-0.35 
+   depending on how it looks.
+
+The amber overlay on hover 
+for each card will pick up 
+nicely against the packaging imagery.

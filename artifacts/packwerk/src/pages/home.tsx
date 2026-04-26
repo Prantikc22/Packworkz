@@ -5,6 +5,7 @@ import BrandAdvantageSection from "@/components/home/BrandAdvantageSection";
 import {
   Search, GitBranch, ShieldCheck, Truck,
   Leaf, Droplets, FileCheck, ArrowRight,
+  Package, ShoppingBag, Box, Tag, Gift,
 } from "lucide-react";
 
 const WHATSAPP_NUM = "919999999999";
@@ -22,13 +23,43 @@ const MS = ({ icon, className = "", style }: IconProps) => (
 
 const MARQUEE_1 = Array(8).fill("We are not a vendor. We are your packaging partner.");
 
-const HERO_FLOAT_CARDS = [
-  { title: "Flexible Packaging",  icon: "inventory_2",    skus: 5,  pos: { top: "2%",    left: "4%" },   delay: "0s"    },
-  { title: "E-commerce Packs",    icon: "local_shipping", skus: 4,  pos: { top: "6%",    right: "2%" },  delay: "0.9s"  },
-  { title: "Sustainable",         icon: "eco",            skus: 4,  pos: { top: "44%",   right: "0%" },  delay: "1.5s"  },
-  { title: "Boxes & Cartons",     icon: "view_in_ar",     skus: 3,  pos: { bottom: "30%",left: "0%" },   delay: "0.4s"  },
-  { title: "Labels & Closures",   icon: "label",          skus: 3,  pos: { bottom: "8%", left: "20%" },  delay: "1.1s"  },
-  { title: "Protective Packs",    icon: "security",       skus: 2,  pos: { bottom: "18%",right: "6%" },  delay: "0.2s"  },
+const HERO_CARDS = [
+  {
+    title: "Flexible Packaging", Icon: Package, count: "15 SKUs", slug: "flexible", badge: true,
+    pos: { top: "5%", left: "10%" }, width: 180,
+    floatAnim: "float-1 6s ease-in-out infinite",
+    entranceDelay: "0.3s", greenBorder: false,
+  },
+  {
+    title: "E-commerce Packs", Icon: ShoppingBag, count: "17 SKUs", slug: "ecommerce", badge: true,
+    pos: { top: "3%", left: "52%" }, width: 170,
+    floatAnim: "float-2 7s ease-in-out -2s infinite",
+    entranceDelay: "0.5s", greenBorder: false,
+  },
+  {
+    title: "Boxes & Cartons", Icon: Box, count: "9 SKUs", slug: "boxes", badge: false,
+    pos: { top: "38%", left: "5%" }, width: 175,
+    floatAnim: "float-3 5.5s ease-in-out -1s infinite",
+    entranceDelay: "0.4s", greenBorder: false,
+  },
+  {
+    title: "Sustainable", Icon: Leaf, count: "12 SKUs", slug: "sustainable", badge: false,
+    pos: { top: "35%", left: "55%" }, width: 165,
+    floatAnim: "float-4 6.5s ease-in-out -3s infinite",
+    entranceDelay: "0.7s", greenBorder: true,
+  },
+  {
+    title: "Labels & Closures", Icon: Tag, count: "14 SKUs", slug: "labels", badge: false,
+    pos: { top: "68%", left: "12%" }, width: 175,
+    floatAnim: "float-5 7.5s ease-in-out -1.5s infinite",
+    entranceDelay: "0.6s", greenBorder: false,
+  },
+  {
+    title: "Premium & Gift", Icon: Gift, count: "10 SKUs", slug: "premium", badge: false,
+    pos: { top: "65%", left: "52%" }, width: 170,
+    floatAnim: "float-6 6s ease-in-out -4s infinite",
+    entranceDelay: "0.8s", greenBorder: false,
+  },
 ];
 
 const CATEGORIES = [
@@ -276,6 +307,7 @@ export default function Home() {
   const [vendorBucket, setVendorBucket] = useState<VendorBucket>("2 to 4");
   const [useCredit, setUseCredit] = useState<CreditOption>("Yes");
   const [activeCase, setActiveCase] = useState(0);
+  const [heroLoaded, setHeroLoaded] = useState(false);
   const caseIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const startCaseRotation = () => {
@@ -288,6 +320,11 @@ export default function Home() {
   useEffect(() => {
     startCaseRotation();
     return () => { if (caseIntervalRef.current) clearInterval(caseIntervalRef.current); };
+  }, []);
+
+  useEffect(() => {
+    const t = setTimeout(() => setHeroLoaded(true), 100);
+    return () => clearTimeout(t);
   }, []);
 
   const calc = calcNewSavings(monthlySpend, vendorBucket, useCredit);
@@ -370,24 +407,85 @@ export default function Home() {
             </div>
 
             <div className="hidden lg:block relative h-[500px]">
-              {HERO_FLOAT_CARDS.map((card) => (
-                <div
-                  key={card.title}
-                  className="float-card absolute px-5 py-4 w-[172px] cursor-default select-none"
-                  style={{
-                    ...card.pos,
-                    background: "rgba(255,255,255,0.08)",
-                    backdropFilter: "blur(14px)",
-                    WebkitBackdropFilter: "blur(14px)",
-                    border: "1px solid rgba(255,255,255,0.15)",
-                    animationDelay: card.delay,
-                  }}
-                >
-                  <span className="material-symbols-outlined text-2xl mb-2 block" style={{ color: "#93c5fd" }}>{card.icon}</span>
-                  <p className="text-white font-bold text-sm leading-tight mb-1">{card.title}</p>
-                  <p className="text-blue-300 text-xs">{card.skus} SKUs available</p>
-                </div>
-              ))}
+              {/* Background image layer */}
+              <div style={{
+                position: "absolute", inset: 0,
+                backgroundImage: "url('/images/hero-packaging-bg.jpg')",
+                backgroundSize: "cover", backgroundPosition: "center",
+                zIndex: 0, opacity: 0.3, borderRadius: 16,
+              }} />
+              {/* Cards container */}
+              <div style={{ position: "relative", zIndex: 1, width: "100%", height: "100%" }}>
+                {HERO_CARDS.map((card) => {
+                  const Icon = card.Icon;
+                  return (
+                    <Link key={card.title} href={`/products?category=${card.slug}`}>
+                      <div
+                        style={{
+                          position: "absolute",
+                          ...card.pos,
+                          width: card.width,
+                          backdropFilter: "blur(12px)",
+                          WebkitBackdropFilter: "blur(12px)",
+                          background: "rgba(255,255,255,0.07)",
+                          border: card.greenBorder
+                            ? "1px solid rgba(74,222,128,0.2)"
+                            : "1px solid rgba(255,255,255,0.12)",
+                          borderRadius: 16,
+                          padding: "20px 22px",
+                          cursor: "pointer",
+                          animation: heroLoaded ? card.floatAnim : "none",
+                          opacity: heroLoaded ? 1 : 0,
+                          transition: `opacity 0.6s ease ${card.entranceDelay}`,
+                        }}
+                        onMouseEnter={e => {
+                          const el = e.currentTarget as HTMLElement;
+                          el.style.background = "rgba(255,255,255,0.12)";
+                          el.style.borderColor = card.greenBorder
+                            ? "rgba(74,222,128,0.4)"
+                            : "rgba(232,168,56,0.4)";
+                          el.style.animationPlayState = "paused";
+                        }}
+                        onMouseLeave={e => {
+                          const el = e.currentTarget as HTMLElement;
+                          el.style.background = "rgba(255,255,255,0.07)";
+                          el.style.borderColor = card.greenBorder
+                            ? "rgba(74,222,128,0.2)"
+                            : "rgba(255,255,255,0.12)";
+                          el.style.animationPlayState = "running";
+                        }}
+                      >
+                        <div style={{
+                          width: 36, height: 36, borderRadius: 10,
+                          background: "rgba(232,168,56,0.15)",
+                          display: "flex", alignItems: "center", justifyContent: "center",
+                          marginBottom: 14,
+                        }}>
+                          <Icon size={18} color="#E8A838" />
+                        </div>
+                        <p style={{ color: "rgba(255,255,255,0.92)", fontSize: 14, fontWeight: 700, marginBottom: 4 }}>
+                          {card.title}
+                        </p>
+                        <p style={{ color: "rgba(255,255,255,0.45)", fontSize: 12 }}>
+                          {card.count}
+                        </p>
+                        {card.badge && (
+                          <div style={{
+                            display: "inline-block", marginTop: 10,
+                            background: "rgba(34,197,94,0.15)",
+                            border: "1px solid rgba(34,197,94,0.3)",
+                            borderRadius: 999, padding: "3px 10px",
+                          }}>
+                            <span style={{ color: "#4ade80", fontSize: 10, fontWeight: 600, letterSpacing: "0.5px" }}>
+                              ⚡ Ships in 48hrs
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
             </div>
           </div>
 
@@ -1271,10 +1369,11 @@ export default function Home() {
 
           {/* Headline */}
           <h2 style={{
-            color: "#FFFFFF", fontSize: 72, fontWeight: 700,
-            lineHeight: 1.05, letterSpacing: "-2px", marginBottom: 24,
+            color: "#FFFFFF", fontSize: "clamp(2.4rem, 5vw, 56px)", fontWeight: 700,
+            lineHeight: 1.05, letterSpacing: "-1.5px", marginBottom: 24,
+            whiteSpace: "nowrap",
           }}>
-            Packaging sorted.<br />Forever.
+            Packaging sorted. Forever.
           </h2>
 
           {/* Subheadline */}
@@ -1345,15 +1444,16 @@ export default function Home() {
           {/* Trust strip */}
           <div style={{
             display: "flex", justifyContent: "center", alignItems: "center",
-            gap: 24, flexWrap: "nowrap", marginTop: 40,
+            gap: 16, flexWrap: "nowrap", marginTop: 40,
           }}>
             {["Quote in 48 hours", "No commitment until you approve", "Sample from ₹2,999", "Design from ₹1,999"].map((item, i) => (
-              <div key={item} style={{ display: "flex", alignItems: "center", gap: 24 }}>
+              <div key={item} style={{ display: "flex", alignItems: "center", gap: 16 }}>
                 {i > 0 && (
                   <span style={{ color: "rgba(255,255,255,0.2)", fontSize: 16, lineHeight: 1 }}>·</span>
                 )}
-                <span style={{ color: "rgba(255,255,255,0.5)", fontSize: 13, whiteSpace: "nowrap" }}>
-                  {item}
+                <span style={{ display: "flex", alignItems: "center", gap: 6, whiteSpace: "nowrap" }}>
+                  <span style={{ color: "#4ade80", fontSize: 13, fontWeight: 700, lineHeight: 1 }}>✓</span>
+                  <span style={{ color: "rgba(255,255,255,0.55)", fontSize: 13 }}>{item}</span>
                 </span>
               </div>
             ))}
