@@ -23,6 +23,17 @@ const MS = ({ icon, className = "", style }: IconProps) => (
 
 const MARQUEE_1 = Array(8).fill("We are not a vendor. We are your packaging partner.");
 
+const CUSTOMER_LOGOS = [
+  { name: "Mamaearth",        abbr: "ME",  color: "#2C7A0F" },
+  { name: "Nykaa",            abbr: "NK",  color: "#E91E8C" },
+  { name: "WOW Skin Science", abbr: "WOW", color: "#0047AB" },
+  { name: "Himalaya",         abbr: "H",   color: "#006341" },
+  { name: "Sugar Cosmetics",  abbr: "SG",  color: "#C0392B" },
+  { name: "Dabur",            abbr: "D",   color: "#E67E22" },
+  { name: "mCaffeine",        abbr: "mC",  color: "#4A235A" },
+  { name: "boAt",             abbr: "bT",  color: "#1A1A1A" },
+];
+
 const HERO_CARDS = [
   {
     title: "Flexible Packaging", Icon: Package, count: "15 SKUs", slug: "flexible", badge: true,
@@ -236,7 +247,6 @@ function CaseDetail({ cs }: { cs: typeof CASE_STUDIES[0] }) {
       background: "#F8F9FC",
       border: "1px solid #E2EAF4",
       borderTop: "3px solid #E8A838",
-      borderRadius: 16,
       padding: "44px 48px",
       minHeight: 380,
     }}>
@@ -275,7 +285,7 @@ function CaseDetail({ cs }: { cs: typeof CASE_STUDIES[0] }) {
           {cs.metrics.map((m) => (
             <div key={m.label} style={{
               background: "white", border: "1px solid #E2EAF4",
-              borderRadius: 10, padding: "18px 20px", textAlign: "center",
+              padding: "18px 20px", textAlign: "center",
             }}>
               <p style={{ color: "#E8A838", fontSize: 26, fontWeight: 700, lineHeight: 1 }}>{m.val}</p>
               <p style={{ color: "#64748B", fontSize: 12, marginTop: 6 }}>{m.label}</p>
@@ -365,7 +375,7 @@ export default function Home() {
       {/*  SECTION 1 — HERO                                         */}
       {/* ══════════════════════════════════════════════════════════ */}
       <section
-        className="relative min-h-[90vh] flex flex-col justify-center px-8 md:px-20 overflow-hidden py-24"
+        className="relative flex flex-col justify-center px-8 md:px-20 overflow-hidden pt-28 pb-16"
         style={{ background: "radial-gradient(circle at 70% 40%, rgba(59,130,246,0.18), transparent 45%), linear-gradient(135deg, #020617 0%, #0f172a 35%, #1e3a8a 65%, #1d4ed8 85%, #2563eb 100%)" }}
       >
         <div className="absolute inset-0 opacity-10 pointer-events-none">
@@ -376,7 +386,7 @@ export default function Home() {
         </div>
 
         <div className="relative z-10 w-full max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_460px] gap-12 xl:gap-20 items-center mb-14">
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_460px] gap-12 xl:gap-16 items-center mb-10">
             <div>
               <p className="font-bold tracking-[0.2em] mb-6 text-sm uppercase" style={{ color: "#93c5fd" }}>
                 INDIA'S FIRST MANAGED PACKAGING PLATFORM
@@ -412,7 +422,7 @@ export default function Home() {
                 position: "absolute", inset: 0,
                 backgroundImage: "url('/images/hero-packaging-bg.jpg')",
                 backgroundSize: "cover", backgroundPosition: "center",
-                zIndex: 0, opacity: 0.3, borderRadius: 16,
+                zIndex: 0, opacity: 0.3,
               }} />
               {/* Cards container */}
               <div style={{ position: "relative", zIndex: 1, width: "100%", height: "100%" }}>
@@ -431,7 +441,6 @@ export default function Home() {
                           border: card.greenBorder
                             ? "1px solid rgba(74,222,128,0.2)"
                             : "1px solid rgba(255,255,255,0.12)",
-                          borderRadius: 16,
                           padding: "20px 22px",
                           cursor: "pointer",
                           animation: heroLoaded ? card.floatAnim : "none",
@@ -456,7 +465,7 @@ export default function Home() {
                         }}
                       >
                         <div style={{
-                          width: 36, height: 36, borderRadius: 10,
+                          width: 36, height: 36,
                           background: "rgba(232,168,56,0.15)",
                           display: "flex", alignItems: "center", justifyContent: "center",
                           marginBottom: 14,
@@ -474,7 +483,7 @@ export default function Home() {
                             display: "inline-block", marginTop: 10,
                             background: "rgba(34,197,94,0.15)",
                             border: "1px solid rgba(34,197,94,0.3)",
-                            borderRadius: 999, padding: "3px 10px",
+                            padding: "3px 10px",
                           }}>
                             <span style={{ color: "#4ade80", fontSize: 10, fontWeight: 600, letterSpacing: "0.5px" }}>
                               ⚡ Ships in 48hrs
@@ -490,39 +499,20 @@ export default function Home() {
           </div>
 
           {/* Stats strip */}
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-8 py-10 border-t border-white/15">
-            {([
-              { target: 110, suffix: "+", label: "SKUs" },
-              { target: 500, suffix: "+", label: "Factory Partners" },
-              { target: 40,  suffix: "+", label: "Countries Served" },
-              { target: 100, suffix: "%", label: "QC Inspected" },
-              { amber: true,              label: "Hidden Charges", fixed: "₹0" },
-            ] as Array<{ target?: number; suffix?: string; label: string; amber?: boolean; fixed?: string }>).map((s) => (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 py-10 border-t border-white/15">
+            {[
+              { target: 500, suffix: "+", label: "Manufacturing Partners" },
+              { target: 1,   suffix: "",  label: "Owned Manufacturing Facility" },
+              { target: 220, suffix: "+", label: "Customers Globally" },
+              { target: 10,  suffix: "+", label: "Compliances" },
+            ].map((s) => (
               <div key={s.label}>
-                <p style={{ color: s.amber ? "#E8A838" : "white", fontSize: "1.5rem", fontWeight: 700 }}>
-                  {s.fixed ?? <CountUp target={s.target!} suffix={s.suffix} />}
+                <p style={{ color: "white", fontSize: "1.5rem", fontWeight: 700 }}>
+                  <CountUp target={s.target} suffix={s.suffix} />
                 </p>
                 <p className="text-blue-200 text-xs uppercase tracking-widest mt-1 opacity-80">{s.label}</p>
               </div>
             ))}
-          </div>
-
-          {/* Client logo marquee */}
-          <div className="mt-10 overflow-hidden" style={{ borderTop: "1px solid rgba(255,255,255,0.12)", paddingTop: 20 }}>
-            <p className="text-center text-xs font-bold tracking-[0.25em] uppercase mb-5" style={{ color: "rgba(255,255,255,0.5)" }}>
-              Trusted by D2C, FMCG &amp; Pharma brands
-            </p>
-            <div style={{ overflow: "hidden" }}>
-              <div className="marquee-track">
-                {[...CLIENT_PILLS, ...CLIENT_PILLS].map((name, i) => (
-                  <span key={i} className="font-bold text-sm px-5 py-2.5 rounded-full" style={{
-                    background: "rgba(255,255,255,0.08)",
-                    border: "1px solid rgba(255,255,255,0.15)",
-                    color: "white", whiteSpace: "nowrap", flexShrink: 0,
-                  }}>{name}</span>
-                ))}
-              </div>
-            </div>
           </div>
         </div>
       </section>
@@ -537,6 +527,74 @@ export default function Home() {
           ))}
         </div>
       </div>
+
+      {/* ══════════════════════════════════════════════════════════ */}
+      {/*  SECTION 3B — OUR CUSTOMERS                               */}
+      {/* ══════════════════════════════════════════════════════════ */}
+      <section style={{ background: "#FFFFFF", borderBottom: "1px solid #E2EAF4", padding: "72px 0" }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 64px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 80 }}>
+            {/* Left: heading */}
+            <div style={{ flexShrink: 0, width: 280 }}>
+              <p style={{
+                color: "#1B6CA8", fontSize: 11, fontWeight: 600,
+                letterSpacing: "2px", textTransform: "uppercase",
+                marginBottom: 16,
+              }}>
+                OUR CUSTOMERS
+              </p>
+              <h2 style={{
+                color: "#0D1B2A", fontSize: 28, fontWeight: 700,
+                lineHeight: 1.25, marginBottom: 12,
+              }}>
+                Brands across India and globally trust PackOps.
+              </h2>
+              <p style={{ color: "#64748B", fontSize: 14, lineHeight: 1.6 }}>
+                D2C, FMCG &amp; Pharma brands rely on us to source, QC and deliver their packaging.
+              </p>
+            </div>
+
+            {/* Right: logo grid */}
+            <div style={{
+              flex: 1,
+              display: "grid",
+              gridTemplateColumns: "repeat(4, 1fr)",
+              gap: "0",
+              border: "1px solid #E2EAF4",
+            }}>
+              {CUSTOMER_LOGOS.map((logo, i) => (
+                <div
+                  key={logo.name}
+                  style={{
+                    padding: "28px 20px",
+                    display: "flex", flexDirection: "column",
+                    alignItems: "center", justifyContent: "center", gap: 8,
+                    borderRight: i % 4 !== 3 ? "1px solid #E2EAF4" : "none",
+                    borderBottom: i < 4 ? "1px solid #E2EAF4" : "none",
+                    transition: "background 0.2s",
+                  }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "#F8F9FC"; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "white"; }}
+                >
+                  <div style={{
+                    width: 40, height: 40,
+                    background: logo.color + "18",
+                    border: `1px solid ${logo.color}30`,
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                  }}>
+                    <span style={{ color: logo.color, fontSize: 12, fontWeight: 800, letterSpacing: "-0.5px" }}>
+                      {logo.abbr}
+                    </span>
+                  </div>
+                  <span style={{ color: "#64748B", fontSize: 11, fontWeight: 600, letterSpacing: "0.02em", textAlign: "center" }}>
+                    {logo.name}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* ══════════════════════════════════════════════════════════ */}
       {/*  SECTION 4 — PAIN POINTS                                   */}
@@ -600,7 +658,7 @@ export default function Home() {
             {/* Header row */}
             <div style={{ display: "grid", gridTemplateColumns: "2fr 1.5fr 1.5fr", borderBottom: "1px solid #E2EAF4" }}>
               <div style={{ background: "#F8F9FC", padding: "20px 28px" }} />
-              <div style={{ background: "#0D1B2A", padding: "20px 28px", textAlign: "center", borderRadius: "12px 0 0 0", borderBottom: "2px solid #E8A838" }}>
+              <div style={{ background: "#0D1B2A", padding: "20px 28px", textAlign: "center", borderBottom: "2px solid #E8A838" }}>
                 <p style={{ color: "white", fontSize: 16, fontWeight: 700 }}>PackOps</p>
                 <p style={{ color: "#1B6CA8", fontSize: 11, textTransform: "uppercase", letterSpacing: "1.5px", marginTop: 4 }}>Managed Platform</p>
               </div>
@@ -669,35 +727,40 @@ export default function Home() {
           </p>
 
           <div
-            className="grid grid-cols-2 md:grid-cols-4"
-            style={{ maxWidth: 1000, margin: "0 auto", position: "relative", gap: 0 }}
+            className="grid grid-cols-1 md:grid-cols-4"
+            style={{ border: "1px solid #E2EAF4" }}
           >
-            {/* Connecting line */}
-            <div className="hidden md:block" style={{
-              position: "absolute", top: 28,
-              left: "12.5%", right: "12.5%",
-              height: 1,
-              background: "#E2EAF4",
-              zIndex: 0,
-            }} />
-
             {HOW_IT_WORKS_STEPS.map((step, i) => {
               const Icon = step.Icon;
               return (
-                <div key={i} style={{ position: "relative", zIndex: 1, textAlign: "center", padding: "0 16px" }}>
-                  <p style={{ color: "#E8A838", fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "1.5px", marginBottom: 8 }}>
-                    {step.num}
-                  </p>
-                  <div style={{
-                    width: 56, height: 56, borderRadius: "50%",
-                    background: "#0D1B2A",
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                    margin: "0 auto 24px",
-                  }}>
-                    <Icon size={22} color="#E8A838" />
+                <div
+                  key={i}
+                  style={{
+                    borderRight: i < 3 ? "1px solid #E2EAF4" : "none",
+                    background: "white",
+                    display: "flex", flexDirection: "column",
+                  }}
+                >
+                  {/* Amber top strip */}
+                  <div style={{ height: 3, background: "#E8A838" }} />
+                  <div style={{ padding: "28px 24px", flex: 1 }}>
+                    <p style={{
+                      color: "#E8A838", fontSize: 11, fontWeight: 700,
+                      textTransform: "uppercase", letterSpacing: "1.5px", marginBottom: 20,
+                    }}>
+                      {step.num}
+                    </p>
+                    <div style={{
+                      width: 44, height: 44,
+                      background: "#0D1B2A",
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      marginBottom: 20,
+                    }}>
+                      <Icon size={20} color="#E8A838" />
+                    </div>
+                    <h3 style={{ color: "#0D1B2A", fontSize: 16, fontWeight: 700, marginBottom: 10 }}>{step.title}</h3>
+                    <p style={{ color: "#64748B", fontSize: 13, lineHeight: 1.65, margin: 0 }}>{step.desc}</p>
                   </div>
-                  <h3 style={{ color: "#0D1B2A", fontSize: 17, fontWeight: 700, marginBottom: 8 }}>{step.title}</h3>
-                  <p style={{ color: "#64748B", fontSize: 13, lineHeight: 1.6 }}>{step.desc}</p>
                 </div>
               );
             })}
@@ -738,30 +801,30 @@ export default function Home() {
       {/*  SECTION 7 — STATS STRIP                                  */}
       {/* ══════════════════════════════════════════════════════════ */}
       <section style={{
-        background: "#F8F9FC",
-        borderTop: "1px solid #E2EAF4", borderBottom: "1px solid #E2EAF4",
-        padding: "56px 0",
+        background: "linear-gradient(135deg, #020617 0%, #0f172a 35%, #1e3a8a 65%, #1d4ed8 85%, #2563eb 100%)",
+        padding: "72px 0",
       }}>
-        <div style={{ maxWidth: 900, margin: "0 auto", padding: "0 40px" }}>
-          <div className="flex flex-col md:flex-row justify-center items-center" style={{ gap: 0 }}>
+        <div style={{ maxWidth: 1000, margin: "0 auto", padding: "0 40px" }}>
+          <div className="grid grid-cols-2 md:grid-cols-4" style={{ gap: 0 }}>
             {[
-              { target: 500, suffix: "+", label: "Verified factory partners", sub: null },
-              { target: 1, suffix: "", label: "Owned manufacturing facility", sub: "Flexo + Rotogravure · Indore" },
-              { target: 40, suffix: "+", label: "Countries served", sub: null },
+              { target: 500, suffix: "+", label: "Manufacturing Partners" },
+              { target: 1,   suffix: "",  label: "Owned Manufacturing Facility" },
+              { target: 220, suffix: "+", label: "Customers Globally" },
+              { target: 10,  suffix: "+", label: "Compliances" },
             ].map((stat, i) => (
-              <div key={i} style={{ display: "flex", alignItems: "center", gap: 0 }}>
-                {i > 0 && (
-                  <div className="hidden md:block" style={{ width: 1, height: 52, background: "#E2EAF4", margin: "0 64px" }} />
-                )}
-                <div style={{ textAlign: "center", padding: "16px 0" }}>
-                  <p style={{ color: "#E8A838", fontSize: 52, fontWeight: 700, lineHeight: 1 }}>
-                    <CountUp target={stat.target} suffix={stat.suffix} />
-                  </p>
-                  <p style={{ color: "#64748B", fontSize: 14, marginTop: 4 }}>{stat.label}</p>
-                  {stat.sub && (
-                    <p style={{ color: "#1B6CA8", fontSize: 11, marginTop: 3, fontWeight: 600 }}>{stat.sub}</p>
-                  )}
-                </div>
+              <div
+                key={i}
+                style={{
+                  textAlign: "center", padding: "24px 16px",
+                  borderRight: i < 3 ? "1px solid rgba(255,255,255,0.12)" : "none",
+                }}
+              >
+                <p style={{ color: "#E8A838", fontSize: 52, fontWeight: 700, lineHeight: 1 }}>
+                  <CountUp target={stat.target} suffix={stat.suffix} />
+                </p>
+                <p style={{ color: "rgba(255,255,255,0.6)", fontSize: 13, marginTop: 8, textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: 500 }}>
+                  {stat.label}
+                </p>
               </div>
             ))}
           </div>
@@ -1013,7 +1076,6 @@ export default function Home() {
                     style={{
                       background: isActive ? "#FFFBF0" : "white",
                       border: `1px solid ${isActive ? "#E8A838" : "#E2EAF4"}`,
-                      borderRadius: 14,
                       padding: "22px 24px",
                       cursor: "pointer",
                       position: "relative",
@@ -1356,7 +1418,7 @@ export default function Home() {
         />
 
         {/* Content */}
-        <div className="relative" style={{ zIndex: 1, maxWidth: 600, margin: "0 auto", padding: "0 40px" }}>
+        <div className="relative" style={{ zIndex: 1, maxWidth: 600, margin: "0 auto", padding: "0 40px", textAlign: "center" }}>
 
           {/* Eyebrow */}
           <span style={{
