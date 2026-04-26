@@ -4,7 +4,7 @@ import { INDUSTRY_IMAGES } from "@/lib/images";
 import BrandAdvantageSection from "@/components/home/BrandAdvantageSection";
 import {
   Search, GitBranch, ShieldCheck, Truck,
-  Leaf, Droplets, FileCheck, Info,
+  Leaf, Droplets, FileCheck,
 } from "lucide-react";
 
 const WHATSAPP_NUM = "919999999999";
@@ -273,12 +273,37 @@ export default function Home() {
   const [vendorBucket, setVendorBucket] = useState<VendorBucket>("2 to 4");
   const [useCredit, setUseCredit] = useState<CreditOption>("Yes");
   const [activeCase, setActiveCase] = useState(0);
-  const [showCreditTip, setShowCreditTip] = useState(false);
 
   const calc = calcNewSavings(monthlySpend, vendorBucket, useCredit);
 
   const inr = (n: number) =>
     new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 }).format(n);
+
+  // ── Count-up for hero saving number ────────────────────────────
+  const [displayedSaving, setDisplayedSaving] = useState(calc.annualSaving);
+  const animRef = useRef<number | null>(null);
+  const fromRef = useRef(calc.annualSaving);
+
+  useEffect(() => {
+    const from = fromRef.current;
+    const to = calc.annualSaving;
+    if (from === to) return;
+    const start = performance.now();
+    const duration = 400;
+    if (animRef.current) cancelAnimationFrame(animRef.current);
+    const tick = (now: number) => {
+      const t = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - t, 3);
+      setDisplayedSaving(Math.round(from + (to - from) * eased));
+      if (t < 1) animRef.current = requestAnimationFrame(tick);
+      else fromRef.current = to;
+    };
+    animRef.current = requestAnimationFrame(tick);
+    return () => { if (animRef.current) cancelAnimationFrame(animRef.current); };
+  }, [calc.annualSaving]);
+
+  // Slider fill percentage
+  const sliderPct = Math.round(((monthlySpend - 50000) / (5000000 - 50000)) * 100);
 
   return (
     <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
@@ -876,164 +901,248 @@ export default function Home() {
       {/* ══════════════════════════════════════════════════════════ */}
       <section style={{ background: "#F8F9FC", padding: "100px 0" }}>
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 40px" }}>
-          <span style={{ color: "#1B6CA8", fontSize: 11, fontWeight: 600, letterSpacing: "2px", textTransform: "uppercase", display: "block", marginBottom: 14 }}>
+
+          {/* Eyebrow */}
+          <span style={{
+            color: "#1B6CA8", fontSize: 11, fontWeight: 600,
+            letterSpacing: "2px", textTransform: "uppercase",
+            display: "block", marginBottom: 14,
+          }}>
             THE NUMBERS
           </span>
-          <h2 style={{ color: "#0D1B2A", fontSize: "clamp(2rem,4vw,3.25rem)", fontWeight: 700, lineHeight: 1.1, marginBottom: 16 }}>
+
+          {/* Headline */}
+          <h2 style={{
+            color: "#0D1B2A", fontSize: 52, fontWeight: 700,
+            lineHeight: 1.15, marginBottom: 16,
+          }}>
             How much is vendor<br />chaos costing you?
           </h2>
+
+          {/* Subheadline */}
           <p style={{ color: "#64748B", fontSize: 18, marginBottom: 56 }}>
-            Most brands overpay by 8–15% without realising it. Calculate your real cost.
+            Most brands overpay by 8–15% without realising it.
           </p>
 
+          {/* ── Calculator Card ── */}
           <div style={{
-            maxWidth: 900, margin: "0 auto",
-            background: "white", border: "1px solid #E2EAF4",
-            borderRadius: 0, padding: "48px",
-            boxShadow: "0 4px 24px rgba(13,27,42,0.06)",
+            maxWidth: 880, margin: "0 auto",
+            background: "#FFFFFF",
+            border: "1px solid #E2EAF4",
+            borderRadius: 20,
+            overflow: "hidden",
+            boxShadow: "0 8px 40px rgba(13,27,42,0.08)",
           }}>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-14 items-start">
+            <div
+              className="calc-grid"
+              style={{ display: "grid", gridTemplateColumns: "1fr 1fr" }}
+            >
 
-              {/* ── Left: Inputs ── */}
-              <div>
-                {/* Input 1: spend slider */}
-                <div style={{ marginBottom: 32 }}>
-                  <label style={{ color: "#0D1B2A", fontSize: 14, fontWeight: 600, display: "block", marginBottom: 16 }}>
-                    Monthly packaging spend
-                  </label>
-                  <input
-                    type="range"
-                    min={50000} max={5000000} step={10000}
-                    value={monthlySpend}
-                    onChange={e => setMonthlySpend(Number(e.target.value))}
-                    style={{ width: "100%", accentColor: "#E8A838", cursor: "pointer" }}
-                  />
-                  <p style={{ color: "#E8A838", fontSize: 22, fontWeight: 700, textAlign: "center", marginTop: 8 }}>
-                    {inr(monthlySpend)}<span style={{ fontSize: 13, fontWeight: 400, color: "#94A3B8" }}>/mo</span>
-                  </p>
+              {/* ══ LEFT PANEL ══ */}
+              <div
+                className="calc-left"
+                style={{
+                  background: "#FFFFFF",
+                  padding: "48px 44px",
+                  borderRight: "1px solid #E2EAF4",
+                }}
+              >
+                {/* Input 1: Spend slider */}
+                <label style={{
+                  display: "block", color: "#0D1B2A", fontSize: 13,
+                  fontWeight: 600, letterSpacing: "0.3px", marginBottom: 20,
+                }}>
+                  Monthly packaging spend
+                </label>
+
+                <input
+                  type="range"
+                  className="calc-slider"
+                  min={50000} max={5000000} step={10000}
+                  value={monthlySpend}
+                  onChange={e => setMonthlySpend(Number(e.target.value))}
+                  style={{
+                    background: `linear-gradient(to right, #E8A838 0%, #E8A838 ${sliderPct}%, #E2EAF4 ${sliderPct}%, #E2EAF4 100%)`,
+                  }}
+                />
+
+                <div style={{ marginTop: 14, textAlign: "center" }}>
+                  <span style={{ color: "#0D1B2A", fontSize: 26, fontWeight: 700 }}>
+                    {inr(monthlySpend)}
+                  </span>
+                  <span style={{ color: "#94A3B8", fontSize: 13, fontWeight: 400, marginLeft: 4 }}>
+                    /month
+                  </span>
                 </div>
 
-                {/* Input 2: vendor pills */}
-                <div style={{ marginBottom: 28 }}>
-                  <label style={{ color: "#0D1B2A", fontSize: 14, fontWeight: 600, display: "block", marginBottom: 12 }}>
-                    Vendors you currently manage
-                  </label>
-                  <div style={{ display: "flex", gap: 8 }}>
-                    {(["Just 1", "2 to 4", "5+"] as VendorBucket[]).map((opt) => (
+                {/* Divider */}
+                <div style={{ height: 1, background: "#F1F5F9", margin: "32px 0" }} />
+
+                {/* Input 2: Vendors */}
+                <label style={{
+                  display: "block", color: "#0D1B2A", fontSize: 13,
+                  fontWeight: 600, marginBottom: 12,
+                }}>
+                  Vendors you currently manage
+                </label>
+                <div style={{ display: "flex", gap: 8 }}>
+                  {(["Just 1", "2 to 4", "5+"] as VendorBucket[]).map(opt => {
+                    const sel = vendorBucket === opt;
+                    return (
                       <button
                         key={opt}
                         onClick={() => setVendorBucket(opt)}
                         style={{
-                          border: `1px solid ${vendorBucket === opt ? "#0D1B2A" : "#E2EAF4"}`,
-                          borderRadius: 0, padding: "8px 20px",
-                          fontSize: 14, cursor: "pointer",
-                          background: vendorBucket === opt ? "#0D1B2A" : "white",
-                          color: vendorBucket === opt ? "white" : "#64748B",
-                          transition: "all 0.15s",
+                          padding: "9px 0", flex: 1, textAlign: "center",
+                          borderRadius: 8,
+                          border: `1px solid ${sel ? "#0D1B2A" : "#E2EAF4"}`,
+                          fontSize: 14, fontWeight: 500, cursor: "pointer",
+                          background: sel ? "#0D1B2A" : "#F8F9FC",
+                          color: sel ? "#FFFFFF" : "#64748B",
+                          transition: "all 0.15s ease",
                         }}
                       >
                         {opt}
                       </button>
-                    ))}
-                  </div>
+                    );
+                  })}
                 </div>
 
-                {/* Input 3: credit pills */}
-                <div>
-                  <label style={{ color: "#0D1B2A", fontSize: 14, fontWeight: 600, display: "block", marginBottom: 12 }}>
-                    Do you receive credit from vendor?
-                  </label>
-                  <div style={{ display: "flex", gap: 8 }}>
-                    {(["Yes", "No"] as CreditOption[]).map((opt) => (
+                {/* Divider */}
+                <div style={{ height: 1, background: "#F1F5F9", margin: "24px 0" }} />
+
+                {/* Input 3: Credit */}
+                <label style={{
+                  display: "block", color: "#0D1B2A", fontSize: 13,
+                  fontWeight: 600, marginBottom: 12,
+                }}>
+                  Do you use vendor credit?
+                </label>
+                <div style={{ display: "flex", gap: 8 }}>
+                  {(["Yes", "No"] as CreditOption[]).map(opt => {
+                    const sel = useCredit === opt;
+                    return (
                       <button
                         key={opt}
                         onClick={() => setUseCredit(opt)}
                         style={{
-                          border: `1px solid ${useCredit === opt ? "#0D1B2A" : "#E2EAF4"}`,
-                          borderRadius: 0, padding: "8px 20px",
-                          fontSize: 14, cursor: "pointer",
-                          background: useCredit === opt ? "#0D1B2A" : "white",
-                          color: useCredit === opt ? "white" : "#64748B",
-                          transition: "all 0.15s",
+                          padding: "9px 0", flex: 1, textAlign: "center",
+                          borderRadius: 8,
+                          border: `1px solid ${sel ? "#0D1B2A" : "#E2EAF4"}`,
+                          fontSize: 14, fontWeight: 500, cursor: "pointer",
+                          background: sel ? "#0D1B2A" : "#F8F9FC",
+                          color: sel ? "#FFFFFF" : "#64748B",
+                          transition: "all 0.15s ease",
                         }}
                       >
                         {opt}
                       </button>
-                    ))}
-                  </div>
+                    );
+                  })}
                 </div>
               </div>
 
-              {/* ── Right: Outputs ── */}
-              <div>
-                {/* Row 1: Annual saving */}
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", paddingBottom: 16, marginBottom: 16, borderBottom: "1px solid #E2EAF4" }}>
-                  <span style={{ color: "#64748B", fontSize: 14 }}>Estimated annual saving</span>
-                  <span style={{ color: "#22C55E", fontSize: 28, fontWeight: 700, lineHeight: 1 }}>{inr(calc.annualSaving)}</span>
-                </div>
-
-                {/* Row 2: Credit markup (if Yes) */}
-                {useCredit === "Yes" && (
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", paddingBottom: 16, marginBottom: 16, borderBottom: "1px solid #E2EAF4" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                      <span style={{ color: "#64748B", fontSize: 14 }}>Hidden credit markup you pay</span>
-                      <div style={{ position: "relative" }}>
-                        <Info
-                          size={14}
-                          color="#94A3B8"
-                          style={{ cursor: "pointer" }}
-                          onMouseEnter={() => setShowCreditTip(true)}
-                          onMouseLeave={() => setShowCreditTip(false)}
-                        />
-                        {showCreditTip && (
-                          <div style={{
-                            position: "absolute", bottom: 24, left: -90, width: 200,
-                            background: "#0D1B2A", color: "white", fontSize: 12,
-                            padding: "8px 12px", borderRadius: 2, zIndex: 100, lineHeight: 1.5,
-                            boxShadow: "0 4px 16px rgba(0,0,0,0.2)",
-                          }}>
-                            Credit pricing is typically 10–15% above cash price. This is embedded in your vendor's per-unit quote.
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                    <span style={{ color: "#EF4444", fontSize: 24, fontWeight: 700, lineHeight: 1 }}>+{inr(calc.creditMarkup)}</span>
-                  </div>
-                )}
-
-                {/* Row 3: Upfront saving */}
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", paddingBottom: 16, marginBottom: 16, borderBottom: "1px solid #E2EAF4" }}>
-                  <span style={{ color: "#64748B", fontSize: 14 }}>Extra saving if you pay upfront</span>
-                  <span style={{ color: "#E8A838", fontSize: 22, fontWeight: 700, lineHeight: 1 }}>+{inr(calc.upfrontSaving)}</span>
-                </div>
-
-                {/* Row 4: Total */}
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-                  <span style={{ color: "#0D1B2A", fontSize: 16, fontWeight: 700 }}>Total annual value</span>
-                  <span style={{ color: "#0D1B2A", fontSize: 36, fontWeight: 700, lineHeight: 1 }}>{inr(calc.totalValue)}</span>
-                </div>
-
-                <p style={{ color: "#64748B", fontSize: 14, marginBottom: 24 }}>
-                  Time saved per month:{" "}
-                  <span style={{ color: "#0D1B2A", fontWeight: 700 }}>{calc.timeSaved} hours</span>
+              {/* ══ RIGHT PANEL ══ */}
+              <div
+                className="calc-right"
+                style={{ background: "#0D1B2A", padding: "48px 44px" }}
+              >
+                {/* Top label */}
+                <p style={{
+                  color: "rgba(255,255,255,0.4)", fontSize: 10, fontWeight: 600,
+                  letterSpacing: "2px", textTransform: "uppercase", marginBottom: 8,
+                }}>
+                  YOUR ESTIMATED SAVINGS
                 </p>
 
+                {/* Hero number — animated */}
+                <p
+                  className="calc-hero-num"
+                  style={{
+                    color: "#E8A838", fontSize: 52, fontWeight: 700,
+                    lineHeight: 1, letterSpacing: "-1px", marginBottom: 6,
+                  }}
+                >
+                  {inr(displayedSaving)}
+                </p>
+
+                <p style={{ color: "rgba(255,255,255,0.45)", fontSize: 13, marginBottom: 36 }}>
+                  estimated annual saving
+                </p>
+
+                {/* Divider */}
+                <div style={{ height: 1, background: "rgba(255,255,255,0.08)", marginBottom: 28 }} />
+
+                {/* Secondary metrics */}
+                {[
+                  {
+                    label: "Hidden credit markup",
+                    value: useCredit === "Yes" ? inr(calc.creditMarkup) : "Not applicable",
+                  },
+                  {
+                    label: "Extra saving if upfront",
+                    value: inr(calc.upfrontSaving),
+                  },
+                  {
+                    label: "Time saved per month",
+                    value: `${calc.timeSaved} hours`,
+                  },
+                ].map(row => (
+                  <div
+                    key={row.label}
+                    style={{
+                      display: "flex", justifyContent: "space-between",
+                      alignItems: "center", marginBottom: 18,
+                    }}
+                  >
+                    <span style={{ color: "rgba(255,255,255,0.55)", fontSize: 13 }}>
+                      {row.label}
+                    </span>
+                    <span style={{ color: "rgba(255,255,255,0.9)", fontSize: 15, fontWeight: 600 }}>
+                      {row.value}
+                    </span>
+                  </div>
+                ))}
+
+                {/* Divider */}
+                <div style={{ height: 1, background: "rgba(255,255,255,0.08)", margin: "24px 0" }} />
+
+                {/* Total row */}
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
+                  <span style={{ color: "white", fontSize: 15, fontWeight: 700 }}>Total annual value</span>
+                  <span style={{ color: "white", fontSize: 28, fontWeight: 700 }}>{inr(calc.totalValue)}</span>
+                </div>
+
+                {/* CTA button */}
                 <Link href="/quote">
-                  <button style={{
-                    width: "100%", background: "#E8A838", color: "#0D1B2A",
-                    padding: 14, borderRadius: 0, fontSize: 15, fontWeight: 700,
-                    border: "none", cursor: "pointer",
-                  }}>
+                  <button
+                    style={{
+                      marginTop: 28, width: "100%",
+                      background: "#E8A838", color: "#0D1B2A",
+                      padding: "15px", borderRadius: 10,
+                      fontSize: 15, fontWeight: 700,
+                      border: "none", cursor: "pointer",
+                      transition: "filter 0.2s",
+                    }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.filter = "brightness(1.08)"; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.filter = "brightness(1)"; }}
+                  >
                     Get a quote — see real prices →
                   </button>
                 </Link>
 
-                <p style={{ color: "#94A3B8", fontSize: 12, textAlign: "center", marginTop: 10 }}>
-                  Estimates based on industry averages. Actual savings confirmed in your quote.
+                {/* Disclaimer */}
+                <p style={{
+                  color: "rgba(255,255,255,0.3)", fontSize: 11,
+                  textAlign: "center", marginTop: 12,
+                }}>
+                  Estimates based on industry averages.
                 </p>
               </div>
+
             </div>
           </div>
+
         </div>
       </section>
 

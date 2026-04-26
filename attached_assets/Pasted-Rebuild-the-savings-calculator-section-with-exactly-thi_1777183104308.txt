@@ -1,0 +1,304 @@
+Rebuild the savings calculator section 
+with exactly this design.
+Replace everything currently in that section.
+
+Section:
+background: #F8F9FC
+padding: 100px 0
+
+Eyebrow: "THE NUMBERS"
+color: #1B6CA8, 11px, 600, 
+2px letter-spacing, uppercase
+
+Headline: "How much is vendor 
+chaos costing you?"
+color: #0D1B2A, 52px, 700, 
+line-height 1.15, margin-bottom 16px
+
+Subheadline:
+"Most brands overpay by 8–15% 
+without realising it."
+color: #64748B, 18px, 
+margin-bottom 56px
+
+Calculator card:
+max-width: 880px
+margin: 0 auto
+background: #FFFFFF
+border: 1px solid #E2EAF4
+border-radius: 20px
+overflow: hidden
+box-shadow: 0 8px 40px rgba(13,27,42,0.08)
+
+NO padding on the card itself.
+Instead split into two columns 
+with different backgrounds:
+
+display: grid
+grid-template-columns: 1fr 1fr
+
+LEFT PANEL:
+background: #FFFFFF
+padding: 48px 44px
+border-right: 1px solid #E2EAF4
+
+RIGHT PANEL:
+background: #0D1B2A
+padding: 48px 44px
+
+---
+
+LEFT PANEL INPUTS:
+
+Input 1 label:
+"Monthly packaging spend"
+color: #0D1B2A, 13px, 600
+letter-spacing: 0.3px
+margin-bottom: 20px
+
+Slider:
+width: 100%
+-webkit-appearance: none
+height: 4px
+border-radius: 2px
+background: linear-gradient(to right, 
+  #E8A838 0%, 
+  #E8A838 var(--slider-percent), 
+  #E2EAF4 var(--slider-percent), 
+  #E2EAF4 100%)
+Update --slider-percent via JS 
+as value changes.
+
+Thumb:
+-webkit-appearance: none
+width: 20px, height: 20px
+border-radius: 50%
+background: #0D1B2A
+border: 3px solid #E8A838
+cursor: pointer
+box-shadow: 0 2px 8px rgba(13,27,42,0.2)
+
+Value display below slider:
+margin-top: 14px
+text-align: center
+
+Value itself:
+color: #0D1B2A, 26px, 700
+Formatted in Indian style 
+(₹X,XX,XXX)
+
+"/month" label:
+color: #94A3B8, 13px, 400
+margin-left: 4px
+
+Divider: 
+margin: 32px 0
+height: 1px
+background: #F1F5F9
+
+Input 2 label:
+"Vendors you currently manage"
+color: #0D1B2A, 13px, 600
+margin-bottom: 12px
+
+3 pills in a row:
+display: flex, gap: 8px
+
+Each pill:
+padding: 9px 0
+flex: 1
+text-align: center
+border-radius: 8px
+border: 1px solid #E2EAF4
+font-size: 14px, 500
+cursor: pointer
+transition: all 0.15s ease
+
+Unselected:
+background: #F8F9FC
+color: #64748B
+border-color: #E2EAF4
+
+Selected:
+background: #0D1B2A
+color: #FFFFFF
+border-color: #0D1B2A
+
+Pills: "Just 1" | "2 to 4" | "5+"
+
+Divider: margin 24px 0
+
+Input 3 label:
+"Do you use vendor credit?"
+color: #0D1B2A, 13px, 600
+margin-bottom: 12px
+
+2 pills:
+Same style as above but 2 pills 
+only, each taking 50% width
+Pills: "Yes" | "No"
+Default: "Yes" selected
+
+---
+
+RIGHT PANEL OUTPUTS:
+
+All text on dark navy background.
+
+Top label (small, above main output):
+"YOUR ESTIMATED SAVINGS"
+color: rgba(255,255,255,0.4)
+font-size: 10px, 600
+letter-spacing: 2px
+uppercase
+margin-bottom: 8px
+
+Primary output — Annual Saving:
+This is the ONE hero number.
+color: #E8A838
+font-size: 52px, 700
+line-height: 1
+Letter spacing: -1px
+Indian number formatted: ₹X,XX,XXX
+Count-up animation when value changes 
+(short — 400ms, ease-out)
+
+Below the hero number:
+"estimated annual saving"
+color: rgba(255,255,255,0.45)
+font-size: 13px
+margin-bottom: 36px
+
+Divider:
+height: 1px
+background: rgba(255,255,255,0.08)
+margin-bottom: 28px
+
+Secondary metrics 
+(3 rows, all in same colour — 
+NO multiple colours):
+
+Each row:
+display: flex
+justify-content: space-between
+align-items: center
+margin-bottom: 18px
+
+Left (label):
+color: rgba(255,255,255,0.55)
+font-size: 13px
+
+Right (value):
+color: rgba(255,255,255,0.9)
+font-size: 15px, 600
+
+Row 1:
+Label: "Hidden credit markup"
+Value: 
+if credit = Yes: 
+  "₹[credit_markup]"
+  (show this value, same white style)
+if credit = No:
+  "Not applicable"
+  (same white, muted)
+
+Row 2:
+Label: "Extra saving if upfront"
+Value: "₹[upfront_saving]"
+
+Row 3:
+Label: "Time saved per month"
+Value: "[time_saved] hours"
+
+Divider:
+height: 1px
+background: rgba(255,255,255,0.08)
+margin: 24px 0
+
+Total row:
+display: flex
+justify-content: space-between
+align-items: baseline
+
+Left:
+"Total annual value"
+color: white, 15px, 700
+
+Right:
+"₹[total_value]"
+color: white, 28px, 700
+
+CTA button:
+margin-top: 28px
+width: 100%
+background: #E8A838
+color: #0D1B2A
+padding: 15px
+border-radius: 10px
+font-size: 15px, 700
+border: none
+cursor: pointer
+transition: filter 0.2s
+hover: filter brightness(1.08)
+Text: "Get a quote — see real prices →"
+href: /quote
+
+Disclaimer below button:
+color: rgba(255,255,255,0.3)
+font-size: 11px
+text-align: center
+margin-top: 12px
+"Estimates based on industry averages."
+
+---
+
+CALCULATION LOGIC (unchanged):
+
+const saving_pct = 
+  vendors === 'Just 1' ? 0.08 :
+  vendors === '2 to 4' ? 0.10 : 0.12
+
+const annual_spend = monthly_spend * 12
+
+const annual_saving = 
+  Math.round(annual_spend * saving_pct)
+
+const credit_markup = credit === 'Yes' ? 
+  Math.round(annual_spend * 0.12) : 0
+
+const upfront_saving = 
+  Math.round(annual_spend * 0.03)
+
+const total_value = 
+  annual_saving + credit_markup
+
+const time_saved = 
+  vendors === 'Just 1' ? 4 :
+  vendors === '2 to 4' ? 8 : 14
+
+All currency formatted with:
+new Intl.NumberFormat('en-IN', {
+  style: 'currency',
+  currency: 'INR',
+  maximumFractionDigits: 0
+}).format(value)
+
+Hero number (annual_saving) 
+animates on every value change:
+Short count-up from current to new value
+Duration: 400ms
+requestAnimationFrame loop
+Ease-out timing
+
+---
+
+MOBILE (below 768px):
+grid-template-columns: 1fr (stacked)
+Left panel on top, right panel below
+Right panel border-radius: 
+  0 0 20px 20px
+Left panel border-radius: 
+  20px 20px 0 0
+Both panels full width
+Padding reduced to 32px 28px
+Hero number font-size: 40px

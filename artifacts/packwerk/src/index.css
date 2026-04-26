@@ -10,6 +10,58 @@
   animation: floatCard 4s ease-in-out infinite;
 }
 
+/* ── Savings calculator custom slider ── */
+.calc-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 4px;
+  border-radius: 2px;
+  cursor: pointer;
+  outline: none;
+  border: none;
+}
+.calc-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #0D1B2A;
+  border: 3px solid #E8A838;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(13, 27, 42, 0.2);
+}
+.calc-slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #0D1B2A;
+  border: 3px solid #E8A838;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(13, 27, 42, 0.2);
+}
+
+/* ── Calculator grid mobile ── */
+@media (max-width: 768px) {
+  .calc-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .calc-left {
+    border-radius: 20px 20px 0 0 !important;
+    padding: 32px 28px !important;
+    border-right: none !important;
+    border-bottom: 1px solid #E2EAF4;
+  }
+  .calc-right {
+    border-radius: 0 0 20px 20px !important;
+    padding: 32px 28px !important;
+  }
+  .calc-hero-num {
+    font-size: 40px !important;
+  }
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
