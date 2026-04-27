@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { Link, useLocation } from "wouter";
 import { useSubmitQuote } from "@workspace/api-client-react";
 import { useToast } from "@/hooks/use-toast";
@@ -7,15 +7,17 @@ import type { Sku, VariantGroup } from "@/lib/skus";
 import { openRazorpay } from "@/lib/razorpay";
 import {
   Loader2, CheckCircle2, ChevronDown, ChevronUp,
-  Upload, Palette, X, Truck, Zap, Warehouse, ArrowRight, Shield, Package
+  Upload, Palette, X, Truck, Zap, Warehouse, ArrowRight, Shield, Package,
+  Package2, Mail, Clock, Star
 } from "lucide-react";
 
 // ── Types ──────────────────────────────────────────────────────────────────
 type ArtworkOption = "upload" | "design" | "none";
 type DeliveryOption = "standard" | "blitz" | "warehouse";
 
-// ── Step labels ────────────────────────────────────────────────────────────
-const STEP_LABELS = ["Contact Info", "SKU Selection", "Artwork", "Delivery", "Sample", "Review"];
+// ── Step labels — now 5 steps (removed redundant artwork step) ─────────────
+const STEP_LABELS = ["Contact", "Product & Qty", "Design & Delivery", "Sample", "Review"];
+const TOTAL_STEPS = 5;
 
 // ── Stable session project ID ──────────────────────────────────────────────
 const PROJECT_ID = `PX-${Math.floor(1000 + Math.random() * 9000)}-${["ALPHA","BETA","DELTA","GAMMA"][Math.floor(Math.random()*4)]}`;
@@ -38,7 +40,6 @@ function fmt(n: number) {
   return new Intl.NumberFormat("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
 }
 
-// ── Material-symbols icon shorthand ───────────────────────────────────────
 const MS = ({ icon, className = "" }: { icon: string; className?: string }) => (
   <span className={`material-symbols-outlined ${className}`}>{icon}</span>
 );
@@ -114,7 +115,7 @@ function OrderSummary({
             className="w-full py-3 rounded font-black uppercase tracking-widest text-sm transition-all hover:opacity-90 active:scale-95 flex items-center justify-center gap-2 mt-2"
             style={{ background: "#E8A838", color: "#0F1C2C" }}
           >
-            {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <>REVIEW & SUBMIT <ArrowRight className="w-4 h-4" /></>}
+            {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <>SUBMIT REQUEST <ArrowRight className="w-4 h-4" /></>}
           </button>
         )}
 
@@ -128,7 +129,7 @@ function OrderSummary({
 }
 
 // ── Step Header ────────────────────────────────────────────────────────────
-function StepHeader({ step, total, title }: { step: number; total: number; title: string }) {
+function StepHeader({ step, total, title, subtitle }: { step: number; total: number; title: string; subtitle?: string }) {
   return (
     <div className="flex items-start justify-between mb-8">
       <div>
@@ -138,33 +139,13 @@ function StepHeader({ step, total, title }: { step: number; total: number; title
         <h1 className="text-4xl font-black text-slate-900" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
           {title}
         </h1>
+        {subtitle && <p className="text-slate-400 text-sm mt-2">{subtitle}</p>}
         <div className="h-1 w-16 mt-3 rounded" style={{ background: "#1B6CA8" }} />
       </div>
       <div className="text-right">
         <div className="text-xs text-slate-400 uppercase tracking-wider">Project ID</div>
         <div className="font-mono font-bold text-slate-700 text-sm mt-1">{PROJECT_ID}</div>
       </div>
-    </div>
-  );
-}
-
-// ── Accordion ─────────────────────────────────────────────────────────────
-function AccordionItem({ num, title, subtitle, open, onToggle, children }: {
-  num: string; title: string; subtitle?: string; open: boolean; onToggle: () => void; children: React.ReactNode;
-}) {
-  return (
-    <div className="border border-slate-200 rounded-lg overflow-hidden">
-      <button onClick={onToggle} className="w-full flex items-center justify-between px-5 py-4 bg-white hover:bg-slate-50 transition-colors">
-        <div className="flex items-center gap-3">
-          <span className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white shrink-0" style={{ background: "#1B6CA8" }}>{num}</span>
-          <div className="text-left">
-            <div className="font-bold text-slate-800 text-sm">{title}</div>
-            {subtitle && <div className="text-xs text-slate-400 mt-0.5">{subtitle}</div>}
-          </div>
-        </div>
-        {open ? <ChevronUp className="w-4 h-4 text-slate-400" /> : <ChevronDown className="w-4 h-4 text-slate-400" />}
-      </button>
-      {open && <div className="px-5 pb-5 pt-2 bg-white border-t border-slate-100">{children}</div>}
     </div>
   );
 }
@@ -194,11 +175,191 @@ function VariantSelector({ group, selected, onSelect }: {
   );
 }
 
+// ── Animated Confirmation Screen ───────────────────────────────────────────
+function ConfirmationScreen({ quoteId, email, designPaid, sampleOption, samplePaid }: {
+  quoteId: string;
+  email: string;
+  designPaid: boolean;
+  sampleOption: string;
+  samplePaid: boolean;
+}) {
+  const [show, setShow] = useState(false);
+  const [showItems, setShowItems] = useState(false);
+
+  useEffect(() => {
+    const t1 = setTimeout(() => setShow(true), 100);
+    const t2 = setTimeout(() => setShowItems(true), 800);
+    return () => { clearTimeout(t1); clearTimeout(t2); };
+  }, []);
+
+  const needsAction = (sampleOption === "express" && !samplePaid);
+  const designNeedsPayment = false; // design is paid inline before reaching here
+
+  const items = [
+    { icon: <Package2 className="w-5 h-5" />, label: "Quote received", sub: "Our engineers are reviewing your spec", color: "#22c55e" },
+    { icon: <Mail className="w-5 h-5" />, label: "Confirmation email sent", sub: email ? `Sent to ${email}` : "Check your inbox", color: "#1B6CA8" },
+    { icon: <Clock className="w-5 h-5" />, label: "Quote in 24–48 hours", sub: "Market-best pricing, guaranteed", color: "#E8A838" },
+    ...(needsAction ? [{ icon: <Star className="w-5 h-5" />, label: "Action needed: Sample payment", sub: "Your express sample slot is held for 48 hrs", color: "#E8A838" }] : []),
+  ];
+
+  return (
+    <div className="min-h-[80vh] flex items-center justify-center px-4 py-16" style={{ background: "#F8F9FC" }}>
+      <div className="max-w-lg w-full">
+
+        {/* Animated success circle */}
+        <div className="flex justify-center mb-10">
+          <div
+            className="relative flex items-center justify-center"
+            style={{
+              width: 120, height: 120,
+              transition: "all 0.6s cubic-bezier(0.34,1.56,0.64,1)",
+              transform: show ? "scale(1)" : "scale(0)",
+              opacity: show ? 1 : 0,
+            }}
+          >
+            {/* Outer pulse ring */}
+            <div
+              className="absolute inset-0 rounded-full"
+              style={{
+                background: "rgba(34,197,94,0.12)",
+                animation: show ? "ping-slow 2s ease-in-out infinite" : "none",
+              }}
+            />
+            {/* Inner circle */}
+            <div
+              className="absolute inset-3 rounded-full flex items-center justify-center"
+              style={{ background: "rgba(34,197,94,0.15)" }}
+            />
+            {/* Check */}
+            <CheckCircle2
+              className="relative z-10"
+              style={{ color: "#22c55e", width: 52, height: 52 }}
+            />
+          </div>
+        </div>
+
+        {/* Headline */}
+        <div
+          className="text-center mb-8"
+          style={{
+            transition: "all 0.5s ease",
+            transform: show ? "translateY(0)" : "translateY(16px)",
+            opacity: show ? 1 : 0,
+            transitionDelay: "0.2s",
+          }}
+        >
+          <div className="text-xs font-bold tracking-[0.2em] uppercase mb-3" style={{ color: "#1B6CA8" }}>
+            Quote Submitted
+          </div>
+          <h1 className="text-4xl font-black mb-3" style={{ fontFamily: "'Space Grotesk', sans-serif", color: "#0D1B2A", lineHeight: 1.1 }}>
+            Your packaging<br />is sorted. 🎉
+          </h1>
+          <p className="text-slate-500 text-base">
+            We'll get back with the market's best quote in your email.
+          </p>
+        </div>
+
+        {/* Quote ID chip */}
+        <div
+          className="flex justify-center mb-8"
+          style={{
+            transition: "all 0.5s ease",
+            transform: show ? "translateY(0)" : "translateY(12px)",
+            opacity: show ? 1 : 0,
+            transitionDelay: "0.35s",
+          }}
+        >
+          <div
+            className="px-6 py-3 rounded-lg text-center"
+            style={{ background: "#0D1B2A" }}
+          >
+            <div className="text-xs text-slate-500 uppercase tracking-widest mb-1">Your Quote ID</div>
+            <div className="font-mono font-black text-xl" style={{ color: "#E8A838" }}>{quoteId}</div>
+          </div>
+        </div>
+
+        {/* Status items */}
+        <div className="space-y-3 mb-8">
+          {items.map((item, i) => (
+            <div
+              key={i}
+              className="flex items-start gap-4 p-4 rounded-lg bg-white border border-slate-100"
+              style={{
+                transition: "all 0.4s ease",
+                transform: showItems ? "translateX(0)" : "translateX(-20px)",
+                opacity: showItems ? 1 : 0,
+                transitionDelay: `${i * 0.1}s`,
+              }}
+            >
+              <div
+                className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
+                style={{ background: `${item.color}18`, color: item.color }}
+              >
+                {item.icon}
+              </div>
+              <div>
+                <div className="font-bold text-slate-800 text-sm">{item.label}</div>
+                <div className="text-xs text-slate-400 mt-0.5">{item.sub}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Payment notices */}
+        {needsAction && (
+          <div
+            className="p-4 rounded-lg mb-6"
+            style={{
+              background: "rgba(232,168,56,0.08)", border: "1px solid rgba(232,168,56,0.3)",
+              transition: "all 0.4s ease",
+              opacity: showItems ? 1 : 0,
+              transitionDelay: "0.5s",
+            }}
+          >
+            <p className="text-sm font-bold mb-1" style={{ color: "#92600A" }}>⚡ Express sample slot held — payment required</p>
+            <p className="text-xs text-slate-500">Your express sample slot is reserved for 48 hours. Pay ₹4,999 to confirm it, or it will be released automatically.</p>
+          </div>
+        )}
+
+        {/* CTA buttons */}
+        <div
+          className="flex gap-3"
+          style={{
+            transition: "all 0.5s ease",
+            opacity: showItems ? 1 : 0,
+            transitionDelay: "0.6s",
+          }}
+        >
+          <Link href="/dashboard" className="flex-1">
+            <button className="w-full py-3 rounded-lg font-black text-sm text-white uppercase tracking-wider transition-all hover:opacity-90" style={{ background: "#0D1B2A" }}>
+              Go to Dashboard
+            </button>
+          </Link>
+          <Link href="/products" className="flex-1">
+            <button className="w-full py-3 rounded-lg font-bold text-sm border border-slate-200 text-slate-700 hover:border-slate-400 transition-colors">
+              Browse SKUs
+            </button>
+          </Link>
+        </div>
+
+      </div>
+
+      {/* CSS for ping animation */}
+      <style>{`
+        @keyframes ping-slow {
+          0%, 100% { transform: scale(1); opacity: 0.7; }
+          50% { transform: scale(1.18); opacity: 0.3; }
+        }
+      `}</style>
+    </div>
+  );
+}
+
 // ══════════════════════════════════════════════════════════════════════════════
 // Main Quote Component
 // ══════════════════════════════════════════════════════════════════════════════
 export default function Quote({ params }: { params?: { step?: string; id?: string } }) {
-  const stepNum = params?.step ? parseInt(params.step) : params?.id ? 7 : 1;
+  const stepNum = params?.step ? parseInt(params.step) : params?.id ? 99 : 1;
   const [, setLocation] = useLocation();
   const { toast } = useToast();
 
@@ -215,26 +376,25 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
   const [qty, setQty] = useState(500);
   const [variantSelections, setVariantSelections] = useState<Record<string, string>>({});
 
-  // ── Config ───────────────────────────────────────────────────────────────
-  const [openAccordion, setOpenAccordion] = useState<string | null>("artwork");
+  // ── Artwork / Design ─────────────────────────────────────────────────────
   const [artworkOption, setArtworkOption] = useState<ArtworkOption>("upload");
+  const [designPaid, setDesignPaid] = useState(false);
+  const [designPaying, setDesignPaying] = useState(false);
+
+  // ── Delivery ─────────────────────────────────────────────────────────────
   const [deliveryOption, setDeliveryOption] = useState<DeliveryOption>("standard");
   const [pincode, setPincode] = useState("");
 
   // ── Sample ───────────────────────────────────────────────────────────────
   const [sampleOption, setSampleOption] = useState<"express" | "standard" | "none">("none");
+  const [samplePaid, setSamplePaid] = useState(false);
   const [notes, setNotes] = useState("");
-
-  // ── Payments ──────────────────────────────────────────────────────────────
-  const [designPaid, setDesignPaid] = useState(false);
-  const [designPaying, setDesignPaying] = useState(false);
 
   const submitMutation = useSubmitQuote();
 
   const handleNext = () => setLocation(`/quote/step/${stepNum + 1}`);
   const handleBack = () => stepNum > 1 ? setLocation(`/quote/step/${stepNum - 1}`) : setLocation("/");
 
-  // Derived data
   const currentCatSkus = useMemo(() =>
     getSkusByCategory(selectedCategory).filter(s => ecoFilter ? s.is_eco : true),
     [selectedCategory, ecoFilter]
@@ -242,7 +402,6 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
 
   const selectedSku = useMemo(() => SKUS.find(s => s.id === selectedSkuId), [selectedSkuId]);
 
-  // Initialize variant selections when SKU changes
   const initVariants = (sku: Sku) => {
     const defaults: Record<string, string> = {};
     sku.variants.forEach(g => { defaults[g.key] = g.options[0]; });
@@ -262,22 +421,29 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
   };
 
   const handleSubmit = () => {
+    const { low, high } = calcPrice(selectedSku, qty, deliveryOption, artworkOption);
     submitMutation.mutate({
       data: {
         contact_name: contactName, company_name: company, email, phone,
         delivery_country: "India", delivery_pincode: pincode,
-        preferred_timeline: deliveryOption, notes,
+        preferred_timeline: (deliveryOption as any),
+        notes,
+        total_estimated_min: low,
+        total_estimated_max: high,
         items: [{
           product_id: selectedSkuId,
           product_name: selectedSku?.name || selectedSkuId,
           quantity: qty, artwork_status: artworkOption,
           sample_requested: sampleOption !== "none", sample_tier: sampleOption === "express" ? "premium" : sampleOption === "standard" ? "standard" : "none"
-        }]
-      }
+        }],
+        artwork_option: artworkOption,
+        sample_option: sampleOption,
+        design_paid: designPaid,
+        sample_paid: samplePaid,
+      } as any
     }, {
       onSuccess: (res) => {
         setLocation(`/quote/confirmed/${res.quote_id}`);
-        toast({ title: "Quote Submitted", description: "We'll respond within 24 hours." });
       },
       onError: () => toast({ variant: "destructive", title: "Submission Failed", description: "Please try again." })
     });
@@ -286,26 +452,17 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
   // ── Confirmed screen ──────────────────────────────────────────────────────
   if (params?.id) {
     return (
-      <div className="min-h-[80vh] flex items-center justify-center px-4">
-        <div className="max-w-lg w-full text-center">
-          <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6" style={{ background: "rgba(27,108,168,0.1)" }}>
-            <CheckCircle2 className="w-10 h-10" style={{ color: "#1B6CA8" }} />
-          </div>
-          <div className="text-xs font-bold tracking-[0.2em] uppercase mb-3" style={{ color: "#1B6CA8" }}>Quote Confirmed</div>
-          <h1 className="text-4xl font-black mb-4" style={{ fontFamily: "'Space Grotesk', sans-serif", color: "#0D1B2A" }}>Request Received</h1>
-          <p className="text-slate-500 mb-3">Your Quote ID is</p>
-          <div className="font-mono font-black text-2xl mb-6" style={{ color: "#0D1B2A" }}>{params.id}</div>
-          <p className="text-slate-500 mb-10">Our packaging engineers are reviewing your spec and will send a detailed quotation within 24–48 hours.</p>
-          <div className="flex justify-center gap-4">
-            <Link href="/dashboard"><button className="px-6 py-3 rounded font-bold text-sm text-white" style={{ background: "#0D1B2A" }}>Go to Dashboard</button></Link>
-            <Link href="/products"><button className="px-6 py-3 rounded font-bold text-sm border border-slate-200 text-slate-700 hover:border-slate-400 transition-colors">Browse SKUs</button></Link>
-          </div>
-        </div>
-      </div>
+      <ConfirmationScreen
+        quoteId={params.id}
+        email={email}
+        designPaid={designPaid}
+        sampleOption={sampleOption}
+        samplePaid={samplePaid}
+      />
     );
   }
 
-  const isLastStep = stepNum === 6;
+  const isLastStep = stepNum === TOTAL_STEPS;
 
   return (
     <div className="min-h-screen" style={{ background: "#F8F9FC", fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
@@ -339,21 +496,21 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
           {/* ── Left panel ── */}
           <div className="lg:col-span-2 space-y-6">
 
-            {/* ── STEP 1 ── */}
+            {/* ── STEP 1: Contact Info ── */}
             {stepNum === 1 && (
               <>
-                <StepHeader step={1} total={6} title="Contact Info" />
+                <StepHeader step={1} total={TOTAL_STEPS} title="Contact Info" subtitle="Tell us who you are — takes 30 seconds." />
                 <div className="bg-white rounded-lg border border-slate-200 p-6">
                   <div className="grid md:grid-cols-2 gap-5">
                     {[
-                      { label: "Contact Name", value: contactName, set: setContactName, type: "text" },
-                      { label: "Company Name", value: company, set: setCompany, type: "text" },
-                      { label: "Business Email", value: email, set: setEmail, type: "email" },
-                      { label: "Phone / WhatsApp", value: phone, set: setPhone, type: "tel" },
-                    ].map(({ label, value, set, type }) => (
+                      { label: "Contact Name", value: contactName, set: setContactName, type: "text", placeholder: "Rahul Sharma" },
+                      { label: "Company Name", value: company, set: setCompany, type: "text", placeholder: "Acme Foods Pvt. Ltd." },
+                      { label: "Business Email", value: email, set: setEmail, type: "email", placeholder: "rahul@acmefoods.in" },
+                      { label: "Phone / WhatsApp", value: phone, set: setPhone, type: "tel", placeholder: "+91 98765 43210" },
+                    ].map(({ label, value, set, type, placeholder }) => (
                       <div key={label}>
                         <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">{label}</label>
-                        <input type={type} value={value} onChange={e => set(e.target.value)}
+                        <input type={type} value={value} onChange={e => set(e.target.value)} placeholder={placeholder}
                           className="w-full border border-slate-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-blue-400 transition-colors bg-slate-50 focus:bg-white" />
                       </div>
                     ))}
@@ -362,10 +519,10 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
               </>
             )}
 
-            {/* ── STEP 2: SKU Selection ── */}
+            {/* ── STEP 2: Product & Quantity ── */}
             {stepNum === 2 && (
               <>
-                <StepHeader step={2} total={6} title="SKU Selection" />
+                <StepHeader step={2} total={TOTAL_STEPS} title="Product & Quantity" subtitle="Choose your packaging format and how many you need." />
 
                 {/* Category grid */}
                 <div className="bg-white rounded-lg border border-slate-200 p-5">
@@ -374,14 +531,10 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                     <div className="flex gap-2">
                       <button onClick={() => setEcoFilter(false)}
                         className="px-3 py-1 rounded-full text-xs font-bold transition-all"
-                        style={{ background: !ecoFilter ? "#0D1B2A" : "#F1F5F9", color: !ecoFilter ? "white" : "#64748B" }}>
-                        All
-                      </button>
+                        style={{ background: !ecoFilter ? "#0D1B2A" : "#F1F5F9", color: !ecoFilter ? "white" : "#64748B" }}>All</button>
                       <button onClick={() => setEcoFilter(true)}
                         className="px-3 py-1 rounded-full text-xs font-bold transition-all"
-                        style={{ background: ecoFilter ? "#16A34A" : "#F1F5F9", color: ecoFilter ? "white" : "#64748B" }}>
-                        Eco
-                      </button>
+                        style={{ background: ecoFilter ? "#16A34A" : "#F1F5F9", color: ecoFilter ? "white" : "#64748B" }}>🌿 Eco</button>
                     </div>
                   </div>
                   <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
@@ -389,15 +542,11 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                       <button key={cat.slug}
                         onClick={() => handleSelectCategory(cat.slug)}
                         className="flex flex-col items-center gap-1.5 p-3 rounded-lg border-2 transition-all"
-                        style={{
-                          borderColor: selectedCategory === cat.slug ? "#1B6CA8" : "#E2E8F0",
-                          background: selectedCategory === cat.slug ? "rgba(27,108,168,0.06)" : "white",
-                        }}
+                        style={{ borderColor: selectedCategory === cat.slug ? "#1B6CA8" : "#E2E8F0", background: selectedCategory === cat.slug ? "rgba(27,108,168,0.06)" : "white" }}
                       >
                         <MS icon={cat.icon} className={`text-2xl ${selectedCategory === cat.slug ? "" : "text-slate-400"}`}
                           style={{ color: selectedCategory === cat.slug ? "#1B6CA8" : undefined } as any} />
-                        <span className="text-xs font-bold text-center leading-tight"
-                          style={{ color: selectedCategory === cat.slug ? "#1B6CA8" : "#64748B" }}>
+                        <span className="text-xs font-bold text-center leading-tight" style={{ color: selectedCategory === cat.slug ? "#1B6CA8" : "#64748B" }}>
                           {cat.label}
                         </span>
                       </button>
@@ -408,10 +557,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                 {/* SKU cards */}
                 <div className="bg-white rounded-lg border border-slate-200 p-5">
                   <div className="font-bold text-slate-800 text-sm mb-4" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
-                    Select Template SKU
-                    <span className="ml-2 text-xs text-slate-400 font-normal">
-                      {CATEGORIES.find(c => c.slug === selectedCategory)?.label}
-                    </span>
+                    Select Template — <span className="font-normal text-slate-400">{CATEGORIES.find(c => c.slug === selectedCategory)?.label}</span>
                   </div>
                   {currentCatSkus.length === 0 ? (
                     <p className="text-sm text-slate-400 py-4 text-center">No eco-friendly SKUs in this category.</p>
@@ -420,10 +566,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                       {currentCatSkus.map(sku => (
                         <button key={sku.id} onClick={() => handleSelectSku(sku.id)}
                           className="flex items-start gap-3 p-4 rounded-lg border-2 text-left transition-all"
-                          style={{
-                            borderColor: selectedSkuId === sku.id ? "#1B6CA8" : "#E2E8F0",
-                            background: selectedSkuId === sku.id ? "rgba(27,108,168,0.04)" : "white"
-                          }}
+                          style={{ borderColor: selectedSkuId === sku.id ? "#1B6CA8" : "#E2E8F0", background: selectedSkuId === sku.id ? "rgba(27,108,168,0.04)" : "white" }}
                         >
                           <div className="w-14 h-14 rounded-lg bg-slate-100 shrink-0 overflow-hidden">
                             {SKU_IMAGES[sku.code] ? (
@@ -454,182 +597,101 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                   )}
                 </div>
 
-                {/* Variant selectors for selected SKU */}
+                {/* Variant selectors */}
                 {selectedSku && selectedSku.variants.length > 0 && (
                   <div className="bg-white rounded-lg border border-slate-200 p-5">
                     <div className="font-bold text-slate-800 text-sm mb-4" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
-                      Configure Variants — {selectedSku.name}
+                      Configure — {selectedSku.name}
                     </div>
                     <div className="space-y-4">
                       {selectedSku.variants.map(group => (
-                        <VariantSelector
-                          key={group.key}
-                          group={group}
+                        <VariantSelector key={group.key} group={group}
                           selected={variantSelections[group.key] || group.options[0]}
-                          onSelect={v => setVariantSelections(prev => ({ ...prev, [group.key]: v }))}
-                        />
+                          onSelect={v => setVariantSelections(prev => ({ ...prev, [group.key]: v }))} />
                       ))}
                     </div>
                   </div>
                 )}
 
-                {/* Config accordion */}
-                <div className="space-y-2">
-                  <div className="font-bold text-slate-800 text-sm mb-3" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>Configuration Details</div>
-
-                  <AccordionItem num="01" title="Quantity"
-                    subtitle={`${qty.toLocaleString()} ${selectedSku?.moq_unit || "units"}`}
-                    open={openAccordion === "qty"} onToggle={() => setOpenAccordion(openAccordion === "qty" ? null : "qty")}>
-                    <div className="space-y-3 mt-2">
-                      <div className="flex gap-2 flex-wrap">
-                        {[250, 500, 1000, 2500, 5000].map(q => (
-                          <button key={q} onClick={() => setQty(q)}
-                            className="px-4 py-2 rounded-lg border text-sm font-bold transition-all"
-                            style={{ borderColor: qty === q ? "#1B6CA8" : "#E2E8F0", background: qty === q ? "rgba(27,108,168,0.08)" : "white", color: qty === q ? "#1B6CA8" : "#64748B" }}>
-                            {q.toLocaleString()}
-                          </button>
-                        ))}
-                        <input type="number" value={qty} onChange={e => setQty(Math.max(50, parseInt(e.target.value) || 500))}
-                          className="w-28 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-400 bg-slate-50" placeholder="Custom" />
-                      </div>
-                      {selectedSku && <p className="text-xs text-slate-400">Min order qty: {selectedSku.moq.toLocaleString()} {selectedSku.moq_unit}</p>}
-                    </div>
-                  </AccordionItem>
-
-                  <AccordionItem num="02" title="Artwork & Branding" subtitle="Configure visual treatment"
-                    open={openAccordion === "artwork"} onToggle={() => setOpenAccordion(openAccordion === "artwork" ? null : "artwork")}>
-                    <div className="grid grid-cols-3 gap-3 mt-2">
-                      {([
-                        { id: "upload" as ArtworkOption, icon: <Upload className="w-6 h-6" />, label: "Upload Artwork", sub: "PDF, AI, SVG" },
-                        { id: "design" as ArtworkOption, icon: <Palette className="w-6 h-6" />, label: "Need Design", sub: "+₹1,999" },
-                        { id: "none" as ArtworkOption, icon: <X className="w-6 h-6" />, label: "No Artwork", sub: "Plain/unprinted" },
-                      ]).map(opt => (
-                        <button key={opt.id} onClick={() => setArtworkOption(opt.id)}
-                          className="flex flex-col items-center gap-2 p-4 rounded-lg border-2 transition-all"
-                          style={{ borderColor: artworkOption === opt.id ? "#1B6CA8" : "#E2E8F0", background: artworkOption === opt.id ? "rgba(27,108,168,0.06)" : "white", color: artworkOption === opt.id ? "#1B6CA8" : "#94A3B8" }}>
-                          {opt.icon}
-                          <div className="text-center">
-                            <div className="font-bold text-xs" style={{ color: artworkOption === opt.id ? "#1B6CA8" : "#374151" }}>{opt.label}</div>
-                            <div className="text-xs text-slate-400">{opt.sub}</div>
-                          </div>
+                {/* Quantity selector */}
+                <div className="bg-white rounded-lg border border-slate-200 p-5">
+                  <div className="font-bold text-slate-800 text-sm mb-4" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+                    Quantity
+                  </div>
+                  <div className="space-y-3">
+                    <div className="flex gap-2 flex-wrap">
+                      {[250, 500, 1000, 2500, 5000].map(q => (
+                        <button key={q} onClick={() => setQty(q)}
+                          className="px-4 py-2 rounded-lg border text-sm font-bold transition-all"
+                          style={{ borderColor: qty === q ? "#1B6CA8" : "#E2E8F0", background: qty === q ? "rgba(27,108,168,0.08)" : "white", color: qty === q ? "#1B6CA8" : "#64748B" }}>
+                          {q.toLocaleString()}
                         </button>
                       ))}
+                      <input type="number" value={qty} onChange={e => setQty(Math.max(50, parseInt(e.target.value) || 500))}
+                        className="w-28 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-400 bg-slate-50" placeholder="Custom" />
                     </div>
-                    {artworkOption === "upload" && (
-                      <div className="mt-4 border-2 border-dashed border-slate-200 rounded-lg p-6 text-center hover:border-blue-300 transition-colors cursor-pointer">
-                        <Upload className="w-8 h-8 text-slate-300 mx-auto mb-2" />
-                        <div className="text-sm font-bold text-slate-400">Drop files here or click to upload</div>
-                        <div className="text-xs text-slate-300 mt-1">PDF, AI, SVG — max 50MB</div>
-                      </div>
-                    )}
-                    {artworkOption === "design" && (
-                      <div className="mt-4 p-4 rounded-lg" style={{ background: "rgba(27,108,168,0.05)", border: "1px solid rgba(27,108,168,0.15)" }}>
-                        {designPaid ? (
-                          <div className="flex items-center gap-2 text-sm font-bold" style={{ color: "#16a34a" }}>
-                            <CheckCircle2 className="w-5 h-5" />
-                            Design fee paid — ₹1,999 ✓ Our team will contact you within 24 hrs.
-                          </div>
-                        ) : (
-                          <div>
-                            <p className="text-sm font-bold mb-1" style={{ color: "#1B6CA8" }}>Design Services — ₹1,999</p>
-                            <p className="text-xs text-slate-500 mb-3">Print-ready dieline + artwork in 5 business days. Fully adjusted against your production order.</p>
-                            <button
-                              disabled={designPaying}
-                              onClick={async () => {
-                                setDesignPaying(true);
-                                try {
-                                  await openRazorpay({ amount: 199900, description: "Packaging Design Service", notes: { service: "design" }, onSuccess: () => setDesignPaid(true), onDismiss: () => setDesignPaying(false) });
-                                } catch { setDesignPaying(false); }
-                              }}
-                              className="px-5 py-2 rounded text-sm font-bold transition-all hover:opacity-90 active:scale-95"
-                              style={{ background: "#1B6CA8", color: "white" }}>
-                              {designPaying ? "Opening payment…" : "Pay ₹1,999 to Book Design"}
-                            </button>
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </AccordionItem>
-
-                  <AccordionItem num="03" title="Delivery Pincode" subtitle={pincode || "Enter delivery location"}
-                    open={openAccordion === "delivery"} onToggle={() => setOpenAccordion(openAccordion === "delivery" ? null : "delivery")}>
-                    <div className="mt-2">
-                      <input type="text" value={pincode} onChange={e => setPincode(e.target.value)}
-                        className="w-full max-w-xs border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-400 bg-slate-50" placeholder="e.g. 400001" />
-                    </div>
-                  </AccordionItem>
-                </div>
-
-                {/* Delivery strategy */}
-                <div className="bg-white rounded-lg border border-slate-200 p-5">
-                  <div className="mb-4">
-                    <div className="font-bold text-slate-800 text-sm mb-1" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>Delivery Strategy</div>
-                    <div className="text-xs text-slate-400">All shipments are trackable via the Command Center.</div>
-                  </div>
-                  <div className="grid grid-cols-3 gap-3">
-                    {([
-                      { id: "standard" as DeliveryOption, icon: <Truck className="w-6 h-6" />, label: "Standard Pro", time: `${selectedSku?.delivery_days_india || 12}–${(selectedSku?.delivery_days_india || 12) + 2} Days`, price: "Free", recommended: true },
-                      { id: "blitz" as DeliveryOption, icon: <Zap className="w-6 h-6" />, label: "Blitz Logistics", time: "5–7 Days", price: "+₹240", recommended: false },
-                      { id: "warehouse" as DeliveryOption, icon: <Warehouse className="w-6 h-6" />, label: "Warehouse Hold", time: "Up to 30 days", price: "₹15/mo", recommended: false },
-                    ]).map(opt => (
-                      <button key={opt.id} onClick={() => setDeliveryOption(opt.id)}
-                        className="relative flex flex-col items-start gap-2 p-4 rounded-lg border-2 text-left transition-all"
-                        style={{ borderColor: deliveryOption === opt.id ? "#1B6CA8" : "#E2E8F0", background: deliveryOption === opt.id ? "rgba(27,108,168,0.04)" : "white" }}>
-                        {opt.recommended && <span className="absolute -top-2 left-3 px-2 py-0.5 rounded text-xs font-black" style={{ background: "#1B6CA8", color: "white" }}>RECOMMENDED</span>}
-                        <div style={{ color: deliveryOption === opt.id ? "#1B6CA8" : "#94A3B8" }}>{opt.icon}</div>
-                        <div>
-                          <div className="font-bold text-sm text-slate-800">{opt.label}</div>
-                          <div className="text-xs text-slate-400 mt-0.5">{opt.time}</div>
-                        </div>
-                        <div className="font-black text-sm mt-1" style={{ color: deliveryOption === opt.id ? "#1B6CA8" : "#374151", fontFamily: "'Manrope', sans-serif" }}>{opt.price}</div>
-                      </button>
-                    ))}
+                    {selectedSku && <p className="text-xs text-slate-400">Min order: {selectedSku.moq.toLocaleString()} {selectedSku.moq_unit}</p>}
                   </div>
                 </div>
               </>
             )}
 
-            {/* ── STEP 3: Artwork ── */}
+            {/* ── STEP 3: Design & Delivery (consolidated) ── */}
             {stepNum === 3 && (
               <>
-                <StepHeader step={3} total={6} title="Artwork" />
-                <div className="bg-white rounded-lg border border-slate-200 p-6 space-y-4">
-                  <div className="font-bold text-slate-700 mb-2">Artwork for <span style={{ color: "#1B6CA8" }}>{selectedSku?.name || "your product"}</span></div>
+                <StepHeader step={3} total={TOTAL_STEPS} title="Design & Delivery" subtitle="How should we print it, and how fast do you need it?" />
+
+                {/* Artwork section */}
+                <div className="bg-white rounded-lg border border-slate-200 p-6">
+                  <div className="font-bold text-slate-800 text-sm mb-1" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>Artwork / Branding</div>
+                  <div className="text-xs text-slate-400 mb-5">How will your packaging be printed?</div>
                   <div className="grid grid-cols-3 gap-4">
                     {([
-                      { id: "upload" as ArtworkOption, icon: <Upload className="w-8 h-8" />, label: "Upload Artwork", sub: "PDF, AI, SVG" },
-                      { id: "design" as ArtworkOption, icon: <Palette className="w-8 h-8" />, label: "Need Design", sub: "₹1,999 expert help" },
-                      { id: "none" as ArtworkOption, icon: <X className="w-8 h-8" />, label: "No Artwork", sub: "Plain / unprinted" },
+                      { id: "upload" as ArtworkOption, icon: <Upload className="w-8 h-8" />, label: "Upload My File", sub: "PDF, AI, SVG — ready to print", badge: null },
+                      { id: "design" as ArtworkOption, icon: <Palette className="w-8 h-8" />, label: "Design It For Me", sub: "Expert design + dieline", badge: "+₹1,999" },
+                      { id: "none" as ArtworkOption, icon: <X className="w-8 h-8" />, label: "Plain / Unprinted", sub: "No artwork needed", badge: null },
                     ]).map(opt => (
                       <button key={opt.id} onClick={() => setArtworkOption(opt.id)}
-                        className="flex flex-col items-center gap-3 p-5 rounded-lg border-2 transition-all"
+                        className="relative flex flex-col items-center gap-3 p-5 rounded-lg border-2 transition-all"
                         style={{ borderColor: artworkOption === opt.id ? "#1B6CA8" : "#E2E8F0", background: artworkOption === opt.id ? "rgba(27,108,168,0.06)" : "white", color: artworkOption === opt.id ? "#1B6CA8" : "#94A3B8" }}>
+                        {opt.badge && (
+                          <span className="absolute -top-2 -right-2 text-xs font-black px-2 py-0.5 rounded" style={{ background: "#E8A838", color: "#0D1B2A" }}>{opt.badge}</span>
+                        )}
                         {opt.icon}
                         <div className="text-center">
                           <div className="font-bold text-sm" style={{ color: artworkOption === opt.id ? "#1B6CA8" : "#374151" }}>{opt.label}</div>
-                          <div className="text-xs text-slate-400">{opt.sub}</div>
+                          <div className="text-xs text-slate-400 mt-0.5">{opt.sub}</div>
                         </div>
                       </button>
                     ))}
                   </div>
+
                   {artworkOption === "upload" && (
-                    <div className="border-2 border-dashed border-slate-200 rounded-lg p-8 text-center cursor-pointer hover:border-blue-300 transition-colors">
+                    <div className="mt-5 border-2 border-dashed border-slate-200 rounded-lg p-8 text-center cursor-pointer hover:border-blue-300 transition-colors">
                       <Upload className="w-10 h-10 text-slate-300 mx-auto mb-3" />
                       <div className="text-sm font-bold text-slate-400">Drop files here or click to upload</div>
                       <div className="text-xs text-slate-300 mt-1">PDF, AI, SVG — max 50MB per file</div>
                     </div>
                   )}
+
                   {artworkOption === "design" && (
-                    <div className="p-5 rounded-lg" style={{ background: "rgba(27,108,168,0.05)", border: "1px solid rgba(27,108,168,0.15)" }}>
+                    <div className="mt-5 p-5 rounded-lg" style={{ background: "rgba(27,108,168,0.05)", border: "1px solid rgba(27,108,168,0.15)" }}>
                       {designPaid ? (
-                        <div className="flex items-center gap-2 text-sm font-bold" style={{ color: "#16a34a" }}>
-                          <CheckCircle2 className="w-5 h-5" />
-                          Design fee paid — ₹1,999 ✓ Our team will contact you within 24 hrs.
+                        <div className="flex items-center gap-3">
+                          <CheckCircle2 className="w-6 h-6 shrink-0" style={{ color: "#16a34a" }} />
+                          <div>
+                            <div className="font-bold text-sm" style={{ color: "#16a34a" }}>Design fee paid — ₹1,999 ✓</div>
+                            <div className="text-xs text-slate-500 mt-0.5">Our design team will reach out within 24 hours.</div>
+                          </div>
                         </div>
                       ) : (
                         <div>
-                          <p className="text-sm font-bold mb-1" style={{ color: "#1B6CA8" }}>Design Services — ₹1,999</p>
-                          <p className="text-xs text-slate-500 mb-3">Print-ready dieline + artwork in 5 business days. Fully adjusted against your production order.</p>
+                          <div className="flex items-start justify-between mb-3">
+                            <div>
+                              <p className="text-sm font-bold" style={{ color: "#1B6CA8" }}>Design Service — ₹1,999</p>
+                              <p className="text-xs text-slate-500 mt-0.5">Print-ready dieline + artwork in 5 business days. Fee adjusted against production order.</p>
+                            </div>
+                          </div>
                           <button
                             disabled={designPaying}
                             onClick={async () => {
@@ -638,60 +700,55 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                                 await openRazorpay({ amount: 199900, description: "Packaging Design Service", notes: { service: "design" }, onSuccess: () => setDesignPaid(true), onDismiss: () => setDesignPaying(false) });
                               } catch { setDesignPaying(false); }
                             }}
-                            className="px-6 py-2.5 rounded-lg text-sm font-bold transition-all hover:opacity-90 active:scale-95"
+                            className="px-6 py-2.5 rounded text-sm font-bold transition-all hover:opacity-90 active:scale-95 flex items-center gap-2"
                             style={{ background: "#1B6CA8", color: "white" }}>
-                            {designPaying ? "Opening payment…" : "Pay ₹1,999 to Book Design"}
+                            {designPaying ? <><Loader2 className="w-4 h-4 animate-spin" /> Opening payment…</> : "Pay ₹1,999 to Book Design"}
                           </button>
                         </div>
                       )}
                     </div>
                   )}
                 </div>
-              </>
-            )}
 
-            {/* ── STEP 4: Delivery ── */}
-            {stepNum === 4 && (
-              <>
-                <StepHeader step={4} total={6} title="Delivery" />
-                <div className="bg-white rounded-lg border border-slate-200 p-6 space-y-6">
+                {/* Delivery section */}
+                <div className="bg-white rounded-lg border border-slate-200 p-5">
+                  <div className="font-bold text-slate-800 text-sm mb-1" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>Delivery</div>
+                  <div className="text-xs text-slate-400 mb-5">How fast do you need it?</div>
+                  <div className="grid grid-cols-3 gap-4 mb-5">
+                    {([
+                      { id: "standard" as DeliveryOption, icon: <Truck className="w-7 h-7" />, label: "Standard Pro", time: `${selectedSku?.delivery_days_india || 12}–${(selectedSku?.delivery_days_india || 12) + 2} Days`, price: "Free", recommended: true },
+                      { id: "blitz" as DeliveryOption, icon: <Zap className="w-7 h-7" />, label: "Blitz Logistics", time: "5–7 Days", price: "+₹240" },
+                      { id: "warehouse" as DeliveryOption, icon: <Warehouse className="w-7 h-7" />, label: "Warehouse Hold", time: "Up to 30 days", price: "₹15/mo" },
+                    ]).map(opt => (
+                      <button key={opt.id} onClick={() => setDeliveryOption(opt.id)}
+                        className="relative flex flex-col items-start gap-2 p-4 rounded-lg border-2 text-left transition-all"
+                        style={{ borderColor: deliveryOption === opt.id ? "#1B6CA8" : "#E2E8F0", background: deliveryOption === opt.id ? "rgba(27,108,168,0.04)" : "white" }}>
+                        {opt.recommended && <span className="absolute -top-2.5 left-3 px-2 py-0.5 rounded text-xs font-black" style={{ background: "#1B6CA8", color: "white" }}>RECOMMENDED</span>}
+                        <div style={{ color: deliveryOption === opt.id ? "#1B6CA8" : "#94A3B8" }}>{opt.icon}</div>
+                        <div>
+                          <div className="font-bold text-sm text-slate-800">{opt.label}</div>
+                          <div className="text-xs text-slate-400 mt-0.5">{opt.time}</div>
+                        </div>
+                        <div className="font-black text-sm" style={{ color: "#374151", fontFamily: "'Manrope', sans-serif" }}>{opt.price}</div>
+                      </button>
+                    ))}
+                  </div>
+
                   <div>
                     <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Delivery Pincode</label>
                     <input type="text" value={pincode} onChange={e => setPincode(e.target.value)}
                       className="w-full max-w-xs border border-slate-200 rounded-lg px-4 py-2.5 text-sm bg-slate-50 focus:outline-none focus:border-blue-400" placeholder="e.g. 400001" />
                   </div>
-                  <div>
-                    <div className="text-sm font-bold text-slate-700 mb-3">Shipping Strategy</div>
-                    <div className="grid grid-cols-3 gap-4">
-                      {([
-                        { id: "standard" as DeliveryOption, icon: <Truck className="w-7 h-7" />, label: "Standard Pro", time: `${selectedSku?.delivery_days_india || 12}–${(selectedSku?.delivery_days_india || 12) + 2} Days`, price: "Free", recommended: true },
-                        { id: "blitz" as DeliveryOption, icon: <Zap className="w-7 h-7" />, label: "Blitz Logistics", time: "5–7 Days", price: "+₹240" },
-                        { id: "warehouse" as DeliveryOption, icon: <Warehouse className="w-7 h-7" />, label: "Warehouse Hold", time: "Up to 30 days", price: "₹15/mo" },
-                      ]).map(opt => (
-                        <button key={opt.id} onClick={() => setDeliveryOption(opt.id)}
-                          className="relative flex flex-col items-start gap-2 p-4 rounded-lg border-2 transition-all"
-                          style={{ borderColor: deliveryOption === opt.id ? "#1B6CA8" : "#E2E8F0", background: deliveryOption === opt.id ? "rgba(27,108,168,0.04)" : "white" }}>
-                          {opt.recommended && <span className="absolute -top-2.5 left-3 px-2 py-0.5 rounded text-xs font-black" style={{ background: "#1B6CA8", color: "white" }}>RECOMMENDED</span>}
-                          <div style={{ color: deliveryOption === opt.id ? "#1B6CA8" : "#94A3B8" }}>{opt.icon}</div>
-                          <div>
-                            <div className="font-bold text-sm text-slate-800">{opt.label}</div>
-                            <div className="text-xs text-slate-400">{opt.time}</div>
-                          </div>
-                          <div className="font-black text-sm" style={{ color: "#374151", fontFamily: "'Manrope', sans-serif" }}>{opt.price}</div>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
                 </div>
               </>
             )}
 
-            {/* ── STEP 5: Sample ── */}
-            {stepNum === 5 && (
+            {/* ── STEP 4: Sample ── */}
+            {stepNum === 4 && (
               <>
-                <StepHeader step={5} total={6} title="Sample Request" />
+                <StepHeader step={4} total={TOTAL_STEPS} title="Sample Request" subtitle="Get a physical sample before bulk production." />
                 <div className="bg-white rounded-lg border border-slate-200 p-6">
-                  <p className="text-sm text-slate-500 mb-6">Get a physical sample before bulk production. Sampling fee fully adjusted against your production order.</p>
+                  <p className="text-sm text-slate-500 mb-6">Sampling fee is fully adjusted against your production order. No extra charge.</p>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {/* Card A: Express */}
                     <div
@@ -707,23 +764,27 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                       <p className="font-black text-lg mb-3" style={{ color: "#E8A838" }}>₹4,999</p>
                       <ul className="space-y-1 mb-4">
                         {["3–5 samples", "Priority manufacturing", "5-day delivery", "Full print + structure test"].map(f => (
-                          <li key={f} className="text-xs text-slate-500 flex items-center gap-1.5">
-                            <span style={{ color: "#E8A838" }}>✓</span> {f}
-                          </li>
+                          <li key={f} className="text-xs text-slate-500 flex items-center gap-1.5"><span style={{ color: "#E8A838" }}>✓</span> {f}</li>
                         ))}
                       </ul>
                       {sampleOption === "express" && (
-                        <button
-                          onClick={async (e) => {
-                            e.stopPropagation();
-                            try {
-                              await openRazorpay({ amount: 499900, description: "Express Sample Kit", notes: { service: "sample_express" }, onSuccess: () => {} });
-                            } catch {}
-                          }}
-                          className="w-full py-2.5 rounded-lg text-sm font-bold transition-all hover:brightness-110"
-                          style={{ background: "#E8A838", color: "#0D1B2A" }}>
-                          Pay ₹4,999 — Book Express Slot
-                        </button>
+                        samplePaid ? (
+                          <div className="flex items-center gap-2 text-xs font-bold" style={{ color: "#16a34a" }}>
+                            <CheckCircle2 className="w-4 h-4" /> Express slot confirmed ✓
+                          </div>
+                        ) : (
+                          <button
+                            onClick={async (e) => {
+                              e.stopPropagation();
+                              try {
+                                await openRazorpay({ amount: 499900, description: "Express Sample Kit", notes: { service: "sample_express" }, onSuccess: () => setSamplePaid(true), onDismiss: () => {} });
+                              } catch {}
+                            }}
+                            className="w-full py-2.5 rounded-lg text-sm font-bold transition-all hover:brightness-110"
+                            style={{ background: "#E8A838", color: "#0D1B2A" }}>
+                            Pay ₹4,999 — Book Express Slot
+                          </button>
+                        )
                       )}
                     </div>
 
@@ -741,15 +802,13 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                       <p className="font-black text-lg mb-3" style={{ color: "#1B6CA8" }}>₹2,999</p>
                       <ul className="space-y-1 mb-4">
                         {["1–2 samples", "Standard manufacturing", "10-day delivery", "Basic spec verification"].map(f => (
-                          <li key={f} className="text-xs text-slate-500 flex items-center gap-1.5">
-                            <span style={{ color: "#1B6CA8" }}>✓</span> {f}
-                          </li>
+                          <li key={f} className="text-xs text-slate-500 flex items-center gap-1.5"><span style={{ color: "#1B6CA8" }}>✓</span> {f}</li>
                         ))}
                       </ul>
-                      <p className="text-xs text-slate-400">Pay on delivery. Sample fee adjusted against production order.</p>
+                      <p className="text-xs text-slate-400">Fee adjusted against production order.</p>
                     </div>
 
-                    {/* Card C: No Sample */}
+                    {/* Card C: Skip */}
                     <div
                       className="p-5 rounded-xl border-2 cursor-pointer transition-all"
                       style={{ borderColor: sampleOption === "none" ? "#94A3B8" : "#E2E8F0", background: sampleOption === "none" ? "rgba(148,163,184,0.06)" : "white" }}
@@ -761,23 +820,23 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                       </div>
                       <p className="font-black text-slate-800 mb-1">Skip for Now</p>
                       <p className="font-black text-lg mb-3 text-slate-400">Free</p>
-                      <p className="text-xs text-slate-500">Proceed directly to bulk production. You can request a sample later from your dashboard.</p>
+                      <p className="text-xs text-slate-500">Go straight to bulk production. You can request a sample later from your dashboard.</p>
                     </div>
                   </div>
                 </div>
               </>
             )}
 
-            {/* ── STEP 6: Review ── */}
-            {stepNum === 6 && (
+            {/* ── STEP 5: Review ── */}
+            {stepNum === 5 && (
               <>
-                <StepHeader step={6} total={6} title="Review & Submit" />
+                <StepHeader step={5} total={TOTAL_STEPS} title="Review & Submit" subtitle="Double-check everything before we get started." />
                 <div className="bg-white rounded-lg border border-slate-200 p-6 space-y-5">
                   <div>
                     <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Additional Notes / Special Requirements</label>
                     <textarea value={notes} onChange={e => setNotes(e.target.value)}
                       className="w-full border border-slate-200 rounded-lg px-4 py-3 text-sm bg-slate-50 focus:outline-none focus:border-blue-400 h-28 resize-none"
-                      placeholder="Any special requirements, certifications, sustainability preferences..." />
+                      placeholder="Any special certifications, sustainability preferences, or customisations…" />
                   </div>
                   <div className="rounded-lg p-5 border" style={{ background: "#0F1C2C", borderColor: "rgba(255,255,255,0.08)" }}>
                     <div className="text-xs font-bold uppercase tracking-wider mb-4" style={{ color: "#1B6CA8" }}>Configuration Summary</div>
@@ -786,6 +845,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                         ["Company", company || "—"],
                         ["Contact", contactName || "—"],
                         ["Email", email || "—"],
+                        ["Phone", phone || "—"],
                         ["Category", CATEGORIES.find(c => c.slug === selectedCategory)?.label || selectedCategory],
                         ["SKU", selectedSku?.name || "—"],
                         ["SKU Code", selectedSku?.code || "—"],
@@ -794,17 +854,32 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                           const group = selectedSku?.variants.find(g => g.key === k);
                           return [group?.label || k, v];
                         }),
-                        ["Artwork", artworkOption === "upload" ? "Upload Ready" : artworkOption === "design" ? "Design Service (+₹1,999)" : "No Artwork"],
+                        ["Artwork", artworkOption === "upload" ? "Upload ready-to-print file" : artworkOption === "design" ? `Design Service — ₹1,999 ${designPaid ? "✓ Paid" : "(pending payment)"}` : "Plain / unprinted"],
                         ["Delivery", deliveryOption === "standard" ? "Standard Pro (Free)" : deliveryOption === "blitz" ? "Blitz Logistics (+₹240)" : "Warehouse Hold (₹15/mo)"],
-                        ["Sample", sampleOption === "express" ? "Express Kit — ₹4,999" : sampleOption === "standard" ? "Standard — ₹2,999" : "Skipped"],
+                        ["Pincode", pincode || "—"],
+                        ["Sample", sampleOption === "express" ? `Express Kit — ₹4,999 ${samplePaid ? "✓ Paid" : "(pending payment)"}` : sampleOption === "standard" ? "Standard — ₹2,999" : "Skipped"],
                       ].map(([k, v]) => (
                         <div key={String(k)} className="flex justify-between text-sm">
                           <span className="text-slate-400">{k}</span>
-                          <span className="font-bold text-white text-right max-w-[60%]">{v}</span>
+                          <span className="font-bold text-white text-right max-w-[60%] leading-snug">{v}</span>
                         </div>
                       ))}
                     </div>
                   </div>
+
+                  {/* Pending payment notices */}
+                  {(artworkOption === "design" && !designPaid) && (
+                    <div className="p-4 rounded-lg text-sm" style={{ background: "rgba(232,168,56,0.08)", border: "1px solid rgba(232,168,56,0.3)" }}>
+                      <span className="font-bold" style={{ color: "#92600A" }}>Design payment pending —</span>
+                      <span className="text-slate-500"> you can pay now or we'll follow up before starting design.</span>
+                    </div>
+                  )}
+                  {(sampleOption === "express" && !samplePaid) && (
+                    <div className="p-4 rounded-lg text-sm" style={{ background: "rgba(232,168,56,0.08)", border: "1px solid rgba(232,168,56,0.3)" }}>
+                      <span className="font-bold" style={{ color: "#92600A" }}>Express sample payment pending —</span>
+                      <span className="text-slate-500"> your slot will be held for 48 hrs after submission.</span>
+                    </div>
+                  )}
                 </div>
               </>
             )}

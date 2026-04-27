@@ -1041,118 +1041,7 @@ export default function Home() {
       </section>
 
       {/* ══════════════════════════════════════════════════════════ */}
-      {/*  SECTION 11 — CASE STUDIES                                */}
-      {/* ══════════════════════════════════════════════════════════ */}
-      <section style={{ background: "#FFFFFF", padding: "100px 0" }}>
-        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 40px" }}>
-          <span style={{ color: "#1B6CA8", fontSize: 11, fontWeight: 600, letterSpacing: "2px", textTransform: "uppercase", display: "block", marginBottom: 14 }}>
-            CLIENT RESULTS
-          </span>
-          <h2 style={{ color: "#0D1B2A", fontSize: "clamp(2rem,4vw,3.25rem)", fontWeight: 700, lineHeight: 1.1, marginBottom: 0 }}>
-            Brands that switched.<br />Numbers that speak.
-          </h2>
-
-          <div style={{ display: "grid", gridTemplateColumns: "300px 1fr", gap: 28, maxWidth: 1100, margin: "56px auto 0", alignItems: "stretch" }}>
-            {/* Left: selector cards */}
-            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-              {CASE_STUDIES.map((cs, i) => {
-                const isActive = activeCase === i;
-                return (
-                  <div
-                    key={i}
-                    onClick={() => { setActiveCase(i); startCaseRotation(); }}
-                    style={{
-                      background: isActive ? "#FFFBF0" : "white",
-                      border: `1px solid ${isActive ? "#E8A838" : "#E2EAF4"}`,
-                      padding: "22px 24px",
-                      cursor: "pointer",
-                      position: "relative",
-                      overflow: "hidden",
-                      transition: "all 0.3s ease",
-                      boxShadow: isActive ? "0 4px 20px rgba(232,168,56,0.15)" : "none",
-                    }}
-                  >
-                    {/* Left accent bar */}
-                    {isActive && (
-                      <div style={{
-                        position: "absolute", left: 0, top: 0, bottom: 0,
-                        width: 3, background: "#E8A838",
-                      }} />
-                    )}
-
-                    {/* Auto-rotation progress bar */}
-                    {isActive && (
-                      <div style={{
-                        position: "absolute", bottom: 0, left: 0,
-                        height: 2, background: "#E8A838",
-                        animation: "progress-fill 4s linear forwards",
-                      }} />
-                    )}
-
-                    {/* Avatar — sharp square */}
-                    <div style={{
-                      width: 38, height: 38,
-                      background: "#0D1B2A", color: "white",
-                      fontSize: 13, fontWeight: 700,
-                      display: "flex", alignItems: "center", justifyContent: "center",
-                      marginBottom: 12,
-                    }}>
-                      {cs.initials}
-                    </div>
-
-                    <p style={{ color: "#0D1B2A", fontSize: 15, fontWeight: 700, marginBottom: 3 }}>{cs.company}</p>
-                    <p style={{ color: "#64748B", fontSize: 12 }}>{cs.industry}</p>
-
-                    {/* Metric tag — sharp */}
-                    <div style={{
-                      display: "inline-block", marginTop: 10,
-                      background: "rgba(232,168,56,0.1)",
-                      border: "1px solid rgba(232,168,56,0.3)",
-                      padding: "4px 12px",
-                    }}>
-                      <span style={{ color: "#92600A", fontSize: 12, fontWeight: 600 }}>{cs.metric}</span>
-                    </div>
-                  </div>
-                );
-              })}
-
-              {/* 4th slot: CTA — stretches to match right card height */}
-              <div style={{
-                background: "#0D1B2A",
-                border: "1px solid rgba(232,168,56,0.2)",
-                padding: "22px 24px",
-                display: "flex", flexDirection: "column", justifyContent: "center",
-                flex: 1,
-              }}>
-                <p style={{ color: "#E8A838", fontSize: 10, fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", marginBottom: 12 }}>
-                  YOUR BRAND
-                </p>
-                <p style={{ color: "white", fontSize: 15, fontWeight: 700, marginBottom: 8, lineHeight: 1.3 }}>
-                  Could your story be next?
-                </p>
-                <p style={{ color: "rgba(255,255,255,0.45)", fontSize: 12, lineHeight: 1.55, marginBottom: 18 }}>
-                  Join 220+ brands that simplified their packaging with PackOps.
-                </p>
-                <Link href="/quote">
-                  <button style={{
-                    background: "#E8A838", color: "#0D1B2A",
-                    padding: "10px 20px", fontSize: 13, fontWeight: 700,
-                    border: "none", cursor: "pointer",
-                  }}>
-                    Get a quote →
-                  </button>
-                </Link>
-              </div>
-            </div>
-
-            {/* Right: detail card */}
-            <CaseDetail cs={CASE_STUDIES[activeCase]} />
-          </div>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════════════════════ */}
-      {/*  SECTION 12 — SAVINGS CALCULATOR                          */}
+      {/*  SECTION 11 — SAVINGS CALCULATOR (moved here)             */}
       {/* ══════════════════════════════════════════════════════════ */}
       <section style={{ background: "#F8F9FC", padding: "100px 0" }}>
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 40px" }}>
@@ -1397,6 +1286,117 @@ export default function Home() {
             </div>
           </div>
 
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════════════════ */}
+      {/*  SECTION 12 — CASE STUDIES                                */}
+      {/* ══════════════════════════════════════════════════════════ */}
+      <section style={{ background: "#FFFFFF", padding: "100px 0" }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 40px" }}>
+          <span style={{ color: "#1B6CA8", fontSize: 11, fontWeight: 600, letterSpacing: "2px", textTransform: "uppercase", display: "block", marginBottom: 14 }}>
+            CLIENT RESULTS
+          </span>
+          <h2 style={{ color: "#0D1B2A", fontSize: "clamp(2rem,4vw,3.25rem)", fontWeight: 700, lineHeight: 1.1, marginBottom: 0 }}>
+            Brands that switched.<br />Numbers that speak.
+          </h2>
+
+          <div style={{ display: "grid", gridTemplateColumns: "300px 1fr", gap: 28, maxWidth: 1100, margin: "56px auto 0", alignItems: "stretch" }}>
+            {/* Left: selector cards */}
+            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+              {CASE_STUDIES.map((cs, i) => {
+                const isActive = activeCase === i;
+                return (
+                  <div
+                    key={i}
+                    onClick={() => { setActiveCase(i); startCaseRotation(); }}
+                    style={{
+                      background: isActive ? "#FFFBF0" : "white",
+                      border: `1px solid ${isActive ? "#E8A838" : "#E2EAF4"}`,
+                      padding: "22px 24px",
+                      cursor: "pointer",
+                      position: "relative",
+                      overflow: "hidden",
+                      transition: "all 0.3s ease",
+                      boxShadow: isActive ? "0 4px 20px rgba(232,168,56,0.15)" : "none",
+                    }}
+                  >
+                    {/* Left accent bar */}
+                    {isActive && (
+                      <div style={{
+                        position: "absolute", left: 0, top: 0, bottom: 0,
+                        width: 3, background: "#E8A838",
+                      }} />
+                    )}
+
+                    {/* Auto-rotation progress bar */}
+                    {isActive && (
+                      <div style={{
+                        position: "absolute", bottom: 0, left: 0,
+                        height: 2, background: "#E8A838",
+                        animation: "progress-fill 4s linear forwards",
+                      }} />
+                    )}
+
+                    {/* Avatar — sharp square */}
+                    <div style={{
+                      width: 38, height: 38,
+                      background: "#0D1B2A", color: "white",
+                      fontSize: 13, fontWeight: 700,
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      marginBottom: 12,
+                    }}>
+                      {cs.initials}
+                    </div>
+
+                    <p style={{ color: "#0D1B2A", fontSize: 15, fontWeight: 700, marginBottom: 3 }}>{cs.company}</p>
+                    <p style={{ color: "#64748B", fontSize: 12 }}>{cs.industry}</p>
+
+                    {/* Metric tag — sharp */}
+                    <div style={{
+                      display: "inline-block", marginTop: 10,
+                      background: "rgba(232,168,56,0.1)",
+                      border: "1px solid rgba(232,168,56,0.3)",
+                      padding: "4px 12px",
+                    }}>
+                      <span style={{ color: "#92600A", fontSize: 12, fontWeight: 600 }}>{cs.metric}</span>
+                    </div>
+                  </div>
+                );
+              })}
+
+              {/* 4th slot: CTA — stretches to match right card height */}
+              <div style={{
+                background: "#0D1B2A",
+                border: "1px solid rgba(232,168,56,0.2)",
+                padding: "22px 24px",
+                display: "flex", flexDirection: "column", justifyContent: "center",
+                flex: 1,
+              }}>
+                <p style={{ color: "#E8A838", fontSize: 10, fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", marginBottom: 12 }}>
+                  YOUR BRAND
+                </p>
+                <p style={{ color: "white", fontSize: 15, fontWeight: 700, marginBottom: 8, lineHeight: 1.3 }}>
+                  Could your story be next?
+                </p>
+                <p style={{ color: "rgba(255,255,255,0.45)", fontSize: 12, lineHeight: 1.55, marginBottom: 18 }}>
+                  Join 220+ brands that simplified their packaging with PackOps.
+                </p>
+                <Link href="/quote">
+                  <button style={{
+                    background: "#E8A838", color: "#0D1B2A",
+                    padding: "10px 20px", fontSize: 13, fontWeight: 700,
+                    border: "none", cursor: "pointer",
+                  }}>
+                    Get a quote →
+                  </button>
+                </Link>
+              </div>
+            </div>
+
+            {/* Right: detail card */}
+            <CaseDetail cs={CASE_STUDIES[activeCase]} />
+          </div>
         </div>
       </section>
 
