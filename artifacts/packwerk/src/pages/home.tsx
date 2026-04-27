@@ -642,78 +642,6 @@ export default function Home() {
       </section>
 
       {/* ══════════════════════════════════════════════════════════ */}
-      {/*  SECTION 5 — COMPARISON TABLE                             */}
-      {/* ══════════════════════════════════════════════════════════ */}
-      <section style={{ background: "#F8F9FC", padding: "100px 0" }}>
-        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 40px" }}>
-          <span style={{ color: "#1B6CA8", fontSize: 11, fontWeight: 600, letterSpacing: "2px", textTransform: "uppercase", display: "block", marginBottom: 14 }}>
-            THE HONEST COMPARISON
-          </span>
-          <h2 style={{ color: "#0D1B2A", fontSize: "clamp(2rem,4vw,3.25rem)", fontWeight: 700, lineHeight: 1.1, marginBottom: 16 }}>
-            Why brands switch<br />to PackOps.
-          </h2>
-          <p style={{ color: "#64748B", fontSize: 18, maxWidth: 520, marginBottom: 48, lineHeight: 1.6 }}>
-            This question comes up every time. Here is the honest answer.
-          </p>
-
-          <div style={{ maxWidth: 820, margin: "0 auto", borderRadius: 0, overflow: "hidden", boxShadow: "0 4px 32px rgba(13,27,42,0.08)" }}>
-            {/* Header row */}
-            <div style={{ display: "grid", gridTemplateColumns: "2fr 1.5fr 1.5fr", borderBottom: "1px solid #E2EAF4" }}>
-              <div style={{ background: "#F8F9FC", padding: "20px 28px" }} />
-              <div style={{ background: "#0D1B2A", padding: "20px 28px", textAlign: "center", borderBottom: "2px solid #E8A838" }}>
-                <p style={{ color: "white", fontSize: 16, fontWeight: 700 }}>PackOps</p>
-                <p style={{ color: "#1B6CA8", fontSize: 11, textTransform: "uppercase", letterSpacing: "1.5px", marginTop: 4 }}>Managed Platform</p>
-              </div>
-              <div style={{ background: "#E8ECF2", padding: "20px 28px", textAlign: "center" }}>
-                <p style={{ color: "#475569", fontSize: 16, fontWeight: 700 }}>Direct Vendor</p>
-                <p style={{ color: "#94A3B8", fontSize: 11, textTransform: "uppercase", letterSpacing: "1.5px", marginTop: 4 }}>Traditional Approach</p>
-              </div>
-            </div>
-
-            {/* Data rows */}
-            {[
-              { label: "Backup coverage",    good: "3 backup vendors per order",           bad: "One vendor. Their delay is your delay." },
-              { label: "QC ownership",       good: "We inspect every dispatch",             bad: "Vendor checks their own work" },
-              { label: "True cost of credit",good: "Transparent pricing + 3% upfront discount", bad: "Credit = 10–15% higher per unit" },
-              { label: "SKU range",          good: "110+ SKUs. One invoice.",               bad: "One category. Source the rest yourself." },
-              { label: "Compliance docs",    good: "ISO, BRC, FDA, FSC. Export-ready.",     bad: "Varies. Risk is yours." },
-              { label: "Packaging design",   good: "₹1,999. Files yours forever.",          bad: "Mostly unavailable." },
-              { label: "Order tracking",     good: "Real-time dashboard.",                  bad: "WhatsApp messages." },
-              { label: "Problem resolution", good: "48-hour resolution guarantee.",         bad: "Call them. Hope they answer." },
-            ].map((row, i) => (
-              <div
-                key={i}
-                style={{
-                  display: "grid", gridTemplateColumns: "2fr 1.5fr 1.5fr",
-                  borderBottom: "1px solid #E2EAF4",
-                  background: i % 2 === 0 ? "white" : "#FAFBFC",
-                }}
-              >
-                <div style={{ padding: "14px 28px", color: "#0D1B2A", fontSize: 14, fontWeight: 600, display: "flex", alignItems: "center" }}>
-                  {row.label}
-                </div>
-                <div style={{ padding: "14px 28px", textAlign: "center", background: "rgba(13,27,42,0.015)" }}>
-                  <p style={{ color: "#22C55E", fontSize: 18, fontWeight: 700, lineHeight: 1 }}>✓</p>
-                  <p style={{ color: "#64748B", fontSize: 12, lineHeight: 1.4, maxWidth: 150, margin: "4px auto 0" }}>{row.good}</p>
-                </div>
-                <div style={{ padding: "14px 28px", textAlign: "center" }}>
-                  <p style={{ color: "#EF4444", fontSize: 18, fontWeight: 700, lineHeight: 1 }}>✗</p>
-                  <p style={{ color: "#94A3B8", fontSize: 12, lineHeight: 1.4, maxWidth: 150, margin: "4px auto 0" }}>{row.bad}</p>
-                </div>
-              </div>
-            ))}
-
-            {/* Footer row */}
-            <div style={{ gridColumn: "1 / -1", background: "#E8A838", padding: "18px 28px", textAlign: "center" }}>
-              <p style={{ color: "#0D1B2A", fontSize: 15, fontWeight: 700 }}>
-                Even with their credit — we are still the better financial choice.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════════════════════ */}
       {/*  SECTION 6 — HOW IT WORKS (dark animated timeline)        */}
       {/* ══════════════════════════════════════════════════════════ */}
       <section style={{ background: "#0A1628", padding: "100px 0" }}>
@@ -1041,7 +969,192 @@ export default function Home() {
       </section>
 
       {/* ══════════════════════════════════════════════════════════ */}
-      {/*  SECTION 11 — SAVINGS CALCULATOR (moved here)             */}
+      {/*  SECTION 5 — COMPARISON TABLE                             */}
+      {/* ══════════════════════════════════════════════════════════ */}
+      <section style={{ background: "#F8F9FC", padding: "100px 0" }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 40px" }}>
+          <span style={{ color: "#1B6CA8", fontSize: 11, fontWeight: 600, letterSpacing: "2px", textTransform: "uppercase", display: "block", marginBottom: 14 }}>
+            THE HONEST COMPARISON
+          </span>
+          <h2 style={{ color: "#0D1B2A", fontSize: "clamp(2rem,4vw,3.25rem)", fontWeight: 700, lineHeight: 1.1, marginBottom: 16 }}>
+            Why brands switch<br />to PackOps.
+          </h2>
+          <p style={{ color: "#64748B", fontSize: 18, maxWidth: 520, marginBottom: 48, lineHeight: 1.6 }}>
+            This question comes up every time. Here is the honest answer.
+          </p>
+
+          <div style={{ maxWidth: 820, margin: "0 auto", borderRadius: 0, overflow: "hidden", boxShadow: "0 4px 32px rgba(13,27,42,0.08)" }}>
+            {/* Header row */}
+            <div style={{ display: "grid", gridTemplateColumns: "2fr 1.5fr 1.5fr", borderBottom: "1px solid #E2EAF4" }}>
+              <div style={{ background: "#F8F9FC", padding: "20px 28px" }} />
+              <div style={{ background: "#0D1B2A", padding: "20px 28px", textAlign: "center", borderBottom: "2px solid #E8A838" }}>
+                <p style={{ color: "white", fontSize: 16, fontWeight: 700 }}>PackOps</p>
+                <p style={{ color: "#1B6CA8", fontSize: 11, textTransform: "uppercase", letterSpacing: "1.5px", marginTop: 4 }}>Managed Platform</p>
+              </div>
+              <div style={{ background: "#E8ECF2", padding: "20px 28px", textAlign: "center" }}>
+                <p style={{ color: "#475569", fontSize: 16, fontWeight: 700 }}>Direct Vendor</p>
+                <p style={{ color: "#94A3B8", fontSize: 11, textTransform: "uppercase", letterSpacing: "1.5px", marginTop: 4 }}>Traditional Approach</p>
+              </div>
+            </div>
+
+            {/* Data rows */}
+            {[
+              { label: "Backup coverage",    good: "3 backup vendors per order",           bad: "One vendor. Their delay is your delay." },
+              { label: "QC ownership",       good: "We inspect every dispatch",             bad: "Vendor checks their own work" },
+              { label: "True cost of credit",good: "Transparent pricing + 3% upfront discount", bad: "Credit = 10–15% higher per unit" },
+              { label: "SKU range",          good: "110+ SKUs. One invoice.",               bad: "One category. Source the rest yourself." },
+              { label: "Compliance docs",    good: "ISO, BRC, FDA, FSC. Export-ready.",     bad: "Varies. Risk is yours." },
+              { label: "Packaging design",   good: "₹1,999. Files yours forever.",          bad: "Mostly unavailable." },
+              { label: "Order tracking",     good: "Real-time dashboard.",                  bad: "WhatsApp messages." },
+              { label: "Problem resolution", good: "48-hour resolution guarantee.",         bad: "Call them. Hope they answer." },
+            ].map((row, i) => (
+              <div
+                key={i}
+                style={{
+                  display: "grid", gridTemplateColumns: "2fr 1.5fr 1.5fr",
+                  borderBottom: "1px solid #E2EAF4",
+                  background: i % 2 === 0 ? "white" : "#FAFBFC",
+                }}
+              >
+                <div style={{ padding: "14px 28px", color: "#0D1B2A", fontSize: 14, fontWeight: 600, display: "flex", alignItems: "center" }}>
+                  {row.label}
+                </div>
+                <div style={{ padding: "14px 28px", textAlign: "center", background: "rgba(13,27,42,0.015)" }}>
+                  <p style={{ color: "#22C55E", fontSize: 18, fontWeight: 700, lineHeight: 1 }}>✓</p>
+                  <p style={{ color: "#64748B", fontSize: 12, lineHeight: 1.4, maxWidth: 150, margin: "4px auto 0" }}>{row.good}</p>
+                </div>
+                <div style={{ padding: "14px 28px", textAlign: "center" }}>
+                  <p style={{ color: "#EF4444", fontSize: 18, fontWeight: 700, lineHeight: 1 }}>✗</p>
+                  <p style={{ color: "#94A3B8", fontSize: 12, lineHeight: 1.4, maxWidth: 150, margin: "4px auto 0" }}>{row.bad}</p>
+                </div>
+              </div>
+            ))}
+
+            {/* Footer row */}
+            <div style={{ gridColumn: "1 / -1", background: "#E8A838", padding: "18px 28px", textAlign: "center" }}>
+              <p style={{ color: "#0D1B2A", fontSize: 15, fontWeight: 700 }}>
+                Even with their credit — we are still the better financial choice.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+      {/* ══════════════════════════════════════════════════════════ */}
+      {/*  SECTION 12 — CASE STUDIES                                */}
+      {/* ══════════════════════════════════════════════════════════ */}
+      <section style={{ background: "#FFFFFF", padding: "100px 0" }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 40px" }}>
+          <span style={{ color: "#1B6CA8", fontSize: 11, fontWeight: 600, letterSpacing: "2px", textTransform: "uppercase", display: "block", marginBottom: 14 }}>
+            CLIENT RESULTS
+          </span>
+          <h2 style={{ color: "#0D1B2A", fontSize: "clamp(2rem,4vw,3.25rem)", fontWeight: 700, lineHeight: 1.1, marginBottom: 0 }}>
+            Brands that switched.<br />Numbers that speak.
+          </h2>
+
+          <div style={{ display: "grid", gridTemplateColumns: "300px 1fr", gap: 28, maxWidth: 1100, margin: "56px auto 0", alignItems: "stretch" }}>
+            {/* Left: selector cards */}
+            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+              {CASE_STUDIES.map((cs, i) => {
+                const isActive = activeCase === i;
+                return (
+                  <div
+                    key={i}
+                    onClick={() => { setActiveCase(i); startCaseRotation(); }}
+                    style={{
+                      background: isActive ? "#FFFBF0" : "white",
+                      border: `1px solid ${isActive ? "#E8A838" : "#E2EAF4"}`,
+                      padding: "22px 24px",
+                      cursor: "pointer",
+                      position: "relative",
+                      overflow: "hidden",
+                      transition: "all 0.3s ease",
+                      boxShadow: isActive ? "0 4px 20px rgba(232,168,56,0.15)" : "none",
+                    }}
+                  >
+                    {/* Left accent bar */}
+                    {isActive && (
+                      <div style={{
+                        position: "absolute", left: 0, top: 0, bottom: 0,
+                        width: 3, background: "#E8A838",
+                      }} />
+                    )}
+
+                    {/* Auto-rotation progress bar */}
+                    {isActive && (
+                      <div style={{
+                        position: "absolute", bottom: 0, left: 0,
+                        height: 2, background: "#E8A838",
+                        animation: "progress-fill 4s linear forwards",
+                      }} />
+                    )}
+
+                    {/* Avatar — sharp square */}
+                    <div style={{
+                      width: 38, height: 38,
+                      background: "#0D1B2A", color: "white",
+                      fontSize: 13, fontWeight: 700,
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      marginBottom: 12,
+                    }}>
+                      {cs.initials}
+                    </div>
+
+                    <p style={{ color: "#0D1B2A", fontSize: 15, fontWeight: 700, marginBottom: 3 }}>{cs.company}</p>
+                    <p style={{ color: "#64748B", fontSize: 12 }}>{cs.industry}</p>
+
+                    {/* Metric tag — sharp */}
+                    <div style={{
+                      display: "inline-block", marginTop: 10,
+                      background: "rgba(232,168,56,0.1)",
+                      border: "1px solid rgba(232,168,56,0.3)",
+                      padding: "4px 12px",
+                    }}>
+                      <span style={{ color: "#92600A", fontSize: 12, fontWeight: 600 }}>{cs.metric}</span>
+                    </div>
+                  </div>
+                );
+              })}
+
+              {/* 4th slot: CTA — stretches to match right card height */}
+              <div style={{
+                background: "#0D1B2A",
+                border: "1px solid rgba(232,168,56,0.2)",
+                padding: "22px 24px",
+                display: "flex", flexDirection: "column", justifyContent: "center",
+                flex: 1,
+              }}>
+                <p style={{ color: "#E8A838", fontSize: 10, fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", marginBottom: 12 }}>
+                  YOUR BRAND
+                </p>
+                <p style={{ color: "white", fontSize: 15, fontWeight: 700, marginBottom: 8, lineHeight: 1.3 }}>
+                  Could your story be next?
+                </p>
+                <p style={{ color: "rgba(255,255,255,0.45)", fontSize: 12, lineHeight: 1.55, marginBottom: 18 }}>
+                  Join 220+ brands that simplified their packaging with PackOps.
+                </p>
+                <Link href="/quote">
+                  <button style={{
+                    background: "#E8A838", color: "#0D1B2A",
+                    padding: "10px 20px", fontSize: 13, fontWeight: 700,
+                    border: "none", cursor: "pointer",
+                  }}>
+                    Get a quote →
+                  </button>
+                </Link>
+              </div>
+            </div>
+
+            {/* Right: detail card */}
+            <CaseDetail cs={CASE_STUDIES[activeCase]} />
+          </div>
+        </div>
+      </section>
+
+
+      {/* ══════════════════════════════════════════════════════════ */}
+      {/*  SECTION 11 — SAVINGS CALCULATOR                          */}
       {/* ══════════════════════════════════════════════════════════ */}
       <section style={{ background: "#F8F9FC", padding: "100px 0" }}>
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 40px" }}>
@@ -1289,116 +1402,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ══════════════════════════════════════════════════════════ */}
-      {/*  SECTION 12 — CASE STUDIES                                */}
-      {/* ══════════════════════════════════════════════════════════ */}
-      <section style={{ background: "#FFFFFF", padding: "100px 0" }}>
-        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 40px" }}>
-          <span style={{ color: "#1B6CA8", fontSize: 11, fontWeight: 600, letterSpacing: "2px", textTransform: "uppercase", display: "block", marginBottom: 14 }}>
-            CLIENT RESULTS
-          </span>
-          <h2 style={{ color: "#0D1B2A", fontSize: "clamp(2rem,4vw,3.25rem)", fontWeight: 700, lineHeight: 1.1, marginBottom: 0 }}>
-            Brands that switched.<br />Numbers that speak.
-          </h2>
-
-          <div style={{ display: "grid", gridTemplateColumns: "300px 1fr", gap: 28, maxWidth: 1100, margin: "56px auto 0", alignItems: "stretch" }}>
-            {/* Left: selector cards */}
-            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-              {CASE_STUDIES.map((cs, i) => {
-                const isActive = activeCase === i;
-                return (
-                  <div
-                    key={i}
-                    onClick={() => { setActiveCase(i); startCaseRotation(); }}
-                    style={{
-                      background: isActive ? "#FFFBF0" : "white",
-                      border: `1px solid ${isActive ? "#E8A838" : "#E2EAF4"}`,
-                      padding: "22px 24px",
-                      cursor: "pointer",
-                      position: "relative",
-                      overflow: "hidden",
-                      transition: "all 0.3s ease",
-                      boxShadow: isActive ? "0 4px 20px rgba(232,168,56,0.15)" : "none",
-                    }}
-                  >
-                    {/* Left accent bar */}
-                    {isActive && (
-                      <div style={{
-                        position: "absolute", left: 0, top: 0, bottom: 0,
-                        width: 3, background: "#E8A838",
-                      }} />
-                    )}
-
-                    {/* Auto-rotation progress bar */}
-                    {isActive && (
-                      <div style={{
-                        position: "absolute", bottom: 0, left: 0,
-                        height: 2, background: "#E8A838",
-                        animation: "progress-fill 4s linear forwards",
-                      }} />
-                    )}
-
-                    {/* Avatar — sharp square */}
-                    <div style={{
-                      width: 38, height: 38,
-                      background: "#0D1B2A", color: "white",
-                      fontSize: 13, fontWeight: 700,
-                      display: "flex", alignItems: "center", justifyContent: "center",
-                      marginBottom: 12,
-                    }}>
-                      {cs.initials}
-                    </div>
-
-                    <p style={{ color: "#0D1B2A", fontSize: 15, fontWeight: 700, marginBottom: 3 }}>{cs.company}</p>
-                    <p style={{ color: "#64748B", fontSize: 12 }}>{cs.industry}</p>
-
-                    {/* Metric tag — sharp */}
-                    <div style={{
-                      display: "inline-block", marginTop: 10,
-                      background: "rgba(232,168,56,0.1)",
-                      border: "1px solid rgba(232,168,56,0.3)",
-                      padding: "4px 12px",
-                    }}>
-                      <span style={{ color: "#92600A", fontSize: 12, fontWeight: 600 }}>{cs.metric}</span>
-                    </div>
-                  </div>
-                );
-              })}
-
-              {/* 4th slot: CTA — stretches to match right card height */}
-              <div style={{
-                background: "#0D1B2A",
-                border: "1px solid rgba(232,168,56,0.2)",
-                padding: "22px 24px",
-                display: "flex", flexDirection: "column", justifyContent: "center",
-                flex: 1,
-              }}>
-                <p style={{ color: "#E8A838", fontSize: 10, fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", marginBottom: 12 }}>
-                  YOUR BRAND
-                </p>
-                <p style={{ color: "white", fontSize: 15, fontWeight: 700, marginBottom: 8, lineHeight: 1.3 }}>
-                  Could your story be next?
-                </p>
-                <p style={{ color: "rgba(255,255,255,0.45)", fontSize: 12, lineHeight: 1.55, marginBottom: 18 }}>
-                  Join 220+ brands that simplified their packaging with PackOps.
-                </p>
-                <Link href="/quote">
-                  <button style={{
-                    background: "#E8A838", color: "#0D1B2A",
-                    padding: "10px 20px", fontSize: 13, fontWeight: 700,
-                    border: "none", cursor: "pointer",
-                  }}>
-                    Get a quote →
-                  </button>
-                </Link>
-              </div>
-            </div>
-
-            {/* Right: detail card */}
-            <CaseDetail cs={CASE_STUDIES[activeCase]} />
-          </div>
-        </div>
-      </section>
 
       {/* ══════════════════════════════════════════════════════════ */}
       {/*  SECTION 13 — FINAL CTA                                   */}
