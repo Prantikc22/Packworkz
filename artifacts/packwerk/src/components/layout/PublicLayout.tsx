@@ -99,7 +99,7 @@ const GLOBAL_STYLES = `
     overflow: hidden;
     display: inline-block;
     padding: 8px 20px;
-    border-radius: 8px;
+    border-radius: 0;
     font-size: 13px;
     font-weight: 800;
     letter-spacing: 0.05em;

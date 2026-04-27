@@ -336,54 +336,16 @@ export default function HowItWorks() {
 
           <div style={{ display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap" }}>
             <Link href="/quote">
-              <button
-                style={{
-                  background: "#E8A838", color: "#0D1B2A",
-                  padding: "16px 40px", borderRadius: 10,
-                  fontSize: 16, fontWeight: 700,
-                  border: "none", cursor: "pointer",
-                  boxShadow: "0 8px 32px rgba(232,168,56,0.35)",
-                  transition: "all 0.2s",
-                }}
-                onMouseEnter={e => {
-                  const el = e.currentTarget as HTMLElement;
-                  el.style.transform = "translateY(-2px)";
-                  el.style.boxShadow = "0 12px 40px rgba(232,168,56,0.45)";
-                }}
-                onMouseLeave={e => {
-                  const el = e.currentTarget as HTMLElement;
-                  el.style.transform = "translateY(0)";
-                  el.style.boxShadow = "0 8px 32px rgba(232,168,56,0.35)";
-                }}
-              >
-                Get a quote →
+              <button className="btn-fill btn-amber px-10 py-4 text-base">
+                <span>Get a quote →</span>
               </button>
             </Link>
             <a
               href={`https://wa.me/${WHATSAPP_NUM}?text=Hi%20PackOps%2C%20I%27d%20like%20to%20discuss%20packaging.`}
               target="_blank" rel="noopener noreferrer"
             >
-              <button
-                style={{
-                  background: "transparent", color: "white",
-                  padding: "16px 40px", borderRadius: 10,
-                  fontSize: 16, fontWeight: 600,
-                  border: "1.5px solid rgba(255,255,255,0.3)",
-                  cursor: "pointer",
-                  transition: "all 0.2s",
-                }}
-                onMouseEnter={e => {
-                  const el = e.currentTarget as HTMLElement;
-                  el.style.borderColor = "rgba(255,255,255,0.8)";
-                  el.style.background = "rgba(255,255,255,0.05)";
-                }}
-                onMouseLeave={e => {
-                  const el = e.currentTarget as HTMLElement;
-                  el.style.borderColor = "rgba(255,255,255,0.3)";
-                  el.style.background = "transparent";
-                }}
-              >
-                WhatsApp us
+              <button className="btn-fill btn-outline-white px-10 py-4 text-base">
+                <span>WhatsApp us</span>
               </button>
             </a>
           </div>

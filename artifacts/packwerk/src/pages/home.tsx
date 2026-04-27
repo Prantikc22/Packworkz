@@ -422,13 +422,13 @@ export default function Home() {
               </p>
               <div className="flex flex-col sm:flex-row gap-5">
                 <Link href="/products">
-                  <button className="px-10 py-5 font-bold text-lg flex items-center justify-center gap-2 hover:opacity-90 transition-all active:scale-95 whitespace-nowrap" style={{ background: "#E8A838", color: "#0F1C2C" }}>
-                    Browse 110+ SKUs <MS icon="arrow_forward" />
+                  <button className="btn-fill btn-amber px-10 py-5 text-lg whitespace-nowrap">
+                    <span>Browse 110+ SKUs</span><MS icon="arrow_forward" />
                   </button>
                 </Link>
                 <Link href="/samples">
-                  <button className="border-2 border-white/60 text-white px-10 py-5 font-bold text-lg hover:bg-white/10 transition-all active:scale-95">
-                    Get a sample from ₹2,999
+                  <button className="btn-fill btn-outline-white px-10 py-5 text-lg">
+                    <span>Get a sample from ₹2,999</span>
                   </button>
                 </Link>
               </div>
@@ -865,8 +865,8 @@ export default function Home() {
               ))}
             </ul>
             <Link href="/quote">
-              <button className="text-white w-fit px-8 py-4 font-bold hover:opacity-90 transition-all" style={{ background: "#1B6CA8" }}>
-                See SmartStock in Action
+              <button className="btn-fill btn-blue w-fit px-8 py-4">
+                <span>See SmartStock in Action</span>
               </button>
             </Link>
           </div>
@@ -926,16 +926,8 @@ export default function Home() {
               12 certified sustainable SKUs. All customisable with your brand design. Food-safe, leak-proof, and built for Indian brands that take sustainability seriously. Full EPR compliance documentation included with every order.
             </p>
             <Link href="/products?category=sustainable">
-              <button
-                style={{
-                  background: "#E8A838", color: "#0D1B2A",
-                  padding: "13px 28px", borderRadius: 8, fontSize: 15, fontWeight: 700,
-                  border: "none", cursor: "pointer",
-                }}
-                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.filter = "brightness(1.08)"; }}
-                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.filter = "brightness(1)"; }}
-              >
-                See all sustainable SKUs →
+              <button className="btn-fill btn-amber px-7 py-3 text-sm">
+                <span>See all sustainable SKUs →</span>
               </button>
             </Link>
           </div>
@@ -1370,20 +1362,9 @@ export default function Home() {
                 </div>
 
                 {/* CTA button */}
-                <Link href="/quote">
-                  <button
-                    style={{
-                      marginTop: 28, width: "100%",
-                      background: "#E8A838", color: "#0D1B2A",
-                      padding: "15px", borderRadius: 10,
-                      fontSize: 15, fontWeight: 700,
-                      border: "none", cursor: "pointer",
-                      transition: "filter 0.2s",
-                    }}
-                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.filter = "brightness(1.08)"; }}
-                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.filter = "brightness(1)"; }}
-                  >
-                    Get a quote — see real prices →
+                <Link href="/quote" style={{ display: "block", marginTop: 28 }}>
+                  <button className="btn-fill btn-amber w-full py-4 text-sm">
+                    <span>Get a quote — see real prices →</span>
                   </button>
                 </Link>
 
@@ -1465,28 +1446,8 @@ export default function Home() {
           {/* CTAs */}
           <div style={{ display: "flex", gap: 16, justifyContent: "center", alignItems: "center", flexWrap: "wrap" }}>
             <Link href="/products">
-              <button
-                style={{
-                  background: "#E8A838", color: "#0D1B2A",
-                  padding: "18px 44px", borderRadius: 10,
-                  fontSize: 16, fontWeight: 700,
-                  border: "none", cursor: "pointer",
-                  whiteSpace: "nowrap",
-                  boxShadow: "0 8px 32px rgba(232,168,56,0.35)",
-                  transition: "all 0.2s",
-                }}
-                onMouseEnter={e => {
-                  const el = e.currentTarget as HTMLElement;
-                  el.style.transform = "translateY(-2px)";
-                  el.style.boxShadow = "0 12px 40px rgba(232,168,56,0.45)";
-                }}
-                onMouseLeave={e => {
-                  const el = e.currentTarget as HTMLElement;
-                  el.style.transform = "translateY(0)";
-                  el.style.boxShadow = "0 8px 32px rgba(232,168,56,0.35)";
-                }}
-              >
-                Browse 110+ SKUs →
+              <button className="btn-fill btn-amber px-11 py-5 text-base">
+                <span>Browse 110+ SKUs →</span>
               </button>
             </Link>
 
@@ -1494,27 +1455,8 @@ export default function Home() {
               href={`https://wa.me/${WHATSAPP_NUM}?text=Hi%20PackOps%2C%20I%27d%20like%20to%20discuss%20packaging.`}
               target="_blank" rel="noopener noreferrer"
             >
-              <button
-                style={{
-                  background: "transparent", color: "white",
-                  padding: "18px 44px", borderRadius: 10,
-                  fontSize: 16, fontWeight: 600,
-                  border: "1.5px solid rgba(255,255,255,0.3)",
-                  cursor: "pointer", whiteSpace: "nowrap",
-                  transition: "all 0.2s",
-                }}
-                onMouseEnter={e => {
-                  const el = e.currentTarget as HTMLElement;
-                  el.style.borderColor = "rgba(255,255,255,0.8)";
-                  el.style.background = "rgba(255,255,255,0.05)";
-                }}
-                onMouseLeave={e => {
-                  const el = e.currentTarget as HTMLElement;
-                  el.style.borderColor = "rgba(255,255,255,0.3)";
-                  el.style.background = "transparent";
-                }}
-              >
-                WhatsApp Us
+              <button className="btn-fill btn-outline-white px-11 py-5 text-base">
+                <span>WhatsApp Us</span>
               </button>
             </a>
           </div>

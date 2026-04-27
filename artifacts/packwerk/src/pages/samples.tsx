@@ -87,9 +87,9 @@ export default function Samples() {
           </p>
           <div className="mt-10">
             <Link href="/products">
-              <button className="flex items-center gap-3 px-8 py-4 rounded font-bold uppercase tracking-wide text-sm hover:opacity-90 active:scale-95 transition-all" style={{ background: "#E8A838", color: "#0F1C2C" }}>
-                BROWSE PRODUCTS TO SAMPLE
-                <span className="material-symbols-outlined text-lg">arrow_forward</span>
+              <button className="btn-fill btn-amber px-8 py-4 uppercase tracking-wide text-sm">
+                <span>BROWSE PRODUCTS TO SAMPLE</span>
+                <span className="material-symbols-outlined text-lg" style={{ position: "relative", zIndex: 1 }}>arrow_forward</span>
               </button>
             </Link>
           </div>
@@ -211,8 +211,9 @@ export default function Samples() {
       <section className="py-20 px-8 text-center" style={{ background: "#020617" }}>
         <h2 className="clash-display text-white text-4xl mb-6">Ready to touch your brand?</h2>
         <Link href="/products">
-          <button className="flex items-center gap-3 px-10 py-5 rounded font-bold uppercase tracking-wide text-base hover:opacity-90 active:scale-95 transition-all mx-auto" style={{ background: "#E8A838", color: "#0F1C2C" }}>
-            BROWSE PRODUCTS TO SAMPLE <span className="material-symbols-outlined">arrow_forward</span>
+          <button className="btn-fill btn-amber px-10 py-5 uppercase tracking-wide text-base mx-auto">
+            <span>BROWSE PRODUCTS TO SAMPLE</span>
+            <span className="material-symbols-outlined" style={{ position: "relative", zIndex: 1 }}>arrow_forward</span>
           </button>
         </Link>
       </section>

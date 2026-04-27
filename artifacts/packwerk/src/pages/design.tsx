@@ -67,7 +67,7 @@ export default function Design() {
           <p className="text-lg mb-3" style={{ color: "#44474c" }}>Your Design ID: <strong style={{ color: "#0D1B2A" }}>{designId}</strong></p>
           <p className="mb-8" style={{ color: "#74777d" }}>Our packaging designers will share the first concept within {isRush ? "24" : "72"} hours.</p>
           <Link href="/dashboard/designs">
-            <button className="px-8 py-4 rounded font-bold text-white hover:opacity-90" style={{ background: "#0D1B2A" }}>View in Dashboard</button>
+            <button className="btn-fill btn-navy px-8 py-4"><span>View in Dashboard</span></button>
           </Link>
         </div>
       </div>

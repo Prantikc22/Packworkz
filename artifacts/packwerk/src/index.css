@@ -549,3 +549,60 @@
 .ms-filled {
   font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
 }
+
+/* ── Global fill-in button system ───────────────────────────────────── */
+.btn-fill {
+  position: relative;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 700;
+  border-radius: 0 !important;
+  transition: color 0.25s ease;
+}
+.btn-fill::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-101%);
+  transition: transform 0.3s ease;
+  z-index: 0;
+}
+.btn-fill > * { position: relative; z-index: 1; }
+.btn-fill:hover::before { transform: translateX(0); }
+
+/* Amber → Navy */
+.btn-amber { background: #E8A838; color: #0D1B2A; }
+.btn-amber::before { background: #0D1B2A; }
+.btn-amber:hover { color: #ffffff; }
+
+/* Navy → Amber */
+.btn-navy { background: #0D1B2A; color: #ffffff; }
+.btn-navy::before { background: #E8A838; }
+.btn-navy:hover { color: #0D1B2A; }
+
+/* Blue → Navy */
+.btn-blue { background: #1B6CA8; color: #ffffff; }
+.btn-blue::before { background: #0D1B2A; }
+
+/* Outline white (for dark backgrounds) → subtle white overlay */
+.btn-outline-white {
+  background: transparent;
+  color: #ffffff;
+  border: 1.5px solid rgba(255,255,255,0.5) !important;
+}
+.btn-outline-white::before { background: rgba(255,255,255,0.12); }
+
+/* Outline dark (for light backgrounds) → fills dark */
+.btn-outline-dark {
+  background: transparent;
+  color: #0D1B2A;
+  border: 1.5px solid #0D1B2A !important;
+}
+.btn-outline-dark::before { background: #0D1B2A; }
+.btn-outline-dark:hover { color: #ffffff; }
