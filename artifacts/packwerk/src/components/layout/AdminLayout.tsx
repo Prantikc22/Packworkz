@@ -1,6 +1,6 @@
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
-import { LayoutDashboard, Package, PaintBucket, FileText, LogOut, Menu } from "lucide-react";
+import { LayoutDashboard, Package, PaintBucket, FileText, LogOut, Menu, Users } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 const NAV_ITEMS = [
@@ -8,6 +8,7 @@ const NAV_ITEMS = [
   { href: "/admin/orders", label: "Orders", icon: Package },
   { href: "/admin/designs", label: "Designs", icon: PaintBucket },
   { href: "/admin/samples", label: "Samples", icon: FileText },
+  { href: "/admin/users", label: "Clients", icon: Users },
 ];
 
 export function AdminLayout({ children }: { children: React.ReactNode }) {

@@ -234,6 +234,106 @@ router.get("/admin/samples", async (_req, res): Promise<void> => {
   res.json(samples);
 });
 
+router.get("/admin/users", async (_req, res): Promise<void> => {
+  try {
+    const users = await db
+      .select({
+        id: usersTable.id,
+        email: usersTable.email,
+        company_name: usersTable.company_name,
+        contact_name: usersTable.contact_name,
+        phone: usersTable.phone,
+        gstin: usersTable.gstin,
+        country: usersTable.country,
+        orders_completed: usersTable.orders_completed,
+        credit_eligible: usersTable.credit_eligible,
+        credit_limit: usersTable.credit_limit,
+        created_at: usersTable.created_at,
+      })
+      .from(usersTable)
+      .orderBy(sql`${usersTable.created_at} DESC`);
+
+    res.json(users.map(u => ({ ...u, credit_limit: Number(u.credit_limit ?? 0) })));
+  } catch (err: any) {
+    console.error("[admin/users] error:", err?.message);
+    res.status(500).json({ error: "Failed to load users" });
+  }
+});
+
+router.post("/admin/users", async (req, res): Promise<void> => {
+  const { email, company_name, contact_name, phone, password, gstin, country } = req.body;
+
+  if (!email || !company_name || !password) {
+    res.status(400).json({ error: "email, company_name and password are required" });
+    return;
+  }
+
+  const [existing] = await db
+    .select({ id: usersTable.id })
+    .from(usersTable)
+    .where(eq(usersTable.email, email.toLowerCase().trim()))
+    .limit(1);
+
+  if (existing) {
+    res.status(409).json({ error: "A user with this email already exists" });
+    return;
+  }
+
+  const [newUser] = await db
+    .insert(usersTable)
+    .values({
+      email: email.toLowerCase().trim(),
+      company_name,
+      contact_name: contact_name ?? "",
+      phone: phone ?? "",
+      gstin: gstin ?? "",
+      country: country ?? "India",
+      password_hash: hashPassword(password),
+      orders_completed: 0,
+      credit_eligible: false,
+      credit_limit: "0",
+    })
+    .returning({
+      id: usersTable.id,
+      email: usersTable.email,
+      company_name: usersTable.company_name,
+      contact_name: usersTable.contact_name,
+      created_at: usersTable.created_at,
+    });
+
+  res.status(201).json({ success: true, user: newUser });
+});
+
+router.put("/admin/users/:id/password", async (req, res): Promise<void> => {
+  const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
+  const { password } = req.body;
+
+  if (!password) {
+    res.status(400).json({ error: "password is required" });
+    return;
+  }
+
+  const [updated] = await db
+    .update(usersTable)
+    .set({ password_hash: hashPassword(password) })
+    .where(eq(usersTable.id, id))
+    .returning({ id: usersTable.id, email: usersTable.email });
+
+  if (!updated) {
+    res.status(404).json({ error: "User not found" });
+    return;
+  }
+
+  res.json({ success: true, user: updated });
+});
+
+router.delete("/admin/users/:id", async (req, res): Promise<void> => {
+  const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
+
+  await db.delete(usersTable).where(eq(usersTable.id, id));
+  res.json({ success: true });
+});
+
 router.post("/admin/samples/:id/dispatch", async (req, res): Promise<void> => {
   const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
 

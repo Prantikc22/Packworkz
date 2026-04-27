@@ -80,7 +80,7 @@ See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and pa
 
 **Public**: `/`, `/products`, `/products/:slug`, `/quote` (6-step wizard), `/design`, `/samples`, `/login`, `/industries`, `/industries/:slug`, `/sustainable`
 **Dashboard**: `/dashboard`, `/dashboard/orders`, `/dashboard/designs`, `/dashboard/payments`, `/dashboard/profile`
-**Admin**: `/admin/quotes`, `/admin/orders`, `/admin/designs`, `/admin/samples`
+**Admin**: `/admin/quotes`, `/admin/orders`, `/admin/designs`, `/admin/samples`, `/admin/users` (Clients)
 
 ### Design System (Functional Brutalism)
 
@@ -103,7 +103,9 @@ See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and pa
 - Global WhatsApp float button (bottom-right, #25D366) in PublicLayout.tsx
 - Customer dashboard "COMMAND CENTER" with deployments table and system health
 - Savings calculator on home page (unit savings + overhead + credit + stockout formulas)
-- Admin panel for managing quotes, orders, designs, samples
+- Admin panel for managing quotes, orders, designs, samples, and clients (Create/Reset PW/Delete)
+- DB connection: `lib/db/src/index.ts` uses `DATABASE_URL` (local Postgres) first, falls back to `SUPABASE_DATABASE_URL`; Supabase hostname is not reachable from Replit dev container
+- Admin credentials: `x-admin-key: PackOps-Admin@2024!` (env var `ADMIN_KEY`); stored in `localStorage.packwerk_admin_key` on login
 - Net-30 credit system (unlocks after 3 completed orders)
 - CSS animations: pulse-glow, slideIn, flow-dot (for orbital/PackOS sections), marquee-track (client logos)
 - INR formatting throughout; WhatsApp placeholder number: 919999999999 (update when ready)
