@@ -1,0 +1,167 @@
+Build the quote confirmation screen 
+at /quote/confirmed/[quote_id]
+with exactly this design and content.
+
+Full page. Not a modal.
+Background: #0D1B2A (deep navy)
+with subtle animated particles 
+(small white dots, very low opacity, 
+drifting slowly upward — 
+use a simple canvas or 
+CSS keyframe approach)
+
+Centre content:
+max-width: 600px
+margin: 0 auto
+padding: 80px 40px
+text-align: center
+
+TOP — Success animation:
+A large circle (120px diameter)
+border: 2px solid #E8A838
+border-radius: 50%
+margin: 0 auto 32px
+
+Inside the circle:
+Animated checkmark drawn with SVG:
+<svg viewBox="0 0 52 52">
+  <circle cx="26" cy="26" r="25" 
+    fill="none" stroke="#E8A838" 
+    stroke-width="2"/>
+  <path fill="none" 
+    stroke="#E8A838" stroke-width="3"
+    stroke-linecap="round"
+    d="M14 27 L22 35 L38 19"/>
+</svg>
+The checkmark path animates on load:
+stroke-dasharray: 60
+stroke-dashoffset: 60 → 0
+transition: 0.6s ease 0.3s
+
+Eyebrow below circle:
+"YOUR QUOTE IS CONFIRMED"
+color: #E8A838, 11px, 
+600, uppercase, tracked
+
+Headline:
+"We're on it."
+color: white, 52px, 700
+margin: 12px 0 8px
+
+Quote ID (monospace):
+color: #E8A838
+font-family: JetBrains Mono, monospace
+font-size: 22px, 600
+letter-spacing: 2px
+margin-bottom: 16px
+"PKG-2026-[XXXXX]"
+
+Subtext:
+"Our team is reviewing your specs. 
+You'll receive a detailed quote 
+within 48 hours on WhatsApp and email."
+color: rgba(255,255,255,0.6)
+font-size: 17px
+line-height: 1.7
+max-width: 420px
+margin: 0 auto 48px
+
+WHAT HAPPENS NEXT — 3 steps:
+display: flex
+gap: 24px
+margin-bottom: 52px
+
+Each step:
+background: rgba(255,255,255,0.06)
+border: 1px solid rgba(255,255,255,0.1)
+border-radius: 14px
+padding: 24px 20px
+flex: 1
+text-align: left
+
+Step number:
+color: #E8A838, 11px, 
+700, uppercase, tracked
+margin-bottom: 8px
+
+Step title:
+white, 15px, 700
+margin-bottom: 6px
+
+Step body:
+rgba(255,255,255,0.55), 13px, 
+line-height 1.6
+
+Step 1:
+Number: "STEP 01"
+Title: "We review your specs"
+Body: "Our team manually reviews 
+every quote and sources 
+competing prices from 
+our factory network."
+
+Step 2:
+Number: "STEP 02"
+Title: "You receive your quote"
+Body: "Itemised pricing, 
+timeline, and payment terms 
+sent to your email and WhatsApp 
+within 48 hours."
+
+Step 3:
+Number: "STEP 03"
+Title: "You approve, we produce"
+Body: "Accept your quote 
+and your dashboard is activated. 
+Track every stage from 
+production to delivery."
+
+TWO BUTTONS:
+display: flex, gap: 16px, 
+justify-content: center
+
+Primary (amber):
+"WhatsApp us for faster response"
+Opens WhatsApp with pre-filled:
+"Hi, my quote ID is PKG-2026-XXXXX. 
+Can you share an update?"
+
+Secondary (outlined white):
+"Browse more products"
+href: /products
+
+If design was paid in this session:
+Show a card below the buttons:
+background: rgba(27,108,168,0.15)
+border: 1px solid rgba(27,108,168,0.3)
+border-radius: 12px
+padding: 20px 24px
+text-align: left
+display: flex
+align-items: center
+gap: 16px
+
+Left: Info circle icon, 
+#1B6CA8, 24px
+
+Right:
+Title: "Complete your design brief"
+white, 14px, 700
+Body: "Your designer needs 
+a few details to get started. 
+Takes 3 minutes."
+rgba(255,255,255,0.6), 13px
+
+CTA link: 
+"Complete brief →"
+color: #1B6CA8, 13px, 600
+href: /design/brief/[design_id]
+
+If sample was paid:
+Show similar card:
+Title: "Sample request confirmed"
+Body: "Your sample 
+(SAM-YYYY-XXXXX) 
+will be dispatched in 5-7 days. 
+We'll send tracking details 
+to your email."

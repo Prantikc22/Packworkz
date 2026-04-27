@@ -8,7 +8,6 @@ import { openRazorpay } from "@/lib/razorpay";
 import {
   Loader2, CheckCircle2, ChevronDown, ChevronUp,
   Upload, Palette, X, Truck, Zap, Warehouse, ArrowRight, Shield, Package,
-  Package2, Mail, Clock, Star
 } from "lucide-react";
 
 // ── Types ──────────────────────────────────────────────────────────────────
@@ -175,6 +174,47 @@ function VariantSelector({ group, selected, onSelect }: {
   );
 }
 
+// ── Particle canvas ────────────────────────────────────────────────────────
+function Particles() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d")!;
+    let raf: number;
+
+    const resize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
+    resize();
+    window.addEventListener("resize", resize);
+
+    const DOTS = Array.from({ length: 70 }, () => ({
+      x: Math.random() * window.innerWidth,
+      y: Math.random() * window.innerHeight,
+      r: Math.random() * 1.8 + 0.4,
+      speed: Math.random() * 0.35 + 0.15,
+      opacity: Math.random() * 0.18 + 0.04,
+    }));
+
+    const draw = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      DOTS.forEach(d => {
+        ctx.beginPath();
+        ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255,255,255,${d.opacity})`;
+        ctx.fill();
+        d.y -= d.speed;
+        if (d.y < -4) { d.y = canvas.height + 4; d.x = Math.random() * canvas.width; }
+      });
+      raf = requestAnimationFrame(draw);
+    };
+    draw();
+    return () => { cancelAnimationFrame(raf); window.removeEventListener("resize", resize); };
+  }, []);
+  return (
+    <canvas ref={canvasRef} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", pointerEvents: "none" }} />
+  );
+}
+
 // ── Animated Confirmation Screen ───────────────────────────────────────────
 function ConfirmationScreen({ quoteId, email, designPaid, sampleOption, samplePaid }: {
   quoteId: string;
@@ -184,173 +224,248 @@ function ConfirmationScreen({ quoteId, email, designPaid, sampleOption, samplePa
   samplePaid: boolean;
 }) {
   const [show, setShow] = useState(false);
-  const [showItems, setShowItems] = useState(false);
+  const [showSteps, setShowSteps] = useState(false);
+  const [checkDone, setCheckDone] = useState(false);
 
   useEffect(() => {
-    const t1 = setTimeout(() => setShow(true), 100);
-    const t2 = setTimeout(() => setShowItems(true), 800);
-    return () => { clearTimeout(t1); clearTimeout(t2); };
+    const t1 = setTimeout(() => setShow(true), 80);
+    const t2 = setTimeout(() => setCheckDone(true), 500);
+    const t3 = setTimeout(() => setShowSteps(true), 900);
+    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
   }, []);
 
-  const needsAction = (sampleOption === "express" && !samplePaid);
-  const designNeedsPayment = false; // design is paid inline before reaching here
+  const samplePaidFinal = sampleOption === "express" && samplePaid;
+  const waMsg = encodeURIComponent(`Hi, my quote ID is ${quoteId}. Can you share an update?`);
 
-  const items = [
-    { icon: <Package2 className="w-5 h-5" />, label: "Quote received", sub: "Our engineers are reviewing your spec", color: "#22c55e" },
-    { icon: <Mail className="w-5 h-5" />, label: "Confirmation email sent", sub: email ? `Sent to ${email}` : "Check your inbox", color: "#1B6CA8" },
-    { icon: <Clock className="w-5 h-5" />, label: "Quote in 24–48 hours", sub: "Market-best pricing, guaranteed", color: "#E8A838" },
-    ...(needsAction ? [{ icon: <Star className="w-5 h-5" />, label: "Action needed: Sample payment", sub: "Your express sample slot is held for 48 hrs", color: "#E8A838" }] : []),
+  const STEPS = [
+    {
+      num: "STEP 01",
+      title: "We review your specs",
+      body: "Our team manually reviews every quote and sources competing prices from our factory network.",
+    },
+    {
+      num: "STEP 02",
+      title: "You receive your quote",
+      body: "Itemised pricing, timeline, and payment terms sent to your email and WhatsApp within 48 hours.",
+    },
+    {
+      num: "STEP 03",
+      title: "You approve, we produce",
+      body: "Accept your quote and your dashboard is activated. Track every stage from production to delivery.",
+    },
   ];
 
   return (
-    <div className="min-h-[80vh] flex items-center justify-center px-4 py-16" style={{ background: "#F8F9FC" }}>
-      <div className="max-w-lg w-full">
+    <div style={{ position: "relative", minHeight: "100vh", background: "#0D1B2A", overflow: "hidden" }}>
+      <Particles />
 
-        {/* Animated success circle */}
-        <div className="flex justify-center mb-10">
-          <div
-            className="relative flex items-center justify-center"
-            style={{
-              width: 120, height: 120,
-              transition: "all 0.6s cubic-bezier(0.34,1.56,0.64,1)",
-              transform: show ? "scale(1)" : "scale(0)",
-              opacity: show ? 1 : 0,
-            }}
-          >
-            {/* Outer pulse ring */}
-            <div
-              className="absolute inset-0 rounded-full"
+      <div style={{
+        position: "relative", zIndex: 1,
+        maxWidth: 600, margin: "0 auto",
+        padding: "80px 40px",
+        textAlign: "center",
+        fontFamily: "'Plus Jakarta Sans', sans-serif",
+      }}>
+
+        {/* ── Animated checkmark circle ── */}
+        <div style={{
+          width: 120, height: 120,
+          border: "2px solid #E8A838",
+          borderRadius: "50%",
+          margin: "0 auto 32px",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          transition: "all 0.6s cubic-bezier(0.34,1.56,0.64,1)",
+          transform: show ? "scale(1)" : "scale(0)",
+          opacity: show ? 1 : 0,
+        }}>
+          <svg viewBox="0 0 52 52" width="72" height="72">
+            <circle cx="26" cy="26" r="25" fill="none" stroke="#E8A838" strokeWidth="2" />
+            <path
+              fill="none"
+              stroke="#E8A838"
+              strokeWidth="3"
+              strokeLinecap="round"
+              d="M14 27 L22 35 L38 19"
               style={{
-                background: "rgba(34,197,94,0.12)",
-                animation: show ? "ping-slow 2s ease-in-out infinite" : "none",
+                strokeDasharray: 60,
+                strokeDashoffset: checkDone ? 0 : 60,
+                transition: "stroke-dashoffset 0.6s ease 0.3s",
               }}
             />
-            {/* Inner circle */}
-            <div
-              className="absolute inset-3 rounded-full flex items-center justify-center"
-              style={{ background: "rgba(34,197,94,0.15)" }}
-            />
-            {/* Check */}
-            <CheckCircle2
-              className="relative z-10"
-              style={{ color: "#22c55e", width: 52, height: 52 }}
-            />
-          </div>
+          </svg>
         </div>
 
-        {/* Headline */}
-        <div
-          className="text-center mb-8"
-          style={{
-            transition: "all 0.5s ease",
-            transform: show ? "translateY(0)" : "translateY(16px)",
-            opacity: show ? 1 : 0,
-            transitionDelay: "0.2s",
-          }}
-        >
-          <div className="text-xs font-bold tracking-[0.2em] uppercase mb-3" style={{ color: "#1B6CA8" }}>
-            Quote Submitted
-          </div>
-          <h1 className="text-4xl font-black mb-3" style={{ fontFamily: "'Space Grotesk', sans-serif", color: "#0D1B2A", lineHeight: 1.1 }}>
-            Your packaging<br />is sorted. 🎉
-          </h1>
-          <p className="text-slate-500 text-base">
-            We'll get back with the market's best quote in your email.
-          </p>
+        {/* ── Eyebrow ── */}
+        <div style={{
+          color: "#E8A838", fontSize: 11, fontWeight: 600,
+          letterSpacing: "2px", textTransform: "uppercase",
+          marginBottom: 12,
+          transition: "all 0.5s ease 0.2s",
+          opacity: show ? 1 : 0, transform: show ? "translateY(0)" : "translateY(10px)",
+        }}>
+          YOUR QUOTE IS CONFIRMED
         </div>
 
-        {/* Quote ID chip */}
-        <div
-          className="flex justify-center mb-8"
-          style={{
-            transition: "all 0.5s ease",
-            transform: show ? "translateY(0)" : "translateY(12px)",
-            opacity: show ? 1 : 0,
-            transitionDelay: "0.35s",
-          }}
-        >
-          <div
-            className="px-6 py-3 rounded-lg text-center"
-            style={{ background: "#0D1B2A" }}
-          >
-            <div className="text-xs text-slate-500 uppercase tracking-widest mb-1">Your Quote ID</div>
-            <div className="font-mono font-black text-xl" style={{ color: "#E8A838" }}>{quoteId}</div>
-          </div>
+        {/* ── Headline ── */}
+        <h1 style={{
+          color: "white",
+          fontSize: "clamp(2.4rem, 5vw, 3.25rem)",
+          fontWeight: 700, lineHeight: 1.1,
+          margin: "0 0 8px",
+          fontFamily: "'Space Grotesk', sans-serif",
+          transition: "all 0.5s ease 0.3s",
+          opacity: show ? 1 : 0, transform: show ? "translateY(0)" : "translateY(10px)",
+        }}>
+          We're on it.
+        </h1>
+
+        {/* ── Quote ID ── */}
+        <div style={{
+          fontFamily: "'JetBrains Mono', 'Courier New', monospace",
+          fontSize: 22, fontWeight: 600, letterSpacing: "2px",
+          color: "#E8A838", marginBottom: 16,
+          transition: "all 0.5s ease 0.4s",
+          opacity: show ? 1 : 0, transform: show ? "translateY(0)" : "translateY(10px)",
+        }}>
+          {quoteId}
         </div>
 
-        {/* Status items */}
-        <div className="space-y-3 mb-8">
-          {items.map((item, i) => (
+        {/* ── Subtext ── */}
+        <p style={{
+          color: "rgba(255,255,255,0.6)",
+          fontSize: 17, lineHeight: 1.7,
+          maxWidth: 420, margin: "0 auto 48px",
+          transition: "all 0.5s ease 0.5s",
+          opacity: show ? 1 : 0, transform: show ? "translateY(0)" : "translateY(10px)",
+        }}>
+          Our team is reviewing your specs. You'll receive a detailed quote within 48 hours on WhatsApp and email.
+        </p>
+
+        {/* ── What Happens Next ── */}
+        <div style={{
+          display: "flex", gap: 16, marginBottom: 48,
+          flexWrap: "wrap",
+          transition: "all 0.5s ease",
+          opacity: showSteps ? 1 : 0, transform: showSteps ? "translateY(0)" : "translateY(16px)",
+        }}>
+          {STEPS.map((step, i) => (
             <div
               key={i}
-              className="flex items-start gap-4 p-4 rounded-lg bg-white border border-slate-100"
               style={{
-                transition: "all 0.4s ease",
-                transform: showItems ? "translateX(0)" : "translateX(-20px)",
-                opacity: showItems ? 1 : 0,
-                transitionDelay: `${i * 0.1}s`,
+                flex: "1 1 160px",
+                background: "rgba(255,255,255,0.06)",
+                border: "1px solid rgba(255,255,255,0.1)",
+                borderRadius: 14,
+                padding: "24px 20px",
+                textAlign: "left",
+                transition: `all 0.4s ease ${i * 0.1}s`,
+                opacity: showSteps ? 1 : 0,
+                transform: showSteps ? "translateY(0)" : "translateY(12px)",
               }}
             >
-              <div
-                className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
-                style={{ background: `${item.color}18`, color: item.color }}
-              >
-                {item.icon}
+              <div style={{ color: "#E8A838", fontSize: 11, fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", marginBottom: 8 }}>
+                {step.num}
               </div>
-              <div>
-                <div className="font-bold text-slate-800 text-sm">{item.label}</div>
-                <div className="text-xs text-slate-400 mt-0.5">{item.sub}</div>
+              <div style={{ color: "white", fontSize: 15, fontWeight: 700, marginBottom: 6 }}>
+                {step.title}
+              </div>
+              <div style={{ color: "rgba(255,255,255,0.55)", fontSize: 13, lineHeight: 1.6 }}>
+                {step.body}
               </div>
             </div>
           ))}
         </div>
 
-        {/* Payment notices */}
-        {needsAction && (
-          <div
-            className="p-4 rounded-lg mb-6"
+        {/* ── CTA Buttons ── */}
+        <div style={{
+          display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap", marginBottom: 32,
+          transition: "all 0.5s ease 0.6s",
+          opacity: showSteps ? 1 : 0, transform: showSteps ? "translateY(0)" : "translateY(10px)",
+        }}>
+          <a
+            href={`https://wa.me/919999999999?text=${waMsg}`}
+            target="_blank" rel="noopener noreferrer"
             style={{
-              background: "rgba(232,168,56,0.08)", border: "1px solid rgba(232,168,56,0.3)",
-              transition: "all 0.4s ease",
-              opacity: showItems ? 1 : 0,
-              transitionDelay: "0.5s",
+              display: "inline-flex", alignItems: "center", gap: 10,
+              padding: "14px 24px", borderRadius: 10,
+              background: "#E8A838", color: "#0D1B2A",
+              fontSize: 14, fontWeight: 800,
+              textDecoration: "none",
+              transition: "background 0.2s, transform 0.15s",
             }}
+            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "#D4941E"; (e.currentTarget as HTMLElement).style.transform = "translateY(-1px)"; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "#E8A838"; (e.currentTarget as HTMLElement).style.transform = "translateY(0)"; }}
           >
-            <p className="text-sm font-bold mb-1" style={{ color: "#92600A" }}>⚡ Express sample slot held — payment required</p>
-            <p className="text-xs text-slate-500">Your express sample slot is reserved for 48 hours. Pay ₹4,999 to confirm it, or it will be released automatically.</p>
-          </div>
-        )}
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="#0D1B2A">
+              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+            </svg>
+            WhatsApp us for faster response
+          </a>
 
-        {/* CTA buttons */}
-        <div
-          className="flex gap-3"
-          style={{
-            transition: "all 0.5s ease",
-            opacity: showItems ? 1 : 0,
-            transitionDelay: "0.6s",
-          }}
-        >
-          <Link href="/dashboard" className="flex-1">
-            <button className="w-full py-3 rounded-lg font-black text-sm text-white uppercase tracking-wider transition-all hover:opacity-90" style={{ background: "#0D1B2A" }}>
-              Go to Dashboard
-            </button>
-          </Link>
-          <Link href="/products" className="flex-1">
-            <button className="w-full py-3 rounded-lg font-bold text-sm border border-slate-200 text-slate-700 hover:border-slate-400 transition-colors">
-              Browse SKUs
-            </button>
+          <Link href="/products"
+            style={{
+              display: "inline-flex", alignItems: "center",
+              padding: "14px 24px", borderRadius: 10,
+              border: "1px solid rgba(255,255,255,0.25)",
+              color: "rgba(255,255,255,0.85)",
+              fontSize: 14, fontWeight: 700,
+              textDecoration: "none",
+              transition: "border-color 0.2s, background 0.2s, transform 0.15s",
+            }}
+            onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => { e.currentTarget.style.background = "rgba(255,255,255,0.08)"; e.currentTarget.style.transform = "translateY(-1px)"; }}
+            onMouseLeave={(e: React.MouseEvent<HTMLAnchorElement>) => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.transform = "translateY(0)"; }}
+          >
+            Browse more products
           </Link>
         </div>
 
-      </div>
+        {/* ── Design brief card ── */}
+        {designPaid && (
+          <div style={{
+            background: "rgba(27,108,168,0.15)",
+            border: "1px solid rgba(27,108,168,0.3)",
+            borderRadius: 12, padding: "20px 24px",
+            textAlign: "left",
+            display: "flex", alignItems: "center", gap: 16,
+            marginBottom: 16,
+            transition: "all 0.5s ease 0.7s",
+            opacity: showSteps ? 1 : 0,
+          }}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1B6CA8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+            <div style={{ flex: 1 }}>
+              <div style={{ color: "white", fontSize: 14, fontWeight: 700, marginBottom: 4 }}>Complete your design brief</div>
+              <div style={{ color: "rgba(255,255,255,0.6)", fontSize: 13, lineHeight: 1.5 }}>Your designer needs a few details to get started. Takes 3 minutes.</div>
+              <a href="/design/brief" style={{ color: "#1B6CA8", fontSize: 13, fontWeight: 600, textDecoration: "none", display: "inline-block", marginTop: 6 }}>Complete brief →</a>
+            </div>
+          </div>
+        )}
 
-      {/* CSS for ping animation */}
-      <style>{`
-        @keyframes ping-slow {
-          0%, 100% { transform: scale(1); opacity: 0.7; }
-          50% { transform: scale(1.18); opacity: 0.3; }
-        }
-      `}</style>
+        {/* ── Sample confirmed card ── */}
+        {samplePaidFinal && (
+          <div style={{
+            background: "rgba(27,108,168,0.15)",
+            border: "1px solid rgba(27,108,168,0.3)",
+            borderRadius: 12, padding: "20px 24px",
+            textAlign: "left",
+            display: "flex", alignItems: "center", gap: 16,
+            transition: "all 0.5s ease 0.8s",
+            opacity: showSteps ? 1 : 0,
+          }}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1B6CA8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+            <div>
+              <div style={{ color: "white", fontSize: 14, fontWeight: 700, marginBottom: 4 }}>Sample request confirmed</div>
+              <div style={{ color: "rgba(255,255,255,0.6)", fontSize: 13, lineHeight: 1.5 }}>
+                Your sample will be dispatched in 5–7 days. We'll send tracking details to your email.
+              </div>
+            </div>
+          </div>
+        )}
+
+      </div>
     </div>
   );
 }

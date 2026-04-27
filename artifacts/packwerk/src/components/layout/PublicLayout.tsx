@@ -1,14 +1,327 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "wouter";
+import {
+  Package, Box, ShoppingBag, Layers, RotateCcw, Tag, Leaf, Gift,
+  Zap, Factory, Pill, Sparkles, Cpu, UtensilsCrossed, Gem, Globe,
+  ChevronDown, BookOpen, Info, Network,
+} from "lucide-react";
 
-const NAV_ITEMS = [
-  { href: "/products", label: "Products" },
-  { href: "/#how-it-works", label: "How It Works" },
-  { href: "/industries", label: "Industries" },
-  { href: "/design", label: "Design" },
-  { href: "/samples", label: "Sample" },
+// ── Product mega-menu data ────────────────────────────────────────────────────
+const PRODUCT_CATS = [
+  { icon: Package,      label: "Flexible Packaging",   desc: "Pouches, films & wraps",           href: "/products/flexible" },
+  { icon: Box,          label: "Rigid Packaging",       desc: "Jars, bottles & hard shells",      href: "/products/rigid" },
+  { icon: ShoppingBag,  label: "Boxes & Retail",        desc: "Mono, duplex & gift boxes",        href: "/products/boxes" },
+  { icon: Layers,       label: "E-commerce Packaging",  desc: "Mailers, corrugated & tapes",      href: "/products/ecommerce" },
+  { icon: RotateCcw,    label: "Packaging Rolls",       desc: "Rollstock & centre-fold films",    href: "/products/rolls" },
+  { icon: Tag,          label: "Labels & Accessories",  desc: "Stickers, inserts & ribbons",      href: "/products/labels" },
+  { icon: Leaf,         label: "Sustainable Packaging", desc: "Kraft, recycled & compostable",    href: "/products/sustainable" },
+  { icon: Gift,         label: "Premium & Gift",        desc: "Luxury rigid & foil options",      href: "/products/premium" },
 ];
 
+// ── Industry mega-menu data ───────────────────────────────────────────────────
+const INDUSTRIES = [
+  { icon: Zap,              label: "D2C Brands",           href: "/industries/d2c" },
+  { icon: Factory,          label: "FMCG Manufacturers",   href: "/industries/fmcg" },
+  { icon: Pill,             label: "Pharma & Healthcare",  href: "/industries/pharma" },
+  { icon: Sparkles,         label: "Cosmetics & Beauty",   href: "/industries/beauty" },
+  { icon: Cpu,              label: "Electronics",          href: "/industries/electronics" },
+  { icon: UtensilsCrossed,  label: "Food & Beverage",      href: "/industries/food" },
+  { icon: Gem,              label: "Jewellery & Luxury",   href: "/industries/luxury" },
+  { icon: Globe,            label: "Exports & Global",     href: "/industries/exports" },
+];
+
+const ABOUT_ITEMS = [
+  { icon: Info,     label: "Our Story",       href: "/about" },
+  { icon: BookOpen, label: "How It Works",    href: "/how-it-works" },
+  { icon: Network,  label: "Factory Network", href: "/network" },
+];
+
+// ── Styles injected once ──────────────────────────────────────────────────────
+const GLOBAL_STYLES = `
+  @keyframes dropIn {
+    from { opacity: 0; transform: translateX(-50%) translateY(-8px); }
+    to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+  }
+  @keyframes slideUpChat {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .po-menu-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s;
+    text-decoration: none;
+    color: inherit;
+  }
+  .po-menu-item:hover { background: #F8F9FC; }
+
+  /* Fill-left hover for nav text links */
+  .po-nav-link {
+    position: relative;
+    overflow: hidden;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    text-decoration: none;
+    cursor: pointer;
+    background: transparent;
+    border: none;
+    color: rgba(255,255,255,0.72);
+    transition: color 0.2s;
+    white-space: nowrap;
+    font-family: inherit;
+  }
+  .po-nav-link::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255,255,255,0.07);
+    border-radius: 6px;
+    transform: translateX(-101%);
+    transition: transform 0.25s ease;
+  }
+  .po-nav-link:hover::after { transform: translateX(0); }
+  .po-nav-link.active { color: #E8A838; }
+
+  /* Amber CTA button fill animation */
+  .po-cta-btn {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: #0D1B2A;
+    background: #E8A838;
+    transition: color 0.25s;
+  }
+  .po-cta-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: #0D1B2A;
+    transform: translateX(-101%);
+    transition: transform 0.3s ease;
+  }
+  .po-cta-btn:hover { color: white; }
+  .po-cta-btn:hover::before { transform: translateX(0); }
+  .po-cta-btn span { position: relative; z-index: 1; }
+`;
+
+// ── Icon wrapper for dropdown items ──────────────────────────────────────────
+function IconBox({ Icon }: { Icon: React.ElementType }) {
+  return (
+    <div style={{
+      width: 32, height: 32, borderRadius: 8,
+      background: "rgba(27,108,168,0.08)",
+      display: "flex", alignItems: "center", justifyContent: "center",
+      flexShrink: 0,
+    }}>
+      <Icon size={16} color="#1B6CA8" />
+    </div>
+  );
+}
+
+// ── Products mega-menu ────────────────────────────────────────────────────────
+function ProductsMenu() {
+  return (
+    <div style={{
+      position: "absolute", top: "100%", left: "50%",
+      transform: "translateX(-50%)",
+      background: "white",
+      border: "1px solid #E2EAF4",
+      borderRadius: "0 0 16px 16px",
+      boxShadow: "0 16px 48px rgba(13,27,42,0.12)",
+      padding: "28px 32px",
+      width: 680,
+      animation: "dropIn 0.2s ease forwards",
+      zIndex: 100,
+    }}>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 220px", gap: 24 }}>
+        {/* Left: categories 2-col */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 4 }}>
+          {PRODUCT_CATS.map(cat => (
+            <Link key={cat.href} href={cat.href} className="po-menu-item">
+              <IconBox Icon={cat.icon} />
+              <div>
+                <div style={{ color: "#0D1B2A", fontSize: 14, fontWeight: 600, lineHeight: 1.3 }}>{cat.label}</div>
+                <div style={{ color: "#64748B", fontSize: 12, lineHeight: 1.4, marginTop: 2 }}>{cat.desc}</div>
+              </div>
+            </Link>
+          ))}
+        </div>
+
+        {/* Right: SmartStock feature card */}
+        <div style={{
+          background: "linear-gradient(135deg, #0D1B2A 0%, #1B3A5C 100%)",
+          borderRadius: 12, padding: "20px 18px",
+          display: "flex", flexDirection: "column", justifyContent: "space-between",
+        }}>
+          <div>
+            <div style={{ color: "#E8A838", fontSize: 10, fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", marginBottom: 10 }}>FEATURED</div>
+            <div style={{ color: "white", fontSize: 16, fontWeight: 700, lineHeight: 1.3, marginBottom: 8 }}>SmartStock™<br />AI Inventory</div>
+            <div style={{ color: "rgba(255,255,255,0.55)", fontSize: 12, lineHeight: 1.5 }}>
+              Predict reorder points before you run out. Zero stockouts.
+            </div>
+          </div>
+          <Link href="/products/smartstock"
+            style={{
+              display: "inline-block", marginTop: 16,
+              background: "#E8A838", color: "#0D1B2A",
+              padding: "8px 14px", borderRadius: 6,
+              fontSize: 12, fontWeight: 700, textDecoration: "none",
+            }}>
+            Learn more →
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Industries mega-menu ──────────────────────────────────────────────────────
+function IndustriesMenu() {
+  return (
+    <div style={{
+      position: "absolute", top: "100%", left: "50%",
+      transform: "translateX(-50%)",
+      background: "white",
+      border: "1px solid #E2EAF4",
+      borderRadius: "0 0 16px 16px",
+      boxShadow: "0 16px 48px rgba(13,27,42,0.12)",
+      padding: "28px 32px",
+      width: 620,
+      animation: "dropIn 0.2s ease forwards",
+      zIndex: 100,
+    }}>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 200px", gap: 24 }}>
+        {/* Left: 8 industries */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 4 }}>
+          {INDUSTRIES.map(ind => (
+            <Link key={ind.href} href={ind.href} className="po-menu-item" style={{ alignItems: "center" }}>
+              <IconBox Icon={ind.icon} />
+              <div style={{ color: "#0D1B2A", fontSize: 14, fontWeight: 600 }}>{ind.label}</div>
+            </Link>
+          ))}
+        </div>
+
+        {/* Right: New to PackOps card */}
+        <div style={{
+          background: "#F8F9FC", borderRadius: 12,
+          border: "1px solid #E2EAF4",
+          padding: "20px 18px",
+          display: "flex", flexDirection: "column", justifyContent: "space-between",
+        }}>
+          <div>
+            <div style={{ color: "#1B6CA8", fontSize: 10, fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", marginBottom: 10 }}>NEW TO PACKOPS?</div>
+            <div style={{ color: "#0D1B2A", fontSize: 14, fontWeight: 700, lineHeight: 1.4, marginBottom: 8 }}>See how it works in 3 minutes</div>
+            <div style={{ color: "#64748B", fontSize: 12, lineHeight: 1.5 }}>
+              Platform walkthrough for brand owners and procurement teams.
+            </div>
+          </div>
+          <Link href="/how-it-works"
+            style={{
+              display: "inline-block", marginTop: 16,
+              background: "#1B6CA8", color: "white",
+              padding: "8px 14px", borderRadius: 6,
+              fontSize: 12, fontWeight: 700, textDecoration: "none",
+            }}>
+            How it works →
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── About mini-menu ───────────────────────────────────────────────────────────
+function AboutMenu() {
+  return (
+    <div style={{
+      position: "absolute", top: "100%", left: "50%",
+      transform: "translateX(-50%)",
+      background: "white",
+      border: "1px solid #E2EAF4",
+      borderRadius: "0 0 16px 16px",
+      boxShadow: "0 16px 48px rgba(13,27,42,0.12)",
+      padding: "16px 20px",
+      width: 220,
+      animation: "dropIn 0.2s ease forwards",
+      zIndex: 100,
+    }}>
+      {ABOUT_ITEMS.map(item => (
+        <Link key={item.href} href={item.href} className="po-menu-item" style={{ alignItems: "center" }}>
+          <IconBox Icon={item.icon} />
+          <div style={{ color: "#0D1B2A", fontSize: 14, fontWeight: 600 }}>{item.label}</div>
+        </Link>
+      ))}
+    </div>
+  );
+}
+
+// ── NavItem with optional dropdown ───────────────────────────────────────────
+function NavItem({
+  label, children, href, active,
+}: {
+  label: string;
+  children?: React.ReactNode;
+  href?: string;
+  active?: boolean;
+}) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const close = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("mousedown", close);
+    return () => document.removeEventListener("mousedown", close);
+  }, [open]);
+
+  if (href && !children) {
+    return (
+      <Link href={href} className={`po-nav-link${active ? " active" : ""}`}>
+        {label}
+      </Link>
+    );
+  }
+
+  return (
+    <div
+      ref={ref}
+      style={{ position: "relative" }}
+      onMouseEnter={() => setOpen(true)}
+      onMouseLeave={() => setOpen(false)}
+    >
+      <button
+        onClick={() => setOpen(o => !o)}
+        className={`po-nav-link${active ? " active" : ""}`}
+      >
+        {label}
+        <ChevronDown size={13} style={{ transition: "transform 0.2s", transform: open ? "rotate(180deg)" : "rotate(0deg)" }} />
+      </button>
+      {open && children}
+    </div>
+  );
+}
+
+// ── PackAI Widget ─────────────────────────────────────────────────────────────
 const PACK_AI_MESSAGES = [
   { from: "ai", text: "Hi! I'm PackAI — your packaging advisor for PackOps." },
   { from: "ai", text: "I can help you find the right SKU, estimate costs, check MOQs, understand certifications, and more." },
@@ -22,7 +335,6 @@ function PackAIWidget() {
 
   return (
     <>
-      {/* ── Chat panel ── */}
       {open && (
         <div style={{
           position: "fixed", bottom: 90, right: 24, zIndex: 998,
@@ -33,7 +345,6 @@ function PackAIWidget() {
           overflow: "hidden",
           animation: "slideUpChat 0.25s ease",
         }}>
-          {/* Header */}
           <div style={{ background: "#0D1B2A", padding: "16px 20px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
               <div style={{ width: 36, height: 36, borderRadius: "50%", background: "#1B6CA8", display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -49,7 +360,6 @@ function PackAIWidget() {
             <button onClick={() => setOpen(false)} style={{ color: "rgba(255,255,255,0.6)", background: "none", border: "none", cursor: "pointer", fontSize: 20, lineHeight: 1 }}>×</button>
           </div>
 
-          {/* Messages */}
           <div style={{ flex: 1, overflowY: "auto", padding: "16px 16px 8px", display: "flex", flexDirection: "column", gap: 10, maxHeight: 300, background: "#F8F9FC" }}>
             {PACK_AI_MESSAGES.map((m, i) => (
               <div key={i} style={{
@@ -58,31 +368,24 @@ function PackAIWidget() {
                 background: m.from === "ai" ? "white" : "#1B6CA8",
                 color: m.from === "ai" ? "#0D1B2A" : "white",
                 borderRadius: m.from === "ai" ? "4px 14px 14px 14px" : "14px 4px 14px 14px",
-                padding: "10px 14px",
-                fontSize: 13,
-                lineHeight: 1.55,
+                padding: "10px 14px", fontSize: 13, lineHeight: 1.55,
                 boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
               }}>{m.text}</div>
             ))}
             <div ref={bottomRef} />
           </div>
 
-          {/* Coming soon badge */}
           <div style={{ padding: "8px 16px", background: "#F8F9FC", borderTop: "1px solid #E2EAF4", textAlign: "center" }}>
             <span style={{ fontSize: 11, color: "#94A3B8", fontWeight: 600 }}>🚀 Full AI chat launching soon</span>
           </div>
 
-          {/* Input */}
           <div style={{ padding: "12px 16px", background: "white", borderTop: "1px solid #E2EAF4", display: "flex", gap: 8 }}>
             <input
               value={inputVal}
               onChange={e => setInputVal(e.target.value)}
               placeholder="Ask about SKUs, pricing, MOQs…"
               disabled
-              style={{
-                flex: 1, padding: "9px 12px", borderRadius: 8, border: "1px solid #E2EAF4",
-                fontSize: 13, background: "#F8F9FC", color: "#94A3B8", outline: "none",
-              }}
+              style={{ flex: 1, padding: "9px 12px", borderRadius: 8, border: "1px solid #E2EAF4", fontSize: 13, background: "#F8F9FC", color: "#94A3B8", outline: "none" }}
             />
             <button disabled style={{ padding: "9px 14px", borderRadius: 8, background: "#1B6CA8", border: "none", cursor: "not-allowed", opacity: 0.5 }}>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -91,7 +394,6 @@ function PackAIWidget() {
             </button>
           </div>
 
-          {/* Footer */}
           <div style={{ padding: "10px 16px 14px", background: "white", borderTop: "1px solid #F1F5F9", textAlign: "center" }}>
             <a
               href="https://wa.me/919999999999?text=Hi%20PackOps%2C%20I%27d%20like%20to%20discuss%20packaging."
@@ -107,7 +409,6 @@ function PackAIWidget() {
         </div>
       )}
 
-      {/* ── Float button ── */}
       <button
         onClick={() => setOpen(!open)}
         style={{
@@ -117,7 +418,7 @@ function PackAIWidget() {
           padding: "13px 22px",
           display: "flex", alignItems: "center", gap: 8,
           boxShadow: "0 4px 24px rgba(27,108,168,0.35)",
-          transition: "background 0.2s, transform 0.2s, box-shadow 0.2s",
+          transition: "background 0.2s, transform 0.2s",
         }}
         onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = "scale(1.04)"; }}
         onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = "scale(1)"; }}
@@ -131,16 +432,12 @@ function PackAIWidget() {
         <span style={{ color: "white", fontWeight: 800, fontSize: 14, letterSpacing: "0.04em" }}>PackAI</span>
       </button>
 
-      <style>{`
-        @keyframes slideUpChat {
-          from { opacity: 0; transform: translateY(16px); }
-          to   { opacity: 1; transform: translateY(0); }
-        }
-      `}</style>
+      <style>{GLOBAL_STYLES}</style>
     </>
   );
 }
 
+// ── Public Layout ─────────────────────────────────────────────────────────────
 export function PublicLayout({ children }: { children: React.ReactNode }) {
   const [location] = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -152,74 +449,95 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const navStyle: React.CSSProperties = {
-    background: "#020617",
-    borderBottom: scrolled ? "1px solid rgba(255,255,255,0.12)" : "1px solid rgba(255,255,255,0.08)",
-    transition: "border-color 0.3s ease",
-  };
-
   return (
     <div className="min-h-screen flex flex-col" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
 
       {/* ── NAV ── */}
-      <header className="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-6 md:px-10 py-0 h-[68px]"
-        style={navStyle}>
-
-        <Link href="/">
-          <span className="text-xl font-black tracking-tight text-white cursor-pointer select-none" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+      <header
+        className="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-6 md:px-10 h-[68px]"
+        style={{
+          background: scrolled ? "rgba(2,6,23,0.85)" : "#020617",
+          backdropFilter: scrolled ? "blur(16px)" : "none",
+          WebkitBackdropFilter: scrolled ? "blur(16px)" : "none",
+          borderBottom: scrolled ? "1px solid rgba(255,255,255,0.1)" : "1px solid rgba(255,255,255,0.06)",
+          transition: "background 0.35s ease, border-color 0.35s ease",
+        }}
+      >
+        {/* Logo */}
+        <Link href="/"
+          style={{ textDecoration: "none" }}
+        >
+          <span style={{
+            fontSize: 20, fontWeight: 900, letterSpacing: "-0.02em",
+            color: "white", fontFamily: "'Space Grotesk', sans-serif",
+            cursor: "pointer", userSelect: "none",
+          }}>
             PackOps
           </span>
         </Link>
 
-        <nav className="hidden md:flex items-center gap-7">
-          {NAV_ITEMS.map(item => {
-            const active = location.startsWith(item.href);
-            return (
-              <Link key={item.href} href={item.href}>
-                <span
-                  className="text-xs font-bold tracking-[0.15em] uppercase cursor-pointer transition-colors duration-200"
-                  style={{ color: active ? "#E8A838" : "rgba(255,255,255,0.65)", textDecoration: active ? "underline" : "none", textUnderlineOffset: "5px" }}
-                >
-                  {item.label}
-                </span>
-              </Link>
-            );
-          })}
+        {/* Centre navigation */}
+        <nav className="hidden md:flex items-center gap-1">
+          <NavItem label="Products" active={location.startsWith("/products")}>
+            <ProductsMenu />
+          </NavItem>
+          <NavItem label="Industries" active={location.startsWith("/industries")}>
+            <IndustriesMenu />
+          </NavItem>
+          <NavItem label="Design" href="/design" active={location.startsWith("/design")} />
+          <NavItem label="Sustainability" href="/sustainable" active={location.startsWith("/sustainable")} />
+          <NavItem label="About" active={location.startsWith("/about") || location.startsWith("/how-it-works") || location.startsWith("/network")}>
+            <AboutMenu />
+          </NavItem>
         </nav>
 
-        <div className="flex items-center gap-4">
-          <Link href="/login">
-            <span className="hidden md:inline text-xs font-bold tracking-[0.15em] uppercase text-slate-300 hover:text-white transition-colors cursor-pointer">Login</span>
+        {/* Right side */}
+        <div className="flex items-center gap-1">
+          <Link href="/samples" className="hidden md:inline po-nav-link">
+            Sample
           </Link>
-          <Link href="/quote">
-            <button className="px-5 py-2.5 rounded text-xs font-black uppercase tracking-widest hover:opacity-90 active:scale-95 transition-all"
-              style={{ background: "#1B6CA8", color: "white" }}>
-              Get Quote
-            </button>
+          <Link href="/login" className="hidden md:inline po-nav-link">
+            Login
+          </Link>
+          <Link href="/quote" className="po-cta-btn" style={{ marginLeft: 8 }}>
+            <span>Get Quote</span>
           </Link>
 
-          {/* Mobile menu toggle */}
-          <button className="md:hidden p-2 text-white" onClick={() => setMobileOpen(!mobileOpen)}>
+          {/* Mobile toggle */}
+          <button className="md:hidden p-2 text-white ml-2" onClick={() => setMobileOpen(!mobileOpen)}>
             <span className="material-symbols-outlined text-2xl">{mobileOpen ? "close" : "menu"}</span>
           </button>
         </div>
       </header>
 
-      {/* Mobile menu */}
+      {/* Mobile drawer */}
       {mobileOpen && (
-        <div className="fixed inset-0 z-40 pt-[68px]" style={{ background: "#020617" }}>
+        <div className="fixed inset-0 z-40 pt-[68px] overflow-y-auto" style={{ background: "#020617" }}>
           <nav className="flex flex-col px-8 py-8 gap-6">
-            {NAV_ITEMS.map(item => (
-              <Link key={item.href} href={item.href} onClick={() => setMobileOpen(false)}>
-                <span className="text-2xl font-black uppercase text-white">{item.label}</span>
+            {[
+              { label: "Products", href: "/products" },
+              { label: "Industries", href: "/industries" },
+              { label: "Design", href: "/design" },
+              { label: "Sustainability", href: "/sustainable" },
+              { label: "How It Works", href: "/how-it-works" },
+            ].map(item => (
+              <Link key={item.href} href={item.href} onClick={() => setMobileOpen(false)}
+                style={{ fontSize: 24, fontWeight: 900, textTransform: "uppercase", color: "white", textDecoration: "none" }}>
+                {item.label}
               </Link>
             ))}
             <div className="border-t border-white/10 pt-6 flex flex-col gap-4">
-              <Link href="/login" onClick={() => setMobileOpen(false)}>
-                <span className="text-lg font-bold text-slate-300">Login</span>
+              <Link href="/samples" onClick={() => setMobileOpen(false)}
+                style={{ fontSize: 18, fontWeight: 700, color: "rgba(255,255,255,0.6)", textDecoration: "none" }}>
+                Sample
               </Link>
-              <Link href="/quote" onClick={() => setMobileOpen(false)}>
-                <button className="px-8 py-4 rounded font-bold text-sm" style={{ background: "#1B6CA8", color: "white" }}>Get Quote</button>
+              <Link href="/login" onClick={() => setMobileOpen(false)}
+                style={{ fontSize: 18, fontWeight: 700, color: "rgba(255,255,255,0.6)", textDecoration: "none" }}>
+                Login
+              </Link>
+              <Link href="/quote" onClick={() => setMobileOpen(false)}
+                style={{ display: "inline-block", padding: "14px 28px", background: "#E8A838", color: "#0D1B2A", fontWeight: 800, fontSize: 14, textDecoration: "none", borderRadius: 8, textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                Get Quote
               </Link>
             </div>
           </nav>
@@ -230,11 +548,11 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
         {children}
       </main>
 
-      {/* ── PackAI Float Widget ── */}
       <PackAIWidget />
 
       {/* ── FOOTER ── */}
-      <footer className="px-8 md:px-16 py-16 grid grid-cols-2 md:grid-cols-4 gap-10 text-sm border-t" style={{ background: "#020617", borderColor: "rgba(255,255,255,0.08)", fontFamily: "'Space Grotesk', sans-serif" }}>
+      <footer className="px-8 md:px-16 py-16 grid grid-cols-2 md:grid-cols-4 gap-10 text-sm border-t"
+        style={{ background: "#020617", borderColor: "rgba(255,255,255,0.08)", fontFamily: "'Space Grotesk', sans-serif" }}>
         <div className="col-span-2 md:col-span-1 flex flex-col gap-4">
           <span className="text-xl font-black text-white">PackOps</span>
           <p className="text-slate-500 text-sm leading-relaxed max-w-xs">
@@ -244,20 +562,29 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
         </div>
         <div className="flex flex-col gap-3">
           <h4 className="font-bold uppercase tracking-widest text-xs text-white">Products</h4>
-          {["Folding Cartons", "Corrugated Solutions", "Protective Inserts", "Sustainability Line"].map(l => (
-            <Link key={l} href="/products"><span className="text-slate-500 hover:text-white cursor-pointer transition-colors">{l}</span></Link>
+          {["Flexible Packaging", "Rigid Packaging", "Sustainable Packaging", "Premium & Gift"].map(l => (
+            <Link key={l} href="/products"
+              style={{ color: "#64748B", textDecoration: "none", transition: "color 0.15s", cursor: "pointer" }}
+              onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = "white"}
+              onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = "#64748B"}>
+              {l}
+            </Link>
           ))}
         </div>
         <div className="flex flex-col gap-3">
           <h4 className="font-bold uppercase tracking-widest text-xs text-white">Company</h4>
-          {["About Us", "Partnerships", "Process", "Sustainability"].map(l => (
-            <a key={l} href="#" className="text-slate-500 hover:text-white transition-colors">{l}</a>
+          {["About Us", "How It Works", "Sustainability", "Factory Network"].map(l => (
+            <a key={l} href="#" style={{ color: "#64748B", textDecoration: "none", transition: "color 0.15s" }}
+              onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = "white"}
+              onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = "#64748B"}>{l}</a>
           ))}
         </div>
         <div className="flex flex-col gap-3">
           <h4 className="font-bold uppercase tracking-widest text-xs text-white">Support</h4>
-          {["Contact Sales", "Technical Docs", "Documentation", "Security"].map(l => (
-            <a key={l} href="#" className="text-slate-500 hover:text-white transition-colors">{l}</a>
+          {["Contact Sales", "Get a Sample", "Documentation", "WhatsApp Us"].map(l => (
+            <a key={l} href="#" style={{ color: "#64748B", textDecoration: "none", transition: "color 0.15s" }}
+              onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = "white"}
+              onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = "#64748B"}>{l}</a>
           ))}
         </div>
       </footer>
