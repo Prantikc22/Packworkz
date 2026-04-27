@@ -22,6 +22,7 @@ import HowItWorks from "@/pages/how-it-works";
 // Dashboard Pages
 import DashboardOverview from "@/pages/dashboard/overview";
 import DashboardOrders from "@/pages/dashboard/orders";
+import DashboardQuotes from "@/pages/dashboard/quotes";
 import DashboardDesigns from "@/pages/dashboard/designs";
 import DashboardPayments from "@/pages/dashboard/payments";
 import DashboardProfile from "@/pages/dashboard/profile";
@@ -91,6 +92,7 @@ function Router() {
       {/* Dashboard Routes */}
       <ProtectedRoute path="/dashboard" component={DashboardOverview} layout={DashboardLayout} />
       <ProtectedRoute path="/dashboard/orders" component={DashboardOrders} layout={DashboardLayout} />
+      <ProtectedRoute path="/dashboard/quotes" component={DashboardQuotes} layout={DashboardLayout} />
       <ProtectedRoute path="/dashboard/designs" component={DashboardDesigns} layout={DashboardLayout} />
       <ProtectedRoute path="/dashboard/payments" component={DashboardPayments} layout={DashboardLayout} />
       <ProtectedRoute path="/dashboard/profile" component={DashboardProfile} layout={DashboardLayout} />

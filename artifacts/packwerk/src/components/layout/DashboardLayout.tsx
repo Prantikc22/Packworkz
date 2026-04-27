@@ -10,7 +10,7 @@ const MS = ({ icon, className = "", style }: { icon: string; className?: string;
 const NAV_ITEMS = [
   { href: "/dashboard", label: "Overview", icon: "dashboard" },
   { href: "/dashboard/orders", label: "Orders", icon: "deployed_code" },
-  { href: "/dashboard/designs", label: "Designs", icon: "palette" },
+  { href: "/dashboard/quotes", label: "Quotes", icon: "request_quote" },
   { href: "/dashboard/payments", label: "Payments", icon: "payments" },
   { href: "/dashboard/profile", label: "Profile", icon: "person" },
 ];
