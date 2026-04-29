@@ -104,7 +104,9 @@ See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and pa
 - Customer dashboard "COMMAND CENTER" with deployments table and system health
 - Savings calculator on home page (unit savings + overhead + credit + stockout formulas)
 - Admin panel for managing quotes, orders, designs, samples, and clients (Create/Reset PW/Delete)
-- DB connection: `lib/db/src/index.ts` uses `DATABASE_URL` (local Postgres) first, falls back to `SUPABASE_DATABASE_URL`; Supabase hostname is not reachable from Replit dev container
+- DB connection: `lib/db/src/index.ts` tries `SUPABASE_DATABASE_URL` first (production), auto-falls back to `DATABASE_URL` (local Replit Postgres for dev). Supabase TCP resolves IPv6-only from Replit dev container so fallback is automatic.
+- Supabase project: `tmvbjbmudxyvimdnhrmw` — all 8 tables created and data migrated. Management API used for DDL (PAT stored as `SUPABASE_ACCESS_TOKEN`).
+- Email: Resend (`RESEND_API_KEY` secret). Sends from `onboarding@resend.dev`. Three email types: quote confirmation (`sendQuoteConfirmation`), design confirmation (`sendDesignConfirmation`), sample confirmation (`sendSampleConfirmation`). All in `artifacts/api-server/src/lib/email.ts`.
 - Admin credentials: `x-admin-key: PackOps-Admin@2024!` (env var `ADMIN_KEY`); stored in `localStorage.packwerk_admin_key` on login
 - Net-30 credit system (unlocks after 3 completed orders)
 - CSS animations: pulse-glow, slideIn, flow-dot (for orbital/PackOS sections), marquee-track (client logos)

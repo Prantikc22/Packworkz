@@ -1,6 +1,7 @@
 import { Router, type IRouter } from "express";
 import { db, designRequestsTable, sampleRequestsTable } from "@workspace/db";
 import { generateId } from "../lib/generateId";
+import { sendDesignConfirmation, sendSampleConfirmation } from "../lib/email";
 
 const router: IRouter = Router();
 
@@ -49,6 +50,16 @@ router.post("/design-requests", async (req, res): Promise<void> => {
     })
     .returning();
 
+  // Send confirmation email (non-blocking)
+  sendDesignConfirmation({
+    to: email,
+    name: contact_name,
+    designId,
+    productType: product_type,
+    isRush: is_rush ?? false,
+    amountPaid: amount_paid,
+  }).catch(err => console.error("[email] design confirmation failed:", err));
+
   res.status(201).json({ design_id: design.design_id, id: design.id });
 });
 
@@ -86,6 +97,15 @@ router.post("/sample-requests", async (req, res): Promise<void> => {
       status: "paid",
     })
     .returning();
+
+  // Send confirmation email (non-blocking)
+  sendSampleConfirmation({
+    to: email,
+    name: contact_name,
+    sampleId,
+    sampleTier: sample_tier,
+    amountPaid: amount_paid,
+  }).catch(err => console.error("[email] sample confirmation failed:", err));
 
   res.status(201).json({ sample_id: sample.sample_id, id: sample.id });
 });
