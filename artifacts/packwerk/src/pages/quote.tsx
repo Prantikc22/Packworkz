@@ -18,6 +18,18 @@ type DeliveryOption = "standard" | "blitz" | "warehouse";
 const STEP_LABELS = ["Contact", "Product & Qty", "Design & Delivery", "Sample", "Review"];
 const TOTAL_STEPS = 5;
 
+// ── Draft persistence helpers ──────────────────────────────────────────────
+const DRAFT_KEY = "packwerk_quote_draft";
+function loadDraft(): Record<string, any> {
+  try { return JSON.parse(sessionStorage.getItem(DRAFT_KEY) || "{}") ?? {}; } catch { return {}; }
+}
+function saveDraft(data: Record<string, any>) {
+  try { sessionStorage.setItem(DRAFT_KEY, JSON.stringify(data)); } catch {}
+}
+function clearDraft() {
+  try { sessionStorage.removeItem(DRAFT_KEY); } catch {}
+}
+
 // ── Stable session project ID ──────────────────────────────────────────────
 const PROJECT_ID = `PX-${Math.floor(1000 + Math.random() * 9000)}-${["ALPHA","BETA","DELTA","GAMMA"][Math.floor(Math.random()*4)]}`;
 
@@ -479,36 +491,85 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
   const { toast } = useToast();
 
   // ── Contact ──────────────────────────────────────────────────────────────
-  const [contactName, setContactName] = useState("");
-  const [company, setCompany] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
+  const [contactName, setContactName] = useState<string>(() => loadDraft().contactName || "");
+  const [company, setCompany] = useState<string>(() => loadDraft().company || "");
+  const [email, setEmail] = useState<string>(() => loadDraft().email || "");
+  const [phone, setPhone] = useState<string>(() => loadDraft().phone || "");
 
   // ── SKU selection ────────────────────────────────────────────────────────
-  const [selectedCategory, setSelectedCategory] = useState(CATEGORIES[0].slug);
-  const [ecoFilter, setEcoFilter] = useState(false);
-  const [selectedSkuId, setSelectedSkuId] = useState(SKUS[0].id);
-  const [qty, setQty] = useState(500);
-  const [variantSelections, setVariantSelections] = useState<Record<string, string>>({});
+  const [selectedCategory, setSelectedCategory] = useState<string>(() => loadDraft().selectedCategory || CATEGORIES[0].slug);
+  const [ecoFilter, setEcoFilter] = useState<boolean>(() => loadDraft().ecoFilter ?? false);
+  const [selectedSkuId, setSelectedSkuId] = useState<string>(() => loadDraft().selectedSkuId || SKUS[0].id);
+  const [qty, setQty] = useState<number>(() => loadDraft().qty || 500);
+  const [variantSelections, setVariantSelections] = useState<Record<string, string>>(() => loadDraft().variantSelections || {});
 
   // ── Artwork / Design ─────────────────────────────────────────────────────
-  const [artworkOption, setArtworkOption] = useState<ArtworkOption>("upload");
-  const [designPaid, setDesignPaid] = useState(false);
+  const [artworkOption, setArtworkOption] = useState<ArtworkOption>(() => loadDraft().artworkOption || "upload");
+  const [designPaid, setDesignPaid] = useState<boolean>(() => loadDraft().designPaid ?? false);
   const [designPaying, setDesignPaying] = useState(false);
 
   // ── Delivery ─────────────────────────────────────────────────────────────
-  const [deliveryOption, setDeliveryOption] = useState<DeliveryOption>("standard");
-  const [pincode, setPincode] = useState("");
+  const [deliveryOption, setDeliveryOption] = useState<DeliveryOption>(() => loadDraft().deliveryOption || "standard");
+  const [pincode, setPincode] = useState<string>(() => loadDraft().pincode || "");
 
   // ── Sample ───────────────────────────────────────────────────────────────
-  const [sampleOption, setSampleOption] = useState<"express" | "standard" | "none">("none");
-  const [samplePaid, setSamplePaid] = useState(false);
-  const [notes, setNotes] = useState("");
+  const [sampleOption, setSampleOption] = useState<"express" | "standard" | "none">(() => loadDraft().sampleOption || "none");
+  const [samplePaid, setSamplePaid] = useState<boolean>(() => loadDraft().samplePaid ?? false);
+  const [notes, setNotes] = useState<string>(() => loadDraft().notes || "");
 
   const submitMutation = useSubmitQuote();
 
-  const handleNext = () => setLocation(`/quote/step/${stepNum + 1}`);
-  const handleBack = () => stepNum > 1 ? setLocation(`/quote/step/${stepNum - 1}`) : setLocation("/");
+  // ── Read URL params on mount to pre-select SKU from product pages ─────────
+  useEffect(() => {
+    const search = new URLSearchParams(window.location.search);
+    const skuParam = search.get("sku");
+    const productParam = search.get("product");
+    const qtyParam = search.get("qty");
+    const match = skuParam
+      ? SKUS.find(s => s.code === skuParam || s.id === skuParam || s.slug === skuParam)
+      : productParam
+      ? SKUS.find(s => s.code === productParam || s.id === productParam || s.slug === productParam)
+      : null;
+    if (match) {
+      setSelectedSkuId(match.id);
+      setSelectedCategory(match.category);
+      const defaults: Record<string, string> = {};
+      match.variants.forEach(g => { defaults[g.key] = g.options[0]; });
+      setVariantSelections(defaults);
+    }
+    if (qtyParam) {
+      const q = parseInt(qtyParam);
+      if (q > 0) setQty(q);
+    }
+  }, []);
+
+  // ── Helper: collect all state into one object for saving ──────────────────
+  const getAllState = () => ({
+    contactName, company, email, phone,
+    selectedCategory, selectedSkuId, qty, variantSelections, ecoFilter,
+    artworkOption, designPaid,
+    deliveryOption, pincode,
+    sampleOption, samplePaid, notes,
+  });
+
+  // ── Navigation with save ──────────────────────────────────────────────────
+  const handleNext = () => {
+    if (stepNum === 1) {
+      if (!contactName.trim()) { toast({ variant: "destructive", title: "Required field missing", description: "Please enter your contact name." }); return; }
+      if (!company.trim()) { toast({ variant: "destructive", title: "Required field missing", description: "Please enter your company name." }); return; }
+      if (!email.trim() || !email.includes("@")) { toast({ variant: "destructive", title: "Required field missing", description: "Please enter a valid business email." }); return; }
+      if (!phone.trim()) { toast({ variant: "destructive", title: "Required field missing", description: "Please enter your phone / WhatsApp number." }); return; }
+    }
+    if (stepNum === 3 && !pincode.trim()) {
+      toast({ variant: "destructive", title: "Required field missing", description: "Please enter your delivery pincode." }); return;
+    }
+    saveDraft(getAllState());
+    setLocation(`/quote/step/${stepNum + 1}`);
+  };
+  const handleBack = () => {
+    saveDraft(getAllState());
+    stepNum > 1 ? setLocation(`/quote/step/${stepNum - 1}`) : setLocation("/");
+  };
 
   const currentCatSkus = useMemo(() =>
     getSkusByCategory(selectedCategory).filter(s => ecoFilter ? s.is_eco : true),
@@ -558,6 +619,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
       } as any
     }, {
       onSuccess: (res) => {
+        clearDraft();
         setLocation(`/quote/confirmed/${res.quote_id}`);
       },
       onError: () => toast({ variant: "destructive", title: "Submission Failed", description: "Please try again." })
@@ -618,13 +680,15 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                 <div className="bg-white rounded-lg border border-slate-200 p-6">
                   <div className="grid md:grid-cols-2 gap-5">
                     {[
-                      { label: "Contact Name", value: contactName, set: setContactName, type: "text", placeholder: "Rahul Sharma" },
-                      { label: "Company Name", value: company, set: setCompany, type: "text", placeholder: "Acme Foods Pvt. Ltd." },
-                      { label: "Business Email", value: email, set: setEmail, type: "email", placeholder: "rahul@acmefoods.in" },
-                      { label: "Phone / WhatsApp", value: phone, set: setPhone, type: "tel", placeholder: "+91 98765 43210" },
-                    ].map(({ label, value, set, type, placeholder }) => (
+                      { label: "Contact Name", value: contactName, set: setContactName, type: "text", placeholder: "Rahul Sharma", required: true },
+                      { label: "Company Name", value: company, set: setCompany, type: "text", placeholder: "Acme Foods Pvt. Ltd.", required: true },
+                      { label: "Business Email", value: email, set: setEmail, type: "email", placeholder: "rahul@acmefoods.in", required: true },
+                      { label: "Phone / WhatsApp", value: phone, set: setPhone, type: "tel", placeholder: "+91 98765 43210", required: true },
+                    ].map(({ label, value, set, type, placeholder, required }) => (
                       <div key={label}>
-                        <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">{label}</label>
+                        <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">
+                          {label}{required && <span style={{ color: "#E04B4B" }}> *</span>}
+                        </label>
                         <input type={type} value={value} onChange={e => set(e.target.value)} placeholder={placeholder}
                           className="w-full border border-slate-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-blue-400 transition-colors bg-slate-50 focus:bg-white" />
                       </div>
@@ -850,7 +914,9 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Delivery Pincode</label>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">
+                      Delivery Pincode<span style={{ color: "#E04B4B" }}> *</span>
+                    </label>
                     <input type="text" value={pincode} onChange={e => setPincode(e.target.value)}
                       className="w-full max-w-xs border border-slate-200 rounded-lg px-4 py-2.5 text-sm bg-slate-50 focus:outline-none focus:border-blue-400" placeholder="e.g. 400001" />
                   </div>

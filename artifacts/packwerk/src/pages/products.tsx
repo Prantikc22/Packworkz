@@ -250,7 +250,7 @@ export default function Products() {
                             </p>
                           </div>
                           <button
-                            onClick={e => { e.preventDefault(); window.location.href = "/quote"; }}
+                            onClick={e => { e.preventDefault(); window.location.href = code ? `/quote?sku=${code}` : "/quote"; }}
                             className="px-4 py-2 rounded text-xs font-bold text-white hover:opacity-90 transition-all"
                             style={{ background: "#1B6CA8" }}>
                             Get Quote

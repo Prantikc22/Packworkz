@@ -140,7 +140,7 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
               </div>
 
               <div className="pt-6 space-y-3 border-t border-border">
-                <Link href={`/quote?product=${product.id}&qty=${currentQty}`}>
+                <Link href={`/quote?sku=${(product.specs as any)?.code || product.slug}&qty=${currentQty}`}>
                   <Button className="w-full h-12 bg-amber text-navy hover:bg-amber/90 font-bold text-lg">
                     Add to Quote
                   </Button>
