@@ -8,6 +8,7 @@ import designSamplesRouter from "./design_samples";
 import testimonialsRouter from "./testimonials";
 import adminRouter from "./admin";
 import paymentsRouter from "./payments";
+import packAiRouter from "./pack_ai";
 
 const router: IRouter = Router();
 
@@ -20,5 +21,6 @@ router.use(designSamplesRouter);
 router.use(testimonialsRouter);
 router.use(adminRouter);
 router.use(paymentsRouter);
+router.use(packAiRouter);
 
 export default router;

@@ -322,89 +322,230 @@ function NavItem({
 }
 
 // ── PackAI Widget ─────────────────────────────────────────────────────────────
-const PACK_AI_MESSAGES = [
-  { from: "ai", text: "Hi! I'm PackAI — your packaging advisor for Packworkz." },
-  { from: "ai", text: "I can help you find the right SKU, estimate costs, check MOQs, understand certifications, and more." },
-  { from: "ai", text: "What are you looking to pack? Tell me your product and I'll point you in the right direction." },
-];
+const WA_NUM = "918208990366";
+const WA_ICON = (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="#25D366">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+  </svg>
+);
+
+type Msg = { role: "user" | "assistant"; content: string };
+type Stage = "name" | "email" | "phone" | "chat";
+
+const WELCOME_MSG: Msg = {
+  role: "assistant",
+  content: "Hi! I'm PackAI — your intelligent packaging advisor from Packworkz 👋\n\nI'll help you find the right packaging for your product, optimise costs, and connect you to the best factories in India.\n\nBefore we start, what's your name?",
+};
+
+function TypingDots() {
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 4, padding: "10px 14px", background: "white", borderRadius: "4px 14px 14px 14px", width: "fit-content", boxShadow: "0 1px 4px rgba(0,0,0,0.06)" }}>
+      {[0, 1, 2].map(i => (
+        <span key={i} style={{
+          width: 7, height: 7, borderRadius: "50%", background: "#94A3B8",
+          display: "inline-block",
+          animation: `packaiDot 1.2s ${i * 0.2}s infinite ease-in-out`,
+        }} />
+      ))}
+    </div>
+  );
+}
 
 function PackAIWidget() {
   const [open, setOpen] = useState(false);
+  const [stage, setStage] = useState<Stage>("name");
+  const [lead, setLead] = useState({ name: "", email: "", phone: "" });
+  const [messages, setMessages] = useState<Msg[]>([WELCOME_MSG]);
   const [inputVal, setInputVal] = useState("");
+  const [loading, setLoading] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, loading]);
+
+  const addMsg = (role: Msg["role"], content: string) =>
+    setMessages(prev => [...prev, { role, content }]);
+
+  const handleSend = async () => {
+    const text = inputVal.trim();
+    if (!text || loading) return;
+    setInputVal("");
+
+    // Lead capture stages
+    if (stage === "name") {
+      const name = text;
+      setLead(l => ({ ...l, name }));
+      addMsg("user", text);
+      setTimeout(() => {
+        addMsg("assistant", `Nice to meet you, ${name}! 😊\n\nWhat's your email address? We'll send your packaging recommendations there.`);
+        setStage("email");
+      }, 400);
+      return;
+    }
+
+    if (stage === "email") {
+      setLead(l => ({ ...l, email: text }));
+      addMsg("user", text);
+      setTimeout(() => {
+        addMsg("assistant", `Got it! And your WhatsApp / phone number? Our team will follow up with samples and pricing.`);
+        setStage("phone");
+      }, 400);
+      return;
+    }
+
+    if (stage === "phone") {
+      const phone = text;
+      setLead(l => ({ ...l, phone }));
+      addMsg("user", text);
+      setTimeout(() => {
+        addMsg("assistant", `Perfect, thanks ${lead.name}! 🎉\n\nNow tell me — what product are you looking to package? (e.g. "spice powder", "skincare serum", "protein supplement", "electronic gadget")`);
+        setStage("chat");
+      }, 400);
+      return;
+    }
+
+    // Real AI chat
+    addMsg("user", text);
+    setLoading(true);
+
+    const historyForAI: Msg[] = [
+      {
+        role: "assistant",
+        content: `[Client info — Name: ${lead.name}, Email: ${lead.email}, Phone: ${lead.phone}. They are chatting via PackAI on Packworkz.com. Use their name naturally in responses.]`,
+      },
+      ...messages.filter(m => m.role !== "assistant" || !m.content.startsWith("[Client info")),
+      { role: "user", content: text },
+    ];
+
+    try {
+      const res = await fetch("/api/pack-ai/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messages: historyForAI }),
+      });
+      const data = await res.json() as { reply?: string; error?: string };
+      addMsg("assistant", data.reply || "I'm having trouble right now — please try again or WhatsApp us directly!");
+    } catch {
+      addMsg("assistant", "Something went wrong on my end. Please WhatsApp us directly and our team will help you right away!");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleKey = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); }
+  };
+
+  const placeholder = stage === "name" ? "Your name…"
+    : stage === "email" ? "your@email.com"
+    : stage === "phone" ? "+91 98765 43210"
+    : "Ask about packaging, SKUs, pricing, MOQs…";
 
   return (
     <>
       {open && (
         <div style={{
           position: "fixed", bottom: 90, right: 24, zIndex: 998,
-          width: 348, borderRadius: 18,
+          width: 360, borderRadius: 18,
           background: "white",
-          boxShadow: "0 12px 48px rgba(13,27,42,0.18)",
+          boxShadow: "0 16px 64px rgba(13,27,42,0.22)",
           display: "flex", flexDirection: "column",
           overflow: "hidden",
+          maxHeight: "80vh",
           animation: "slideUpChat 0.25s ease",
         }}>
-          <div style={{ background: "#0D1B2A", padding: "16px 20px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          {/* Header */}
+          <div style={{ background: "#0D1B2A", padding: "14px 18px", display: "flex", alignItems: "center", justifyContent: "space-between", flexShrink: 0 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <div style={{ width: 36, height: 36, borderRadius: "50%", background: "#1B6CA8", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+              <div style={{ width: 36, height: 36, borderRadius: "50%", background: "linear-gradient(135deg,#1B6CA8,#E8A838)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
                 </svg>
               </div>
               <div>
-                <p style={{ color: "white", fontWeight: 700, fontSize: 14 }}>PackAI</p>
-                <p style={{ color: "#1B6CA8", fontSize: 11, fontWeight: 600 }}>Your Packaging Advisor</p>
+                <p style={{ color: "white", fontWeight: 800, fontSize: 14, margin: 0 }}>PackAI</p>
+                <p style={{ color: "#64B5E8", fontSize: 11, fontWeight: 600, margin: 0 }}>Your Intelligent Packaging Advisor</p>
               </div>
             </div>
-            <button onClick={() => setOpen(false)} style={{ color: "rgba(255,255,255,0.6)", background: "none", border: "none", cursor: "pointer", fontSize: 20, lineHeight: 1 }}>×</button>
+            <button onClick={() => setOpen(false)} style={{ color: "rgba(255,255,255,0.5)", background: "none", border: "none", cursor: "pointer", fontSize: 22, lineHeight: 1, padding: "0 4px" }}>×</button>
           </div>
 
-          <div style={{ flex: 1, overflowY: "auto", padding: "16px 16px 8px", display: "flex", flexDirection: "column", gap: 10, maxHeight: 300, background: "#F8F9FC" }}>
-            {PACK_AI_MESSAGES.map((m, i) => (
+          {/* Stage progress */}
+          {stage !== "chat" && (
+            <div style={{ background: "#F8F9FC", padding: "8px 18px", borderBottom: "1px solid #E2EAF4", display: "flex", gap: 4, flexShrink: 0 }}>
+              {(["name", "email", "phone", "chat"] as Stage[]).map((s, i) => (
+                <div key={s} style={{
+                  flex: 1, height: 3, borderRadius: 99,
+                  background: ["name", "email", "phone", "chat"].indexOf(stage) >= i ? "#1B6CA8" : "#E2EAF4",
+                  transition: "background 0.3s",
+                }} />
+              ))}
+            </div>
+          )}
+
+          {/* Messages */}
+          <div style={{ flex: 1, overflowY: "auto", padding: "16px 14px 8px", display: "flex", flexDirection: "column", gap: 10, background: "#F8F9FC", minHeight: 240 }}>
+            {messages.map((m, i) => (
               <div key={i} style={{
-                alignSelf: m.from === "ai" ? "flex-start" : "flex-end",
-                maxWidth: "85%",
-                background: m.from === "ai" ? "white" : "#1B6CA8",
-                color: m.from === "ai" ? "#0D1B2A" : "white",
-                borderRadius: m.from === "ai" ? "4px 14px 14px 14px" : "14px 4px 14px 14px",
-                padding: "10px 14px", fontSize: 13, lineHeight: 1.55,
+                alignSelf: m.role === "assistant" ? "flex-start" : "flex-end",
+                maxWidth: "88%",
+                background: m.role === "assistant" ? "white" : "#1B6CA8",
+                color: m.role === "assistant" ? "#0D1B2A" : "white",
+                borderRadius: m.role === "assistant" ? "4px 14px 14px 14px" : "14px 4px 14px 14px",
+                padding: "10px 14px", fontSize: 13, lineHeight: 1.6,
                 boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
-              }}>{m.text}</div>
+                whiteSpace: "pre-wrap",
+              }}>{m.content}</div>
             ))}
+            {loading && <TypingDots />}
             <div ref={bottomRef} />
           </div>
 
-          <div style={{ padding: "8px 16px", background: "#F8F9FC", borderTop: "1px solid #E2EAF4", textAlign: "center" }}>
-            <span style={{ fontSize: 11, color: "#94A3B8", fontWeight: 600 }}>🚀 Full AI chat launching soon</span>
+          {/* WhatsApp link */}
+          <div style={{ padding: "8px 14px", background: "#F0F9FF", borderTop: "1px solid #BAD7F2", textAlign: "center", flexShrink: 0 }}>
+            <a
+              href={`https://wa.me/${WA_NUM}?text=Hi%20Packworkz%2C%20I%27d%20like%20to%20discuss%20packaging.`}
+              target="_blank" rel="noopener noreferrer"
+              style={{ fontSize: 12, color: "#25D366", fontWeight: 700, textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 5 }}
+            >
+              {WA_ICON} Prefer WhatsApp? Chat directly with our team →
+            </a>
           </div>
 
-          <div style={{ padding: "12px 16px", background: "white", borderTop: "1px solid #E2EAF4", display: "flex", gap: 8 }}>
+          {/* Input */}
+          <div style={{ padding: "10px 14px", background: "white", borderTop: "1px solid #E2EAF4", display: "flex", gap: 8, flexShrink: 0 }}>
             <input
               value={inputVal}
               onChange={e => setInputVal(e.target.value)}
-              placeholder="Ask about SKUs, pricing, MOQs…"
-              disabled
-              style={{ flex: 1, padding: "9px 12px", borderRadius: 8, border: "1px solid #E2EAF4", fontSize: 13, background: "#F8F9FC", color: "#94A3B8", outline: "none" }}
+              onKeyDown={handleKey}
+              placeholder={placeholder}
+              disabled={loading}
+              style={{
+                flex: 1, padding: "9px 12px", borderRadius: 8,
+                border: "1.5px solid #E2EAF4", fontSize: 13,
+                background: loading ? "#F8F9FC" : "white",
+                color: "#0D1B2A", outline: "none",
+                transition: "border-color 0.2s",
+              }}
+              onFocus={e => { (e.target as HTMLInputElement).style.borderColor = "#1B6CA8"; }}
+              onBlur={e => { (e.target as HTMLInputElement).style.borderColor = "#E2EAF4"; }}
             />
-            <button disabled style={{ padding: "9px 14px", borderRadius: 8, background: "#1B6CA8", border: "none", cursor: "not-allowed", opacity: 0.5 }}>
+            <button
+              onClick={handleSend}
+              disabled={loading || !inputVal.trim()}
+              style={{
+                padding: "9px 14px", borderRadius: 8,
+                background: loading || !inputVal.trim() ? "#E2EAF4" : "#1B6CA8",
+                border: "none", cursor: loading || !inputVal.trim() ? "not-allowed" : "pointer",
+                transition: "background 0.2s",
+                flexShrink: 0,
+              }}
+            >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
               </svg>
             </button>
-          </div>
-
-          <div style={{ padding: "10px 16px 14px", background: "white", borderTop: "1px solid #F1F5F9", textAlign: "center" }}>
-            <a
-              href="https://wa.me/919999999999?text=Hi%20Packworkz%2C%20I%27d%20like%20to%20discuss%20packaging."
-              target="_blank" rel="noopener noreferrer"
-              style={{ fontSize: 12, color: "#25D366", fontWeight: 700, textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 5 }}
-            >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="#25D366">
-                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-              </svg>
-              Prefer WhatsApp? Chat with our team →
-            </a>
           </div>
         </div>
       )}
@@ -413,26 +554,32 @@ function PackAIWidget() {
         onClick={() => setOpen(!open)}
         style={{
           position: "fixed", bottom: 24, right: 24, zIndex: 999,
-          background: open ? "#0D1B2A" : "#1B6CA8",
+          background: open ? "#0D1B2A" : "linear-gradient(135deg,#1B6CA8,#0D4F80)",
           borderRadius: 999, border: "none", cursor: "pointer",
           padding: "13px 22px",
           display: "flex", alignItems: "center", gap: 8,
-          boxShadow: "0 4px 24px rgba(27,108,168,0.35)",
-          transition: "background 0.2s, transform 0.2s",
+          boxShadow: "0 4px 24px rgba(27,108,168,0.4)",
+          transition: "background 0.2s, transform 0.15s",
         }}
-        onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = "scale(1.04)"; }}
+        onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = "scale(1.05)"; }}
         onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = "scale(1)"; }}
       >
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
           {open
             ? <><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></>
-            : <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+            : <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
           }
         </svg>
         <span style={{ color: "white", fontWeight: 800, fontSize: 14, letterSpacing: "0.04em" }}>PackAI</span>
+        {!open && <span style={{ background: "#E8A838", color: "#0D1B2A", fontSize: 9, fontWeight: 900, padding: "2px 5px", borderRadius: 4, letterSpacing: "0.05em" }}>AI</span>}
       </button>
 
-      <style>{GLOBAL_STYLES}</style>
+      <style>{GLOBAL_STYLES + `
+        @keyframes packaiDot {
+          0%, 80%, 100% { transform: scale(0.7); opacity: 0.5; }
+          40% { transform: scale(1); opacity: 1; }
+        }
+      `}</style>
     </>
   );
 }

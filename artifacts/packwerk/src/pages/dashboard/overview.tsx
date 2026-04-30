@@ -6,7 +6,7 @@ const MS = ({ icon, className = "", style }: { icon: string; className?: string;
   <span className={`material-symbols-outlined ${className}`} style={style}>{icon}</span>
 );
 
-const WHATSAPP_NUM = "919999999999";
+const WHATSAPP_NUM = "918208990366";
 
 const STATUS_CONFIG: Record<string, { label: string; bg: string; color: string }> = {
   confirmed:    { label: "IN PRODUCTION", bg: "rgba(27,108,168,0.12)",   color: "#1B6CA8" },

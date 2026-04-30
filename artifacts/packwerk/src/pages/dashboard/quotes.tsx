@@ -7,7 +7,7 @@ const MS = ({ icon, className = "", style }: { icon: string; className?: string;
   <span className={`material-symbols-outlined ${className}`} style={style}>{icon}</span>
 );
 
-const WHATSAPP_NUM = "919999999999";
+const WHATSAPP_NUM = "918208990366";
 
 function fmt(n: number) {
   return new Intl.NumberFormat("en-IN", { maximumFractionDigits: 0 }).format(n);

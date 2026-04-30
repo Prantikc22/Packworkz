@@ -3,7 +3,7 @@
 // Until then, emails send from onboarding@resend.dev with reply-to set to your domain.
 const FROM = "Packworkz <onboarding@resend.dev>";
 const REPLY_TO = "quote@packworkz.com";
-const WHATSAPP = "+91 99999 99999";
+const WHATSAPP = "+91 82089 90366";
 const SITE = "packworkz.com";
 
 async function sendEmail(body: { from: string; to: string; reply_to?: string; subject: string; html: string }) {
@@ -142,7 +142,7 @@ export async function sendQuoteConfirmation(opts: {
         </div>
 
         <p style="font-size:14px;color:#475569;line-height:1.7">
-          Questions? Reply to this email or WhatsApp us at <a href="https://wa.me/919999999999" style="color:#1B6CA8;font-weight:700">${WHATSAPP}</a>.
+          Questions? Reply to this email or WhatsApp us at <a href="https://wa.me/918208990366" style="color:#1B6CA8;font-weight:700">${WHATSAPP}</a>.
         </p>
       </div>
       ${emailFooter()}
@@ -196,7 +196,7 @@ export async function sendDesignConfirmation(opts: {
           </p>
         </div>
         <p style="font-size:14px;color:#475569;line-height:1.7">
-          Questions? Reply to this email or WhatsApp us at <a href="https://wa.me/919999999999" style="color:#1B6CA8;font-weight:700">${WHATSAPP}</a>.
+          Questions? Reply to this email or WhatsApp us at <a href="https://wa.me/918208990366" style="color:#1B6CA8;font-weight:700">${WHATSAPP}</a>.
         </p>
       </div>
       ${emailFooter()}
@@ -252,7 +252,7 @@ export async function sendSampleConfirmation(opts: {
           </p>
         </div>
         <p style="font-size:14px;color:#475569;line-height:1.7">
-          Questions? Reply to this email or WhatsApp us at <a href="https://wa.me/919999999999" style="color:#1B6CA8;font-weight:700">${WHATSAPP}</a>.
+          Questions? Reply to this email or WhatsApp us at <a href="https://wa.me/918208990366" style="color:#1B6CA8;font-weight:700">${WHATSAPP}</a>.
         </p>
       </div>
       ${emailFooter()}
@@ -297,7 +297,7 @@ export async function sendWelcomeEmail(opts: {
           <p style="font-size:13px;color:#92600A;margin:0"><strong>Important:</strong> You will be asked to change your password on first login. Please do this immediately to secure your account.</p>
         </div>
         <p style="font-size:14px;color:#475569;line-height:1.7">
-          Questions? Reply to this email or WhatsApp us at <a href="https://wa.me/919999999999" style="color:#1B6CA8;font-weight:700">${WHATSAPP}</a>.
+          Questions? Reply to this email or WhatsApp us at <a href="https://wa.me/918208990366" style="color:#1B6CA8;font-weight:700">${WHATSAPP}</a>.
         </p>
       </div>
       ${emailFooter()}

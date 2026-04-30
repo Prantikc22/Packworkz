@@ -8,7 +8,7 @@ import {
   Package, ShoppingBag, Box, Tag, Gift,
 } from "lucide-react";
 
-const WHATSAPP_NUM = "919999999999";
+const WHATSAPP_NUM = "918208990366";
 
 const CLIENT_PILLS = [
   "Zestful Foods", "Dermatica India", "NatureCraft Organics", "QuickShip Commerce",
