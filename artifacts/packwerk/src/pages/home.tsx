@@ -410,7 +410,7 @@ export default function Home() {
         {/* Product image — absolutely fills the right half, bleeds to edge */}
         <div
           className="hidden lg:block absolute top-0 bottom-0 right-0 pointer-events-none"
-          style={{ width: "52%" }}
+          style={{ width: "55%" }}
         >
           <img
             src="/images/hero-products.png"
@@ -422,6 +422,24 @@ export default function Home() {
               objectPosition: "right bottom",
               opacity: heroLoaded ? 1 : 0,
               transition: "opacity 0.9s ease",
+            }}
+          />
+          {/* Left fade */}
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              background: "linear-gradient(to right, #0f172a 0%, rgba(15,23,42,0.9) 10%, rgba(15,23,42,0.45) 26%, transparent 52%)",
+              pointerEvents: "none",
+            }}
+          />
+          {/* Top fade */}
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              background: "linear-gradient(to bottom, #0f172a 0%, rgba(15,23,42,0.6) 15%, transparent 40%)",
+              pointerEvents: "none",
             }}
           />
         </div>
