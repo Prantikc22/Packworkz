@@ -177,7 +177,7 @@ const CASE_STUDIES = [
     industry: "D2C Snacks · Mumbai",
     metric: "7 vendors → 1 platform",
     challenge: "We were managing 7 different packaging vendors for our snack range. Every month was a coordination nightmare — delays from one vendor cascaded across our entire production schedule.",
-    whatWeDid: "Consolidated all 7 SKUs onto the PackOps platform. Assigned backup vendors for each. Integrated their reorder into the dashboard with SmartStock pre-positioning.",
+    whatWeDid: "Consolidated all 7 SKUs onto the Packworkz platform. Assigned backup vendors for each. Integrated their reorder into the dashboard with SmartStock pre-positioning.",
     result: "Single point of contact for all packaging. Zero production delays in the first 6 months. Quality consistent across every batch.",
     metrics: [
       { val: "7 → 1", label: "Vendors managed" },
@@ -191,7 +191,7 @@ const CASE_STUDIES = [
     industry: "Cosmetics · Bangalore",
     metric: "₹3.8L saved in Year 1",
     challenge: "Our previous vendor's QC was self-certified. We received two batches with print registration errors that our retail partners rejected. The cost of returns was significant.",
-    whatWeDid: "Moved cosmetic jar and carton orders to PackOps. Pre-dispatch inspection with photo evidence on every batch. Design also migrated — artwork now stored on platform.",
+    whatWeDid: "Moved cosmetic jar and carton orders to Packworkz. Pre-dispatch inspection with photo evidence on every batch. Design also migrated — artwork now stored on platform.",
     result: "Zero QC rejections in 14 months. Artwork errors eliminated because print-ready files are standardised. Net saving vs previous vendor.",
     metrics: [
       { val: "0", label: "QC rejections" },
@@ -537,7 +537,7 @@ export default function Home() {
               Trusted by India's fastest-growing brands.
             </h2>
             <p style={{ color: "#475569", fontSize: 15, lineHeight: 1.75, marginBottom: 32 }}>
-              From D2C beauty &amp; wellness to FMCG and pharma — India's leading brands rely on PackOps for consistent, compliant, beautiful packaging.
+              From D2C beauty &amp; wellness to FMCG and pharma — India's leading brands rely on Packworkz for consistent, compliant, beautiful packaging.
             </p>
             <div style={{ display: "flex", gap: 36, alignItems: "center" }}>
               <div>
@@ -636,7 +636,7 @@ export default function Home() {
           </div>
 
           <p style={{ color: "#0D1B2A", fontSize: 22, fontWeight: 700, textAlign: "center", marginTop: 40 }}>
-            We built PackOps to eliminate every single one of these.
+            We built Packworkz to eliminate every single one of these.
           </p>
         </div>
       </section>
@@ -969,7 +969,7 @@ export default function Home() {
             THE HONEST COMPARISON
           </span>
           <h2 style={{ color: "#0D1B2A", fontSize: "clamp(2rem,4vw,3.25rem)", fontWeight: 700, lineHeight: 1.1, marginBottom: 16 }}>
-            Why brands switch<br />to PackOps.
+            Why brands switch<br />to Packworkz.
           </h2>
           <p style={{ color: "#64748B", fontSize: 18, maxWidth: 520, marginBottom: 48, lineHeight: 1.6 }}>
             This question comes up every time. Here is the honest answer.
@@ -980,7 +980,7 @@ export default function Home() {
             <div style={{ display: "grid", gridTemplateColumns: "2fr 1.5fr 1.5fr", borderBottom: "1px solid #E2EAF4" }}>
               <div style={{ background: "#F8F9FC", padding: "20px 28px" }} />
               <div style={{ background: "#0D1B2A", padding: "20px 28px", textAlign: "center", borderBottom: "2px solid #E8A838" }}>
-                <p style={{ color: "white", fontSize: 16, fontWeight: 700 }}>PackOps</p>
+                <p style={{ color: "white", fontSize: 16, fontWeight: 700 }}>Packworkz</p>
                 <p style={{ color: "#1B6CA8", fontSize: 11, textTransform: "uppercase", letterSpacing: "1.5px", marginTop: 4 }}>Managed Platform</p>
               </div>
               <div style={{ background: "#E8ECF2", padding: "20px 28px", textAlign: "center" }}>
@@ -1124,7 +1124,7 @@ export default function Home() {
                   Could your story be next?
                 </p>
                 <p style={{ color: "rgba(255,255,255,0.45)", fontSize: 12, lineHeight: 1.55, marginBottom: 18 }}>
-                  Join 220+ brands that simplified their packaging with PackOps.
+                  Join 220+ brands that simplified their packaging with Packworkz.
                 </p>
                 <Link href="/quote">
                   <button style={{
@@ -1452,7 +1452,7 @@ export default function Home() {
             </Link>
 
             <a
-              href={`https://wa.me/${WHATSAPP_NUM}?text=Hi%20PackOps%2C%20I%27d%20like%20to%20discuss%20packaging.`}
+              href={`https://wa.me/${WHATSAPP_NUM}?text=Hi%20Packworkz%2C%20I%27d%20like%20to%20discuss%20packaging.`}
               target="_blank" rel="noopener noreferrer"
             >
               <button className="btn-fill btn-outline-white px-11 py-5 text-base">

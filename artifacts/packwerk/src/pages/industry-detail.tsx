@@ -57,7 +57,7 @@ const INDUSTRY_DATA: Record<string, {
       headline: "Revitalizing Organic Harvest: A 40% Extension in Shelf Life.",
       highlight: "A 40% Extension in Shelf Life.",
       body: "By implementing our proprietary tri-layer barrier technology, Organic Harvest reduced atmospheric degradation by 63% for their premium tea line, enabling global shipping without quality compromise.",
-      quote: "PackOps didn't just give us a box; they gave us a logistical advantage that redefined our entire retail strategy.",
+      quote: "Packworkz didn't just give us a box; they gave us a logistical advantage that redefined our entire retail strategy.",
       author: "Marcus Thomas, Supply Chain Director",
       stat1: { val: "+40%", label: "FRESHNESS DURATION" },
       stat2: { val: "-22%", label: "CARBON FOOTPRINT" },

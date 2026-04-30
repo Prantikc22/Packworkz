@@ -206,7 +206,7 @@ export default function DashboardQuotes() {
                           <span><CheckCircle className="w-4 h-4 inline mr-2" />Accept Quote</span>
                         </button>
                         <a
-                          href={`https://wa.me/${WHATSAPP_NUM}?text=Hi+PackOps%2C+I+have+a+question+about+quote+${quote.quote_id}`}
+                          href={`https://wa.me/${WHATSAPP_NUM}?text=Hi+Packworkz%2C+I+have+a+question+about+quote+${quote.quote_id}`}
                           target="_blank" rel="noopener noreferrer">
                           <button className="btn-fill btn-outline-dark px-5 py-3 text-[13px]">
                             <span><MessageCircle className="w-4 h-4 inline mr-2" />Ask a Question</span>
@@ -237,7 +237,7 @@ export default function DashboardQuotes() {
                         </div>
                       </div>
                       <a
-                        href={`https://wa.me/${WHATSAPP_NUM}?text=Hi+PackOps%2C+I%27m+following+up+on+quote+${quote.quote_id}`}
+                        href={`https://wa.me/${WHATSAPP_NUM}?text=Hi+Packworkz%2C+I%27m+following+up+on+quote+${quote.quote_id}`}
                         target="_blank" rel="noopener noreferrer">
                         <button className="flex items-center gap-2 px-4 py-2.5 border border-[#E7E8EB] text-[12px] font-black hover:border-[#25D366] hover:text-[#25D366] transition-all" style={{ color: "#64748B" }}>
                           <MS icon="chat" className="text-base" /> WhatsApp Follow Up

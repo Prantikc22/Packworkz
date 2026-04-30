@@ -1,4 +1,4 @@
-// ── PackOps SKU Catalog — 33 SKUs across 10 categories ──────────────────────
+// ── Packworkz SKU Catalog — 33 SKUs across 10 categories ──────────────────────
 // Each SKU has variants (decision-oriented options) and customization fields
 
 export type VariantGroup = {

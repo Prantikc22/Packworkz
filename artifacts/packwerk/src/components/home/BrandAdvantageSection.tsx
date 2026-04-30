@@ -131,7 +131,7 @@ export default function BrandAdvantageSection() {
               Why the best packaging brands choose a platform over a vendor.
             </h2>
             <p style={{ color: "#64748B", fontSize: 15, lineHeight: 1.7, marginBottom: 48, maxWidth: 400 }}>
-              PackOps is not another vendor. It is a managed platform with backup coverage, owned QC, global compliance, and real-time visibility.
+              Packworkz is not another vendor. It is a managed platform with backup coverage, owned QC, global compliance, and real-time visibility.
             </p>
 
             {/* Big animated stat */}

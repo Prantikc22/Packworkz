@@ -21,6 +21,7 @@ export const designRequestsTable = pgTable("design_requests", {
   razorpay_payment_id: text("razorpay_payment_id"),
   status: text("status").notNull().default("paid"),
   designer_notes: text("designer_notes"),
+  payment_link: text("payment_link"),
   output_files: text("output_files").array(),
   created_at: timestamp("created_at", { withTimezone: true }).defaultNow(),
 });
@@ -37,6 +38,8 @@ export const sampleRequestsTable = pgTable("sample_requests", {
   amount_paid: integer("amount_paid").notNull(),
   razorpay_payment_id: text("razorpay_payment_id"),
   status: text("status").notNull().default("paid"),
+  admin_notes: text("admin_notes"),
+  payment_link: text("payment_link"),
   adjusted_to_order_id: uuid("adjusted_to_order_id"),
   created_at: timestamp("created_at", { withTimezone: true }).defaultNow(),
 });

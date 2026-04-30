@@ -3,7 +3,7 @@ import { useGetDashboardProfile, useUpdateDashboardProfile } from "@workspace/ap
 import { Loader2, CheckCircle, MessageCircle, Mail } from "lucide-react";
 
 const WHATSAPP_NUM = "919999999999";
-const SUPPORT_EMAIL = "support@packops.in";
+const SUPPORT_EMAIL = "support@packworkz.com";
 
 const INDIA_STATES = [
   "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh",
@@ -203,7 +203,7 @@ export default function DashboardProfile() {
         <p className="text-[11px] font-black uppercase tracking-widest mb-4" style={{ color: "#94A3B8" }}>NEED HELP?</p>
         <div className="flex flex-col sm:flex-row gap-3">
           <a
-            href={`https://wa.me/${WHATSAPP_NUM}?text=Hi+PackOps%2C+I+need+help+with+my+account.`}
+            href={`https://wa.me/${WHATSAPP_NUM}?text=Hi+Packworkz%2C+I+need+help+with+my+account.`}
             target="_blank" rel="noopener noreferrer">
             <button className="flex items-center gap-3 px-5 py-3 border border-[#E7E8EB] text-[13px] font-bold hover:border-[#25D366] hover:text-[#25D366] transition-all" style={{ color: "#64748B" }}>
               <MessageCircle className="w-4 h-4" />

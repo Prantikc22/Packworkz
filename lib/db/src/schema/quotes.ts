@@ -16,9 +16,13 @@ export const quoteRequestsTable = pgTable("quote_requests", {
   notes: text("notes"),
   total_estimated_min: numeric("total_estimated_min"),
   total_estimated_max: numeric("total_estimated_max"),
+  artwork_option: text("artwork_option"),
+  sample_option: text("sample_option"),
   status: text("status").notNull().default("submitted"),
   user_id: uuid("user_id"),
   rejection_reason: text("rejection_reason"),
+  admin_notes: text("admin_notes"),
+  payment_link: text("payment_link"),
   created_at: timestamp("created_at", { withTimezone: true }).defaultNow(),
 });
 

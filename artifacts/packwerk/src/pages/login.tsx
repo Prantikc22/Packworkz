@@ -19,10 +19,14 @@ export default function Login() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     loginMutation.mutate({ data: { email, password } }, {
-      onSuccess: (data) => {
+      onSuccess: (data: any) => {
         localStorage.setItem("packwerk_access_token", data.access_token);
         localStorage.setItem("packwerk_user", JSON.stringify(data.user));
-        setLocation("/dashboard");
+        if (data.must_change_password) {
+          setLocation("/change-password");
+        } else {
+          setLocation("/dashboard");
+        }
       },
       onError: () => {
         toast({

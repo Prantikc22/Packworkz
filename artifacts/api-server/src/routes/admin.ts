@@ -4,6 +4,7 @@ import { eq, sql } from "drizzle-orm";
 import { requireAdmin, hashPassword, generateTempPassword } from "../lib/auth";
 import { generateId } from "../lib/generateId";
 import { sendWhatsApp } from "../lib/whatsapp";
+import { sendWelcomeEmail } from "../lib/email";
 
 const router: IRouter = Router();
 
@@ -41,6 +42,48 @@ router.put("/admin/quotes/:id/status", async (req, res): Promise<void> => {
   }
 
   res.json({ success: true, quote: updated });
+});
+
+router.put("/admin/quotes/:id/notes", async (req, res): Promise<void> => {
+  const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
+  const { admin_notes, payment_link } = req.body;
+
+  const [updated] = await db
+    .update(quoteRequestsTable)
+    .set({ admin_notes, payment_link })
+    .where(eq(quoteRequestsTable.id, id))
+    .returning();
+
+  if (!updated) { res.status(404).json({ error: "Quote not found" }); return; }
+  res.json({ success: true, quote: updated });
+});
+
+router.put("/admin/samples/:id/update", async (req, res): Promise<void> => {
+  const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
+  const { status, admin_notes, payment_link } = req.body;
+
+  const [updated] = await db
+    .update(sampleRequestsTable)
+    .set({ ...(status && { status }), admin_notes, payment_link })
+    .where(eq(sampleRequestsTable.id, id))
+    .returning();
+
+  if (!updated) { res.status(404).json({ error: "Sample not found" }); return; }
+  res.json({ success: true, sample: updated });
+});
+
+router.put("/admin/designs/:id/notes", async (req, res): Promise<void> => {
+  const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
+  const { designer_notes, payment_link } = req.body;
+
+  const [updated] = await db
+    .update(designRequestsTable)
+    .set({ designer_notes, payment_link })
+    .where(eq(designRequestsTable.id, id))
+    .returning();
+
+  if (!updated) { res.status(404).json({ error: "Design not found" }); return; }
+  res.json({ success: true, design: updated });
 });
 
 router.post("/admin/quotes/:id/accept", async (req, res): Promise<void> => {
@@ -261,10 +304,10 @@ router.get("/admin/users", async (_req, res): Promise<void> => {
 });
 
 router.post("/admin/users", async (req, res): Promise<void> => {
-  const { email, company_name, contact_name, phone, password, gstin, country } = req.body;
+  const { email, company_name, contact_name, phone, password, gstin, country, send_welcome } = req.body;
 
-  if (!email || !company_name || !password) {
-    res.status(400).json({ error: "email, company_name and password are required" });
+  if (!email || !company_name) {
+    res.status(400).json({ error: "email and company_name are required" });
     return;
   }
 
@@ -279,6 +322,9 @@ router.post("/admin/users", async (req, res): Promise<void> => {
     return;
   }
 
+  // Generate a temp password if none provided
+  const tempPassword = password || generateTempPassword();
+
   const [newUser] = await db
     .insert(usersTable)
     .values({
@@ -288,7 +334,8 @@ router.post("/admin/users", async (req, res): Promise<void> => {
       phone: phone ?? "",
       gstin: gstin ?? "",
       country: country ?? "India",
-      password_hash: hashPassword(password),
+      password_hash: hashPassword(tempPassword),
+      must_change_password: true,
       orders_completed: 0,
       credit_eligible: false,
       credit_limit: "0",
@@ -301,7 +348,18 @@ router.post("/admin/users", async (req, res): Promise<void> => {
       created_at: usersTable.created_at,
     });
 
-  res.status(201).json({ success: true, user: newUser });
+  // Send welcome email if requested
+  if (send_welcome !== false) {
+    const loginUrl = `https://${process.env.REPLIT_DOMAINS?.split(",")[0] || "packworkz.com"}/login`;
+    sendWelcomeEmail({
+      to: email,
+      name: contact_name || company_name,
+      tempPassword,
+      loginUrl,
+    }).catch(err => console.error("[email] Welcome email failed:", err));
+  }
+
+  res.status(201).json({ success: true, user: newUser, temp_password: tempPassword });
 });
 
 router.put("/admin/users/:id/password", async (req, res): Promise<void> => {

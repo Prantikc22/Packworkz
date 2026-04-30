@@ -219,7 +219,7 @@ function IndustriesMenu() {
           ))}
         </div>
 
-        {/* Right: New to PackOps card */}
+        {/* Right: New to Packworkz card */}
         <div style={{
           background: "#F8F9FC", borderRadius: 12,
           border: "1px solid #E2EAF4",
@@ -323,7 +323,7 @@ function NavItem({
 
 // ── PackAI Widget ─────────────────────────────────────────────────────────────
 const PACK_AI_MESSAGES = [
-  { from: "ai", text: "Hi! I'm PackAI — your packaging advisor for PackOps." },
+  { from: "ai", text: "Hi! I'm PackAI — your packaging advisor for Packworkz." },
   { from: "ai", text: "I can help you find the right SKU, estimate costs, check MOQs, understand certifications, and more." },
   { from: "ai", text: "What are you looking to pack? Tell me your product and I'll point you in the right direction." },
 ];
@@ -396,7 +396,7 @@ function PackAIWidget() {
 
           <div style={{ padding: "10px 16px 14px", background: "white", borderTop: "1px solid #F1F5F9", textAlign: "center" }}>
             <a
-              href="https://wa.me/919999999999?text=Hi%20PackOps%2C%20I%27d%20like%20to%20discuss%20packaging."
+              href="https://wa.me/919999999999?text=Hi%20Packworkz%2C%20I%27d%20like%20to%20discuss%20packaging."
               target="_blank" rel="noopener noreferrer"
               style={{ fontSize: 12, color: "#25D366", fontWeight: 700, textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 5 }}
             >
@@ -472,7 +472,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
             color: "white", fontFamily: "'Space Grotesk', sans-serif",
             cursor: "pointer", userSelect: "none",
           }}>
-            PackOps
+            Packworkz
           </span>
         </Link>
 
@@ -554,11 +554,11 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
       <footer className="px-8 md:px-16 py-16 grid grid-cols-2 md:grid-cols-4 gap-10 text-sm border-t"
         style={{ background: "#020617", borderColor: "rgba(255,255,255,0.08)", fontFamily: "'Space Grotesk', sans-serif" }}>
         <div className="col-span-2 md:col-span-1 flex flex-col gap-4">
-          <span className="text-xl font-black text-white">PackOps</span>
+          <span className="text-xl font-black text-white">Packworkz</span>
           <p className="text-slate-500 text-sm leading-relaxed max-w-xs">
             High-performance industrial packaging management for the modern enterprise.
           </p>
-          <p className="text-slate-600 text-xs">© {new Date().getFullYear()} PackOps India. All rights reserved.</p>
+          <p className="text-slate-600 text-xs">© {new Date().getFullYear()} Packworkz India. All rights reserved.</p>
         </div>
         <div className="flex flex-col gap-3">
           <h4 className="font-bold uppercase tracking-widest text-xs text-white">Products</h4>

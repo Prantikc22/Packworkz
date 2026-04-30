@@ -15,6 +15,7 @@ import Quote from "@/pages/quote";
 import Design from "@/pages/design";
 import Samples from "@/pages/samples";
 import Login from "@/pages/login";
+import ChangePassword from "@/pages/change-password";
 import Industries from "@/pages/industries";
 import IndustryDetail from "@/pages/industry-detail";
 import HowItWorks from "@/pages/how-it-works";
@@ -86,6 +87,7 @@ function Router() {
       <PublicRoute path="/design" component={Design} layout={PublicLayout} />
       <PublicRoute path="/samples" component={Samples} layout={PublicLayout} />
       <PublicRoute path="/login" component={Login} layout={PublicLayout} />
+      <ProtectedRoute path="/change-password" component={ChangePassword} layout={PublicLayout} />
       <PublicRoute path="/industries" component={Industries} layout={PublicLayout} />
       <PublicRoute path="/industries/:slug" component={IndustryDetail} layout={PublicLayout} />
       <PublicRoute path="/how-it-works" component={HowItWorks} layout={PublicLayout} />

@@ -66,7 +66,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
       <aside className="hidden md:flex flex-col w-64 bg-white border-r fixed inset-y-0 z-10" style={{ borderColor: "#E7E8EB" }}>
         <div className="px-6 pt-6 pb-4 border-b" style={{ borderColor: "#E7E8EB" }}>
           <Link href="/">
-            <span className="text-lg font-black tracking-tight cursor-pointer" style={{ fontFamily: "'Space Grotesk', sans-serif", color: "#0D1B2A" }}>PackOps</span>
+            <span className="text-lg font-black tracking-tight cursor-pointer" style={{ fontFamily: "'Space Grotesk', sans-serif", color: "#0D1B2A" }}>Packworkz</span>
           </Link>
         </div>
 
@@ -113,14 +113,14 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
             </SheetTrigger>
             <SheetContent side="left" className="w-64 p-0 bg-white">
               <div className="px-6 pt-6 pb-4 border-b" style={{ borderColor: "#E7E8EB" }}>
-                <span className="text-lg font-black" style={{ fontFamily: "'Space Grotesk', sans-serif", color: "#0D1B2A" }}>PackOps</span>
+                <span className="text-lg font-black" style={{ fontFamily: "'Space Grotesk', sans-serif", color: "#0D1B2A" }}>Packworkz</span>
               </div>
               <nav className="px-3 pt-4 space-y-0.5">
                 <NavLinks />
               </nav>
             </SheetContent>
           </Sheet>
-          <span className="font-black text-sm" style={{ fontFamily: "'Space Grotesk', sans-serif", color: "#0D1B2A" }}>PackOps</span>
+          <span className="font-black text-sm" style={{ fontFamily: "'Space Grotesk', sans-serif", color: "#0D1B2A" }}>Packworkz</span>
 
           {/* Dashboard top nav (desktop) */}
           <Link href="/quote">

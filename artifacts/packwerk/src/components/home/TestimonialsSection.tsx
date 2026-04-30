@@ -8,7 +8,7 @@ const REVIEWS = [
     city: "Mumbai",
     industry: "D2C Snacks",
     stars: 5,
-    text: "Switched from 7 vendors to PackOps in January. We haven't had a single delayed shipment since. The production tracking alone saves me 3 hours a week.",
+    text: "Switched from 7 vendors to Packworkz in January. We haven't had a single delayed shipment since. The production tracking alone saves me 3 hours a week.",
     metric: "7 vendors → 1 platform",
   },
   {
@@ -18,7 +18,7 @@ const REVIEWS = [
     city: "Bangalore",
     industry: "Cosmetics D2C",
     stars: 5,
-    text: "Our previous vendor was passing defective cartons consistently. PackOps's pre-dispatch QC caught everything before it reached our 3PL. ₹3.8L saved in Year 1.",
+    text: "Our previous vendor was passing defective cartons consistently. Packworkz's pre-dispatch QC caught everything before it reached our 3PL. ₹3.8L saved in Year 1.",
     metric: "₹3.8L saved in Year 1",
   },
   {
@@ -48,7 +48,7 @@ const REVIEWS = [
     city: "Hyderabad",
     industry: "E-commerce",
     stars: 5,
-    text: "We needed 8 different SKUs for Q4. PackOps sourced, sampled, and delivered all 8 in under 3 weeks. Our previous record was 10 weeks for 3 SKUs.",
+    text: "We needed 8 different SKUs for Q4. Packworkz sourced, sampled, and delivered all 8 in under 3 weeks. Our previous record was 10 weeks for 3 SKUs.",
     metric: "8 SKUs in 3 weeks",
   },
   {
@@ -78,7 +78,7 @@ const REVIEWS = [
     city: "Surat",
     industry: "Pharmaceutical",
     stars: 5,
-    text: "We needed FDA-grade aluminum foil laminate for our US export SKU. PackOps had a certified manufacturer assigned in 48 hours. No other platform even understood the brief.",
+    text: "We needed FDA-grade aluminum foil laminate for our US export SKU. Packworkz had a certified manufacturer assigned in 48 hours. No other platform even understood the brief.",
     metric: "US FDA-grade sourcing in 48hrs",
   },
   {
@@ -98,7 +98,7 @@ const REVIEWS = [
     city: "Jaipur",
     industry: "Sustainable Fashion",
     stars: 5,
-    text: "All 3 of our packaging SKUs now have full EPR documentation. PackOps handled registration, tonnage calculation, and certificates. We sailed through our last compliance audit.",
+    text: "All 3 of our packaging SKUs now have full EPR documentation. Packworkz handled registration, tonnage calculation, and certificates. We sailed through our last compliance audit.",
     metric: "EPR compliance. Zero audit issues.",
   },
   {
@@ -108,7 +108,7 @@ const REVIEWS = [
     city: "Nagpur",
     industry: "FMCG Exports",
     stars: 5,
-    text: "We export to UAE and Saudi. PackOps gave us SASO-ready paperwork with every order, pre-formatted. Our Dubai distributor told us we were the easiest Indian brand to clear customs.",
+    text: "We export to UAE and Saudi. Packworkz gave us SASO-ready paperwork with every order, pre-formatted. Our Dubai distributor told us we were the easiest Indian brand to clear customs.",
     metric: "SASO-ready docs. Zero customs delays.",
   },
   {
@@ -118,7 +118,7 @@ const REVIEWS = [
     city: "Bhopal",
     industry: "Pet FMCG",
     stars: 5,
-    text: "Compostable pouches for our dog treat range. We weren't sure if it was viable at our scale (2,000 units/month). PackOps sourced a manufacturer who said yes without MOQ compromise.",
+    text: "Compostable pouches for our dog treat range. We weren't sure if it was viable at our scale (2,000 units/month). Packworkz sourced a manufacturer who said yes without MOQ compromise.",
     metric: "Compostable. 2,000 unit/month scale.",
   },
 ];

@@ -48,6 +48,8 @@ router.post("/quotes", async (req, res): Promise<void> => {
       notes,
       total_estimated_min: total_estimated_min?.toString(),
       total_estimated_max: total_estimated_max?.toString(),
+      artwork_option: artwork_option || null,
+      sample_option: sample_option || null,
       status: "submitted",
     })
     .returning();
@@ -57,6 +59,9 @@ router.post("/quotes", async (req, res): Promise<void> => {
     ? items.map((i: { product_name?: string; quantity?: number }) => `${i.product_name} x${i.quantity}`).join(", ")
     : "items";
 
+  const resolvedArtwork = artwork_option || firstItem?.artwork_status || "none";
+  const resolvedSample = sample_option || (firstItem?.sample_requested ? firstItem?.sample_tier : "none");
+
   // Send confirmation email (non-blocking)
   sendQuoteConfirmation({
     to: email,
@@ -65,10 +70,14 @@ router.post("/quotes", async (req, res): Promise<void> => {
     quoteId,
     productName: firstItem?.product_name || "Packaging",
     qty: firstItem?.quantity || 0,
-    artworkOption: artwork_option || firstItem?.artwork_status || "none",
-    sampleOption: sample_option || (firstItem?.sample_requested ? firstItem?.sample_tier : "none"),
+    artworkOption: resolvedArtwork,
+    sampleOption: resolvedSample,
     designPaid: !!design_paid,
     samplePaid: !!sample_paid,
+    pincode: delivery_pincode,
+    notes: notes || undefined,
+    estimatedMin: total_estimated_min ? Number(total_estimated_min) : undefined,
+    estimatedMax: total_estimated_max ? Number(total_estimated_max) : undefined,
   }).catch(err => console.error("[email] Failed to send confirmation:", err));
 
   // Send WhatsApp notification to team (non-blocking)

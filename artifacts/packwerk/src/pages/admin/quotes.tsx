@@ -1,37 +1,248 @@
 import { useState } from "react";
-import { useAdminListQuotes, useAdminUpdateQuoteStatus } from "@workspace/api-client-react";
-import { Loader2, ChevronDown } from "lucide-react";
-import { formatINR, getStatusColor } from "@/lib/format";
-import { Button } from "@/components/ui/button";
+import { useAdminListQuotes } from "@workspace/api-client-react";
+import { Loader2, ChevronDown, ChevronUp, ExternalLink, MessageSquare, Link2, Save } from "lucide-react";
+import { formatINR } from "@/lib/format";
 import { useToast } from "@/hooks/use-toast";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 
 const STATUS_OPTIONS = ["submitted", "reviewing", "quoted", "accepted", "rejected"];
 
-export default function AdminQuotes() {
-  const [statusFilter, setStatusFilter] = useState("submitted");
-  const { data: quotes, isLoading, refetch } = useAdminListQuotes({ status: statusFilter !== "all" ? statusFilter : undefined });
-  const { mutate: updateQuote } = useAdminUpdateQuoteStatus();
+function apiPut(path: string, body: object) {
+  const adminKey = localStorage.getItem("packwerk_admin_key") || "";
+  return fetch(`/api${path}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json", "x-admin-key": adminKey },
+    body: JSON.stringify(body),
+  }).then(r => r.json());
+}
+
+function QuoteRow({ q, onRefetch }: { q: any; onRefetch: () => void }) {
+  const [open, setOpen] = useState(false);
+  const [status, setStatus] = useState(q.status);
+  const [adminNotes, setAdminNotes] = useState(q.admin_notes || "");
+  const [paymentLink, setPaymentLink] = useState(q.payment_link || "");
+  const [savingNotes, setSavingNotes] = useState(false);
+  const [savingStatus, setSavingStatus] = useState(false);
   const { toast } = useToast();
 
-  const changeStatus = (quoteId: string, status: string) => {
-    updateQuote({ id: quoteId, adminUpdateQuoteStatusBody: { status } }, {
-      onSuccess: () => {
-        toast({ title: `Quote updated to ${status}` });
-        refetch();
-      },
-    });
+  const items: any[] = Array.isArray(q.items) ? q.items : [];
+  const firstItem = items[0] || {};
+
+  const handleStatusChange = async (newStatus: string) => {
+    setSavingStatus(true);
+    try {
+      await apiPut(`/admin/quotes/${q.id}/status`, { status: newStatus });
+      setStatus(newStatus);
+      toast({ title: `Status updated to "${newStatus}"` });
+      onRefetch();
+    } catch {
+      toast({ variant: "destructive", title: "Failed to update status" });
+    } finally { setSavingStatus(false); }
   };
+
+  const handleSaveNotes = async () => {
+    setSavingNotes(true);
+    try {
+      await apiPut(`/admin/quotes/${q.id}/notes`, { admin_notes: adminNotes, payment_link: paymentLink });
+      toast({ title: "Notes & payment link saved" });
+      onRefetch();
+    } catch {
+      toast({ variant: "destructive", title: "Failed to save" });
+    } finally { setSavingNotes(false); }
+  };
+
+  const statusColor = (s: string) => {
+    const map: Record<string, string> = {
+      submitted: "bg-blue-50 text-blue-700 border border-blue-200",
+      reviewing: "bg-amber-50 text-amber-700 border border-amber-200",
+      quoted: "bg-purple-50 text-purple-700 border border-purple-200",
+      accepted: "bg-green-50 text-green-700 border border-green-200",
+      rejected: "bg-red-50 text-red-700 border border-red-200",
+    };
+    return map[s] || "bg-slate-100 text-slate-600";
+  };
+
+  return (
+    <>
+      <tr
+        className="border-b border-[#E2EAF4] hover:bg-[#F8F9FC] cursor-pointer"
+        onClick={() => setOpen(o => !o)}
+      >
+        <td className="p-4 font-mono text-[#1B6CA8] text-sm font-bold">{q.quote_id}</td>
+        <td className="p-4">
+          <div className="font-semibold text-[#0D1B2A]">{q.company_name}</div>
+          <div className="text-xs text-[#64748B]">{q.contact_name} · {q.email}</div>
+        </td>
+        <td className="p-4 text-[#64748B] text-sm">
+          {firstItem.product_name || "—"}
+          {items.length > 1 && <span className="text-xs text-slate-400"> +{items.length - 1} more</span>}
+        </td>
+        <td className="p-4 text-sm font-semibold text-[#0D1B2A]">
+          {q.total_estimated_min ? `${formatINR(Number(q.total_estimated_min))} – ${formatINR(Number(q.total_estimated_max))}` : "—"}
+        </td>
+        <td className="p-4">
+          <span className={`px-2 py-1 rounded text-xs font-semibold ${statusColor(status)}`}>{status}</span>
+        </td>
+        <td className="p-4 text-xs text-[#64748B]">
+          {q.created_at ? new Date(q.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }) : "—"}
+        </td>
+        <td className="p-4 text-[#64748B]">
+          {open ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+        </td>
+      </tr>
+
+      {open && (
+        <tr className="border-b border-[#E2EAF4]">
+          <td colSpan={7} className="p-0">
+            <div className="bg-[#F8F9FC] border-t border-[#E2EAF4] p-6 space-y-6">
+              {/* Full quote details */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="bg-white rounded-lg border border-[#E2EAF4] p-4">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-[#94A3B8] mb-3">Contact Details</h4>
+                  <dl className="space-y-1.5 text-sm">
+                    <div className="flex justify-between"><dt className="text-[#64748B]">Name</dt><dd className="font-medium text-[#0D1B2A]">{q.contact_name || "—"}</dd></div>
+                    <div className="flex justify-between"><dt className="text-[#64748B]">Company</dt><dd className="font-medium text-[#0D1B2A]">{q.company_name || "—"}</dd></div>
+                    <div className="flex justify-between"><dt className="text-[#64748B]">Email</dt><dd className="font-medium text-[#1B6CA8]"><a href={`mailto:${q.email}`}>{q.email}</a></dd></div>
+                    <div className="flex justify-between"><dt className="text-[#64748B]">Phone</dt><dd className="font-medium text-[#0D1B2A]">{q.phone || "—"}</dd></div>
+                    <div className="flex justify-between"><dt className="text-[#64748B]">Pincode</dt><dd className="font-medium text-[#0D1B2A]">{q.delivery_pincode || "—"}</dd></div>
+                  </dl>
+                </div>
+
+                <div className="bg-white rounded-lg border border-[#E2EAF4] p-4">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-[#94A3B8] mb-3">Product Details</h4>
+                  {items.map((item: any, i: number) => (
+                    <div key={i} className="text-sm mb-2 pb-2 border-b border-[#E2EAF4] last:border-0">
+                      <div className="font-semibold text-[#0D1B2A]">{item.product_name || item.product_id || "—"}</div>
+                      <div className="text-[#64748B] mt-0.5">
+                        Qty: <span className="font-medium">{item.quantity?.toLocaleString()}</span>
+                        {item.artwork_status && <> · Artwork: <span className="font-medium">{item.artwork_status}</span></>}
+                      </div>
+                    </div>
+                  ))}
+                  <dl className="space-y-1 text-sm mt-2">
+                    <div className="flex justify-between"><dt className="text-[#64748B]">Artwork</dt><dd className="font-medium text-[#0D1B2A]">{q.artwork_option || "—"}</dd></div>
+                    <div className="flex justify-between"><dt className="text-[#64748B]">Sample</dt><dd className="font-medium text-[#0D1B2A]">{q.sample_option || "—"}</dd></div>
+                    <div className="flex justify-between"><dt className="text-[#64748B]">Timeline</dt><dd className="font-medium text-[#0D1B2A]">{q.preferred_timeline || "standard"}</dd></div>
+                  </dl>
+                </div>
+
+                <div className="bg-white rounded-lg border border-[#E2EAF4] p-4">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-[#94A3B8] mb-3">Budget & Notes</h4>
+                  <dl className="space-y-1.5 text-sm">
+                    <div className="flex justify-between">
+                      <dt className="text-[#64748B]">Est. Budget</dt>
+                      <dd className="font-medium text-[#0D1B2A]">
+                        {q.total_estimated_min
+                          ? `${formatINR(Number(q.total_estimated_min))} – ${formatINR(Number(q.total_estimated_max))}`
+                          : "—"}
+                      </dd>
+                    </div>
+                  </dl>
+                  {q.notes && (
+                    <div className="mt-3 p-3 bg-amber-50 border border-amber-200 rounded text-sm text-amber-800">
+                      <span className="font-semibold">Client Notes: </span>{q.notes}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Status + Admin actions */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="bg-white rounded-lg border border-[#E2EAF4] p-4">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-[#94A3B8] mb-3 flex items-center gap-2">
+                    <ChevronDown className="w-3.5 h-3.5" /> Update Status
+                  </h4>
+                  <div className="flex flex-wrap gap-2">
+                    {STATUS_OPTIONS.map(s => (
+                      <button
+                        key={s}
+                        onClick={() => handleStatusChange(s)}
+                        disabled={status === s || savingStatus}
+                        className="px-3 py-1.5 rounded text-xs font-semibold border transition-all disabled:opacity-40"
+                        style={{
+                          background: status === s ? "#0D1B2A" : "white",
+                          color: status === s ? "white" : "#374151",
+                          borderColor: status === s ? "#0D1B2A" : "#E2EAF4",
+                        }}
+                      >
+                        {savingStatus && status !== s ? "" : s}
+                        {savingStatus && <Loader2 className="w-3 h-3 animate-spin inline ml-1" />}
+                      </button>
+                    ))}
+                  </div>
+
+                  <div className="mt-4">
+                    <a
+                      href={`https://wa.me/${q.phone?.replace(/\D/g, "")}?text=Hi+${encodeURIComponent(q.contact_name || "")},+regarding+your+Packworkz+quote+${q.quote_id}+—+`}
+                      target="_blank" rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded text-xs font-bold bg-green-500 text-white hover:bg-green-600 transition-colors"
+                    >
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                      WhatsApp Client
+                    </a>
+                  </div>
+                </div>
+
+                <div className="bg-white rounded-lg border border-[#E2EAF4] p-4">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-[#94A3B8] mb-3 flex items-center gap-2">
+                    <MessageSquare className="w-3.5 h-3.5" /> Admin Notes & Payment Link
+                  </h4>
+                  <div className="space-y-3">
+                    <div>
+                      <label className="text-xs font-medium text-[#64748B] mb-1 block">Internal Notes</label>
+                      <textarea
+                        value={adminNotes}
+                        onChange={e => setAdminNotes(e.target.value)}
+                        placeholder="Add internal notes for the team…"
+                        className="w-full border border-[#E2EAF4] rounded px-3 py-2 text-sm resize-none h-20 focus:outline-none focus:border-[#1B6CA8] bg-[#F8F9FC]"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-xs font-medium text-[#64748B] mb-1 block flex items-center gap-1"><Link2 className="w-3 h-3" /> Payment Link (send to client)</label>
+                      <input
+                        type="url"
+                        value={paymentLink}
+                        onChange={e => setPaymentLink(e.target.value)}
+                        placeholder="https://rzp.io/l/…"
+                        className="w-full border border-[#E2EAF4] rounded px-3 py-2 text-sm focus:outline-none focus:border-[#1B6CA8] bg-[#F8F9FC]"
+                      />
+                      {paymentLink && (
+                        <a href={paymentLink} target="_blank" rel="noopener noreferrer" className="text-xs text-[#1B6CA8] flex items-center gap-1 mt-1 hover:underline">
+                          <ExternalLink className="w-3 h-3" /> Verify link
+                        </a>
+                      )}
+                    </div>
+                    <button
+                      onClick={handleSaveNotes}
+                      disabled={savingNotes}
+                      className="flex items-center gap-2 px-4 py-2 rounded text-xs font-bold bg-[#0D1B2A] text-white hover:bg-[#1B6CA8] transition-colors disabled:opacity-60"
+                    >
+                      {savingNotes ? <Loader2 className="w-3 h-3 animate-spin" /> : <Save className="w-3 h-3" />}
+                      Save
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </td>
+        </tr>
+      )}
+    </>
+  );
+}
+
+export default function AdminQuotes() {
+  const [statusFilter, setStatusFilter] = useState("submitted");
+  const { data: quotes, isLoading, refetch } = useAdminListQuotes({
+    status: statusFilter !== "all" ? statusFilter : undefined,
+  });
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-[#0D1B2A]">Quote Requests</h1>
+        <div>
+          <h1 className="text-2xl font-bold text-[#0D1B2A]">Quote Requests</h1>
+          <p className="text-sm text-[#64748B] mt-1">Click any row to expand full details, update status, and add notes.</p>
+        </div>
         <div className="flex gap-2 flex-wrap">
           {["all", ...STATUS_OPTIONS].map((s) => (
             <button
@@ -59,46 +270,17 @@ export default function AdminQuotes() {
             <thead className="bg-[#F8F9FC] border-b border-[#E2EAF4]">
               <tr>
                 <th className="text-left p-4 font-semibold text-[#0D1B2A]">Quote ID</th>
-                <th className="text-left p-4 font-semibold text-[#0D1B2A]">Company</th>
-                <th className="text-left p-4 font-semibold text-[#0D1B2A]">Items</th>
-                <th className="text-left p-4 font-semibold text-[#0D1B2A]">Budget</th>
+                <th className="text-left p-4 font-semibold text-[#0D1B2A]">Client</th>
+                <th className="text-left p-4 font-semibold text-[#0D1B2A]">Product</th>
+                <th className="text-left p-4 font-semibold text-[#0D1B2A]">Est. Budget</th>
                 <th className="text-left p-4 font-semibold text-[#0D1B2A]">Status</th>
                 <th className="text-left p-4 font-semibold text-[#0D1B2A]">Date</th>
-                <th className="text-left p-4 font-semibold text-[#0D1B2A]">Actions</th>
+                <th className="p-4"></th>
               </tr>
             </thead>
             <tbody>
-              {quotes.map((q: any) => (
-                <tr key={q.id} className="border-b border-[#E2EAF4] hover:bg-[#F8F9FC]">
-                  <td className="p-4 font-mono text-[#1B6CA8]">{q.quote_id}</td>
-                  <td className="p-4 font-medium text-[#0D1B2A]">{q.company_name || q.user_id}</td>
-                  <td className="p-4 text-[#64748B]">{Array.isArray(q.items) ? q.items.length : "—"} item(s)</td>
-                  <td className="p-4 font-semibold text-[#0D1B2A]">
-                    {q.budget_inr ? formatINR(Number(q.budget_inr)) : "—"}
-                  </td>
-                  <td className="p-4">
-                    <span className={`px-2 py-1 rounded text-xs font-medium ${getStatusColor(q.status)}`}>
-                      {q.status.replace("_", " ").replace(/\b\w/g, (l: string) => l.toUpperCase())}
-                    </span>
-                  </td>
-                  <td className="p-4 text-[#64748B]">{new Date(q.created_at).toLocaleDateString("en-IN")}</td>
-                  <td className="p-4">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button size="sm" variant="outline" className="border-[#E2EAF4]">
-                          Update <ChevronDown className="w-3 h-3 ml-1" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent>
-                        {STATUS_OPTIONS.filter((s) => s !== q.status).map((s) => (
-                          <DropdownMenuItem key={s} onClick={() => changeStatus(q.quote_id, s)}>
-                            {s.replace("_", " ").replace(/\b\w/g, (l) => l.toUpperCase())}
-                          </DropdownMenuItem>
-                        ))}
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </td>
-                </tr>
+              {(quotes as any[]).map((q: any) => (
+                <QuoteRow key={q.id} q={q} onRefetch={refetch} />
               ))}
             </tbody>
           </table>

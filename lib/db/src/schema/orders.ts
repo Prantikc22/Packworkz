@@ -15,6 +15,7 @@ export const usersTable = pgTable("users_profile", {
   credit_eligible: boolean("credit_eligible").default(false),
   credit_limit: numeric("credit_limit").default("0"),
   password_hash: text("password_hash"),
+  must_change_password: boolean("must_change_password").default(false),
   created_at: timestamp("created_at", { withTimezone: true }).defaultNow(),
 });
 

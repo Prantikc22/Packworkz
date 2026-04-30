@@ -199,7 +199,7 @@ export default function HowItWorks() {
             color: "white", fontSize: 52, fontWeight: 700,
             lineHeight: 1.1, marginBottom: 20,
           }}>
-            How every PackOps order works.
+            How every Packworkz order works.
           </h1>
           <p style={{ color: "rgba(255,255,255,0.6)", fontSize: 18, lineHeight: 1.65 }}>
             Four stages. Zero ambiguity. One team responsible for all of it.
@@ -341,7 +341,7 @@ export default function HowItWorks() {
               </button>
             </Link>
             <a
-              href={`https://wa.me/${WHATSAPP_NUM}?text=Hi%20PackOps%2C%20I%27d%20like%20to%20discuss%20packaging.`}
+              href={`https://wa.me/${WHATSAPP_NUM}?text=Hi%20Packworkz%2C%20I%27d%20like%20to%20discuss%20packaging.`}
               target="_blank" rel="noopener noreferrer"
             >
               <button className="btn-fill btn-outline-white px-10 py-4 text-base">

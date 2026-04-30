@@ -132,7 +132,7 @@ function OrderSummary({
 
         <div className="flex items-start gap-2 pt-2">
           <Shield className="w-4 h-4 text-slate-500 mt-0.5 shrink-0" />
-          <p className="text-xs text-slate-500">Verified by PackOps Quality Assurance. 100% Recyclable materials guaranteed.</p>
+          <p className="text-xs text-slate-500">Verified by Packworkz Quality Assurance. 100% Recyclable materials guaranteed.</p>
         </div>
       </div>
     </div>

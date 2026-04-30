@@ -45,7 +45,7 @@ export async function openRazorpay(opts: RazorpayOptions) {
     order_id,
     amount: opts.amount,
     currency: "INR",
-    name: "PackOps",
+    name: "Packworkz",
     description: opts.description,
     prefill: {
       name: opts.prefillName || "",
