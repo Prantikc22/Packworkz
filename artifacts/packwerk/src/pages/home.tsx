@@ -395,62 +395,65 @@ export default function Home() {
       <section
         className="relative overflow-hidden"
         style={{
-          background: "radial-gradient(circle at 70% 40%, rgba(59,130,246,0.18), transparent 45%), linear-gradient(135deg, #020617 0%, #0f172a 35%, #1e3a8a 65%, #1d4ed8 85%, #2563eb 100%)",
-          minHeight: 600,
+          background: "linear-gradient(135deg, #020817 0%, #071a45 40%, #153e9f 100%)",
+          minHeight: 620,
         }}
       >
         {/* Subtle geometric lines */}
-        <div className="absolute inset-0 opacity-10 pointer-events-none">
+        <div className="absolute inset-0 opacity-[0.07] pointer-events-none">
           <svg width="100%" height="100%" preserveAspectRatio="none" viewBox="0 0 100 100">
-            <path d="M0,20 L20,0 L100,0 L100,80 L80,100 L0,100 Z" fill="none" stroke="white" strokeWidth="0.1" />
+            <path d="M0,20 L20,0 L100,0 L100,80 L80,100 L0,100 Z" fill="none" stroke="white" strokeWidth="0.15" />
             <path d="M10,30 L30,10 L90,10 L90,70 L70,90 L10,90 Z" fill="none" stroke="white" strokeWidth="0.1" />
           </svg>
         </div>
 
-        {/* Product image — absolutely fills the right half, bleeds to edge */}
+        {/* Radial glow behind product image */}
         <div
-          className="hidden lg:block absolute top-0 bottom-0 right-0 pointer-events-none"
-          style={{ width: "55%" }}
-        >
-          <img
-            src="/images/hero-products.png"
-            alt="Premium packaging — pouches, boxes, labels and more"
-            style={{
-              width: "100%",
-              height: "100%",
-              objectFit: "contain",
-              objectPosition: "right bottom",
-              opacity: heroLoaded ? 1 : 0,
-              transition: "opacity 0.9s ease",
-            }}
-          />
-          {/* Left fade */}
-          <div
-            style={{
-              position: "absolute",
-              inset: 0,
-              background: "linear-gradient(to right, #0f172a 0%, rgba(15,23,42,0.9) 10%, rgba(15,23,42,0.45) 26%, transparent 52%)",
-              pointerEvents: "none",
-            }}
-          />
-          {/* Top fade */}
-          <div
-            style={{
-              position: "absolute",
-              inset: 0,
-              background: "linear-gradient(to bottom, #0f172a 0%, rgba(15,23,42,0.6) 15%, transparent 40%)",
-              pointerEvents: "none",
-            }}
-          />
-        </div>
+          className="hidden lg:block absolute pointer-events-none"
+          style={{
+            right: "-5%",
+            bottom: "-10%",
+            width: "60%",
+            height: "100%",
+            background: "radial-gradient(circle at 55% 65%, rgba(59,130,246,0.35) 0%, transparent 70%)",
+          }}
+        />
+
+        {/* Transparent product image — no container, no box */}
+        <img
+          src="/images/hero-products-transparent.png"
+          alt="Premium packaging products"
+          className="hidden lg:block absolute pointer-events-none"
+          style={{
+            right: 0,
+            bottom: 0,
+            height: "85%",
+            width: "auto",
+            maxWidth: "56%",
+            objectFit: "contain",
+            objectPosition: "right bottom",
+            opacity: heroLoaded ? 1 : 0,
+            transition: "opacity 1s ease",
+            animation: heroLoaded ? "heroProductFloat 5s ease-in-out infinite" : "none",
+            filter: "drop-shadow(0 30px 60px rgba(0,0,20,0.7)) drop-shadow(0 0 80px rgba(59,130,246,0.18))",
+          }}
+        />
+
+        {/* Vignette overlay — darkens edges, keeps centre bright */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background: "radial-gradient(ellipse at 75% 55%, transparent 30%, rgba(2,8,23,0.55) 100%)",
+          }}
+        />
 
         {/* Left content */}
         <div className="relative z-10 max-w-7xl mx-auto px-8 md:px-20 pt-28 pb-14">
-          <div className="lg:max-w-[52%]">
+          <div className="lg:max-w-[50%]">
             <p className="font-bold tracking-[0.2em] mb-5 text-sm uppercase" style={{ color: "#93c5fd" }}>
               INDIA'S FIRST MANAGED PACKAGING PLATFORM
             </p>
-            <h1 className="clash-display text-white leading-[1.05] mb-6" style={{ fontSize: "clamp(2.8rem, 5.5vw, 5.5rem)" }}>
+            <h1 className="clash-display text-white leading-[1.05] mb-6" style={{ fontSize: "clamp(2.8rem, 5.2vw, 5.2rem)" }}>
               Your Packaging.<br />Sorted. Forever.
             </h1>
             <p className="text-blue-100 text-lg md:text-xl mb-3 max-w-lg font-light">
@@ -478,10 +481,10 @@ export default function Home() {
           {/* Stats badges row */}
           <div className="flex flex-wrap gap-x-8 gap-y-4 mt-12 pt-8 border-t border-white/15">
             {[
-              { icon: "inventory_2",  value: "110+",  label: "Packaging SKUs" },
+              { icon: "inventory_2",       value: "110+", label: "Packaging SKUs" },
               { icon: "workspace_premium", value: "500+", label: "Brands Served" },
-              { icon: "public",       value: "20+",   label: "Countries" },
-              { icon: "verified",     value: "Zero",  label: "Quality Compromise" },
+              { icon: "public",            value: "20+",  label: "Countries" },
+              { icon: "verified",          value: "Zero", label: "Quality Compromise" },
             ].map((s) => (
               <div key={s.label} className="flex items-center gap-2.5">
                 <span className="material-symbols-outlined text-amber-400" style={{ fontSize: 18 }}>{s.icon}</span>

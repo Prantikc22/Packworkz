@@ -7,6 +7,11 @@
   50%       { transform: translateY(-18px); }
 }
 
+@keyframes heroProductFloat {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-12px); }
+}
+
 @keyframes progress-fill {
   from { width: 0%; }
   to   { width: 100%; }
