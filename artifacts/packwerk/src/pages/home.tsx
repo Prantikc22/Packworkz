@@ -434,61 +434,20 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="hidden lg:block relative h-[500px]">
-              {HERO_CARDS.map((card) => {
-                return (
-                  <Link key={card.title} href={`/products?category=${card.slug}`}>
-                    <div
-                      style={{
-                        position: "absolute",
-                        ...card.pos,
-                        width: card.width,
-                        background: "rgba(255,255,255,0.07)",
-                        backdropFilter: "blur(20px)",
-                        WebkitBackdropFilter: "blur(20px)",
-                        border: card.greenBorder
-                          ? "1px solid rgba(74,222,128,0.3)"
-                          : "1px solid rgba(255,255,255,0.18)",
-                        overflow: "hidden",
-                        cursor: "pointer",
-                        animation: heroLoaded ? card.floatAnim : "none",
-                        opacity: heroLoaded ? 1 : 0,
-                        transition: `opacity 0.6s ease ${card.entranceDelay}`,
-                      }}
-                      onMouseEnter={e => {
-                        const el = e.currentTarget as HTMLElement;
-                        el.style.borderColor = card.greenBorder ? "rgba(74,222,128,0.5)" : "rgba(232,168,56,0.5)";
-                        el.style.animationPlayState = "paused";
-                      }}
-                      onMouseLeave={e => {
-                        const el = e.currentTarget as HTMLElement;
-                        el.style.borderColor = card.greenBorder ? "rgba(74,222,128,0.3)" : "rgba(255,255,255,0.14)";
-                        el.style.animationPlayState = "running";
-                      }}
-                    >
-                      {/* Glassmorphism card content */}
-                      <div style={{ padding: "18px 16px 16px" }}>
-                        {/* Icon box */}
-                        <div style={{
-                          width: 38, height: 38,
-                          background: card.greenBorder ? "rgba(74,222,128,0.15)" : "rgba(232,168,56,0.13)",
-                          border: `1px solid ${card.greenBorder ? "rgba(74,222,128,0.35)" : "rgba(232,168,56,0.28)"}`,
-                          display: "flex", alignItems: "center", justifyContent: "center",
-                          marginBottom: 12,
-                        }}>
-                          <card.Icon size={17} color={card.greenBorder ? "#4ade80" : "#E8A838"} strokeWidth={1.8} />
-                        </div>
-                        <p style={{ color: "rgba(255,255,255,0.93)", fontSize: 13, fontWeight: 700, marginBottom: 3, lineHeight: 1.25 }}>
-                          {card.title}
-                        </p>
-                        <p style={{ color: "rgba(255,255,255,0.38)", fontSize: 11 }}>
-                          {card.count}
-                        </p>
-                      </div>
-                    </div>
-                  </Link>
-                );
-              })}
+            <div className="hidden lg:flex items-center justify-center relative h-[500px]">
+              <img
+                src="/images/hero-products.png"
+                alt="Premium packaging products — pouches, boxes, labels and more"
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "contain",
+                  objectPosition: "center bottom",
+                  opacity: heroLoaded ? 1 : 0,
+                  transition: "opacity 0.8s ease",
+                  filter: "drop-shadow(0 20px 60px rgba(0,0,0,0.5))",
+                }}
+              />
             </div>
           </div>
 
