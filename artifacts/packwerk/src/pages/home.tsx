@@ -393,9 +393,13 @@ export default function Home() {
       {/*  SECTION 1 — HERO                                         */}
       {/* ══════════════════════════════════════════════════════════ */}
       <section
-        className="relative flex flex-col justify-center px-8 md:px-20 overflow-hidden pt-28 pb-16"
-        style={{ background: "radial-gradient(circle at 70% 40%, rgba(59,130,246,0.18), transparent 45%), linear-gradient(135deg, #020617 0%, #0f172a 35%, #1e3a8a 65%, #1d4ed8 85%, #2563eb 100%)" }}
+        className="relative overflow-hidden"
+        style={{
+          background: "radial-gradient(circle at 70% 40%, rgba(59,130,246,0.18), transparent 45%), linear-gradient(135deg, #020617 0%, #0f172a 35%, #1e3a8a 65%, #1d4ed8 85%, #2563eb 100%)",
+          minHeight: 600,
+        }}
       >
+        {/* Subtle geometric lines */}
         <div className="absolute inset-0 opacity-10 pointer-events-none">
           <svg width="100%" height="100%" preserveAspectRatio="none" viewBox="0 0 100 100">
             <path d="M0,20 L20,0 L100,0 L100,80 L80,100 L0,100 Z" fill="none" stroke="white" strokeWidth="0.1" />
@@ -403,67 +407,68 @@ export default function Home() {
           </svg>
         </div>
 
-        <div className="relative z-10 w-full max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_460px] gap-12 xl:gap-16 items-center mb-10">
-            <div>
-              <p className="font-bold tracking-[0.2em] mb-6 text-sm uppercase" style={{ color: "#93c5fd" }}>
-                INDIA'S FIRST MANAGED PACKAGING PLATFORM
-              </p>
-              <h1 className="clash-display text-white text-5xl md:text-[80px] xl:text-[88px] leading-[1.0] mb-8">
-                Your Packaging.<br />Sorted. Forever.
-              </h1>
-              <p className="text-blue-100 text-xl md:text-2xl mb-4 max-w-xl font-light">
-                Design. Source. QC. Deliver. One platform.{" "}
-                <span className="text-white font-medium italic">Zero vendor chaos.</span>
-              </p>
-              <p className="text-sm md:text-base font-bold tracking-wide mb-10 uppercase flex items-center gap-2" style={{ color: "#93c5fd" }}>
-                <span className="w-1 h-1 rounded-full inline-block" style={{ background: "#93c5fd" }} />
-                Built for D2C, FMCG &amp; Pharma Brands Globally
-              </p>
-              <div className="flex flex-col sm:flex-row gap-5">
-                <Link href="/products">
-                  <button className="btn-fill btn-amber px-10 py-5 text-lg whitespace-nowrap">
-                    <span>Browse 110+ SKUs</span><MS icon="arrow_forward" />
-                  </button>
-                </Link>
-                <Link href="/samples">
-                  <button className="btn-fill btn-outline-white px-10 py-5 text-lg">
-                    <span>Get a sample from ₹2,999</span>
-                  </button>
-                </Link>
-              </div>
-            </div>
+        {/* Product image — absolutely fills the right half, bleeds to edge */}
+        <div
+          className="hidden lg:block absolute top-0 bottom-0 right-0 pointer-events-none"
+          style={{ width: "52%" }}
+        >
+          <img
+            src="/images/hero-products.png"
+            alt="Premium packaging — pouches, boxes, labels and more"
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "contain",
+              objectPosition: "right bottom",
+              opacity: heroLoaded ? 1 : 0,
+              transition: "opacity 0.9s ease",
+            }}
+          />
+        </div>
 
-            <div className="hidden lg:flex items-center justify-center relative h-[500px]">
-              <img
-                src="/images/hero-products.png"
-                alt="Premium packaging products — pouches, boxes, labels and more"
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "contain",
-                  objectPosition: "center bottom",
-                  opacity: heroLoaded ? 1 : 0,
-                  transition: "opacity 0.8s ease",
-                  filter: "drop-shadow(0 20px 60px rgba(0,0,0,0.5))",
-                }}
-              />
+        {/* Left content */}
+        <div className="relative z-10 max-w-7xl mx-auto px-8 md:px-20 pt-28 pb-14">
+          <div className="lg:max-w-[52%]">
+            <p className="font-bold tracking-[0.2em] mb-5 text-sm uppercase" style={{ color: "#93c5fd" }}>
+              INDIA'S FIRST MANAGED PACKAGING PLATFORM
+            </p>
+            <h1 className="clash-display text-white leading-[1.05] mb-6" style={{ fontSize: "clamp(2.8rem, 5.5vw, 5.5rem)" }}>
+              Your Packaging.<br />Sorted. Forever.
+            </h1>
+            <p className="text-blue-100 text-lg md:text-xl mb-3 max-w-lg font-light">
+              Design. Source. QC. Deliver. One platform.{" "}
+              <span className="text-white font-medium italic">Zero vendor chaos.</span>
+            </p>
+            <p className="text-sm font-bold tracking-wide mb-9 uppercase flex items-center gap-2" style={{ color: "#93c5fd" }}>
+              <span className="w-1.5 h-1.5 rounded-full inline-block" style={{ background: "#93c5fd" }} />
+              Built for D2C, FMCG &amp; Pharma Brands Globally
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Link href="/products">
+                <button className="btn-fill btn-amber px-9 py-4 text-base whitespace-nowrap">
+                  <span>Browse 110+ SKUs</span><MS icon="arrow_forward" />
+                </button>
+              </Link>
+              <Link href="/samples">
+                <button className="btn-fill btn-outline-white px-9 py-4 text-base">
+                  <span>Get a sample from ₹2,999</span>
+                </button>
+              </Link>
             </div>
           </div>
 
-          {/* Stats strip */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 py-10 border-t border-white/15">
+          {/* Stats badges row */}
+          <div className="flex flex-wrap gap-x-8 gap-y-4 mt-12 pt-8 border-t border-white/15">
             {[
-              { target: 500, suffix: "+", label: "Manufacturing Partners" },
-              { target: 1,   suffix: "",  label: "Owned Manufacturing Facility" },
-              { target: 220, suffix: "+", label: "Customers Globally" },
-              { target: 10,  suffix: "+", label: "Compliances" },
+              { icon: "inventory_2",  value: "110+",  label: "Packaging SKUs" },
+              { icon: "workspace_premium", value: "500+", label: "Brands Served" },
+              { icon: "public",       value: "20+",   label: "Countries" },
+              { icon: "verified",     value: "Zero",  label: "Quality Compromise" },
             ].map((s) => (
-              <div key={s.label}>
-                <p style={{ color: "white", fontSize: "1.5rem", fontWeight: 700 }}>
-                  <CountUp target={s.target} suffix={s.suffix} />
-                </p>
-                <p className="text-blue-200 text-xs uppercase tracking-widest mt-1 opacity-80">{s.label}</p>
+              <div key={s.label} className="flex items-center gap-2.5">
+                <span className="material-symbols-outlined text-amber-400" style={{ fontSize: 18 }}>{s.icon}</span>
+                <span className="text-white font-bold text-sm">{s.value}</span>
+                <span className="text-blue-300 text-xs uppercase tracking-wider">{s.label}</span>
               </div>
             ))}
           </div>
