@@ -407,19 +407,65 @@ export default function Home() {
           </svg>
         </div>
 
-        {/* Radial glow behind product image */}
+        {/* Blue radial glow behind products */}
         <div
           className="hidden lg:block absolute pointer-events-none"
           style={{
-            right: "-5%",
-            bottom: "-10%",
-            width: "60%",
-            height: "100%",
-            background: "radial-gradient(circle at 55% 65%, rgba(59,130,246,0.35) 0%, transparent 70%)",
+            right: "-2%",
+            bottom: "-5%",
+            width: "58%",
+            height: "110%",
+            background: "radial-gradient(circle at 50% 60%, rgba(59,130,246,0.38) 0%, transparent 65%)",
           }}
         />
 
-        {/* Transparent product image — no container, no box */}
+        {/* Golden arc ring behind products */}
+        <svg
+          className="hidden lg:block absolute pointer-events-none"
+          style={{ right: "1%", bottom: "2%", width: "52%", height: "90%", opacity: heroLoaded ? 0.55 : 0, transition: "opacity 1.2s ease" }}
+          viewBox="0 0 500 500"
+          fill="none"
+        >
+          <circle cx="250" cy="270" r="210" stroke="url(#goldArc)" strokeWidth="1.5" strokeDasharray="900 400" strokeDashoffset="200" />
+          <circle cx="250" cy="270" r="235" stroke="url(#goldArc2)" strokeWidth="0.7" strokeDasharray="600 600" strokeDashoffset="100" />
+          <defs>
+            <linearGradient id="goldArc" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stopColor="#E8A838" stopOpacity="0" />
+              <stop offset="35%" stopColor="#E8A838" stopOpacity="0.9" />
+              <stop offset="65%" stopColor="#f5d08a" stopOpacity="0.7" />
+              <stop offset="100%" stopColor="#E8A838" stopOpacity="0" />
+            </linearGradient>
+            <linearGradient id="goldArc2" x1="1" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#E8A838" stopOpacity="0" />
+              <stop offset="50%" stopColor="#E8A838" stopOpacity="0.5" />
+              <stop offset="100%" stopColor="#E8A838" stopOpacity="0" />
+            </linearGradient>
+          </defs>
+        </svg>
+
+        {/* Floor reflection — flipped image fading up from bottom edge */}
+        <img
+          src="/images/hero-products-transparent.png"
+          aria-hidden="true"
+          className="hidden lg:block absolute pointer-events-none select-none"
+          style={{
+            right: 0,
+            bottom: 0,
+            height: "28%",
+            width: "auto",
+            maxWidth: "56%",
+            objectFit: "contain",
+            objectPosition: "right top",
+            transform: "scaleY(-1)",
+            opacity: heroLoaded ? 0.22 : 0,
+            transition: "opacity 1.2s ease",
+            maskImage: "linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.2) 50%, transparent 100%)",
+            WebkitMaskImage: "linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.2) 50%, transparent 100%)",
+            filter: "blur(3px) saturate(0.6)",
+          }}
+        />
+
+        {/* Main product image */}
         <img
           src="/images/hero-products-transparent.png"
           alt="Premium packaging products"
@@ -435,25 +481,24 @@ export default function Home() {
             opacity: heroLoaded ? 1 : 0,
             transition: "opacity 1s ease",
             animation: heroLoaded ? "heroProductFloat 5s ease-in-out infinite" : "none",
-            filter: "drop-shadow(0 30px 60px rgba(0,0,20,0.7)) drop-shadow(0 0 80px rgba(59,130,246,0.18))",
+            filter: "drop-shadow(0 24px 48px rgba(0,0,20,0.65)) drop-shadow(0 0 60px rgba(59,130,246,0.2))",
           }}
         />
 
-        {/* Vignette overlay — darkens edges, keeps centre bright */}
+        {/* Vignette — protects left text, softens right edges */}
         <div
           className="absolute inset-0 pointer-events-none"
-          style={{
-            background: "radial-gradient(ellipse at 75% 55%, transparent 30%, rgba(2,8,23,0.55) 100%)",
-          }}
+          style={{ background: "radial-gradient(ellipse at 72% 50%, transparent 28%, rgba(2,8,23,0.5) 100%)" }}
         />
 
         {/* Left content */}
         <div className="relative z-10 max-w-7xl mx-auto px-8 md:px-20 pt-28 pb-14">
-          <div className="lg:max-w-[50%]">
+          {/* All text + CTAs + stats pinned to left column */}
+          <div className="lg:max-w-[48%]">
             <p className="font-bold tracking-[0.2em] mb-5 text-sm uppercase" style={{ color: "#93c5fd" }}>
               INDIA'S FIRST MANAGED PACKAGING PLATFORM
             </p>
-            <h1 className="clash-display text-white leading-[1.05] mb-6" style={{ fontSize: "clamp(2.8rem, 5.2vw, 5.2rem)" }}>
+            <h1 className="clash-display text-white leading-[1.05] mb-6" style={{ fontSize: "clamp(2.6rem, 5vw, 5rem)" }}>
               Your Packaging.<br />Sorted. Forever.
             </h1>
             <p className="text-blue-100 text-lg md:text-xl mb-3 max-w-lg font-light">
@@ -464,7 +509,7 @@ export default function Home() {
               <span className="w-1.5 h-1.5 rounded-full inline-block" style={{ background: "#93c5fd" }} />
               Built for D2C, FMCG &amp; Pharma Brands Globally
             </p>
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex flex-col sm:flex-row gap-4 mb-12">
               <Link href="/products">
                 <button className="btn-fill btn-amber px-9 py-4 text-base whitespace-nowrap">
                   <span>Browse 110+ SKUs</span><MS icon="arrow_forward" />
@@ -476,22 +521,22 @@ export default function Home() {
                 </button>
               </Link>
             </div>
-          </div>
 
-          {/* Stats badges row */}
-          <div className="flex flex-wrap gap-x-8 gap-y-4 mt-12 pt-8 border-t border-white/15">
-            {[
-              { icon: "inventory_2",       value: "110+", label: "Packaging SKUs" },
-              { icon: "workspace_premium", value: "500+", label: "Brands Served" },
-              { icon: "public",            value: "20+",  label: "Countries" },
-              { icon: "verified",          value: "Zero", label: "Quality Compromise" },
-            ].map((s) => (
-              <div key={s.label} className="flex items-center gap-2.5">
-                <span className="material-symbols-outlined text-amber-400" style={{ fontSize: 18 }}>{s.icon}</span>
-                <span className="text-white font-bold text-sm">{s.value}</span>
-                <span className="text-blue-300 text-xs uppercase tracking-wider">{s.label}</span>
-              </div>
-            ))}
+            {/* Stats badges — locked inside left column */}
+            <div className="flex flex-wrap gap-x-7 gap-y-3 pt-7 border-t border-white/15">
+              {[
+                { icon: "inventory_2",       value: "110+", label: "Packaging SKUs" },
+                { icon: "workspace_premium", value: "500+", label: "Brands Served" },
+                { icon: "public",            value: "20+",  label: "Countries" },
+                { icon: "verified",          value: "Zero", label: "Quality Compromise" },
+              ].map((s) => (
+                <div key={s.label} className="flex items-center gap-2">
+                  <span className="material-symbols-outlined text-amber-400" style={{ fontSize: 17 }}>{s.icon}</span>
+                  <span className="text-white font-bold text-sm">{s.value}</span>
+                  <span className="text-blue-300 text-xs uppercase tracking-wider">{s.label}</span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
