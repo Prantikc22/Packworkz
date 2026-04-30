@@ -1,7 +1,5 @@
-// Email via Resend — Packworkz
-// Note: To send FROM quotes@packworkz.com, verify packworkz.com in your Resend dashboard.
-// Until then, emails send from onboarding@resend.dev with reply-to set to your domain.
-const FROM = "Packworkz <onboarding@resend.dev>";
+// Email via Resend — Packworkz (domain verified: packworkz.com)
+const FROM = "Packworkz <quote@packworkz.com>";
 const REPLY_TO = "quote@packworkz.com";
 const WHATSAPP = "+91 82089 90366";
 const SITE = "packworkz.com";
