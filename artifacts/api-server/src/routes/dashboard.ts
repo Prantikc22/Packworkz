@@ -29,11 +29,17 @@ router.get("/dashboard/overview", async (req, res): Promise<void> => {
   const inProductionCount = orders.filter(o => o.status === "in_production" || o.status === "confirmed").length;
   const dispatchedCount = orders.filter(o => o.status === "dispatched").length;
 
-  const { count: pendingQuotesCount } = await sb
-    .from("quote_requests")
-    .select("*", { count: "exact", head: true })
-    .eq("user_id", userId)
-    .in("status", ["submitted", "under_review", "reviewing", "quoted"]);
+  const { data: userRow } = await sb.from("users_profile").select("email").eq("id", userId).maybeSingle();
+  const userEmailForCount = userRow?.email ?? "";
+
+  // Count both user_id-linked and email-matched (unlinked) pending quotes
+  const [countByUserId, countByEmail] = await Promise.all([
+    sb.from("quote_requests").select("id", { count: "exact", head: true }).eq("user_id", userId).in("status", ["submitted", "under_review", "reviewing", "quoted"]),
+    userEmailForCount
+      ? sb.from("quote_requests").select("id", { count: "exact", head: true }).is("user_id", null).eq("email", userEmailForCount).in("status", ["submitted", "under_review", "reviewing", "quoted"])
+      : Promise.resolve({ count: 0 }),
+  ]);
+  const pendingQuotesCount = (countByUserId.count ?? 0) + (countByEmail.count ?? 0);
 
   const { data: allOrders } = await sb
     .from("orders")
@@ -109,15 +115,34 @@ router.get("/dashboard/quotes", async (req, res): Promise<void> => {
     ? ["accepted", "rejected", "expired"]
     : ["submitted", "under_review", "reviewing", "quoted"];
 
-  const { data: quotes } = await sb
-    .from("quote_requests")
-    .select("*")
-    .eq("user_id", userId)
-    .in("status", statusFilter)
-    .order("created_at", { ascending: false });
+  // Get user's email so we can also match quotes submitted without being logged in
+  const { data: user } = await sb.from("users_profile").select("email").eq("id", userId).maybeSingle();
+  const userEmail = user?.email ?? "";
+
+  // Fetch quotes both by user_id and by email (for quotes submitted while not logged in)
+  const [byUserId, byEmail] = await Promise.all([
+    sb.from("quote_requests").select("*").eq("user_id", userId).in("status", statusFilter).order("created_at", { ascending: false }),
+    userEmail
+      ? sb.from("quote_requests").select("*").is("user_id", null).eq("email", userEmail).in("status", statusFilter).order("created_at", { ascending: false })
+      : Promise.resolve({ data: [] as any[] }),
+  ]);
+
+  // Merge + deduplicate
+  const seen = new Set<string>();
+  const allQuotes = [...(byUserId.data || []), ...(byEmail.data || [])].filter(q => {
+    if (seen.has(q.id)) return false;
+    seen.add(q.id);
+    return true;
+  }).sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+
+  // Auto-link user_id for any email-matched quotes so they show up correctly going forward
+  const unlinked = (byEmail.data || []);
+  if (unlinked.length > 0) {
+    await sb.from("quote_requests").update({ user_id: userId }).in("id", unlinked.map(q => q.id));
+  }
 
   res.json(
-    (quotes || []).map(q => ({
+    allQuotes.map(q => ({
       ...q,
       total_estimated_min: q.total_estimated_min ? Number(q.total_estimated_min) : null,
       total_estimated_max: q.total_estimated_max ? Number(q.total_estimated_max) : null,
@@ -130,16 +155,25 @@ router.post("/dashboard/quotes/:id/accept", async (req, res): Promise<void> => {
   const userId = (req as AuthRequest).userId;
   const quoteUuid = req.params.id;
 
+  // Get user email for fallback matching
+  const { data: userProfile } = await sb.from("users_profile").select("email").eq("id", userId).maybeSingle();
+  const userEmail = userProfile?.email ?? "";
+
+  // Accept if quote belongs to user by user_id OR by email (when user_id was null)
   const { data: quote } = await sb
     .from("quote_requests")
     .select("*")
     .eq("id", quoteUuid)
-    .eq("user_id", userId)
     .maybeSingle();
 
-  if (!quote) {
+  if (!quote || (quote.user_id !== userId && quote.email?.toLowerCase() !== userEmail.toLowerCase())) {
     res.status(404).json({ error: "Quote not found" });
     return;
+  }
+
+  // Auto-link user_id if still null
+  if (!quote.user_id) {
+    await sb.from("quote_requests").update({ user_id: userId }).eq("id", quoteUuid);
   }
 
   if (quote.status !== "quoted") {

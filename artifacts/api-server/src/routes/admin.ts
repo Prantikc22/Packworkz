@@ -61,9 +61,26 @@ router.put("/admin/quotes/:id/status", async (req, res): Promise<void> => {
   const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
   const { status, rejection_reason } = req.body;
 
+  const updatePayload: Record<string, any> = { status, rejection_reason };
+
+  // When marking as "quoted", auto-link the user_id if there's a matching account
+  if (status === "quoted") {
+    const { data: quote } = await sb.from("quote_requests").select("email, user_id").eq("id", id).maybeSingle();
+    if (quote && !quote.user_id && quote.email) {
+      const { data: matchedUser } = await sb
+        .from("users_profile")
+        .select("id")
+        .eq("email", quote.email.toLowerCase())
+        .maybeSingle();
+      if (matchedUser) {
+        updatePayload.user_id = matchedUser.id;
+      }
+    }
+  }
+
   const { data: updated, error } = await sb
     .from("quote_requests")
-    .update({ status, rejection_reason })
+    .update(updatePayload)
     .eq("id", id)
     .select()
     .maybeSingle();
