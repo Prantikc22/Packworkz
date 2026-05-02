@@ -730,7 +730,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
               Login
             </Link>
           )}
-          <Link href="/quote" className="po-cta-btn" style={{ marginLeft: 8 }}>
+          <Link href="/quote" className="hidden md:inline-block po-cta-btn" style={{ marginLeft: 8 }}>
             <span>Get Quote</span>
           </Link>
 
