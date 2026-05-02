@@ -1,1 +1,1 @@
-// Intentionally empty — see index.cjs
+// Intentionally empty — entry point is index.mjs

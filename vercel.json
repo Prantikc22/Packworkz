@@ -3,7 +3,7 @@
   "buildCommand": "pnpm install && PORT=5000 BASE_PATH=/ pnpm --filter @workspace/packwerk run build && pnpm --filter @workspace/api-server run build",
   "outputDirectory": "artifacts/packwerk/dist/public",
   "functions": {
-    "api/index.cjs": {
+    "api/index.mjs": {
       "memory": 1024,
       "maxDuration": 30
     }
