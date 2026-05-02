@@ -2,6 +2,7 @@ import { Switch, Route, Router as WouterRouter, Redirect } from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { setAuthTokenGetter } from "@workspace/api-client-react";
 import NotFound from "@/pages/not-found";
 import { PublicLayout } from "@/components/layout/PublicLayout";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
@@ -37,6 +38,9 @@ import AdminOrders from "@/pages/admin/orders";
 import AdminDesigns from "@/pages/admin/designs";
 import AdminSamples from "@/pages/admin/samples";
 import AdminUsers from "@/pages/admin/users";
+
+// Wire up auth token so every API call includes Authorization: Bearer <token>
+setAuthTokenGetter(() => localStorage.getItem("packwerk_access_token"));
 
 const queryClient = new QueryClient();
 

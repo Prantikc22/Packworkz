@@ -2,6 +2,7 @@ import { Router, type IRouter, type Request } from "express";
 import { sb } from "../lib/supabase";
 import { requireAuth } from "../lib/auth";
 import { generateId } from "../lib/generateId";
+import { pushToSheetDB } from "../lib/sheetdb";
 
 type AuthRequest = Request & { userId: string };
 
@@ -207,6 +208,30 @@ router.post("/dashboard/quotes/:id/accept", async (req, res): Promise<void> => {
     .from("quote_requests")
     .update({ status: "accepted" })
     .eq("id", quoteUuid);
+
+  // Push accepted quote to Google Sheet
+  const firstItem = Array.isArray(quote.items) ? quote.items[0] : null;
+  pushToSheetDB({
+    quote_id: quote.quote_id,
+    contact_name: quote.contact_name,
+    company_name: quote.company_name,
+    email: quote.email,
+    phone: quote.phone,
+    product_name: firstItem?.product_name || "",
+    quantity: firstItem?.quantity || "",
+    delivery_country: quote.delivery_country,
+    delivery_pincode: quote.delivery_pincode || "",
+    artwork_option: firstItem?.artwork_status || quote.artwork_option || "none",
+    sample_option: quote.sample_option || "none",
+    estimated_budget_min: quote.total_estimated_min || "",
+    estimated_budget_max: quote.total_estimated_max || "",
+    quoted_amount: quote.quoted_amount || "",
+    preferred_timeline: quote.preferred_timeline || "standard",
+    notes: quote.notes || "",
+    order_id: order?.order_id || "",
+    status: "accepted",
+    accepted_date: new Date().toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" }),
+  }).catch(() => {});
 
   res.status(201).json({
     order_id: order?.order_id,

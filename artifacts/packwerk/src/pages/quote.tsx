@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect, useRef } from "react";
+import { useState, useMemo, useEffect, useRef, useCallback } from "react";
 import { Link, useLocation } from "wouter";
 import { useSubmitQuote } from "@workspace/api-client-react";
 import { useToast } from "@/hooks/use-toast";
@@ -507,6 +507,34 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
   const [artworkOption, setArtworkOption] = useState<ArtworkOption>(() => loadDraft().artworkOption || "upload");
   const [designPaid, setDesignPaid] = useState<boolean>(() => loadDraft().designPaid ?? false);
   const [designPaying, setDesignPaying] = useState(false);
+  const [artworkFile, setArtworkFile] = useState<File | null>(null);
+  const [artworkUploading, setArtworkUploading] = useState(false);
+  const [artworkFileUrl, setArtworkFileUrl] = useState<string>(() => loadDraft().artworkFileUrl || "");
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleArtworkFile = useCallback(async (file: File) => {
+    setArtworkFile(file);
+    setArtworkUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      const res = await fetch("/api/upload/artwork", { method: "POST", body: formData });
+      if (res.ok) {
+        const { url } = await res.json();
+        setArtworkFileUrl(url);
+        saveDraft({ ...loadDraft(), artworkFileUrl: url });
+      } else {
+        // fallback: store filename only
+        setArtworkFileUrl(`local:${file.name}`);
+        saveDraft({ ...loadDraft(), artworkFileUrl: `local:${file.name}` });
+      }
+    } catch {
+      setArtworkFileUrl(`local:${file.name}`);
+      saveDraft({ ...loadDraft(), artworkFileUrl: `local:${file.name}` });
+    } finally {
+      setArtworkUploading(false);
+    }
+  }, []);
 
   // ── Delivery ─────────────────────────────────────────────────────────────
   const [deliveryOption, setDeliveryOption] = useState<DeliveryOption>(() => loadDraft().deliveryOption || "standard");
@@ -603,7 +631,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
         contact_name: contactName, company_name: company, email, phone,
         delivery_country: "India", delivery_pincode: pincode,
         preferred_timeline: (deliveryOption as any),
-        notes,
+        notes: [notes, artworkFile ? `Artwork file: ${artworkFile.name}` : ""].filter(Boolean).join("\n"),
         total_estimated_min: low,
         total_estimated_max: high,
         items: [{
@@ -613,6 +641,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
           sample_requested: sampleOption !== "none", sample_tier: sampleOption === "express" ? "premium" : sampleOption === "standard" ? "standard" : "none"
         }],
         artwork_option: artworkOption,
+        artwork_file_url: artworkFileUrl || undefined,
         sample_option: sampleOption,
         design_paid: designPaid,
         sample_paid: samplePaid,
@@ -846,10 +875,42 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                   </div>
 
                   {artworkOption === "upload" && (
-                    <div className="mt-5 border-2 border-dashed border-slate-200 rounded-lg p-8 text-center cursor-pointer hover:border-blue-300 transition-colors">
-                      <Upload className="w-10 h-10 text-slate-300 mx-auto mb-3" />
-                      <div className="text-sm font-bold text-slate-400">Drop files here or click to upload</div>
-                      <div className="text-xs text-slate-300 mt-1">PDF, AI, SVG — max 50MB per file</div>
+                    <div
+                      className="mt-5 border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors"
+                      style={{ borderColor: artworkFile ? "#1B6CA8" : "#CBD5E1", background: artworkFile ? "rgba(27,108,168,0.04)" : "white" }}
+                      onClick={() => fileInputRef.current?.click()}
+                      onDragOver={e => { e.preventDefault(); e.stopPropagation(); }}
+                      onDrop={e => {
+                        e.preventDefault();
+                        const file = e.dataTransfer.files[0];
+                        if (file) handleArtworkFile(file);
+                      }}
+                    >
+                      <input
+                        ref={fileInputRef}
+                        type="file"
+                        accept=".pdf,.ai,.svg,.eps,.png,.jpg,.jpeg,.zip"
+                        className="hidden"
+                        onChange={e => {
+                          const file = e.target.files?.[0];
+                          if (file) handleArtworkFile(file);
+                        }}
+                      />
+                      {artworkUploading ? (
+                        <><Loader2 className="w-10 h-10 text-blue-400 mx-auto mb-3 animate-spin" /><div className="text-sm font-bold text-blue-500">Uploading…</div></>
+                      ) : artworkFile ? (
+                        <>
+                          <CheckCircle2 className="w-10 h-10 mx-auto mb-3" style={{ color: "#1B6CA8" }} />
+                          <div className="text-sm font-bold" style={{ color: "#1B6CA8" }}>{artworkFile.name}</div>
+                          <div className="text-xs text-slate-400 mt-1">File attached — click to change</div>
+                        </>
+                      ) : (
+                        <>
+                          <Upload className="w-10 h-10 text-slate-300 mx-auto mb-3" />
+                          <div className="text-sm font-bold text-slate-500">Drop your file here or click to browse</div>
+                          <div className="text-xs text-slate-400 mt-1">PDF, AI, SVG, EPS, PNG — max 50 MB</div>
+                        </>
+                      )}
                     </div>
                   )}
 

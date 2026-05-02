@@ -3,25 +3,10 @@ import { sb } from "../lib/supabase";
 import { generateId } from "../lib/generateId";
 import { sendWhatsApp } from "../lib/whatsapp";
 import { sendQuoteConfirmation } from "../lib/email";
+import { getSessionUserId } from "../lib/auth";
+import { pushToSheetDB } from "../lib/sheetdb";
 
 const router: IRouter = Router();
-
-// Push quote data to SheetDB if API key is configured
-async function pushToSheetDB(data: Record<string, string | number | undefined>) {
-  const apiKey = process.env.SHEETDB_API_KEY || "bnbunpp7hb33q";
-  if (!apiKey) return;
-
-  try {
-    await fetch(`https://sheetdb.io/api/v1/${apiKey}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "Accept": "application/json" },
-      body: JSON.stringify({ data }),
-      signal: AbortSignal.timeout(8000),
-    });
-  } catch (err) {
-    console.error("[sheetdb] Failed to push quote:", (err as Error).message);
-  }
-}
 
 router.post("/quotes", async (req, res): Promise<void> => {
   const {
@@ -37,6 +22,7 @@ router.post("/quotes", async (req, res): Promise<void> => {
     total_estimated_min,
     total_estimated_max,
     artwork_option,
+    artwork_file_url,
     sample_option,
     design_paid,
     sample_paid,
@@ -47,6 +33,13 @@ router.post("/quotes", async (req, res): Promise<void> => {
     return;
   }
 
+  // Optionally extract user_id from Bearer token if user is logged in
+  let userId: string | null = null;
+  const authHeader = req.headers.authorization;
+  if (authHeader?.startsWith("Bearer ")) {
+    userId = await getSessionUserId(authHeader.slice(7));
+  }
+
   const quoteId = await generateId("PKG", "quote_requests", "quote_id");
 
   const { data: quote, error } = await sb
@@ -55,7 +48,7 @@ router.post("/quotes", async (req, res): Promise<void> => {
       quote_id: quoteId,
       contact_name,
       company_name,
-      email,
+      email: email.toLowerCase().trim(),
       phone,
       items,
       delivery_country,
@@ -65,6 +58,8 @@ router.post("/quotes", async (req, res): Promise<void> => {
       total_estimated_min: total_estimated_min?.toString() ?? null,
       total_estimated_max: total_estimated_max?.toString() ?? null,
       status: "submitted",
+      ...(userId ? { user_id: userId } : {}),
+      ...(artwork_file_url ? { artwork_file_url } : {}),
     })
     .select()
     .single();
