@@ -139,43 +139,67 @@ function IconBox({ Icon }: { Icon: React.ElementType }) {
 function ProductsMenu() {
   return (
     <div style={{
-      position: "absolute", top: "100%", left: "50%",
-      transform: "translateX(-50%)",
+      position: "absolute", top: "100%", left: 0,
       background: "white",
       border: "1px solid #E2EAF4",
       borderRadius: "0 0 16px 16px",
       boxShadow: "0 16px 48px rgba(13,27,42,0.12)",
       padding: "28px 32px",
-      width: 680,
+      width: 740,
       animation: "dropIn 0.2s ease forwards",
       zIndex: 100,
     }}>
-      {/* Product categories grid */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 4 }}>
-        {PRODUCT_CATS.map(cat => (
-          <Link key={cat.href} href={cat.href} className="po-menu-item">
-            <IconBox Icon={cat.icon} />
-            <div>
-              <div style={{ color: "#0D1B2A", fontSize: 14, fontWeight: 600, lineHeight: 1.3 }}>{cat.label}</div>
-              <div style={{ color: "#64748B", fontSize: 12, lineHeight: 1.4, marginTop: 2 }}>{cat.desc}</div>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 220px", gap: 24 }}>
+        {/* Left: categories 2-col */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 4 }}>
+          {PRODUCT_CATS.map(cat => (
+            <Link key={cat.href} href={cat.href} className="po-menu-item">
+              <IconBox Icon={cat.icon} />
+              <div>
+                <div style={{ color: "#0D1B2A", fontSize: 14, fontWeight: 600, lineHeight: 1.3 }}>{cat.label}</div>
+                <div style={{ color: "#64748B", fontSize: 12, lineHeight: 1.4, marginTop: 2 }}>{cat.desc}</div>
+              </div>
+            </Link>
+          ))}
+        </div>
+
+        {/* Right: SmartStock feature card */}
+        <div style={{
+          background: "linear-gradient(135deg, #0D1B2A 0%, #1B3A5C 100%)",
+          borderRadius: 12, padding: "20px 18px",
+          display: "flex", flexDirection: "column", justifyContent: "space-between",
+        }}>
+          <div>
+            <div style={{ color: "#E8A838", fontSize: 10, fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", marginBottom: 10 }}>FEATURED</div>
+            <div style={{ color: "white", fontSize: 16, fontWeight: 700, lineHeight: 1.3, marginBottom: 8 }}>SmartStock™<br />AI Inventory</div>
+            <div style={{ color: "rgba(255,255,255,0.55)", fontSize: 12, lineHeight: 1.5 }}>
+              Predict reorder points before you run out. Zero stockouts.
             </div>
+          </div>
+          <Link href="/products/smartstock" style={{
+            display: "inline-block", marginTop: 16,
+            background: "#E8A838", color: "#0D1B2A",
+            padding: "8px 14px", borderRadius: 6,
+            fontSize: 12, fontWeight: 700, textDecoration: "none",
+          }}>
+            Learn more →
           </Link>
-        ))}
+        </div>
       </div>
 
-      {/* Quick access: Sample + Design */}
-      <div style={{ borderTop: "1px solid #E2EAF4", paddingTop: 16, marginTop: 12, display: "flex", gap: 8 }}>
-        <Link href="/samples" className="po-menu-item" style={{ flex: 1, background: "#F8F9FC", border: "1px solid #E2EAF4", borderRadius: 8 }}>
+      {/* Quick access: Sample + Design — with coloured bg */}
+      <div style={{ borderTop: "1px solid #E2EAF4", paddingTop: 14, marginTop: 14, display: "flex", gap: 8 }}>
+        <Link href="/samples" className="po-menu-item" style={{ flex: 1, background: "rgba(27,108,168,0.08)", border: "1px solid rgba(27,108,168,0.18)", borderRadius: 8 }}>
           <IconBox Icon={FlaskConical} />
           <div>
-            <div style={{ color: "#0D1B2A", fontSize: 13, fontWeight: 700 }}>Order a Sample</div>
+            <div style={{ color: "#1B6CA8", fontSize: 13, fontWeight: 700 }}>Order a Sample</div>
             <div style={{ color: "#64748B", fontSize: 11, marginTop: 2 }}>From ₹2,999 · Any SKU</div>
           </div>
         </Link>
-        <Link href="/design" className="po-menu-item" style={{ flex: 1, background: "#F8F9FC", border: "1px solid #E2EAF4", borderRadius: 8 }}>
+        <Link href="/design" className="po-menu-item" style={{ flex: 1, background: "rgba(232,168,56,0.10)", border: "1px solid rgba(232,168,56,0.25)", borderRadius: 8 }}>
           <IconBox Icon={Paintbrush} />
           <div>
-            <div style={{ color: "#0D1B2A", fontSize: 13, fontWeight: 700 }}>Design Service</div>
+            <div style={{ color: "#B87A10", fontSize: 13, fontWeight: 700 }}>Design Service</div>
             <div style={{ color: "#64748B", fontSize: 11, marginTop: 2 }}>Print-ready artwork · ₹1,999</div>
           </div>
         </Link>
@@ -188,8 +212,7 @@ function ProductsMenu() {
 function IndustriesMenu() {
   return (
     <div style={{
-      position: "absolute", top: "100%", left: "50%",
-      transform: "translateX(-50%)",
+      position: "absolute", top: "100%", left: 0,
       background: "white",
       border: "1px solid #E2EAF4",
       borderRadius: "0 0 16px 16px",
@@ -243,8 +266,7 @@ function IndustriesMenu() {
 function AboutMenu() {
   return (
     <div style={{
-      position: "absolute", top: "100%", left: "50%",
-      transform: "translateX(-50%)",
+      position: "absolute", top: "100%", right: 0,
       background: "white",
       border: "1px solid #E2EAF4",
       borderRadius: "0 0 16px 16px",
@@ -470,9 +492,13 @@ function PackAIWidget() {
           {/* Header */}
           <div style={{ background: "#0D1B2A", padding: "14px 18px", display: "flex", alignItems: "center", justifyContent: "space-between", flexShrink: 0 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <div style={{ width: 36, height: 36, borderRadius: "50%", background: "linear-gradient(135deg,#1B6CA8,#E8A838)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+              <div style={{ width: 36, height: 36, borderRadius: 10, background: "#1B6CA8", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                  <rect x="3" y="11" width="18" height="10" rx="2"/>
+                  <circle cx="12" cy="5" r="2"/>
+                  <line x1="12" y1="7" x2="12" y2="11"/>
+                  <line x1="8" y1="15" x2="8" y2="17"/>
+                  <line x1="16" y1="15" x2="16" y2="17"/>
                 </svg>
               </div>
               <div>
@@ -567,22 +593,29 @@ function PackAIWidget() {
         onClick={() => setOpen(!open)}
         style={{
           position: "fixed", bottom: 24, right: 24, zIndex: 999,
-          background: open ? "#0D1B2A" : "linear-gradient(135deg,#1B6CA8,#0D4F80)",
+          background: open ? "#334155" : "#1B6CA8",
           borderRadius: 999, border: "none", cursor: "pointer",
           padding: "13px 22px",
           display: "flex", alignItems: "center", gap: 8,
-          boxShadow: "0 4px 24px rgba(27,108,168,0.4)",
+          boxShadow: "0 4px 20px rgba(27,108,168,0.35)",
           transition: "background 0.2s, transform 0.15s",
         }}
-        onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = "scale(1.05)"; }}
+        onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = "scale(1.04)"; }}
         onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = "scale(1)"; }}
       >
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-          {open
-            ? <><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></>
-            : <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
-          }
-        </svg>
+        {open ? (
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        ) : (
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="3" y="11" width="18" height="10" rx="2"/>
+            <circle cx="12" cy="5" r="2"/>
+            <line x1="12" y1="7" x2="12" y2="11"/>
+            <line x1="8" y1="15" x2="8" y2="17"/>
+            <line x1="16" y1="15" x2="16" y2="17"/>
+          </svg>
+        )}
         <span style={{ color: "white", fontWeight: 800, fontSize: 14, letterSpacing: "0.04em" }}>PackAI</span>
         {!open && <span style={{ background: "#E8A838", color: "#0D1B2A", fontSize: 9, fontWeight: 900, padding: "2px 5px", borderRadius: 4, letterSpacing: "0.05em" }}>AI</span>}
       </button>
@@ -624,11 +657,9 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
         }}
       >
         {/* Logo */}
-        <Link href="/"
-          style={{ textDecoration: "none" }}
-        >
+        <Link href="/" style={{ textDecoration: "none" }}>
           <span style={{
-            fontSize: 20, fontWeight: 900, letterSpacing: "-0.02em",
+            fontSize: 26, fontWeight: 900, letterSpacing: "-0.03em",
             color: "white", fontFamily: "'Space Grotesk', sans-serif",
             cursor: "pointer", userSelect: "none",
           }}>
@@ -644,7 +675,6 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
           <NavItem label="Industries" active={location.startsWith("/industries")}>
             <IndustriesMenu />
           </NavItem>
-          <NavItem label="Design" href="/design" active={location.startsWith("/design")} />
           <NavItem label="Sustainability" href="/sustainable" active={location.startsWith("/sustainable")} />
           <NavItem label="About" active={location.startsWith("/about") || location.startsWith("/how-it-works") || location.startsWith("/network")}>
             <AboutMenu />
@@ -653,9 +683,6 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
 
         {/* Right side */}
         <div className="flex items-center gap-1">
-          <Link href="/samples" className="hidden md:inline po-nav-link">
-            Sample
-          </Link>
           {localStorage.getItem("packwerk_access_token") ? (
             <Link href="/dashboard" className="hidden md:inline po-nav-link" style={{ color: "#E8A838" }}>
               Dashboard
@@ -724,41 +751,152 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
       <PackAIWidget />
 
       {/* ── FOOTER ── */}
-      <footer className="px-8 md:px-16 py-16 grid grid-cols-2 md:grid-cols-4 gap-10 text-sm border-t"
-        style={{ background: "#020617", borderColor: "rgba(255,255,255,0.08)", fontFamily: "'Space Grotesk', sans-serif" }}>
-        <div className="col-span-2 md:col-span-1 flex flex-col gap-4">
-          <span className="text-xl font-black text-white">Packworkz</span>
-          <p className="text-slate-500 text-sm leading-relaxed max-w-xs">
-            High-performance industrial packaging management for the modern enterprise.
-          </p>
-          <p className="text-slate-600 text-xs">© {new Date().getFullYear()} Packworkz India. All rights reserved.</p>
-        </div>
-        <div className="flex flex-col gap-3">
-          <h4 className="font-bold uppercase tracking-widest text-xs text-white">Products</h4>
-          {["Flexible Packaging", "Rigid Packaging", "Sustainable Packaging", "Premium & Gift"].map(l => (
-            <Link key={l} href="/products"
-              style={{ color: "#64748B", textDecoration: "none", transition: "color 0.15s", cursor: "pointer" }}
-              onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = "white"}
-              onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = "#64748B"}>
-              {l}
+      <footer style={{ background: "#020617", fontFamily: "'Space Grotesk', sans-serif" }}>
+
+        {/* Top bar: logo + socials + CTA */}
+        <div style={{ borderBottom: "1px solid rgba(255,255,255,0.08)", padding: "28px 64px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 16 }}>
+          <span style={{ fontSize: 28, fontWeight: 900, color: "white", letterSpacing: "-0.03em" }}>Packworkz</span>
+          <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
+            {/* Social icons */}
+            {[
+              { label: "X", href: "https://x.com/packworkz", path: "M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.261 5.638L18.243 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117z" },
+              { label: "LinkedIn", href: "https://linkedin.com/company/packworkz", path: "M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" },
+              { label: "Instagram", href: "https://instagram.com/packworkz", path: "M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" },
+            ].map(s => (
+              <a key={s.label} href={s.href} target="_blank" rel="noreferrer"
+                style={{ color: "rgba(255,255,255,0.45)", transition: "color 0.15s" }}
+                onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = "white"}
+                onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = "rgba(255,255,255,0.45)"}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d={s.path}/></svg>
+              </a>
+            ))}
+            <Link href="/quote" style={{
+              background: "#E8A838", color: "#0D1B2A",
+              fontWeight: 800, fontSize: 13, padding: "10px 22px",
+              borderRadius: 6, textDecoration: "none",
+              letterSpacing: "0.02em", whiteSpace: "nowrap",
+            }}>
+              Get a Quote Now →
             </Link>
-          ))}
+          </div>
         </div>
-        <div className="flex flex-col gap-3">
-          <h4 className="font-bold uppercase tracking-widest text-xs text-white">Company</h4>
-          {["About Us", "How It Works", "Sustainability", "Factory Network"].map(l => (
-            <a key={l} href="#" style={{ color: "#64748B", textDecoration: "none", transition: "color 0.15s" }}
-              onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = "white"}
-              onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = "#64748B"}>{l}</a>
-          ))}
+
+        {/* Main link grid + newsletter */}
+        <div style={{ padding: "48px 64px", display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr 280px", gap: 32 }}>
+          {/* Products */}
+          <div className="flex flex-col gap-3">
+            <h4 style={{ color: "white", fontWeight: 700, fontSize: 11, letterSpacing: "2px", textTransform: "uppercase", marginBottom: 4 }}>PRODUCTS</h4>
+            {[
+              { label: "Flexible Packaging", href: "/products/flexible" },
+              { label: "Rigid Packaging", href: "/products/rigid" },
+              { label: "E-commerce Packaging", href: "/products/ecommerce" },
+              { label: "Sustainable Packaging", href: "/products/sustainable" },
+              { label: "Premium & Gift", href: "/products/premium" },
+            ].map(l => (
+              <Link key={l.href} href={l.href}
+                style={{ color: "#64748B", textDecoration: "none", fontSize: 14, transition: "color 0.15s" }}
+                onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = "white"}
+                onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = "#64748B"}>
+                {l.label}
+              </Link>
+            ))}
+          </div>
+
+          {/* Industries */}
+          <div className="flex flex-col gap-3">
+            <h4 style={{ color: "white", fontWeight: 700, fontSize: 11, letterSpacing: "2px", textTransform: "uppercase", marginBottom: 4 }}>INDUSTRIES</h4>
+            {[
+              { label: "D2C Brands", href: "/industries/d2c" },
+              { label: "FMCG Manufacturers", href: "/industries/fmcg" },
+              { label: "Pharma & Healthcare", href: "/industries/pharma" },
+              { label: "Food & Beverage", href: "/industries/food" },
+              { label: "Cosmetics & Beauty", href: "/industries/beauty" },
+              { label: "Electronics", href: "/industries/electronics" },
+            ].map(l => (
+              <Link key={l.href} href={l.href}
+                style={{ color: "#64748B", textDecoration: "none", fontSize: 14, transition: "color 0.15s" }}
+                onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = "white"}
+                onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = "#64748B"}>
+                {l.label}
+              </Link>
+            ))}
+          </div>
+
+          {/* Company */}
+          <div className="flex flex-col gap-3">
+            <h4 style={{ color: "white", fontWeight: 700, fontSize: 11, letterSpacing: "2px", textTransform: "uppercase", marginBottom: 4 }}>COMPANY</h4>
+            {[
+              { label: "About Us", href: "/about" },
+              { label: "How It Works", href: "/how-it-works" },
+              { label: "Sustainability", href: "/sustainable" },
+              { label: "Factory Network", href: "/network" },
+            ].map(l => (
+              <Link key={l.href} href={l.href}
+                style={{ color: "#64748B", textDecoration: "none", fontSize: 14, transition: "color 0.15s" }}
+                onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = "white"}
+                onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = "#64748B"}>
+                {l.label}
+              </Link>
+            ))}
+          </div>
+
+          {/* Support */}
+          <div className="flex flex-col gap-3">
+            <h4 style={{ color: "white", fontWeight: 700, fontSize: 11, letterSpacing: "2px", textTransform: "uppercase", marginBottom: 4 }}>SUPPORT</h4>
+            {[
+              { label: "Order a Sample", href: "/samples" },
+              { label: "Design Service", href: "/design" },
+              { label: "Get a Quote", href: "/quote" },
+              { label: "WhatsApp Us", href: "https://wa.me/918208990366" },
+              { label: "Dashboard Login", href: "/login" },
+            ].map(l => (
+              <a key={l.label} href={l.href}
+                style={{ color: "#64748B", textDecoration: "none", fontSize: 14, transition: "color 0.15s" }}
+                onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = "white"}
+                onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = "#64748B"}>
+                {l.label}
+              </a>
+            ))}
+          </div>
+
+          {/* Newsletter */}
+          <div className="flex flex-col gap-4">
+            <h4 style={{ color: "white", fontWeight: 700, fontSize: 13, lineHeight: 1.4 }}>Subscribe To Packworkz Newsletter</h4>
+            <input
+              type="email"
+              placeholder="Your Email Address"
+              style={{
+                background: "transparent", border: "1px solid rgba(255,255,255,0.2)",
+                color: "white", padding: "10px 14px", fontSize: 13,
+                outline: "none", width: "100%",
+              }}
+            />
+            <button style={{
+              background: "white", color: "#020617",
+              fontWeight: 700, fontSize: 13, padding: "10px 14px",
+              border: "none", cursor: "pointer", width: "100%",
+              transition: "background 0.15s",
+            }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "#E8A838"; (e.currentTarget as HTMLElement).style.color = "#0D1B2A"; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "white"; (e.currentTarget as HTMLElement).style.color = "#020617"; }}>
+              Subscribe
+            </button>
+          </div>
         </div>
-        <div className="flex flex-col gap-3">
-          <h4 className="font-bold uppercase tracking-widest text-xs text-white">Support</h4>
-          {["Contact Sales", "Get a Sample", "Documentation", "WhatsApp Us"].map(l => (
-            <a key={l} href="#" style={{ color: "#64748B", textDecoration: "none", transition: "color 0.15s" }}
-              onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = "white"}
-              onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = "#64748B"}>{l}</a>
-          ))}
+
+        {/* Bottom bar */}
+        <div style={{ borderTop: "1px solid rgba(255,255,255,0.08)", padding: "18px 64px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
+          <p style={{ color: "#475569", fontSize: 13, margin: 0 }}>© {new Date().getFullYear()} Packworkz India. All rights reserved.</p>
+          <div style={{ display: "flex", gap: 20 }}>
+            {[{ label: "Privacy Policy", href: "#" }, { label: "Terms of Service", href: "#" }, { label: "Refund Policy", href: "#" }].map(l => (
+              <a key={l.label} href={l.href}
+                style={{ color: "#475569", fontSize: 13, textDecoration: "none", transition: "color 0.15s" }}
+                onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = "white"}
+                onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = "#475569"}>
+                {l.label}
+              </a>
+            ))}
+          </div>
         </div>
       </footer>
     </div>
