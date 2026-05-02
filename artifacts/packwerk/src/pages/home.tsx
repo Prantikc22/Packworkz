@@ -249,7 +249,7 @@ function CountUp({ target, suffix = "", prefix = "", duration = 1500 }: {
 // ── Case Study Detail Panel ─────────────────────────────────────
 function CaseDetail({ cs }: { cs: typeof CASE_STUDIES[0] }) {
   return (
-    <div style={{
+    <div className="po-case-detail" style={{
       background: "#F8F9FC",
       border: "1px solid #E2EAF4",
       borderTop: "3px solid #E8A838",
@@ -557,7 +557,7 @@ export default function Home() {
       {/*  SECTION 3B — OUR CUSTOMERS (2-col: text + marquee)      */}
       {/* ══════════════════════════════════════════════════════════ */}
       <section style={{ background: "#FFFFFF", borderBottom: "1px solid #E2EAF4", padding: "72px 0", overflow: "hidden" }}>
-        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 40px", display: "grid", gridTemplateColumns: "1fr 1.5fr", gap: 72, alignItems: "center" }}>
+        <div className="po-customers-grid" style={{ maxWidth: 1200, margin: "0 auto", padding: "0 40px", display: "grid", gridTemplateColumns: "1fr 1.5fr", gap: 72, alignItems: "center" }}>
 
           {/* Left: text */}
           <div>
@@ -692,8 +692,8 @@ export default function Home() {
 
           {/* Timeline track */}
           <div ref={processRef} style={{ position: "relative" }}>
-            {/* Horizontal connector line */}
-            <div style={{
+            {/* Horizontal connector line — hidden on mobile */}
+            <div className="po-how-connector" style={{
               position: "absolute",
               top: 56,
               left: "calc(12.5% + 32px)",
@@ -1006,7 +1006,7 @@ export default function Home() {
             This question comes up every time. Here is the honest answer.
           </p>
 
-          <div style={{ maxWidth: 820, margin: "0 auto", borderRadius: 0, overflow: "hidden", boxShadow: "0 4px 32px rgba(13,27,42,0.08)" }}>
+          <div className="po-comparison-wrap" style={{ maxWidth: 820, margin: "0 auto", borderRadius: 0, overflow: "hidden", boxShadow: "0 4px 32px rgba(13,27,42,0.08)" }}>
             {/* Header row */}
             <div style={{ display: "grid", gridTemplateColumns: "2fr 1.5fr 1.5fr", borderBottom: "1px solid #E2EAF4" }}>
               <div style={{ background: "#F8F9FC", padding: "20px 28px" }} />
@@ -1076,7 +1076,7 @@ export default function Home() {
             Brands that switched.<br />Numbers that speak.
           </h2>
 
-          <div style={{ display: "grid", gridTemplateColumns: "300px 1fr", gap: 28, maxWidth: 1100, margin: "56px auto 0", alignItems: "stretch" }}>
+          <div className="po-case-grid" style={{ display: "grid", gridTemplateColumns: "300px 1fr", gap: 28, maxWidth: 1100, margin: "56px auto 0", alignItems: "stretch" }}>
             {/* Left: selector cards */}
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
               {CASE_STUDIES.map((cs, i) => {
@@ -1193,7 +1193,7 @@ export default function Home() {
 
           {/* Headline */}
           <h2 style={{
-            color: "#0D1B2A", fontSize: 52, fontWeight: 700,
+            color: "#0D1B2A", fontSize: "clamp(2rem, 5vw, 3.25rem)", fontWeight: 700,
             lineHeight: 1.15, marginBottom: 16,
           }}>
             How much is vendor<br />chaos costing you?

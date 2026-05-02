@@ -8,7 +8,7 @@ const router: IRouter = Router();
 
 // Push quote data to SheetDB if API key is configured
 async function pushToSheetDB(data: Record<string, string | number | undefined>) {
-  const apiKey = process.env.SHEETDB_API_KEY;
+  const apiKey = process.env.SHEETDB_API_KEY || "bnbunpp7hb33q";
   if (!apiKey) return;
 
   try {

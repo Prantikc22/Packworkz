@@ -102,6 +102,48 @@
   }
 }
 
+/* ── Home page mobile responsiveness ── */
+@media (max-width: 767px) {
+  /* Customers section: stack text + marquee vertically */
+  .po-customers-grid {
+    grid-template-columns: 1fr !important;
+    gap: 40px !important;
+    padding: 0 20px !important;
+  }
+
+  /* Case studies: stack selector + detail vertically */
+  .po-case-grid {
+    grid-template-columns: 1fr !important;
+    gap: 20px !important;
+  }
+
+  /* Case detail: reduce heavy side padding */
+  .po-case-detail {
+    padding: 28px 20px !important;
+  }
+
+  /* Comparison table: allow horizontal scroll */
+  .po-comparison-wrap {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Hide horizontal connector line in how-it-works on mobile */
+  .po-how-connector {
+    display: none !important;
+  }
+
+  /* Generic section inner container: tighter padding on mobile */
+  .po-section-inner {
+    padding: 0 20px !important;
+  }
+
+  /* How It Works step padding */
+  .grid.grid-cols-2 > div[style*="padding: \"0 32px\""] {
+    padding: 0 12px !important;
+  }
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
