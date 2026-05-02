@@ -188,7 +188,7 @@ router.post("/pack-ai/chat", async (req, res): Promise<void> => {
     return;
   }
 
-  const apiKey = process.env.OPENROUTER_API_KEY || "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";
+  const apiKey = process.env.OPENROUTER_API_KEY;
   if (!apiKey) {
     res.status(500).json({ error: "AI service not configured" });
     return;

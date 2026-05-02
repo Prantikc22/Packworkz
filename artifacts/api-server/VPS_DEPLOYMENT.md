@@ -85,7 +85,7 @@ Create `/var/www/packworkz/artifacts/api-server/.env`:
 NODE_ENV=production
 PORT=8080
 ADMIN_KEY=PackOps-Admin@2024!
-OPENROUTER_API_KEY=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
+OPENROUTER_API_KEY=your_openrouter_api_key_here
 RESEND_API_KEY=your_resend_api_key_here
 RAZORPAY_KEY_ID=rzp_live_XXXXXXXX
 RAZORPAY_KEY_SECRET=your_razorpay_secret
