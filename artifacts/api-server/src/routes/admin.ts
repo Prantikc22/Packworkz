@@ -8,6 +8,17 @@ import { sendWelcomeEmail } from "../lib/email";
 
 const router: IRouter = Router();
 
+// Public endpoint — verifies the key and echoes it back (used by admin login page)
+router.post("/admin/verify-key", (req, res): void => {
+  const { key } = req.body as { key?: string };
+  const expectedKey = process.env.ADMIN_KEY || "packwerk-admin-2024";
+  if (!key || key !== expectedKey) {
+    res.status(401).json({ error: "Invalid admin key" });
+    return;
+  }
+  res.json({ valid: true });
+});
+
 router.use("/admin", requireAdmin as never);
 
 router.get("/admin/quotes", async (req, res): Promise<void> => {

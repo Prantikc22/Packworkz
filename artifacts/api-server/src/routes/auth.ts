@@ -31,7 +31,7 @@ router.post("/auth/login", async (req, res): Promise<void> => {
   }
 
   const token = generateToken(user.id);
-  createSession(token, user.id);
+  await createSession(token, user.id);
 
   const { password_hash: _, ...userWithoutPassword } = user;
 
@@ -48,7 +48,7 @@ router.post("/auth/login", async (req, res): Promise<void> => {
 router.post("/auth/change-password", requireAuth as never, async (req, res): Promise<void> => {
   const authHeader = req.headers.authorization;
   const token = authHeader?.slice(7) ?? "";
-  const userId = getSessionUserId(token);
+  const userId = await getSessionUserId(token);
 
   if (!userId) {
     res.status(401).json({ error: "Not authenticated" });
@@ -91,7 +91,7 @@ router.post("/auth/logout", async (req, res): Promise<void> => {
   const authHeader = req.headers.authorization;
   if (authHeader?.startsWith("Bearer ")) {
     const token = authHeader.slice(7);
-    deleteSession(token);
+    await deleteSession(token);
   }
   res.json({ success: true });
 });

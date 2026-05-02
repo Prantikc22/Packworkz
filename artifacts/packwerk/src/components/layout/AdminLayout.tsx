@@ -1,7 +1,9 @@
+import { useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { LayoutDashboard, Package, PaintBucket, FileText, LogOut, Menu, Users } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { setExtraHeader } from "@workspace/api-client-react";
 
 const NAV_ITEMS = [
   { href: "/admin/quotes", label: "Quotes", icon: LayoutDashboard },
@@ -14,8 +16,16 @@ const NAV_ITEMS = [
 export function AdminLayout({ children }: { children: React.ReactNode }) {
   const [location, setLocation] = useLocation();
 
+  // Inject admin key into every generated API hook request
+  useEffect(() => {
+    const key = localStorage.getItem("packwerk_admin_key") || "";
+    setExtraHeader("x-admin-key", key || null);
+    return () => { setExtraHeader("x-admin-key", null); };
+  }, []);
+
   const handleLogout = () => {
     localStorage.removeItem("packwerk_admin_key");
+    setExtraHeader("x-admin-key", null);
     setLocation("/");
   };
 

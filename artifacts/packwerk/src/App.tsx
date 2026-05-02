@@ -29,6 +29,7 @@ import DashboardPayments from "@/pages/dashboard/payments";
 import DashboardProfile from "@/pages/dashboard/profile";
 
 // Admin Pages
+import AdminLogin from "@/pages/admin/login";
 import AdminQuotes from "@/pages/admin/quotes";
 import AdminOrders from "@/pages/admin/orders";
 import AdminDesigns from "@/pages/admin/designs";
@@ -56,7 +57,7 @@ const AdminRoute = ({ component: Component, layout: Layout, ...rest }: any) => {
       {...rest}
       component={(props: any) => {
         const adminKey = localStorage.getItem("packwerk_admin_key");
-        if (!adminKey && !import.meta.env.VITE_ADMIN_KEY) return <Redirect to="/" />;
+        if (!adminKey) return <Redirect to="/admin/login" />;
         return Layout ? <Layout><Component {...props} /></Layout> : <Component {...props} />;
       }}
     />
@@ -101,6 +102,7 @@ function Router() {
       <ProtectedRoute path="/dashboard/profile" component={DashboardProfile} layout={DashboardLayout} />
 
       {/* Admin Routes */}
+      <Route path="/admin/login" component={AdminLogin} />
       <AdminRoute path="/admin" component={() => <Redirect to="/admin/quotes" />} />
       <AdminRoute path="/admin/quotes" component={AdminQuotes} layout={AdminLayout} />
       <AdminRoute path="/admin/orders" component={AdminOrders} layout={AdminLayout} />
