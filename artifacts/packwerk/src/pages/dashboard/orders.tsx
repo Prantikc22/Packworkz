@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { useGetDashboardOrders } from "@workspace/api-client-react";
-import { Loader2, ExternalLink, RotateCcw, Download, Package } from "lucide-react";
+import { Loader2, ExternalLink, RotateCcw, Download, Package, CheckCircle } from "lucide-react";
 import { Link, useLocation } from "wouter";
 
 const MS = ({ icon, className = "", style }: { icon: string; className?: string; style?: React.CSSProperties }) => (
@@ -49,11 +49,37 @@ function fmt(n: number) {
   return new Intl.NumberFormat("en-IN", { maximumFractionDigits: 0 }).format(n);
 }
 
+type ReorderState = "idle" | "loading" | "done";
+
 export default function DashboardOrders() {
   const [activeTab, setActiveTab] = useState("all");
   const [search, setSearch] = useState("");
   const [selectedOrder, setSelectedOrder] = useState<any>(null);
+  const [reorderState, setReorderState] = useState<ReorderState>("idle");
+  const [reorderQuoteId, setReorderQuoteId] = useState<string | null>(null);
+  const [reorderingId, setReorderingId] = useState<string | null>(null);
   const [, navigate] = useLocation();
+
+  const handleReorder = async (order: any, e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    if (reorderState === "loading") return;
+    setReorderState("loading");
+    setReorderingId(order.id);
+    try {
+      const token = localStorage.getItem("packwerk_access_token") || "";
+      const res = await fetch(`/api/dashboard/reorder/${order.id}`, {
+        method: "POST",
+        headers: { "Authorization": `Bearer ${token}` },
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      setReorderQuoteId(data.quote_id);
+      setReorderState("done");
+    } catch {
+      setReorderState("idle");
+      setReorderingId(null);
+    }
+  };
 
   const { data: orders, isLoading } = useGetDashboardOrders(
     activeTab !== "all" ? { status: activeTab } : {}
@@ -156,10 +182,13 @@ export default function DashboardOrders() {
                             </a>
                           )}
                           <button
-                            onClick={e => { e.stopPropagation(); navigate(`/quote?reorder=${order.id}`); }}
-                            className="flex items-center gap-1 text-[11px] font-black uppercase tracking-wider px-3 py-1.5 border border-[#E7E8EB] hover:border-[#1B6CA8] hover:text-[#1B6CA8] transition-all"
+                            onClick={e => handleReorder(order, e)}
+                            disabled={reorderState === "loading" && reorderingId === order.id}
+                            className="flex items-center gap-1 text-[11px] font-black uppercase tracking-wider px-3 py-1.5 border border-[#E7E8EB] hover:border-[#1B6CA8] hover:text-[#1B6CA8] transition-all disabled:opacity-50"
                             style={{ color: "#64748B" }}>
-                            <RotateCcw className="w-3 h-3" /> Reorder
+                            {reorderState === "loading" && reorderingId === order.id
+                              ? <Loader2 className="w-3 h-3 animate-spin" />
+                              : <RotateCcw className="w-3 h-3" />} Reorder
                           </button>
                         </div>
                       </td>
@@ -315,11 +344,26 @@ export default function DashboardOrders() {
 
             {/* Footer action */}
             <div className="px-6 py-4 border-t border-[#F1F3F5]">
-              <button
-                className="btn-fill btn-amber w-full py-3 text-[14px]"
-                onClick={() => navigate(`/quote?reorder=${selectedOrder.id}`)}>
-                <span><RotateCcw className="w-4 h-4 inline mr-2" />Reorder this product</span>
-              </button>
+              {reorderState === "done" && reorderingId === selectedOrder.id ? (
+                <div className="flex items-center gap-3 px-4 py-3" style={{ background: "rgba(22,163,74,0.08)", border: "1px solid rgba(22,163,74,0.25)" }}>
+                  <CheckCircle className="w-5 h-5 flex-shrink-0" style={{ color: "#16A34A" }} />
+                  <div>
+                    <p className="text-[13px] font-black" style={{ color: "#16A34A" }}>Reorder submitted!</p>
+                    <p className="text-[12px]" style={{ color: "#64748B" }}>Quote ID: <span style={{ fontFamily: "monospace", fontWeight: 700 }}>{reorderQuoteId}</span></p>
+                  </div>
+                  <button onClick={() => navigate("/dashboard/quotes")} className="ml-auto text-[11px] font-black hover:underline" style={{ color: "#1B6CA8" }}>View →</button>
+                </div>
+              ) : (
+                <button
+                  className="btn-fill btn-amber w-full py-3 text-[14px]"
+                  disabled={reorderState === "loading" && reorderingId === selectedOrder.id}
+                  onClick={() => handleReorder(selectedOrder)}>
+                  {reorderState === "loading" && reorderingId === selectedOrder.id
+                    ? <span><Loader2 className="w-4 h-4 inline mr-2 animate-spin" />Submitting…</span>
+                    : <span><RotateCcw className="w-4 h-4 inline mr-2" />Reorder this product</span>
+                  }
+                </button>
+              )}
             </div>
           </div>
         </div>

@@ -643,9 +643,15 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
           <Link href="/samples" className="hidden md:inline po-nav-link">
             Sample
           </Link>
-          <Link href="/login" className="hidden md:inline po-nav-link">
-            Login
-          </Link>
+          {localStorage.getItem("packwerk_access_token") ? (
+            <Link href="/dashboard" className="hidden md:inline po-nav-link" style={{ color: "#E8A838" }}>
+              Dashboard
+            </Link>
+          ) : (
+            <Link href="/login" className="hidden md:inline po-nav-link">
+              Login
+            </Link>
+          )}
           <Link href="/quote" className="po-cta-btn" style={{ marginLeft: 8 }}>
             <span>Get Quote</span>
           </Link>
@@ -678,10 +684,17 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
                 style={{ fontSize: 18, fontWeight: 700, color: "rgba(255,255,255,0.6)", textDecoration: "none" }}>
                 Sample
               </Link>
-              <Link href="/login" onClick={() => setMobileOpen(false)}
-                style={{ fontSize: 18, fontWeight: 700, color: "rgba(255,255,255,0.6)", textDecoration: "none" }}>
-                Login
-              </Link>
+              {localStorage.getItem("packwerk_access_token") ? (
+                <Link href="/dashboard" onClick={() => setMobileOpen(false)}
+                  style={{ fontSize: 18, fontWeight: 700, color: "#E8A838", textDecoration: "none" }}>
+                  Dashboard
+                </Link>
+              ) : (
+                <Link href="/login" onClick={() => setMobileOpen(false)}
+                  style={{ fontSize: 18, fontWeight: 700, color: "rgba(255,255,255,0.6)", textDecoration: "none" }}>
+                  Login
+                </Link>
+              )}
               <Link href="/quote" onClick={() => setMobileOpen(false)}
                 style={{ display: "inline-block", padding: "14px 28px", background: "#E8A838", color: "#0D1B2A", fontWeight: 800, fontSize: 14, textDecoration: "none", borderRadius: 8, textTransform: "uppercase", letterSpacing: "0.05em" }}>
                 Get Quote

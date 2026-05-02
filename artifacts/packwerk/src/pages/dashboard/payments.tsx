@@ -1,5 +1,5 @@
-import { useGetDashboardInvoices, useGetDashboardProfile } from "@workspace/api-client-react";
-import { Loader2, FileText, Download } from "lucide-react";
+import { useGetDashboardInvoices, useGetDashboardProfile, useGetDashboardOrders } from "@workspace/api-client-react";
+import { Loader2, FileText, Download, CreditCard, ExternalLink } from "lucide-react";
 
 const MS = ({ icon, className = "", style }: { icon: string; className?: string; style?: React.CSSProperties }) => (
   <span className={`material-symbols-outlined ${className}`} style={style}>{icon}</span>
@@ -20,8 +20,9 @@ const INVOICE_STATUS: Record<string, { label: string; color: string; bg: string 
 export default function DashboardPayments() {
   const { data: invoices, isLoading: invoicesLoading } = useGetDashboardInvoices();
   const { data: profile, isLoading: profileLoading } = useGetDashboardProfile();
+  const { data: ordersData, isLoading: ordersLoading } = useGetDashboardOrders({});
 
-  if (invoicesLoading || profileLoading) {
+  if (invoicesLoading || profileLoading || ordersLoading) {
     return <div className="flex justify-center py-20"><Loader2 className="w-8 h-8 animate-spin" style={{ color: "#1B6CA8" }} /></div>;
   }
 
@@ -29,8 +30,12 @@ export default function DashboardPayments() {
   const creditEligible = profile?.credit_eligible ?? false;
   const creditLimit = Number(profile?.credit_limit ?? 0);
   const invoiceList = (invoices as any[]) ?? [];
+  const allOrders = (ordersData as any[]) ?? [];
 
-  const paidInvoices = invoiceList.filter(i => i.status === "paid");
+  // Orders that have a payment link set (pending payment from client)
+  const payableOrders = allOrders.filter((o: any) => o.payment_link && o.status !== "delivered" && o.status !== "cancelled");
+
+  const paidInvoices = invoiceList.filter((i: any) => i.status === "paid");
   const totalPaid = paidInvoices.reduce((sum: number, i: any) => sum + Number(i.amount), 0);
 
   return (
@@ -72,6 +77,40 @@ export default function DashboardPayments() {
               ))}
             </div>
             <p className="text-[12px] font-bold" style={{ color: "rgba(255,255,255,0.5)" }}>{creditOrders} of 3 orders</p>
+          </div>
+        </div>
+      )}
+
+      {/* ── Pending Payments ── */}
+      {payableOrders.length > 0 && (
+        <div className="mb-8">
+          <div className="flex items-center gap-2 mb-4">
+            <CreditCard className="w-4 h-4" style={{ color: "#D97706" }} />
+            <h2 className="font-black text-[15px] uppercase tracking-wider" style={{ color: "#0D1B2A" }}>Action Required — Pending Payments</h2>
+          </div>
+          <div className="space-y-3">
+            {payableOrders.map((order: any) => (
+              <div key={order.id} className="flex items-center justify-between px-6 py-5" style={{ background: "rgba(232,168,56,0.06)", border: "1px solid rgba(232,168,56,0.3)" }}>
+                <div>
+                  <p className="font-black text-[13px]" style={{ color: "#E8A838", fontFamily: "monospace" }}>{order.order_id}</p>
+                  <p className="text-[14px] font-bold mt-0.5" style={{ color: "#0D1B2A" }}>₹{fmt(Number(order.total_price))}</p>
+                  <p className="text-[12px] mt-0.5" style={{ color: "#64748B" }}>
+                    {Array.isArray(order.items) ? order.items.map((i: any) => i.product_name).filter(Boolean).join(", ") : "Packaging order"}
+                  </p>
+                </div>
+                <a
+                  href={order.payment_link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 px-6 py-3 font-black text-[13px] transition-all hover:opacity-90"
+                  style={{ background: "#E8A838", color: "#0D1B2A", textDecoration: "none" }}
+                >
+                  <CreditCard className="w-4 h-4" />
+                  Pay Now
+                  <ExternalLink className="w-3 h-3" />
+                </a>
+              </div>
+            ))}
           </div>
         </div>
       )}
@@ -173,6 +212,18 @@ export default function DashboardPayments() {
           </div>
         </div>
       )}
+
+      {/* ── Contact for payment questions ── */}
+      <div className="mt-8 flex items-center justify-center gap-3 py-5 border border-dashed border-[#E7E8EB]">
+        <a
+          href={`https://wa.me/${WHATSAPP_NUM}?text=Hi+Packworkz%2C+I+have+a+payment+question`}
+          target="_blank" rel="noopener noreferrer"
+          className="flex items-center gap-2 text-[13px] font-bold hover:underline"
+          style={{ color: "#25D366", textDecoration: "none" }}
+        >
+          <MS icon="chat" className="text-base" /> Questions about payment? WhatsApp us →
+        </a>
+      </div>
     </div>
   );
 }

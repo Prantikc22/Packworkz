@@ -208,11 +208,20 @@ router.get("/admin/orders", async (_req, res): Promise<void> => {
 
 router.put("/admin/orders/:id/status", async (req, res): Promise<void> => {
   const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
-  const { status, tracking_number, tracking_url } = req.body;
+  const { status, tracking_number, tracking_url, payment_link, estimated_delivery, internal_notes, total_price } = req.body;
+
+  const updateFields: Record<string, any> = {};
+  if (status !== undefined) updateFields.status = status;
+  if (tracking_number !== undefined) updateFields.tracking_number = tracking_number;
+  if (tracking_url !== undefined) updateFields.tracking_url = tracking_url;
+  if (payment_link !== undefined) updateFields.payment_link = payment_link;
+  if (estimated_delivery !== undefined) updateFields.estimated_delivery = estimated_delivery;
+  if (internal_notes !== undefined) updateFields.internal_notes = internal_notes;
+  if (total_price !== undefined) updateFields.total_price = total_price.toString();
 
   const [updated] = await db
     .update(ordersTable)
-    .set({ status, tracking_number, tracking_url })
+    .set(updateFields)
     .where(eq(ordersTable.id, id))
     .returning();
 

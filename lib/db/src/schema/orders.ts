@@ -33,6 +33,7 @@ export const ordersTable = pgTable("orders", {
   estimated_delivery: date("estimated_delivery"),
   tracking_number: text("tracking_number"),
   tracking_url: text("tracking_url"),
+  payment_link: text("payment_link"),
   internal_notes: text("internal_notes"),
   created_at: timestamp("created_at", { withTimezone: true }).defaultNow(),
 });

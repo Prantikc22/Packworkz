@@ -1,6 +1,6 @@
 import { Router, type IRouter, type Request } from "express";
 import { db, ordersTable, invoicesTable, designRequestsTable, usersTable, quoteRequestsTable } from "@workspace/db";
-import { eq, sql, and } from "drizzle-orm";
+import { eq, sql, and, inArray } from "drizzle-orm";
 import { requireAuth } from "../lib/auth";
 import { generateId } from "../lib/generateId";
 
@@ -134,7 +134,7 @@ router.get("/dashboard/quotes", async (req, res): Promise<void> => {
     .where(
       and(
         eq(quoteRequestsTable.user_id, userId),
-        sql`${quoteRequestsTable.status} = ANY(${statusFilter})`
+        inArray(quoteRequestsTable.status, statusFilter)
       )
     )
     .orderBy(sql`${quoteRequestsTable.created_at} DESC`);
@@ -199,6 +199,48 @@ router.post("/dashboard/quotes/:id/accept", async (req, res): Promise<void> => {
     id: order.id,
     message: "Order confirmed! Your production has begun.",
   });
+});
+
+router.post("/dashboard/reorder/:orderId", async (req, res): Promise<void> => {
+  const userId = (req as AuthRequest).userId;
+  const orderId = req.params.orderId;
+
+  const [order] = await db
+    .select()
+    .from(ordersTable)
+    .where(and(eq(ordersTable.id, orderId), eq(ordersTable.user_id, userId)))
+    .limit(1);
+
+  if (!order) {
+    res.status(404).json({ error: "Order not found" });
+    return;
+  }
+
+  const [user] = await db.select().from(usersTable).where(eq(usersTable.id, userId)).limit(1);
+
+  const quoteId = await generateId("PKG", "quote_requests", "quote_id");
+
+  const [quote] = await db
+    .insert(quoteRequestsTable)
+    .values({
+      quote_id: quoteId,
+      contact_name: user?.contact_name ?? "",
+      company_name: user?.company_name ?? "",
+      email: user?.email ?? "",
+      phone: user?.phone ?? "",
+      items: order.items as any,
+      delivery_country: "India",
+      delivery_pincode: "",
+      preferred_timeline: "standard",
+      notes: `Reorder of ${order.order_id}`,
+      artwork_option: "none",
+      sample_option: "no",
+      status: "submitted",
+      user_id: userId,
+    })
+    .returning();
+
+  res.status(201).json({ quote_id: quote.quote_id, id: quote.id });
 });
 
 router.get("/dashboard/designs", async (req, res): Promise<void> => {
