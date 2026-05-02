@@ -2,14 +2,20 @@ import { Router } from "express";
 import Razorpay from "razorpay";
 import crypto from "crypto";
 
-const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID || "",
-  key_secret: process.env.RAZORPAY_KEY_SECRET || "",
-});
+function getRazorpay(): Razorpay | null {
+  const keyId = process.env.RAZORPAY_KEY_ID;
+  const keySecret = process.env.RAZORPAY_KEY_SECRET;
+  if (!keyId || !keySecret) return null;
+  return new Razorpay({ key_id: keyId, key_secret: keySecret });
+}
 
 const router = Router();
 
 router.post("/api/payments/create-order", async (req, res) => {
+  const razorpay = getRazorpay();
+  if (!razorpay) {
+    return res.status(503).json({ error: "Payment gateway not configured" });
+  }
   try {
     const { amount, currency = "INR", notes = {} } = req.body;
     if (!amount || typeof amount !== "number" || amount < 100) {
