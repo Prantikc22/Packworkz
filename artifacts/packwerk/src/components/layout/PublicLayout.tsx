@@ -659,7 +659,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
         {/* Logo */}
         <Link href="/" style={{ textDecoration: "none" }}>
           <span style={{
-            fontSize: 26, fontWeight: 900, letterSpacing: "-0.03em",
+            fontSize: 32, fontWeight: 900, letterSpacing: "-0.03em",
             color: "white", fontFamily: "'Space Grotesk', sans-serif",
             cursor: "pointer", userSelect: "none",
           }}>
@@ -755,7 +755,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
 
         {/* Top bar: logo + socials + CTA */}
         <div style={{ borderBottom: "1px solid rgba(255,255,255,0.08)", padding: "28px 64px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 16 }}>
-          <span style={{ fontSize: 28, fontWeight: 900, color: "white", letterSpacing: "-0.03em" }}>Packworkz</span>
+          <span style={{ fontSize: 34, fontWeight: 900, color: "white", letterSpacing: "-0.03em" }}>Packworkz</span>
           <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
             {/* Social icons */}
             {[
