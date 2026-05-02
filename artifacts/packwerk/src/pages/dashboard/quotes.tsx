@@ -47,15 +47,23 @@ function ConfirmModal({ quote, onConfirm, onCancel, loading }: {
               <span className="font-bold" style={{ color: "#0D1B2A" }}>{firstItem.product_name}</span>
             </div>
           )}
-          {quote.total_estimated_max && (
+          {(quote.quoted_amount || quote.total_estimated_max) && (
             <div className="flex justify-between text-[13px]">
               <span style={{ color: "#64748B" }}>Order value</span>
-              <span className="font-black" style={{ color: "#0D1B2A" }}>₹{fmt(quote.total_estimated_max)}</span>
+              <span className="font-black" style={{ color: "#0D1B2A" }}>
+                ₹{fmt(Number(quote.quoted_amount || quote.total_estimated_max))}
+              </span>
+            </div>
+          )}
+          {quote.delivery_date && (
+            <div className="flex justify-between text-[13px]">
+              <span style={{ color: "#64748B" }}>Delivery</span>
+              <span className="font-bold" style={{ color: "#0D1B2A" }}>{quote.delivery_date}</span>
             </div>
           )}
           <div className="flex justify-between text-[13px]">
             <span style={{ color: "#64748B" }}>Payment terms</span>
-            <span className="font-bold" style={{ color: "#0D1B2A" }}>50% advance, 50% on delivery</span>
+            <span className="font-bold" style={{ color: "#0D1B2A" }}>{quote.payment_terms || "50% advance, 50% on delivery"}</span>
           </div>
         </div>
 
@@ -198,15 +206,26 @@ export default function DashboardQuotes() {
                     <div>
                       <div className="flex justify-between items-end mb-4">
                         <div>
-                          {quote.total_estimated_min && (
+                          {quote.quoted_amount ? (
+                            <p className="text-[22px] font-black" style={{ color: "#0D1B2A" }}>
+                              ₹{fmt(Number(quote.quoted_amount))}
+                            </p>
+                          ) : quote.total_estimated_min ? (
                             <p className="text-[22px] font-black" style={{ color: "#0D1B2A" }}>
                               ₹{fmt(quote.total_estimated_min)}
                               {quote.total_estimated_max && quote.total_estimated_max !== quote.total_estimated_min && (
                                 <span> – ₹{fmt(quote.total_estimated_max)}</span>
                               )}
                             </p>
+                          ) : null}
+                          {quote.delivery_date && (
+                            <p className="text-[12px] mt-0.5" style={{ color: "#64748B" }}>
+                              Delivery: <span className="font-semibold">{quote.delivery_date}</span>
+                            </p>
                           )}
-                          <p className="text-[12px]" style={{ color: "#94A3B8" }}>Payment: 50% advance · 50% on delivery</p>
+                          <p className="text-[12px] mt-0.5" style={{ color: "#94A3B8" }}>
+                            Payment: {quote.payment_terms || "50% advance · 50% on delivery"}
+                          </p>
                         </div>
                       </div>
                       <div className="flex gap-3 flex-wrap">

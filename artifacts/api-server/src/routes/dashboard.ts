@@ -1,12 +1,9 @@
 import { Router, type IRouter, type Request } from "express";
-import { db, ordersTable, invoicesTable, designRequestsTable, usersTable, quoteRequestsTable } from "@workspace/db";
-import { eq, sql, and, inArray } from "drizzle-orm";
+import { sb } from "../lib/supabase";
 import { requireAuth } from "../lib/auth";
 import { generateId } from "../lib/generateId";
 
 type AuthRequest = Request & { userId: string };
-
-const WHATSAPP_NUM = "919999999999";
 
 const router: IRouter = Router();
 
@@ -15,77 +12,70 @@ router.use("/dashboard", requireAuth as never);
 router.get("/dashboard/overview", async (req, res): Promise<void> => {
   const userId = (req as AuthRequest).userId;
 
-  const [user] = await db.select().from(usersTable).where(eq(usersTable.id, userId)).limit(1);
+  const { data: user } = await sb.from("users_profile").select("*").eq("id", userId).maybeSingle();
   if (!user) {
     res.status(404).json({ error: "User not found" });
     return;
   }
 
-  const activeOrders = await db
-    .select()
-    .from(ordersTable)
-    .where(
-      and(
-        eq(ordersTable.user_id, userId),
-        sql`${ordersTable.status} NOT IN ('delivered', 'cancelled')`
-      )
-    )
-    .orderBy(sql`${ordersTable.created_at} DESC`);
+  const { data: activeOrders } = await sb
+    .from("orders")
+    .select("*")
+    .eq("user_id", userId)
+    .not("status", "in", '("delivered","cancelled")')
+    .order("created_at", { ascending: false });
 
-  const inProductionCount = activeOrders.filter(o => o.status === "in_production" || o.status === "confirmed").length;
-  const dispatchedCount = activeOrders.filter(o => o.status === "dispatched").length;
+  const orders = activeOrders || [];
+  const inProductionCount = orders.filter(o => o.status === "in_production" || o.status === "confirmed").length;
+  const dispatchedCount = orders.filter(o => o.status === "dispatched").length;
 
-  const pendingQuotes = await db
-    .select({ count: sql<number>`count(*)` })
-    .from(quoteRequestsTable)
-    .where(
-      and(
-        eq(quoteRequestsTable.user_id, userId),
-        sql`${quoteRequestsTable.status} IN ('submitted', 'under_review', 'quoted')`
-      )
-    );
+  const { count: pendingQuotesCount } = await sb
+    .from("quote_requests")
+    .select("*", { count: "exact", head: true })
+    .eq("user_id", userId)
+    .in("status", ["submitted", "under_review", "reviewing", "quoted"]);
 
-  const totalSavedResult = await db
-    .select({ total: sql<number>`coalesce(sum(cast(${ordersTable.discount_applied} as numeric)), 0)` })
-    .from(ordersTable)
-    .where(eq(ordersTable.user_id, userId));
+  const { data: allOrders } = await sb
+    .from("orders")
+    .select("discount_applied")
+    .eq("user_id", userId);
 
-  const recentOrders = await db
-    .select()
-    .from(ordersTable)
-    .where(eq(ordersTable.user_id, userId))
-    .orderBy(sql`${ordersTable.created_at} DESC`)
+  const totalSaved = (allOrders || []).reduce(
+    (sum, o) => sum + Number(o.discount_applied ?? 0), 0
+  );
+
+  const { data: recentOrders } = await sb
+    .from("orders")
+    .select("*")
+    .eq("user_id", userId)
+    .order("created_at", { ascending: false })
     .limit(5);
 
-  const pendingQuotesList = await db
-    .select()
-    .from(quoteRequestsTable)
-    .where(
-      and(
-        eq(quoteRequestsTable.user_id, userId),
-        sql`${quoteRequestsTable.status} IN ('submitted', 'under_review', 'quoted')`
-      )
-    )
-    .orderBy(sql`${quoteRequestsTable.created_at} DESC`)
+  const { data: pendingQuotesList } = await sb
+    .from("quote_requests")
+    .select("*")
+    .eq("user_id", userId)
+    .in("status", ["submitted", "under_review", "reviewing", "quoted"])
+    .order("created_at", { ascending: false })
     .limit(3);
 
   res.json({
     company_name: user.company_name,
-    active_orders: activeOrders.length,
+    active_orders: orders.length,
     in_production_count: inProductionCount,
     dispatched_count: dispatchedCount,
-    pending_quotes: Number(pendingQuotes[0]?.count ?? 0),
-    total_saved: Number(totalSavedResult[0]?.total ?? 0),
+    pending_quotes: pendingQuotesCount ?? 0,
+    total_saved: totalSaved,
     orders_completed: user.orders_completed ?? 0,
     credit_eligible: user.credit_eligible ?? false,
     credit_limit: Number(user.credit_limit ?? 0),
-    recent_orders: recentOrders.map((o) => ({
+    recent_orders: (recentOrders || []).map(o => ({
       ...o,
       total_price: Number(o.total_price),
       discount_applied: Number(o.discount_applied ?? 0),
       delivery_address: o.delivery_address ?? {},
     })),
-    pending_quotes_list: pendingQuotesList.map(q => ({
+    pending_quotes_list: (pendingQuotesList || []).map(q => ({
       ...q,
       total_estimated_min: q.total_estimated_min ? Number(q.total_estimated_min) : null,
       total_estimated_max: q.total_estimated_max ? Number(q.total_estimated_max) : null,
@@ -97,18 +87,12 @@ router.get("/dashboard/orders", async (req, res): Promise<void> => {
   const userId = (req as AuthRequest).userId;
   const { status } = req.query as { status?: string };
 
-  const orders = await db
-    .select()
-    .from(ordersTable)
-    .where(
-      status
-        ? and(eq(ordersTable.user_id, userId), eq(ordersTable.status, status))
-        : eq(ordersTable.user_id, userId)
-    )
-    .orderBy(sql`${ordersTable.created_at} DESC`);
+  let query = sb.from("orders").select("*").eq("user_id", userId).order("created_at", { ascending: false });
+  if (status) query = query.eq("status", status);
 
+  const { data: orders } = await query;
   res.json(
-    orders.map((o) => ({
+    (orders || []).map(o => ({
       ...o,
       total_price: Number(o.total_price),
       discount_applied: Number(o.discount_applied ?? 0),
@@ -121,29 +105,23 @@ router.get("/dashboard/quotes", async (req, res): Promise<void> => {
   const userId = (req as AuthRequest).userId;
   const { tab } = req.query as { tab?: string };
 
-  let statusFilter: string[];
-  if (tab === "history") {
-    statusFilter = ["accepted", "rejected", "expired"];
-  } else {
-    statusFilter = ["submitted", "under_review", "quoted"];
-  }
+  const statusFilter = tab === "history"
+    ? ["accepted", "rejected", "expired"]
+    : ["submitted", "under_review", "reviewing", "quoted"];
 
-  const quotes = await db
-    .select()
-    .from(quoteRequestsTable)
-    .where(
-      and(
-        eq(quoteRequestsTable.user_id, userId),
-        inArray(quoteRequestsTable.status, statusFilter)
-      )
-    )
-    .orderBy(sql`${quoteRequestsTable.created_at} DESC`);
+  const { data: quotes } = await sb
+    .from("quote_requests")
+    .select("*")
+    .eq("user_id", userId)
+    .in("status", statusFilter)
+    .order("created_at", { ascending: false });
 
   res.json(
-    quotes.map(q => ({
+    (quotes || []).map(q => ({
       ...q,
       total_estimated_min: q.total_estimated_min ? Number(q.total_estimated_min) : null,
       total_estimated_max: q.total_estimated_max ? Number(q.total_estimated_max) : null,
+      quoted_amount: q.quoted_amount ? Number(q.quoted_amount) : null,
     }))
   );
 });
@@ -152,11 +130,12 @@ router.post("/dashboard/quotes/:id/accept", async (req, res): Promise<void> => {
   const userId = (req as AuthRequest).userId;
   const quoteUuid = req.params.id;
 
-  const [quote] = await db
-    .select()
-    .from(quoteRequestsTable)
-    .where(and(eq(quoteRequestsTable.id, quoteUuid as any), eq(quoteRequestsTable.user_id, userId)))
-    .limit(1);
+  const { data: quote } = await sb
+    .from("quote_requests")
+    .select("*")
+    .eq("id", quoteUuid)
+    .eq("user_id", userId)
+    .maybeSingle();
 
   if (!quote) {
     res.status(404).json({ error: "Quote not found" });
@@ -173,30 +152,31 @@ router.post("/dashboard/quotes/:id/accept", async (req, res): Promise<void> => {
   const estimatedDelivery = new Date();
   estimatedDelivery.setDate(estimatedDelivery.getDate() + 21);
 
-  const [order] = await db
-    .insert(ordersTable)
-    .values({
+  const { data: order } = await sb
+    .from("orders")
+    .insert({
       order_id: orderId,
-      quote_request_id: quoteUuid as any,
+      quote_request_id: quoteUuid,
       user_id: userId,
-      items: quote.items as any,
-      total_price: quote.total_estimated_max?.toString() || "0",
+      items: quote.items,
+      total_price: String(quote.quoted_amount || quote.total_estimated_max || "0"),
       payment_type: "standard",
       discount_applied: "0",
       delivery_address: {},
       status: "confirmed",
       estimated_delivery: estimatedDelivery.toISOString().split("T")[0],
     })
-    .returning();
+    .select()
+    .single();
 
-  await db
-    .update(quoteRequestsTable)
-    .set({ status: "accepted" })
-    .where(eq(quoteRequestsTable.id, quoteUuid as any));
+  await sb
+    .from("quote_requests")
+    .update({ status: "accepted" })
+    .eq("id", quoteUuid);
 
   res.status(201).json({
-    order_id: order.order_id,
-    id: order.id,
+    order_id: order?.order_id,
+    id: order?.id,
     message: "Order confirmed! Your production has begun.",
   });
 });
@@ -205,22 +185,21 @@ router.post("/dashboard/reorder/:orderId", async (req, res): Promise<void> => {
   const userId = (req as AuthRequest).userId;
   const orderId = req.params.orderId;
 
-  const [order] = await db
-    .select()
-    .from(ordersTable)
-    .where(and(eq(ordersTable.id, orderId), eq(ordersTable.user_id, userId)))
-    .limit(1);
+  const { data: order } = await sb
+    .from("orders")
+    .select("*")
+    .eq("id", orderId)
+    .eq("user_id", userId)
+    .maybeSingle();
 
   if (!order) {
     res.status(404).json({ error: "Order not found" });
     return;
   }
 
-  const [user] = await db.select().from(usersTable).where(eq(usersTable.id, userId)).limit(1);
-
+  const { data: user } = await sb.from("users_profile").select("*").eq("id", userId).maybeSingle();
   const quoteId = await generateId("PKG", "quote_requests", "quote_id");
 
-  // Allow caller to override items/notes (used by the reorder dialog)
   const bodyItems = Array.isArray(req.body?.items) && req.body.items.length > 0
     ? req.body.items
     : order.items;
@@ -228,15 +207,15 @@ router.post("/dashboard/reorder/:orderId", async (req, res): Promise<void> => {
     ? req.body.notes.trim()
     : `Reorder of ${order.order_id}`;
 
-  const [quote] = await db
-    .insert(quoteRequestsTable)
-    .values({
+  const { data: quote } = await sb
+    .from("quote_requests")
+    .insert({
       quote_id: quoteId,
       contact_name: user?.contact_name ?? "",
       company_name: user?.company_name ?? "",
       email: user?.email ?? "",
       phone: user?.phone ?? "",
-      items: bodyItems as any,
+      items: bodyItems,
       delivery_country: "India",
       delivery_pincode: "",
       preferred_timeline: "standard",
@@ -246,34 +225,31 @@ router.post("/dashboard/reorder/:orderId", async (req, res): Promise<void> => {
       status: "submitted",
       user_id: userId,
     })
-    .returning();
+    .select()
+    .single();
 
-  res.status(201).json({ quote_id: quote.quote_id, id: quote.id });
+  res.status(201).json({ quote_id: quote?.quote_id, id: quote?.id });
 });
 
 router.get("/dashboard/designs", async (req, res): Promise<void> => {
   const userId = (req as AuthRequest).userId;
-
-  const designs = await db
-    .select()
-    .from(designRequestsTable)
-    .where(eq(designRequestsTable.user_id, userId))
-    .orderBy(sql`${designRequestsTable.created_at} DESC`);
-
-  res.json(designs);
+  const { data: designs } = await sb
+    .from("design_requests")
+    .select("*")
+    .eq("user_id", userId)
+    .order("created_at", { ascending: false });
+  res.json(designs || []);
 });
 
 router.get("/dashboard/invoices", async (req, res): Promise<void> => {
   const userId = (req as AuthRequest).userId;
-
-  const invoices = await db
-    .select()
-    .from(invoicesTable)
-    .where(eq(invoicesTable.user_id, userId))
-    .orderBy(sql`${invoicesTable.created_at} DESC`);
-
+  const { data: invoices } = await sb
+    .from("invoices")
+    .select("*")
+    .eq("user_id", userId)
+    .order("created_at", { ascending: false });
   res.json(
-    invoices.map((i) => ({
+    (invoices || []).map(i => ({
       ...i,
       amount: Number(i.amount),
       discount_line: Number(i.discount_line ?? 0),
@@ -283,13 +259,11 @@ router.get("/dashboard/invoices", async (req, res): Promise<void> => {
 
 router.get("/dashboard/profile", async (req, res): Promise<void> => {
   const userId = (req as AuthRequest).userId;
-
-  const [user] = await db.select().from(usersTable).where(eq(usersTable.id, userId)).limit(1);
+  const { data: user } = await sb.from("users_profile").select("*").eq("id", userId).maybeSingle();
   if (!user) {
     res.status(404).json({ error: "User not found" });
     return;
   }
-
   const { password_hash: _, ...profile } = user;
   res.json({ ...profile, credit_limit: Number(profile.credit_limit ?? 0) });
 });
@@ -298,11 +272,12 @@ router.put("/dashboard/profile", async (req, res): Promise<void> => {
   const userId = (req as AuthRequest).userId;
   const { company_name, contact_name, phone, gstin, default_address } = req.body;
 
-  const [updated] = await db
-    .update(usersTable)
-    .set({ company_name, contact_name, phone, gstin, default_address })
-    .where(eq(usersTable.id, userId))
-    .returning();
+  const { data: updated } = await sb
+    .from("users_profile")
+    .update({ company_name, contact_name, phone, gstin, default_address })
+    .eq("id", userId)
+    .select()
+    .maybeSingle();
 
   if (!updated) {
     res.status(404).json({ error: "User not found" });

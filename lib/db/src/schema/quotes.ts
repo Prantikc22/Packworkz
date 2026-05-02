@@ -23,6 +23,9 @@ export const quoteRequestsTable = pgTable("quote_requests", {
   rejection_reason: text("rejection_reason"),
   admin_notes: text("admin_notes"),
   payment_link: text("payment_link"),
+  quoted_amount: numeric("quoted_amount"),
+  delivery_date: text("delivery_date"),
+  payment_terms: text("payment_terms"),
   created_at: timestamp("created_at", { withTimezone: true }).defaultNow(),
 });
 

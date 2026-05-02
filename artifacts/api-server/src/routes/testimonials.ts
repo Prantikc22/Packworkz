@@ -1,16 +1,22 @@
 import { Router, type IRouter } from "express";
-import { db, testimonialsTable } from "@workspace/db";
-import { eq } from "drizzle-orm";
+import { sb } from "../lib/supabase";
 
 const router: IRouter = Router();
 
 router.get("/testimonials", async (_req, res): Promise<void> => {
-  const testimonials = await db
-    .select()
-    .from(testimonialsTable)
-    .where(eq(testimonialsTable.is_active, true));
+  const { data: testimonials, error } = await sb
+    .from("testimonials")
+    .select("*")
+    .eq("is_active", true)
+    .order("created_at", { ascending: false });
 
-  res.json(testimonials);
+  if (error) {
+    console.error("[testimonials] error:", error.message);
+    res.status(500).json({ error: "Failed to load testimonials" });
+    return;
+  }
+
+  res.json(testimonials || []);
 });
 
 export default router;

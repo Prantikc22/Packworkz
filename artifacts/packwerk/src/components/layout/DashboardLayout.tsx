@@ -15,9 +15,24 @@ const NAV_ITEMS = [
   { href: "/dashboard/profile", label: "Profile", icon: "person" },
 ];
 
+function getUserFromStorage() {
+  try {
+    return JSON.parse(localStorage.getItem("packwerk_user") || "{}");
+  } catch {
+    return {};
+  }
+}
+
+function getInitials(name: string) {
+  return name.split(" ").filter(Boolean).map(n => n[0]).join("").slice(0, 2).toUpperCase() || "?";
+}
+
 export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [location, setLocation] = useLocation();
   const { mutate: logout } = useLogout();
+  const user = getUserFromStorage();
+  const displayName = user.contact_name || user.company_name || "User";
+  const initials = getInitials(displayName);
 
   const handleLogout = () => {
     logout(undefined, {
@@ -80,11 +95,11 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
           {/* User avatar */}
           <div className="flex items-center gap-3 mb-3 px-2">
             <div className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-black text-white" style={{ background: "#1B6CA8" }}>
-              JD
+              {initials}
             </div>
-            <div>
-              <p className="text-sm font-bold" style={{ color: "#0D1B2A" }}>John Doe</p>
-              <p className="text-xs" style={{ color: "#94A3B8" }}>Enterprise Account</p>
+            <div className="min-w-0">
+              <p className="text-sm font-bold truncate" style={{ color: "#0D1B2A" }}>{displayName}</p>
+              <p className="text-xs" style={{ color: "#94A3B8" }}>{user.company_name || "Account"}</p>
             </div>
           </div>
           <button

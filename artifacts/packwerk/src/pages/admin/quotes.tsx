@@ -20,6 +20,9 @@ function QuoteRow({ q, onRefetch }: { q: any; onRefetch: () => void }) {
   const [status, setStatus] = useState(q.status);
   const [adminNotes, setAdminNotes] = useState(q.admin_notes || "");
   const [paymentLink, setPaymentLink] = useState(q.payment_link || "");
+  const [quotedAmount, setQuotedAmount] = useState(q.quoted_amount ? String(q.quoted_amount) : "");
+  const [deliveryDate, setDeliveryDate] = useState(q.delivery_date || "");
+  const [paymentTerms, setPaymentTerms] = useState(q.payment_terms || "50% advance, 50% on delivery");
   const [savingNotes, setSavingNotes] = useState(false);
   const [savingStatus, setSavingStatus] = useState(false);
   const { toast } = useToast();
@@ -42,8 +45,14 @@ function QuoteRow({ q, onRefetch }: { q: any; onRefetch: () => void }) {
   const handleSaveNotes = async () => {
     setSavingNotes(true);
     try {
-      await apiPut(`/admin/quotes/${q.id}/notes`, { admin_notes: adminNotes, payment_link: paymentLink });
-      toast({ title: "Notes & payment link saved" });
+      await apiPut(`/admin/quotes/${q.id}/notes`, {
+        admin_notes: adminNotes,
+        payment_link: paymentLink,
+        quoted_amount: quotedAmount ? Number(quotedAmount) : undefined,
+        delivery_date: deliveryDate,
+        payment_terms: paymentTerms,
+      });
+      toast({ title: "Quote details saved" });
       onRefetch();
     } catch {
       toast({ variant: "destructive", title: "Failed to save" });
@@ -184,16 +193,48 @@ function QuoteRow({ q, onRefetch }: { q: any; onRefetch: () => void }) {
 
                 <div className="bg-white rounded-lg border border-[#E2EAF4] p-4">
                   <h4 className="text-xs font-bold uppercase tracking-wider text-[#94A3B8] mb-3 flex items-center gap-2">
-                    <MessageSquare className="w-3.5 h-3.5" /> Admin Notes & Payment Link
+                    <MessageSquare className="w-3.5 h-3.5" /> Quote Details & Admin Notes
                   </h4>
                   <div className="space-y-3">
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="text-xs font-medium text-[#64748B] mb-1 block">Quoted Amount (₹)</label>
+                        <input
+                          type="number"
+                          value={quotedAmount}
+                          onChange={e => setQuotedAmount(e.target.value)}
+                          placeholder="e.g. 48000"
+                          className="w-full border border-[#E2EAF4] rounded px-3 py-2 text-sm focus:outline-none focus:border-[#1B6CA8] bg-[#F8F9FC]"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-xs font-medium text-[#64748B] mb-1 block">Delivery Date</label>
+                        <input
+                          type="text"
+                          value={deliveryDate}
+                          onChange={e => setDeliveryDate(e.target.value)}
+                          placeholder="e.g. 15 Jun 2026 or 3-4 weeks"
+                          className="w-full border border-[#E2EAF4] rounded px-3 py-2 text-sm focus:outline-none focus:border-[#1B6CA8] bg-[#F8F9FC]"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="text-xs font-medium text-[#64748B] mb-1 block">Payment Terms</label>
+                      <input
+                        type="text"
+                        value={paymentTerms}
+                        onChange={e => setPaymentTerms(e.target.value)}
+                        placeholder="e.g. 50% advance, 50% on delivery"
+                        className="w-full border border-[#E2EAF4] rounded px-3 py-2 text-sm focus:outline-none focus:border-[#1B6CA8] bg-[#F8F9FC]"
+                      />
+                    </div>
                     <div>
                       <label className="text-xs font-medium text-[#64748B] mb-1 block">Internal Notes</label>
                       <textarea
                         value={adminNotes}
                         onChange={e => setAdminNotes(e.target.value)}
                         placeholder="Add internal notes for the team…"
-                        className="w-full border border-[#E2EAF4] rounded px-3 py-2 text-sm resize-none h-20 focus:outline-none focus:border-[#1B6CA8] bg-[#F8F9FC]"
+                        className="w-full border border-[#E2EAF4] rounded px-3 py-2 text-sm resize-none h-16 focus:outline-none focus:border-[#1B6CA8] bg-[#F8F9FC]"
                       />
                     </div>
                     <div>
@@ -217,7 +258,7 @@ function QuoteRow({ q, onRefetch }: { q: any; onRefetch: () => void }) {
                       className="flex items-center gap-2 px-4 py-2 rounded text-xs font-bold bg-[#0D1B2A] text-white hover:bg-[#1B6CA8] transition-colors disabled:opacity-60"
                     >
                       {savingNotes ? <Loader2 className="w-3 h-3 animate-spin" /> : <Save className="w-3 h-3" />}
-                      Save
+                      Save Quote Details
                     </button>
                   </div>
                 </div>

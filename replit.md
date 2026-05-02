@@ -32,7 +32,7 @@ See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and pa
 
 - **Frontend**: React + Vite at `artifacts/packwerk`, served on port from `PORT` env var (currently 19798)
 - **API Server**: Express 5 at `artifacts/api-server`, port 8080
-- **Database**: Replit PostgreSQL via `DATABASE_URL` env var
+- **Database**: Supabase (supabase-js REST API — no TCP required)
 
 ### Vite Proxy
 

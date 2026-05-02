@@ -1,6 +1,5 @@
 import { Router, type IRouter } from "express";
-import { db, quoteRequestsTable } from "@workspace/db";
-import { eq } from "drizzle-orm";
+import { sb } from "../lib/supabase";
 import { generateId } from "../lib/generateId";
 import { sendWhatsApp } from "../lib/whatsapp";
 import { sendQuoteConfirmation } from "../lib/email";
@@ -33,9 +32,9 @@ router.post("/quotes", async (req, res): Promise<void> => {
 
   const quoteId = await generateId("PKG", "quote_requests", "quote_id");
 
-  const [quote] = await db
-    .insert(quoteRequestsTable)
-    .values({
+  const { data: quote, error } = await sb
+    .from("quote_requests")
+    .insert({
       quote_id: quoteId,
       contact_name,
       company_name,
@@ -46,13 +45,18 @@ router.post("/quotes", async (req, res): Promise<void> => {
       delivery_pincode,
       preferred_timeline: preferred_timeline || "standard",
       notes,
-      total_estimated_min: total_estimated_min?.toString(),
-      total_estimated_max: total_estimated_max?.toString(),
-      artwork_option: artwork_option || null,
-      sample_option: sample_option || null,
+      total_estimated_min: total_estimated_min?.toString() ?? null,
+      total_estimated_max: total_estimated_max?.toString() ?? null,
       status: "submitted",
     })
-    .returning();
+    .select()
+    .single();
+
+  if (error || !quote) {
+    console.error("[quotes/post] insert error:", error?.message);
+    res.status(500).json({ error: "Failed to create quote" });
+    return;
+  }
 
   const firstItem = Array.isArray(items) ? items[0] : null;
   const itemSummary = Array.isArray(items)
@@ -62,7 +66,6 @@ router.post("/quotes", async (req, res): Promise<void> => {
   const resolvedArtwork = artwork_option || firstItem?.artwork_status || "none";
   const resolvedSample = sample_option || (firstItem?.sample_requested ? firstItem?.sample_tier : "none");
 
-  // Send confirmation email (non-blocking)
   sendQuoteConfirmation({
     to: email,
     name: contact_name,
@@ -80,7 +83,6 @@ router.post("/quotes", async (req, res): Promise<void> => {
     estimatedMax: total_estimated_max ? Number(total_estimated_max) : undefined,
   }).catch(err => console.error("[email] Failed to send confirmation:", err));
 
-  // Send WhatsApp notification to team (non-blocking)
   const teamPhone = process.env.TEAM_WHATSAPP_PHONE || "+919999999999";
   sendWhatsApp(
     teamPhone,
@@ -93,11 +95,11 @@ router.post("/quotes", async (req, res): Promise<void> => {
 router.get("/quotes/:quoteId", async (req, res): Promise<void> => {
   const quoteId = Array.isArray(req.params.quoteId) ? req.params.quoteId[0] : req.params.quoteId;
 
-  const [quote] = await db
-    .select()
-    .from(quoteRequestsTable)
-    .where(eq(quoteRequestsTable.quote_id, quoteId))
-    .limit(1);
+  const { data: quote } = await sb
+    .from("quote_requests")
+    .select("*")
+    .eq("quote_id", quoteId)
+    .maybeSingle();
 
   if (!quote) {
     res.status(404).json({ error: "Quote not found" });

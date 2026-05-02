@@ -1,7 +1,7 @@
 import { type Request, type Response, type NextFunction } from "express";
 import crypto from "crypto";
-import { db, sessionsTable } from "@workspace/db";
-import { eq, lt } from "drizzle-orm";
+
+const SESSION_TTL_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
 
 export function hashPassword(password: string): string {
   return crypto.createHash("sha256").update(password + "packwerk_salt_2024").digest("hex");
@@ -19,7 +19,6 @@ export function generateTempPassword(): string {
 export function requireAdmin(req: Request, res: Response, next: NextFunction): void {
   const adminKey = req.headers["x-admin-key"] as string;
   const expectedKey = process.env.ADMIN_KEY || "packwerk-admin-2024";
-  
   if (!adminKey || adminKey !== expectedKey) {
     res.status(401).json({ error: "Unauthorized - invalid admin key" });
     return;
@@ -27,40 +26,43 @@ export function requireAdmin(req: Request, res: Response, next: NextFunction): v
   next();
 }
 
-export function generateToken(userId: string): string {
-  return crypto.randomBytes(32).toString("hex");
+function getJwtSecret(): string {
+  return process.env.JWT_SECRET || "packwerk_jwt_secret_2024_secure";
 }
 
-// Session TTL: 30 days
-const SESSION_TTL_MS = 30 * 24 * 60 * 60 * 1000;
+export function generateToken(userId: string): string {
+  const payload = { userId, exp: Date.now() + SESSION_TTL_MS };
+  const payloadB64 = Buffer.from(JSON.stringify(payload)).toString("base64url");
+  const sig = crypto.createHmac("sha256", getJwtSecret()).update(payloadB64).digest("base64url");
+  return `${payloadB64}.${sig}`;
+}
 
-export async function createSession(token: string, userId: string): Promise<void> {
-  const expiresAt = new Date(Date.now() + SESSION_TTL_MS);
-  await db.insert(sessionsTable).values({ token, user_id: userId, expires_at: expiresAt })
-    .onConflictDoUpdate({ target: sessionsTable.token, set: { expires_at: expiresAt } });
+export async function createSession(_token: string, _userId: string): Promise<void> {
+  // Stateless JWT — no DB storage needed
 }
 
 export async function getSessionUserId(token: string): Promise<string | null> {
-  const [session] = await db
-    .select()
-    .from(sessionsTable)
-    .where(eq(sessionsTable.token, token))
-    .limit(1);
-  if (!session) return null;
-  if (session.expires_at < new Date()) {
-    await db.delete(sessionsTable).where(eq(sessionsTable.token, token));
+  try {
+    const dotIdx = token.lastIndexOf(".");
+    if (dotIdx === -1) return null;
+    const payloadB64 = token.slice(0, dotIdx);
+    const sig = token.slice(dotIdx + 1);
+    const expectedSig = crypto.createHmac("sha256", getJwtSecret()).update(payloadB64).digest("base64url");
+    if (sig !== expectedSig) return null;
+    const payload = JSON.parse(Buffer.from(payloadB64, "base64url").toString());
+    if (!payload.userId || payload.exp < Date.now()) return null;
+    return payload.userId;
+  } catch {
     return null;
   }
-  return session.user_id;
 }
 
-export async function deleteSession(token: string): Promise<void> {
-  await db.delete(sessionsTable).where(eq(sessionsTable.token, token));
+export async function deleteSession(_token: string): Promise<void> {
+  // Stateless JWT — nothing to delete
 }
 
-// Purge expired sessions (call occasionally)
 export async function purgeExpiredSessions(): Promise<void> {
-  await db.delete(sessionsTable).where(lt(sessionsTable.expires_at, new Date()));
+  // Stateless JWT — no-op
 }
 
 export async function requireAuth(req: Request, res: Response, next: NextFunction): Promise<void> {

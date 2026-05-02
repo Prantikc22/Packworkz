@@ -1,5 +1,5 @@
 import { Router, type IRouter } from "express";
-import { db, designRequestsTable, sampleRequestsTable } from "@workspace/db";
+import { sb } from "../lib/supabase";
 import { generateId } from "../lib/generateId";
 import { sendDesignConfirmation, sendSampleConfirmation } from "../lib/email";
 
@@ -29,28 +29,34 @@ router.post("/design-requests", async (req, res): Promise<void> => {
 
   const designId = await generateId("DES", "design_requests", "design_id");
 
-  const [design] = await db
-    .insert(designRequestsTable)
-    .values({
+  const { data: design, error } = await sb
+    .from("design_requests")
+    .insert({
       design_id: designId,
-      user_id,
+      user_id: user_id ?? null,
       contact_name,
       email,
       phone,
       product_type,
-      product_id,
-      brand_colors,
-      logo_url,
-      brand_description,
-      notes,
+      product_id: product_id ?? null,
+      brand_colors: brand_colors ?? null,
+      logo_url: logo_url ?? null,
+      brand_description: brand_description ?? null,
+      notes: notes ?? null,
       is_rush: is_rush ?? false,
       amount_paid,
-      razorpay_payment_id,
+      razorpay_payment_id: razorpay_payment_id ?? null,
       status: "paid",
     })
-    .returning();
+    .select()
+    .single();
 
-  // Send confirmation email (non-blocking)
+  if (error || !design) {
+    console.error("[design-requests] insert error:", error?.message);
+    res.status(500).json({ error: "Failed to create design request" });
+    return;
+  }
+
   sendDesignConfirmation({
     to: email,
     name: contact_name,
@@ -82,23 +88,29 @@ router.post("/sample-requests", async (req, res): Promise<void> => {
 
   const sampleId = await generateId("SAM", "sample_requests", "sample_id");
 
-  const [sample] = await db
-    .insert(sampleRequestsTable)
-    .values({
+  const { data: sample, error } = await sb
+    .from("sample_requests")
+    .insert({
       sample_id: sampleId,
-      user_id,
+      user_id: user_id ?? null,
       contact_name,
       email,
       phone,
       product_id,
       sample_tier,
       amount_paid,
-      razorpay_payment_id,
+      razorpay_payment_id: razorpay_payment_id ?? null,
       status: "paid",
     })
-    .returning();
+    .select()
+    .single();
 
-  // Send confirmation email (non-blocking)
+  if (error || !sample) {
+    console.error("[sample-requests] insert error:", error?.message);
+    res.status(500).json({ error: "Failed to create sample request" });
+    return;
+  }
+
   sendSampleConfirmation({
     to: email,
     name: contact_name,

@@ -1,6 +1,5 @@
 import { Router, type IRouter } from "express";
-import { db, quoteRequestsTable, ordersTable, designRequestsTable, sampleRequestsTable, usersTable, invoicesTable } from "@workspace/db";
-import { eq, sql } from "drizzle-orm";
+import { sb } from "../lib/supabase";
 import { requireAdmin, hashPassword, generateTempPassword } from "../lib/auth";
 import { generateId } from "../lib/generateId";
 import { sendWhatsApp } from "../lib/whatsapp";
@@ -8,7 +7,6 @@ import { sendWelcomeEmail } from "../lib/email";
 
 const router: IRouter = Router();
 
-// Public endpoint — verifies the key and echoes it back (used by admin login page)
 router.post("/admin/verify-key", (req, res): void => {
   const { key } = req.body as { key?: string };
   const expectedKey = process.env.ADMIN_KEY || "packwerk-admin-2024";
@@ -24,15 +22,22 @@ router.use("/admin", requireAdmin as never);
 router.get("/admin/quotes", async (req, res): Promise<void> => {
   const { status } = req.query as { status?: string };
 
-  const quotes = status
-    ? await db.select().from(quoteRequestsTable).where(eq(quoteRequestsTable.status, status)).orderBy(sql`${quoteRequestsTable.created_at} DESC`)
-    : await db.select().from(quoteRequestsTable).orderBy(sql`${quoteRequestsTable.created_at} DESC`);
+  let query = sb.from("quote_requests").select("*").order("created_at", { ascending: false });
+  if (status) query = query.eq("status", status);
+
+  const { data: quotes, error } = await query;
+  if (error) {
+    console.error("[admin/quotes]", error.message);
+    res.status(500).json({ error: "Failed to load quotes" });
+    return;
+  }
 
   res.json(
-    quotes.map((q) => ({
+    (quotes || []).map(q => ({
       ...q,
       total_estimated_min: q.total_estimated_min ? Number(q.total_estimated_min) : null,
       total_estimated_max: q.total_estimated_max ? Number(q.total_estimated_max) : null,
+      quoted_amount: q.quoted_amount ? Number(q.quoted_amount) : null,
     }))
   );
 });
@@ -41,13 +46,14 @@ router.put("/admin/quotes/:id/status", async (req, res): Promise<void> => {
   const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
   const { status, rejection_reason } = req.body;
 
-  const [updated] = await db
-    .update(quoteRequestsTable)
-    .set({ status, rejection_reason })
-    .where(eq(quoteRequestsTable.id, id))
-    .returning();
+  const { data: updated, error } = await sb
+    .from("quote_requests")
+    .update({ status, rejection_reason })
+    .eq("id", id)
+    .select()
+    .maybeSingle();
 
-  if (!updated) {
+  if (error || !updated) {
     res.status(404).json({ error: "Quote not found" });
     return;
   }
@@ -57,29 +63,61 @@ router.put("/admin/quotes/:id/status", async (req, res): Promise<void> => {
 
 router.put("/admin/quotes/:id/notes", async (req, res): Promise<void> => {
   const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
-  const { admin_notes, payment_link } = req.body;
+  const { admin_notes, payment_link, quoted_amount, delivery_date, payment_terms } = req.body;
 
-  const [updated] = await db
-    .update(quoteRequestsTable)
-    .set({ admin_notes, payment_link })
-    .where(eq(quoteRequestsTable.id, id))
-    .returning();
+  // Build full update — new columns are added via SQL migration; fall back gracefully if missing
+  const fullUpdate: Record<string, any> = {};
+  if (admin_notes !== undefined) fullUpdate.admin_notes = admin_notes;
+  if (payment_link !== undefined) fullUpdate.payment_link = payment_link;
+  if (quoted_amount !== undefined && quoted_amount !== "") {
+    fullUpdate.quoted_amount = String(quoted_amount);
+    fullUpdate.total_estimated_min = String(quoted_amount);
+    fullUpdate.total_estimated_max = String(quoted_amount);
+  }
+  if (delivery_date !== undefined) fullUpdate.delivery_date = delivery_date || null;
+  if (payment_terms !== undefined) fullUpdate.payment_terms = payment_terms;
 
-  if (!updated) { res.status(404).json({ error: "Quote not found" }); return; }
-  res.json({ success: true, quote: updated });
+  let result = await sb.from("quote_requests").update(fullUpdate).eq("id", id).select().maybeSingle();
+
+  if (result.error?.message?.includes("column")) {
+    // Some new columns don't exist yet — fall back to only the confirmed-existing fields
+    const safeUpdate: Record<string, any> = {};
+    if (quoted_amount !== undefined && quoted_amount !== "") {
+      safeUpdate.total_estimated_min = String(quoted_amount);
+      safeUpdate.total_estimated_max = String(quoted_amount);
+    }
+    if (Object.keys(safeUpdate).length > 0) {
+      result = await sb.from("quote_requests").update(safeUpdate).eq("id", id).select().maybeSingle();
+    } else {
+      result = await sb.from("quote_requests").select("*").eq("id", id).maybeSingle() as typeof result;
+    }
+    console.warn("[admin/quotes/notes] Some columns missing — run SQL migration. Partial update applied.");
+  }
+
+  if (result.error) {
+    console.error("[admin/quotes/notes]", result.error.message);
+    res.status(500).json({ error: "Failed to save" });
+    return;
+  }
+  if (!result.data) { res.status(404).json({ error: "Quote not found" }); return; }
+  res.json({ success: true, quote: result.data });
 });
 
 router.put("/admin/samples/:id/update", async (req, res): Promise<void> => {
   const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
   const { status, admin_notes, payment_link } = req.body;
 
-  const [updated] = await db
-    .update(sampleRequestsTable)
-    .set({ ...(status && { status }), admin_notes, payment_link })
-    .where(eq(sampleRequestsTable.id, id))
-    .returning();
+  const updateFields: Record<string, any> = { admin_notes, payment_link };
+  if (status) updateFields.status = status;
 
-  if (!updated) { res.status(404).json({ error: "Sample not found" }); return; }
+  const { data: updated, error } = await sb
+    .from("sample_requests")
+    .update(updateFields)
+    .eq("id", id)
+    .select()
+    .maybeSingle();
+
+  if (error || !updated) { res.status(404).json({ error: "Sample not found" }); return; }
   res.json({ success: true, sample: updated });
 });
 
@@ -87,13 +125,14 @@ router.put("/admin/designs/:id/notes", async (req, res): Promise<void> => {
   const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
   const { designer_notes, payment_link } = req.body;
 
-  const [updated] = await db
-    .update(designRequestsTable)
-    .set({ designer_notes, payment_link })
-    .where(eq(designRequestsTable.id, id))
-    .returning();
+  const { data: updated, error } = await sb
+    .from("design_requests")
+    .update({ designer_notes, payment_link })
+    .eq("id", id)
+    .select()
+    .maybeSingle();
 
-  if (!updated) { res.status(404).json({ error: "Design not found" }); return; }
+  if (error || !updated) { res.status(404).json({ error: "Design not found" }); return; }
   res.json({ success: true, design: updated });
 });
 
@@ -101,12 +140,7 @@ router.post("/admin/quotes/:id/accept", async (req, res): Promise<void> => {
   const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
   const { total_price, payment_type, line_items } = req.body;
 
-  const [quote] = await db
-    .select()
-    .from(quoteRequestsTable)
-    .where(eq(quoteRequestsTable.id, id))
-    .limit(1);
-
+  const { data: quote } = await sb.from("quote_requests").select("*").eq("id", id).maybeSingle();
   if (!quote) {
     res.status(404).json({ error: "Quote not found" });
     return;
@@ -115,17 +149,17 @@ router.post("/admin/quotes/:id/accept", async (req, res): Promise<void> => {
   let userId: string | undefined;
   let userCreated = false;
 
-  const [existingUser] = await db
-    .select()
-    .from(usersTable)
-    .where(eq(usersTable.email, quote.email.toLowerCase()))
-    .limit(1);
+  const { data: existingUser } = await sb
+    .from("users_profile")
+    .select("*")
+    .eq("email", quote.email.toLowerCase())
+    .maybeSingle();
 
   if (!existingUser) {
     const tempPassword = generateTempPassword();
-    const [newUser] = await db
-      .insert(usersTable)
-      .values({
+    const { data: newUser } = await sb
+      .from("users_profile")
+      .insert({
         email: quote.email.toLowerCase(),
         company_name: quote.company_name,
         contact_name: quote.contact_name,
@@ -134,11 +168,12 @@ router.post("/admin/quotes/:id/accept", async (req, res): Promise<void> => {
         password_hash: hashPassword(tempPassword),
         orders_completed: 0,
         credit_eligible: false,
-        credit_limit: "0",
+        credit_limit: 0,
       })
-      .returning();
+      .select()
+      .single();
 
-    userId = newUser.id;
+    userId = newUser?.id;
     userCreated = true;
 
     await sendWhatsApp(
@@ -149,17 +184,17 @@ router.post("/admin/quotes/:id/accept", async (req, res): Promise<void> => {
     userId = existingUser.id;
   }
 
-  await db
-    .update(quoteRequestsTable)
-    .set({ status: "accepted", user_id: userId })
-    .where(eq(quoteRequestsTable.id, id));
+  await sb
+    .from("quote_requests")
+    .update({ status: "accepted", user_id: userId })
+    .eq("id", id);
 
   const orderId = await generateId("ORD", "orders", "order_id");
   const discountApplied = payment_type === "upfront" ? Math.round(total_price * 0.03) : 0;
 
-  const [order] = await db
-    .insert(ordersTable)
-    .values({
+  const { data: order } = await sb
+    .from("orders")
+    .insert({
       order_id: orderId,
       quote_request_id: id,
       user_id: userId,
@@ -170,15 +205,16 @@ router.post("/admin/quotes/:id/accept", async (req, res): Promise<void> => {
       delivery_address: {},
       status: "confirmed",
     })
-    .returning();
+    .select()
+    .single();
 
   const invoiceId = await generateId("INV", "invoices", "invoice_id");
   const dueDate = new Date();
   dueDate.setDate(dueDate.getDate() + (payment_type === "credit" ? 30 : 7));
 
-  await db.insert(invoicesTable).values({
+  await sb.from("invoices").insert({
     invoice_id: invoiceId,
-    order_id: order.id,
+    order_id: order?.id,
     user_id: userId,
     amount: (total_price - discountApplied).toString(),
     discount_line: discountApplied.toString(),
@@ -195,9 +231,9 @@ router.post("/admin/quotes/:id/accept", async (req, res): Promise<void> => {
 });
 
 router.get("/admin/orders", async (_req, res): Promise<void> => {
-  const orders = await db.select().from(ordersTable).orderBy(sql`${ordersTable.created_at} DESC`);
+  const { data: orders } = await sb.from("orders").select("*").order("created_at", { ascending: false });
   res.json(
-    orders.map((o) => ({
+    (orders || []).map(o => ({
       ...o,
       total_price: Number(o.total_price),
       discount_applied: Number(o.discount_applied ?? 0),
@@ -214,54 +250,41 @@ router.put("/admin/orders/:id/status", async (req, res): Promise<void> => {
   if (status !== undefined) updateFields.status = status;
   if (tracking_number !== undefined) updateFields.tracking_number = tracking_number;
   if (tracking_url !== undefined) updateFields.tracking_url = tracking_url;
-  if (payment_link !== undefined) updateFields.payment_link = payment_link;
   if (estimated_delivery !== undefined) updateFields.estimated_delivery = estimated_delivery;
   if (internal_notes !== undefined) updateFields.internal_notes = internal_notes;
   if (total_price !== undefined) updateFields.total_price = total_price.toString();
 
-  const [updated] = await db
-    .update(ordersTable)
-    .set(updateFields)
-    .where(eq(ordersTable.id, id))
-    .returning();
+  const { data: updated, error } = await sb
+    .from("orders")
+    .update(updateFields)
+    .eq("id", id)
+    .select()
+    .maybeSingle();
 
-  if (!updated) {
+  if (error || !updated) {
     res.status(404).json({ error: "Order not found" });
     return;
   }
 
-  if (status === "dispatched" && tracking_url) {
-    const user = updated.user_id
-      ? (await db.select().from(usersTable).where(eq(usersTable.id, updated.user_id)).limit(1))[0]
-      : null;
+  if (status === "dispatched" && tracking_url && updated.user_id) {
+    const { data: user } = await sb.from("users_profile").select("phone").eq("id", updated.user_id).maybeSingle();
     if (user?.phone) {
-      await sendWhatsApp(
-        user.phone,
-        `Your order ${updated.order_id} has been dispatched! Track here: ${tracking_url}`
-      );
+      await sendWhatsApp(user.phone, `Your order ${updated.order_id} has been dispatched! Track here: ${tracking_url}`);
     }
   }
 
   if (status === "delivered" && updated.user_id) {
-    const [user] = await db
-      .select()
-      .from(usersTable)
-      .where(eq(usersTable.id, updated.user_id))
-      .limit(1);
-
+    const { data: user } = await sb.from("users_profile").select("*").eq("id", updated.user_id).maybeSingle();
     if (user) {
       const newCount = (user.orders_completed ?? 0) + 1;
       const creditEligible = newCount >= 3;
-      await db
-        .update(usersTable)
-        .set({ orders_completed: newCount, credit_eligible: creditEligible })
-        .where(eq(usersTable.id, updated.user_id));
+      await sb
+        .from("users_profile")
+        .update({ orders_completed: newCount, credit_eligible: creditEligible })
+        .eq("id", updated.user_id);
 
       if (creditEligible && user.phone) {
-        await sendWhatsApp(
-          user.phone,
-          `Congratulations! You are now eligible for net-30 credit terms with Packwerk.`
-        );
+        await sendWhatsApp(user.phone, `Congratulations! You are now eligible for net-30 credit terms with Packwerk.`);
       }
     }
   }
@@ -270,53 +293,42 @@ router.put("/admin/orders/:id/status", async (req, res): Promise<void> => {
 });
 
 router.get("/admin/designs", async (_req, res): Promise<void> => {
-  const designs = await db.select().from(designRequestsTable).orderBy(sql`${designRequestsTable.created_at} DESC`);
-  res.json(designs);
+  const { data: designs } = await sb.from("design_requests").select("*").order("created_at", { ascending: false });
+  res.json(designs || []);
 });
 
 router.put("/admin/designs/:id/status", async (req, res): Promise<void> => {
   const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
   const { status, designer_notes } = req.body;
 
-  const [updated] = await db
-    .update(designRequestsTable)
-    .set({ status, designer_notes })
-    .where(eq(designRequestsTable.id, id))
-    .returning();
+  const { data: updated, error } = await sb
+    .from("design_requests")
+    .update({ status, designer_notes })
+    .eq("id", id)
+    .select()
+    .maybeSingle();
 
-  if (!updated) {
+  if (error || !updated) {
     res.status(404).json({ error: "Design request not found" });
     return;
   }
-
   res.json({ success: true, design: updated });
 });
 
 router.get("/admin/samples", async (_req, res): Promise<void> => {
-  const samples = await db.select().from(sampleRequestsTable).orderBy(sql`${sampleRequestsTable.created_at} DESC`);
-  res.json(samples);
+  const { data: samples } = await sb.from("sample_requests").select("*").order("created_at", { ascending: false });
+  res.json(samples || []);
 });
 
 router.get("/admin/users", async (_req, res): Promise<void> => {
   try {
-    const users = await db
-      .select({
-        id: usersTable.id,
-        email: usersTable.email,
-        company_name: usersTable.company_name,
-        contact_name: usersTable.contact_name,
-        phone: usersTable.phone,
-        gstin: usersTable.gstin,
-        country: usersTable.country,
-        orders_completed: usersTable.orders_completed,
-        credit_eligible: usersTable.credit_eligible,
-        credit_limit: usersTable.credit_limit,
-        created_at: usersTable.created_at,
-      })
-      .from(usersTable)
-      .orderBy(sql`${usersTable.created_at} DESC`);
+    const { data: users, error } = await sb
+      .from("users_profile")
+      .select("id,email,company_name,contact_name,phone,gstin,country,orders_completed,credit_eligible,credit_limit,created_at")
+      .order("created_at", { ascending: false });
 
-    res.json(users.map(u => ({ ...u, credit_limit: Number(u.credit_limit ?? 0) })));
+    if (error) throw error;
+    res.json((users || []).map(u => ({ ...u, credit_limit: Number(u.credit_limit ?? 0) })));
   } catch (err: any) {
     console.error("[admin/users] error:", err?.message);
     res.status(500).json({ error: "Failed to load users" });
@@ -331,23 +343,22 @@ router.post("/admin/users", async (req, res): Promise<void> => {
     return;
   }
 
-  const [existing] = await db
-    .select({ id: usersTable.id })
-    .from(usersTable)
-    .where(eq(usersTable.email, email.toLowerCase().trim()))
-    .limit(1);
+  const { data: existing } = await sb
+    .from("users_profile")
+    .select("id")
+    .eq("email", email.toLowerCase().trim())
+    .maybeSingle();
 
   if (existing) {
     res.status(409).json({ error: "A user with this email already exists" });
     return;
   }
 
-  // Generate a temp password if none provided
   const tempPassword = password || generateTempPassword();
 
-  const [newUser] = await db
-    .insert(usersTable)
-    .values({
+  const { data: newUser, error } = await sb
+    .from("users_profile")
+    .insert({
       email: email.toLowerCase().trim(),
       company_name,
       contact_name: contact_name ?? "",
@@ -355,20 +366,19 @@ router.post("/admin/users", async (req, res): Promise<void> => {
       gstin: gstin ?? "",
       country: country ?? "India",
       password_hash: hashPassword(tempPassword),
-      must_change_password: true,
       orders_completed: 0,
       credit_eligible: false,
-      credit_limit: "0",
+      credit_limit: 0,
     })
-    .returning({
-      id: usersTable.id,
-      email: usersTable.email,
-      company_name: usersTable.company_name,
-      contact_name: usersTable.contact_name,
-      created_at: usersTable.created_at,
-    });
+    .select("id,email,company_name,contact_name,created_at")
+    .single();
 
-  // Send welcome email if requested
+  if (error || !newUser) {
+    console.error("[admin/users] insert error:", error?.message);
+    res.status(500).json({ error: "Failed to create user" });
+    return;
+  }
+
   if (send_welcome !== false) {
     const loginUrl = `https://${process.env.REPLIT_DOMAINS?.split(",")[0] || "packworkz.com"}/login`;
     sendWelcomeEmail({
@@ -391,41 +401,40 @@ router.put("/admin/users/:id/password", async (req, res): Promise<void> => {
     return;
   }
 
-  const [updated] = await db
-    .update(usersTable)
-    .set({ password_hash: hashPassword(password) })
-    .where(eq(usersTable.id, id))
-    .returning({ id: usersTable.id, email: usersTable.email });
+  const { data: updated, error } = await sb
+    .from("users_profile")
+    .update({ password_hash: hashPassword(password) })
+    .eq("id", id)
+    .select("id,email")
+    .maybeSingle();
 
-  if (!updated) {
+  if (error || !updated) {
     res.status(404).json({ error: "User not found" });
     return;
   }
-
   res.json({ success: true, user: updated });
 });
 
 router.delete("/admin/users/:id", async (req, res): Promise<void> => {
   const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
-
-  await db.delete(usersTable).where(eq(usersTable.id, id));
+  await sb.from("users_profile").delete().eq("id", id);
   res.json({ success: true });
 });
 
 router.post("/admin/samples/:id/dispatch", async (req, res): Promise<void> => {
   const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
 
-  const [updated] = await db
-    .update(sampleRequestsTable)
-    .set({ status: "dispatched" })
-    .where(eq(sampleRequestsTable.id, id))
-    .returning();
+  const { data: updated, error } = await sb
+    .from("sample_requests")
+    .update({ status: "dispatched" })
+    .eq("id", id)
+    .select()
+    .maybeSingle();
 
-  if (!updated) {
+  if (error || !updated) {
     res.status(404).json({ error: "Sample request not found" });
     return;
   }
-
   res.json({ success: true, sample: updated });
 });
 
