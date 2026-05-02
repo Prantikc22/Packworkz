@@ -137,7 +137,7 @@ export default function DashboardPayments() {
             <table className="w-full text-[13px]">
               <thead>
                 <tr className="border-b border-[#F1F3F5]">
-                  {["INVOICE ID", "ORDER", "AMOUNT", "STATUS", "DUE DATE", "DOWNLOAD"].map((h, i) => (
+                  {["INVOICE ID", "ORDER", "AMOUNT", "STATUS", "DUE DATE", "ACTION"].map((h, i) => (
                     <th key={h} className="px-5 py-3 text-left text-[11px] font-black uppercase tracking-wider" style={{ color: "#94A3B8", textAlign: i === 5 ? "right" : "left" }}>{h}</th>
                   ))}
                 </tr>
@@ -146,7 +146,11 @@ export default function DashboardPayments() {
                 {invoiceList.map((inv: any) => {
                   const s = INVOICE_STATUS[inv.status] ?? INVOICE_STATUS.pending;
                   const isOverdue = inv.status === "pending" && new Date(inv.due_date) < new Date();
+                  const isPending = inv.status === "pending";
                   const eff = isOverdue ? INVOICE_STATUS.overdue : s;
+                  // Find matching order for payment_link
+                  const matchedOrder = allOrders.find((o: any) => o.id === inv.order_id || o.order_id === inv.order_id);
+                  const payLink = inv.payment_link ?? matchedOrder?.payment_link;
                   return (
                     <tr key={inv.id} className="border-b border-[#F8F9FC] hover:bg-[#FAFBFC]">
                       <td className="px-5 py-4 font-black" style={{ color: "#E8A838", fontFamily: "monospace" }}>{inv.invoice_id}</td>
@@ -163,7 +167,22 @@ export default function DashboardPayments() {
                         {new Date(inv.due_date).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })}
                       </td>
                       <td className="px-5 py-4 text-right">
-                        {inv.pdf_url ? (
+                        {isPending ? (
+                          payLink ? (
+                            <a href={payLink} target="_blank" rel="noreferrer"
+                              className="inline-flex items-center gap-1.5 text-[12px] font-black px-3 py-1.5 transition-all hover:opacity-80"
+                              style={{ background: "#E8A838", color: "#0D1B2A", textDecoration: "none" }}>
+                              <CreditCard className="w-3.5 h-3.5" /> Pay Now
+                            </a>
+                          ) : (
+                            <a href={`https://wa.me/${WHATSAPP_NUM}?text=Hi+Packworkz%2C+please+share+payment+link+for+invoice+${inv.invoice_id}`}
+                              target="_blank" rel="noreferrer"
+                              className="inline-flex items-center gap-1.5 text-[12px] font-black hover:underline"
+                              style={{ color: "#25D366", textDecoration: "none" }}>
+                              <Download className="w-3.5 h-3.5" /> Request Link
+                            </a>
+                          )
+                        ) : inv.pdf_url ? (
                           <a href={inv.pdf_url} target="_blank" rel="noreferrer"
                             className="inline-flex items-center gap-1.5 text-[12px] font-black hover:underline" style={{ color: "#1B6CA8" }}>
                             <Download className="w-3.5 h-3.5" /> PDF

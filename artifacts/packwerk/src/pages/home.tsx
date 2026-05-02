@@ -426,8 +426,9 @@ export default function Home() {
           viewBox="0 0 500 500"
           fill="none"
         >
-          <circle cx="250" cy="270" r="210" stroke="url(#goldArc)" strokeWidth="1.5" strokeDasharray="900 400" strokeDashoffset="200" />
-          <circle cx="250" cy="270" r="235" stroke="url(#goldArc2)" strokeWidth="0.7" strokeDasharray="600 600" strokeDashoffset="100" />
+          <circle cx="250" cy="270" r="210" stroke="url(#goldArc)" strokeWidth="1.5" />
+          <circle cx="250" cy="270" r="238" stroke="url(#goldArc2)" strokeWidth="0.7" />
+          <circle cx="250" cy="270" r="185" stroke="url(#goldArc)" strokeWidth="0.4" strokeOpacity="0.5" />
           <defs>
             <linearGradient id="goldArc" x1="0" y1="0" x2="1" y2="1">
               <stop offset="0%" stopColor="#E8A838" stopOpacity="0" />

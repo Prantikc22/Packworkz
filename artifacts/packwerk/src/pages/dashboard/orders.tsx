@@ -51,34 +51,154 @@ function fmt(n: number) {
 
 type ReorderState = "idle" | "loading" | "done";
 
+interface ReorderItem {
+  product_name: string;
+  sku_id: string;
+  quantity: number;
+  artwork_option: string;
+}
+
+function ReorderDialog({ order, onClose, onSuccess }: {
+  order: any;
+  onClose: () => void;
+  onSuccess: (quoteId: string) => void;
+}) {
+  const rawItems: ReorderItem[] = (Array.isArray(order.items) ? order.items : []).map((i: any) => ({
+    product_name: i.product_name ?? "Custom packaging",
+    sku_id: i.sku_id ?? "",
+    quantity: Number(i.quantity) || 0,
+    artwork_option: i.artwork_option ?? "none",
+  }));
+  const [items, setItems] = useState<ReorderItem[]>(rawItems);
+  const [notes, setNotes] = useState(`Reorder of ${order.order_id}`);
+  const [loading, setLoading] = useState(false);
+
+  const updateItem = (idx: number, key: keyof ReorderItem, val: string | number) =>
+    setItems(prev => prev.map((it, i) => i === idx ? { ...it, [key]: val } : it));
+
+  const handleConfirm = async () => {
+    setLoading(true);
+    try {
+      const token = localStorage.getItem("packwerk_access_token") || "";
+      const res = await fetch(`/api/dashboard/reorder/${order.id}`, {
+        method: "POST",
+        headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ items, notes }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      onSuccess(data.quote_id);
+    } catch {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+      <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" onClick={onClose} />
+      <div className="relative bg-white w-full max-w-md shadow-2xl overflow-y-auto max-h-[90vh]">
+        <div className="flex items-center justify-between px-6 py-5 border-b border-[#F1F3F5] sticky top-0 bg-white">
+          <div>
+            <p className="text-[11px] font-black uppercase tracking-widest mb-0.5" style={{ color: "#94A3B8" }}>REORDER</p>
+            <p className="font-black text-[18px]" style={{ color: "#E8A838", fontFamily: "monospace" }}>{order.order_id}</p>
+          </div>
+          <button onClick={onClose} className="w-8 h-8 flex items-center justify-center border border-[#E7E8EB] hover:bg-[#F8F9FC]">
+            <span className="material-symbols-outlined text-base" style={{ color: "#64748B" }}>close</span>
+          </button>
+        </div>
+
+        <div className="px-6 py-5 space-y-5">
+          <p className="text-[13px]" style={{ color: "#64748B" }}>
+            Review and adjust quantities or artwork before submitting your reorder request.
+          </p>
+
+          {items.map((item, idx) => (
+            <div key={idx} className="border border-[#E7E8EB] p-4 space-y-3">
+              <div>
+                <p className="text-[11px] font-black uppercase tracking-widest mb-1" style={{ color: "#94A3B8" }}>PRODUCT</p>
+                <p className="font-bold text-[14px]" style={{ color: "#0D1B2A" }}>{item.product_name}</p>
+                {item.sku_id && <p className="text-[11px] font-mono mt-0.5" style={{ color: "#94A3B8" }}>{item.sku_id}</p>}
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-[11px] font-black uppercase tracking-widest mb-1.5" style={{ color: "#94A3B8" }}>Quantity</label>
+                  <input
+                    type="number"
+                    value={item.quantity}
+                    onChange={e => updateItem(idx, "quantity", Number(e.target.value))}
+                    className="w-full px-3 py-2 border border-[#E7E8EB] text-[13px] font-bold bg-white focus:outline-none focus:border-[#1B6CA8]"
+                    min={1}
+                  />
+                </div>
+                <div>
+                  <label className="block text-[11px] font-black uppercase tracking-widest mb-1.5" style={{ color: "#94A3B8" }}>Artwork</label>
+                  <select
+                    value={item.artwork_option}
+                    onChange={e => updateItem(idx, "artwork_option", e.target.value)}
+                    className="w-full px-3 py-2 border border-[#E7E8EB] text-[13px] bg-white focus:outline-none focus:border-[#1B6CA8]"
+                    style={{ color: "#0D1B2A" }}
+                  >
+                    <option value="none">Same as before</option>
+                    <option value="upload">Upload new artwork</option>
+                    <option value="design">Packworkz design</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          ))}
+
+          <div>
+            <label className="block text-[11px] font-black uppercase tracking-widest mb-1.5" style={{ color: "#94A3B8" }}>Additional Notes</label>
+            <textarea
+              value={notes}
+              onChange={e => setNotes(e.target.value)}
+              rows={2}
+              className="w-full px-3 py-2 border border-[#E7E8EB] text-[13px] bg-white focus:outline-none focus:border-[#1B6CA8] resize-none"
+              placeholder="Any changes from the original order?"
+            />
+          </div>
+        </div>
+
+        <div className="px-6 py-4 border-t border-[#F1F3F5] flex gap-3">
+          <button onClick={onClose} className="flex-1 py-3 border border-[#E7E8EB] text-[13px] font-bold hover:border-[#94A3B8]" style={{ color: "#64748B" }}>
+            Cancel
+          </button>
+          <button
+            onClick={handleConfirm}
+            disabled={loading}
+            className="flex-1 py-3 text-[13px] font-black flex items-center justify-center gap-2"
+            style={{ background: "#0D1B2A", color: "white" }}
+          >
+            {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <RotateCcw className="w-4 h-4" />}
+            {loading ? "Submitting…" : "Submit Reorder"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function DashboardOrders() {
   const [activeTab, setActiveTab] = useState("all");
   const [search, setSearch] = useState("");
   const [selectedOrder, setSelectedOrder] = useState<any>(null);
+  const [reorderOrder, setReorderOrder] = useState<any>(null);
   const [reorderState, setReorderState] = useState<ReorderState>("idle");
   const [reorderQuoteId, setReorderQuoteId] = useState<string | null>(null);
   const [reorderingId, setReorderingId] = useState<string | null>(null);
   const [, navigate] = useLocation();
 
-  const handleReorder = async (order: any, e?: React.MouseEvent) => {
+  const handleReorder = (order: any, e?: React.MouseEvent) => {
     e?.stopPropagation();
-    if (reorderState === "loading") return;
-    setReorderState("loading");
-    setReorderingId(order.id);
-    try {
-      const token = localStorage.getItem("packwerk_access_token") || "";
-      const res = await fetch(`/api/dashboard/reorder/${order.id}`, {
-        method: "POST",
-        headers: { "Authorization": `Bearer ${token}` },
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
-      setReorderQuoteId(data.quote_id);
-      setReorderState("done");
-    } catch {
-      setReorderState("idle");
-      setReorderingId(null);
-    }
+    setReorderOrder(order);
+  };
+
+  const handleReorderSuccess = (quoteId: string) => {
+    const orderId = reorderOrder?.id ?? null;
+    setReorderOrder(null);
+    setReorderQuoteId(quoteId);
+    setReorderState("done");
+    setReorderingId(orderId);
   };
 
   const { data: orders, isLoading } = useGetDashboardOrders(
@@ -367,6 +487,15 @@ export default function DashboardOrders() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* ── Reorder Dialog ── */}
+      {reorderOrder && (
+        <ReorderDialog
+          order={reorderOrder}
+          onClose={() => setReorderOrder(null)}
+          onSuccess={handleReorderSuccess}
+        />
       )}
     </div>
   );

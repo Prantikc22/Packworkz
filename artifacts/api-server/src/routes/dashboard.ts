@@ -220,6 +220,14 @@ router.post("/dashboard/reorder/:orderId", async (req, res): Promise<void> => {
 
   const quoteId = await generateId("PKG", "quote_requests", "quote_id");
 
+  // Allow caller to override items/notes (used by the reorder dialog)
+  const bodyItems = Array.isArray(req.body?.items) && req.body.items.length > 0
+    ? req.body.items
+    : order.items;
+  const bodyNotes = typeof req.body?.notes === "string" && req.body.notes.trim()
+    ? req.body.notes.trim()
+    : `Reorder of ${order.order_id}`;
+
   const [quote] = await db
     .insert(quoteRequestsTable)
     .values({
@@ -228,11 +236,11 @@ router.post("/dashboard/reorder/:orderId", async (req, res): Promise<void> => {
       company_name: user?.company_name ?? "",
       email: user?.email ?? "",
       phone: user?.phone ?? "",
-      items: order.items as any,
+      items: bodyItems as any,
       delivery_country: "India",
       delivery_pincode: "",
       preferred_timeline: "standard",
-      notes: `Reorder of ${order.order_id}`,
+      notes: bodyNotes,
       artwork_option: "none",
       sample_option: "no",
       status: "submitted",

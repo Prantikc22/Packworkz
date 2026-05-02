@@ -3,10 +3,9 @@ import { Link, useLocation } from "wouter";
 import {
   Package, Box, ShoppingBag, Layers, RotateCcw, Tag, Leaf, Gift,
   Zap, Factory, Pill, Sparkles, Cpu, UtensilsCrossed, Gem, Globe,
-  ChevronDown, BookOpen, Info, Network,
+  ChevronDown, BookOpen, Info, Network, Paintbrush, FlaskConical,
 } from "lucide-react";
 
-// ── Product mega-menu data ────────────────────────────────────────────────────
 const PRODUCT_CATS = [
   { icon: Package,      label: "Flexible Packaging",   desc: "Pouches, films & wraps",           href: "/products/flexible" },
   { icon: Box,          label: "Rigid Packaging",       desc: "Jars, bottles & hard shells",      href: "/products/rigid" },
@@ -151,43 +150,35 @@ function ProductsMenu() {
       animation: "dropIn 0.2s ease forwards",
       zIndex: 100,
     }}>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 220px", gap: 24 }}>
-        {/* Left: categories 2-col */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 4 }}>
-          {PRODUCT_CATS.map(cat => (
-            <Link key={cat.href} href={cat.href} className="po-menu-item">
-              <IconBox Icon={cat.icon} />
-              <div>
-                <div style={{ color: "#0D1B2A", fontSize: 14, fontWeight: 600, lineHeight: 1.3 }}>{cat.label}</div>
-                <div style={{ color: "#64748B", fontSize: 12, lineHeight: 1.4, marginTop: 2 }}>{cat.desc}</div>
-              </div>
-            </Link>
-          ))}
-        </div>
-
-        {/* Right: SmartStock feature card */}
-        <div style={{
-          background: "linear-gradient(135deg, #0D1B2A 0%, #1B3A5C 100%)",
-          borderRadius: 12, padding: "20px 18px",
-          display: "flex", flexDirection: "column", justifyContent: "space-between",
-        }}>
-          <div>
-            <div style={{ color: "#E8A838", fontSize: 10, fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", marginBottom: 10 }}>FEATURED</div>
-            <div style={{ color: "white", fontSize: 16, fontWeight: 700, lineHeight: 1.3, marginBottom: 8 }}>SmartStock™<br />AI Inventory</div>
-            <div style={{ color: "rgba(255,255,255,0.55)", fontSize: 12, lineHeight: 1.5 }}>
-              Predict reorder points before you run out. Zero stockouts.
+      {/* Product categories grid */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 4 }}>
+        {PRODUCT_CATS.map(cat => (
+          <Link key={cat.href} href={cat.href} className="po-menu-item">
+            <IconBox Icon={cat.icon} />
+            <div>
+              <div style={{ color: "#0D1B2A", fontSize: 14, fontWeight: 600, lineHeight: 1.3 }}>{cat.label}</div>
+              <div style={{ color: "#64748B", fontSize: 12, lineHeight: 1.4, marginTop: 2 }}>{cat.desc}</div>
             </div>
-          </div>
-          <Link href="/products/smartstock"
-            style={{
-              display: "inline-block", marginTop: 16,
-              background: "#E8A838", color: "#0D1B2A",
-              padding: "8px 14px", borderRadius: 6,
-              fontSize: 12, fontWeight: 700, textDecoration: "none",
-            }}>
-            Learn more →
           </Link>
-        </div>
+        ))}
+      </div>
+
+      {/* Quick access: Sample + Design */}
+      <div style={{ borderTop: "1px solid #E2EAF4", paddingTop: 16, marginTop: 12, display: "flex", gap: 8 }}>
+        <Link href="/samples" className="po-menu-item" style={{ flex: 1, background: "#F8F9FC", border: "1px solid #E2EAF4", borderRadius: 8 }}>
+          <IconBox Icon={FlaskConical} />
+          <div>
+            <div style={{ color: "#0D1B2A", fontSize: 13, fontWeight: 700 }}>Order a Sample</div>
+            <div style={{ color: "#64748B", fontSize: 11, marginTop: 2 }}>From ₹2,999 · Any SKU</div>
+          </div>
+        </Link>
+        <Link href="/design" className="po-menu-item" style={{ flex: 1, background: "#F8F9FC", border: "1px solid #E2EAF4", borderRadius: 8 }}>
+          <IconBox Icon={Paintbrush} />
+          <div>
+            <div style={{ color: "#0D1B2A", fontSize: 13, fontWeight: 700 }}>Design Service</div>
+            <div style={{ color: "#64748B", fontSize: 11, marginTop: 2 }}>Print-ready artwork · ₹1,999</div>
+          </div>
+        </Link>
       </div>
     </div>
   );
@@ -321,6 +312,23 @@ function NavItem({
   );
 }
 
+// ── Simple markdown renderer for PackAI messages ─────────────────────────────
+function renderMd(text: string) {
+  return text.split('\n').map((line, li, arr) => {
+    const segments = line.split(/(\*\*[^*\n]+?\*\*)/g);
+    return (
+      <span key={li} style={{ display: 'block' }}>
+        {segments.map((seg, si) =>
+          seg.startsWith('**') && seg.endsWith('**')
+            ? <strong key={si}>{seg.slice(2, -2)}</strong>
+            : seg
+        )}
+        {li < arr.length - 1 && line === '' && <br />}
+      </span>
+    );
+  });
+}
+
 // ── PackAI Widget ─────────────────────────────────────────────────────────────
 const WA_NUM = "918208990366";
 const WA_ICON = (
@@ -425,9 +433,13 @@ function PackAIWidget() {
         body: JSON.stringify({ messages: historyForAI }),
       });
       const data = await res.json() as { reply?: string; error?: string };
-      addMsg("assistant", data.reply || "I'm having trouble right now — please try again or WhatsApp us directly!");
+      if (data.reply) {
+        addMsg("assistant", data.reply);
+      } else {
+        addMsg("assistant", data.error ?? "I'm having trouble right now — please try again or WhatsApp us at +91 82089 90366!");
+      }
     } catch {
-      addMsg("assistant", "Something went wrong on my end. Please WhatsApp us directly and our team will help you right away!");
+      addMsg("assistant", "Network error — please check your connection or WhatsApp us at +91 82089 90366!");
     } finally {
       setLoading(false);
     }
@@ -495,8 +507,9 @@ function PackAIWidget() {
                 borderRadius: m.role === "assistant" ? "4px 14px 14px 14px" : "14px 4px 14px 14px",
                 padding: "10px 14px", fontSize: 13, lineHeight: 1.6,
                 boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
-                whiteSpace: "pre-wrap",
-              }}>{m.content}</div>
+              }}>
+                {renderMd(m.content)}
+              </div>
             ))}
             {loading && <TypingDots />}
             <div ref={bottomRef} />

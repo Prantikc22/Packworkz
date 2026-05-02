@@ -168,25 +168,34 @@ export default function DashboardQuotes() {
 
                   <p className="text-[14px] font-bold mb-4" style={{ color: "#0D1B2A" }}>{itemSummary}</p>
 
-                  {isQuoted ? (
-                    /* Quote sent by team — show full details */
-                    <div>
-                      {/* Line items */}
-                      {Array.isArray(quote.items) && (
-                        <div className="border border-[#F1F3F5] mb-4">
-                          <div className="px-4 py-2 bg-[#F8F9FC] border-b border-[#F1F3F5]">
-                            <p className="text-[11px] font-black uppercase tracking-widest" style={{ color: "#94A3B8" }}>LINE ITEMS</p>
+                  {/* Always show submitted items */}
+                  {Array.isArray(quote.items) && quote.items.length > 0 && (
+                    <div className="border border-[#F1F3F5] mb-4">
+                      <div className="px-4 py-2 bg-[#F8F9FC] border-b border-[#F1F3F5]">
+                        <p className="text-[11px] font-black uppercase tracking-widest" style={{ color: "#94A3B8" }}>
+                          {isQuoted ? "LINE ITEMS" : "YOUR REQUEST"}
+                        </p>
+                      </div>
+                      {quote.items.map((item: any, i: number) => (
+                        <div key={i} className="flex justify-between items-center px-4 py-3 border-b border-[#F8F9FC] last:border-0">
+                          <div>
+                            <span className="text-[13px] font-bold" style={{ color: "#0D1B2A" }}>{item.product_name ?? "Custom packaging"}</span>
+                            {item.sku_id && <span className="ml-2 text-[11px] font-mono" style={{ color: "#94A3B8" }}>{item.sku_id}</span>}
+                            {item.artwork_option && item.artwork_option !== "none" && (
+                              <span className="ml-2 text-[11px] px-1.5 py-0.5 font-bold" style={{ background: "rgba(27,108,168,0.08)", color: "#1B6CA8" }}>
+                                {item.artwork_option === "upload" ? "Artwork upload" : item.artwork_option === "design" ? "Design service" : ""}
+                              </span>
+                            )}
                           </div>
-                          {quote.items.map((item: any, i: number) => (
-                            <div key={i} className="flex justify-between px-4 py-3 border-b border-[#F8F9FC] last:border-0">
-                              <span className="text-[13px]" style={{ color: "#0D1B2A" }}>{item.product_name ?? "Item"}</span>
-                              <span className="text-[13px]" style={{ color: "#64748B" }}>{item.quantity ? `${fmt(item.quantity)} units` : "—"}</span>
-                            </div>
-                          ))}
+                          <span className="text-[13px]" style={{ color: "#64748B" }}>{item.quantity ? `${fmt(item.quantity)} units` : "—"}</span>
                         </div>
-                      )}
+                      ))}
+                    </div>
+                  )}
 
-                      {/* Price + terms */}
+                  {isQuoted ? (
+                    /* Quote sent by team */
+                    <div>
                       <div className="flex justify-between items-end mb-4">
                         <div>
                           {quote.total_estimated_min && (
@@ -200,13 +209,11 @@ export default function DashboardQuotes() {
                           <p className="text-[12px]" style={{ color: "#94A3B8" }}>Payment: 50% advance · 50% on delivery</p>
                         </div>
                       </div>
-
                       <div className="flex gap-3 flex-wrap">
                         <button className="btn-fill btn-amber px-6 py-3 text-[13px] flex-1" onClick={() => setAcceptingQuote(quote)}>
-                          <span><CheckCircle className="w-4 h-4 inline mr-2" />Accept Quote</span>
+                          <span><CheckCircle className="w-4 h-4 inline mr-2" />Confirm Order</span>
                         </button>
-                        <a
-                          href={`https://wa.me/${WHATSAPP_NUM}?text=Hi+Packworkz%2C+I+have+a+question+about+quote+${quote.quote_id}`}
+                        <a href={`https://wa.me/${WHATSAPP_NUM}?text=Hi+Packworkz%2C+I+have+a+question+about+quote+${quote.quote_id}`}
                           target="_blank" rel="noopener noreferrer">
                           <button className="btn-fill btn-outline-dark px-5 py-3 text-[13px]">
                             <span><MessageCircle className="w-4 h-4 inline mr-2" />Ask a Question</span>
@@ -215,29 +222,21 @@ export default function DashboardQuotes() {
                       </div>
                     </div>
                   ) : (
-                    /* Quote not yet sent — waiting state */
-                    <div className="flex flex-col sm:flex-row gap-4 items-start">
+                    /* Waiting for quote */
+                    <div className="flex flex-col sm:flex-row gap-4 items-start mt-2">
                       <div className="flex-1">
-                        <div className="flex items-center gap-3 mb-3">
-                          <div className="relative">
-                            <div className="w-3 h-3 rounded-full animate-pulse" style={{ background: "#E8A838" }} />
-                          </div>
-                          <p className="text-[13px] font-bold" style={{ color: "#0D1B2A" }}>
-                            Our team is preparing your quote.
-                          </p>
+                        <div className="flex items-center gap-3 mb-2">
+                          <div className="w-2.5 h-2.5 rounded-full animate-pulse flex-shrink-0" style={{ background: "#E8A838" }} />
+                          <p className="text-[13px] font-bold" style={{ color: "#0D1B2A" }}>Our team is preparing your quote.</p>
                         </div>
-                        <p className="text-[13px] ml-6" style={{ color: "#64748B" }}>Expected within 48 hours.</p>
-
-                        {/* Progress bar */}
-                        <div className="mt-3 ml-6">
-                          <div className="w-full max-w-xs h-1.5 bg-[#F1F3F5] overflow-hidden">
-                            <div className="h-full animate-[progress_2s_ease-in-out_infinite]"
-                              style={{ background: "#E8A838", width: "60%" }} />
+                        <p className="text-[12px] ml-[22px]" style={{ color: "#64748B" }}>Expected within 48 hours.</p>
+                        <div className="mt-3 ml-[22px]">
+                          <div className="w-full max-w-xs h-1 bg-[#F1F3F5] overflow-hidden">
+                            <div className="h-full animate-[progress_2s_ease-in-out_infinite]" style={{ background: "#E8A838", width: "60%" }} />
                           </div>
                         </div>
                       </div>
-                      <a
-                        href={`https://wa.me/${WHATSAPP_NUM}?text=Hi+Packworkz%2C+I%27m+following+up+on+quote+${quote.quote_id}`}
+                      <a href={`https://wa.me/${WHATSAPP_NUM}?text=Hi+Packworkz%2C+I%27m+following+up+on+quote+${quote.quote_id}`}
                         target="_blank" rel="noopener noreferrer">
                         <button className="flex items-center gap-2 px-4 py-2.5 border border-[#E7E8EB] text-[12px] font-black hover:border-[#25D366] hover:text-[#25D366] transition-all" style={{ color: "#64748B" }}>
                           <MS icon="chat" className="text-base" /> WhatsApp Follow Up
