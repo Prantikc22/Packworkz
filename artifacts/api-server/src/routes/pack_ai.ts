@@ -82,6 +82,103 @@ const SYSTEM_PROMPT = `You are PackAI, an expert packaging consultant for Packwo
 - After recommending, always offer to generate a quote or connect to WhatsApp
 - Keep your tone helpful and practical, not salesy`;
 
+// Many free models to rotate through — more fallbacks = fewer 503s
+const MODELS = [
+  "google/gemma-3-27b-it:free",
+  "meta-llama/llama-3.3-70b-instruct:free",
+  "meta-llama/llama-3.1-8b-instruct:free",
+  "mistralai/mistral-7b-instruct:free",
+  "google/gemma-2-9b-it:free",
+  "qwen/qwen3-235b-a22b:free",
+  "deepseek/deepseek-r1-0528-qwen3-8b:free",
+  "nvidia/llama-3.1-nemotron-nano-8b-v1:free",
+  "tngtech/deepseek-r1t-chimera:free",
+];
+
+// Simple in-memory cooldown: track which models recently failed
+const modelCooldown = new Map<string, number>();
+const COOLDOWN_MS = 30_000; // 30s cooldown per model after failure
+
+function isOnCooldown(model: string): boolean {
+  const t = modelCooldown.get(model);
+  if (!t) return false;
+  if (Date.now() - t > COOLDOWN_MS) { modelCooldown.delete(model); return false; }
+  return true;
+}
+
+function setCooldown(model: string) {
+  modelCooldown.set(model, Date.now());
+}
+
+async function tryModel(
+  model: string,
+  messages: Array<{ role: string; content: string }>,
+  systemPrompt: string,
+  apiKey: string
+): Promise<{ ok: true; reply: string } | { ok: false; rateLimited: boolean }> {
+  try {
+    // Gemma models don't support "system" role — inject into first user message
+    const isGemma = model.startsWith("google/gemma");
+    const [firstUser, ...rest] = messages;
+    const preparedMessages = isGemma
+      ? [
+          { role: "user", content: `<system_instructions>\n${systemPrompt}\n</system_instructions>\n\n${firstUser?.content ?? "Hello"}` },
+          ...rest,
+        ]
+      : [{ role: "system", content: systemPrompt }, ...messages];
+
+    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+        "HTTP-Referer": "https://packworkz.com",
+        "X-Title": "Packworkz PackAI",
+      },
+      body: JSON.stringify({ model, messages: preparedMessages, max_tokens: 600, temperature: 0.7 }),
+      signal: AbortSignal.timeout(15000),
+    });
+
+    if (!response.ok) {
+      const errText = await response.text();
+      const isRateLimit = response.status === 429 || errText.includes("rate") || errText.includes("limit") || errText.includes("temporarily");
+      if (isRateLimit) setCooldown(model);
+      return { ok: false, rateLimited: isRateLimit };
+    }
+
+    const data = await response.json() as { choices: Array<{ message: { content: string } }> };
+    const reply = data.choices?.[0]?.message?.content?.trim() ?? "";
+    if (!reply) return { ok: false, rateLimited: false };
+
+    return { ok: true, reply };
+  } catch {
+    return { ok: false, rateLimited: false };
+  }
+}
+
+// Keyword-based smart fallback when all AI models fail
+function smartFallback(messages: Array<{ role: string; content: string }>): string {
+  const lastUser = [...messages].reverse().find(m => m.role === "user")?.content?.toLowerCase() ?? "";
+
+  if (lastUser.includes("price") || lastUser.includes("cost") || lastUser.includes("rate") || lastUser.includes("₹")) {
+    return "Great question on pricing! Our packaging starts from **₹1.40/unit** for high-volume flexible pouches, and **₹8/unit** for rigid jars. The exact price depends on material, size, print colours, and quantity. Share what you're packing and your monthly volume, and I'll give you a precise range. You can also [get a quote instantly here](/quote) — our team responds within 24 hours.\n\nFor urgent help: WhatsApp us at **+91 82089 90366**";
+  }
+  if (lastUser.includes("moq") || lastUser.includes("minimum")) {
+    return "Packworkz has some of the **lowest MOQs in India** — as low as 50 units for wooden gift boxes, 200 units for glass jars, and 500 units for pouches and mailers. We work with early-stage D2C brands and large FMCG runs alike. What are you looking to pack, and roughly how many units per month?";
+  }
+  if (lastUser.includes("sustainable") || lastUser.includes("eco") || lastUser.includes("compostable") || lastUser.includes("kraft")) {
+    return "Our **sustainable range** includes:\n- **PKG-060** Kraft Stand-Up Pouch — MOQ 2,000 · ₹7.50–12/unit\n- **PKG-062** Compostable Courier Mailer — MOQ 500 · ₹12–22/unit\n- **PKG-063** Recycled Kraft Box — MOQ 500 · ₹8–25/unit\n\nAll are certified (FSC / TUV Austria / compostable). Want me to help you pick the right one for your product?";
+  }
+  if (lastUser.includes("pouch") || lastUser.includes("flexible") || lastUser.includes("packet")) {
+    return "For flexible packaging, our top sellers are:\n- **PKG-002** Stand-Up Zipper Pouch (PET/AL/PE) — ₹6.50–9.80/unit, MOQ 3,000 — great for premium foods, coffee, supplements\n- **PKG-001** 3-Side Seal Pouch (BOPP/PE) — ₹2.80–4.20/unit, MOQ 5,000 — ideal for spices, powders, dry snacks\n- **PKG-003** Centre-Seal Pouch — ₹1.40–2.10/unit, MOQ 10,000 — most economical for namkeen and bakery\n\nWhat's your product and target monthly volume?";
+  }
+  if (lastUser.includes("box") || lastUser.includes("carton") || lastUser.includes("rigid")) {
+    return "For boxes and rigid packaging:\n- **PKG-020** Mono Carton — ₹2.50–8/unit, MOQ 1,000 — pharma, FMCG retail\n- **PKG-022** Magnetic Closure Gift Box — ₹45–150/unit, MOQ 200 — premium D2C\n- **PKG-021** Corrugated Shipper — ₹18–65/unit, MOQ 500 — e-commerce dispatch\n\nTell me your product and I'll narrow it down further.";
+  }
+
+  return "I'm having a moment of high demand right now, but I'm here! 😊\n\nTo help you fastest — **what product are you looking to package?** (e.g. spice powder, skincare serum, protein supplement, electronic gadget)\n\nAlternatively, you can:\n- [Get a quote in 2 minutes →](/quote)\n- WhatsApp our team directly: **+91 82089 90366**\n\nWe'll respond within a few hours with specific SKU recommendations and pricing.";
+}
+
 router.post("/pack-ai/chat", async (req, res): Promise<void> => {
   const { messages } = req.body;
 
@@ -96,82 +193,22 @@ router.post("/pack-ai/chat", async (req, res): Promise<void> => {
     return;
   }
 
-  // Gemma models don't support "system" role — inject system prompt into first user message
   const typedMessages = messages as Array<{ role: string; content: string }>;
-  const [firstUserMsg, ...restMsgs] = typedMessages;
-  const messagesWithSystem = firstUserMsg
-    ? [
-        {
-          role: "user",
-          content: `<system_instructions>\n${SYSTEM_PROMPT}\n</system_instructions>\n\n${firstUserMsg.content}`,
-        },
-        ...restMsgs,
-      ]
-    : [{ role: "user", content: `<system_instructions>\n${SYSTEM_PROMPT}\n</system_instructions>\n\nHello` }];
 
-  // Models to try in order — user preferred first, then reliable fallbacks
-  const MODELS = [
-    "google/gemma-4-26b-a4b-it:free",   // preferred (may be rate-limited on free tier)
-    "meta-llama/llama-3.3-70b-instruct:free",
-    "qwen/qwen3-coder:free",
-    "nvidia/nemotron-nano-9b-v2:free",
-  ];
+  // Try each model, skipping ones on cooldown
+  for (const model of MODELS) {
+    if (isOnCooldown(model)) continue;
 
-  async function tryModel(model: string): Promise<{ ok: true; reply: string } | { ok: false; rateLimited: boolean }> {
-    try {
-      const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${apiKey}`,
-          "Content-Type": "application/json",
-          "HTTP-Referer": "https://packworkz.com",
-          "X-Title": "Packworkz PackAI",
-        },
-        body: JSON.stringify({
-          model,
-          // Gemma 4 doesn't support system role; others do
-          messages: model.startsWith("google/gemma-4") ? messagesWithSystem : [
-            { role: "system", content: SYSTEM_PROMPT },
-            ...typedMessages,
-          ],
-          max_tokens: 600,
-          temperature: 0.7,
-        }),
-      });
-
-      if (!response.ok) {
-        const errText = await response.text();
-        const isRateLimit = errText.includes("429") || errText.includes("rate-limit") || errText.includes("temporarily");
-        console.warn(`[PackAI] Model ${model} failed:`, errText.slice(0, 200));
-        return { ok: false, rateLimited: isRateLimit };
-      }
-
-      const data = await response.json() as { choices: Array<{ message: { content: string } }> };
-      const reply = data.choices?.[0]?.message?.content ?? "";
-      if (!reply) return { ok: false, rateLimited: false };
-
-      console.info(`[PackAI] Response from model: ${model}`);
-      return { ok: true, reply };
-    } catch (e) {
-      console.warn(`[PackAI] Exception with model ${model}:`, e);
-      return { ok: false, rateLimited: false };
+    const result = await tryModel(model, typedMessages, SYSTEM_PROMPT, apiKey);
+    if (result.ok) {
+      res.json({ reply: result.reply });
+      return;
     }
   }
 
-  try {
-    for (const model of MODELS) {
-      const result = await tryModel(model);
-      if (result.ok) {
-        res.json({ reply: result.reply });
-        return;
-      }
-    }
-    // All models failed
-    res.status(503).json({ error: "AI service temporarily unavailable — please try again in a moment or WhatsApp us directly." });
-  } catch (err) {
-    console.error("[PackAI] Unexpected error:", err);
-    res.status(500).json({ error: "Failed to reach AI service" });
-  }
+  // All AI models failed — return intelligent static fallback instead of 503
+  const fallback = smartFallback(typedMessages);
+  res.json({ reply: fallback });
 });
 
 export default router;

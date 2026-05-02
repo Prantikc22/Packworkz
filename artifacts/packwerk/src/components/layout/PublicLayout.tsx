@@ -38,8 +38,8 @@ const ABOUT_ITEMS = [
 // ── Styles injected once ──────────────────────────────────────────────────────
 const GLOBAL_STYLES = `
   @keyframes dropIn {
-    from { opacity: 0; transform: translateX(-50%) translateY(-8px); }
-    to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+    from { opacity: 0; transform: translateY(-8px); }
+    to   { opacity: 1; transform: translateY(0); }
   }
   @keyframes slideUpChat {
     from { opacity: 0; transform: translateY(16px); }
