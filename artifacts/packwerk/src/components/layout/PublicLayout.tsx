@@ -721,22 +721,25 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
 
         {/* Right side */}
         <div className="flex items-center gap-1">
-          {isLoggedIn ? (
-            <Link href="/dashboard" className="hidden md:inline po-nav-link" style={{ color: "#E8A838" }}>
-              Dashboard
+          {/* Desktop-only buttons */}
+          <div className="hidden md:flex items-center gap-1">
+            {isLoggedIn ? (
+              <Link href="/dashboard" className="po-nav-link" style={{ color: "#E8A838" }}>
+                Dashboard
+              </Link>
+            ) : (
+              <Link href="/login" className="po-nav-link">
+                Login
+              </Link>
+            )}
+            <Link href="/quote" className="po-cta-btn" style={{ marginLeft: 8 }}>
+              <span>Get Quote</span>
             </Link>
-          ) : (
-            <Link href="/login" className="hidden md:inline po-nav-link">
-              Login
-            </Link>
-          )}
-          <Link href="/quote" className="hidden md:inline-block po-cta-btn" style={{ marginLeft: 8 }}>
-            <span>Get Quote</span>
-          </Link>
+          </div>
 
-          {/* Mobile toggle */}
-          <button className="md:hidden p-2 text-white ml-2" onClick={() => setMobileOpen(!mobileOpen)}>
-            <span className="material-symbols-outlined text-2xl">{mobileOpen ? "close" : "menu"}</span>
+          {/* Mobile hamburger only */}
+          <button className="md:hidden p-2 ml-1" style={{ color: "white", background: "none", border: "none", cursor: "pointer", lineHeight: 1 }} onClick={() => setMobileOpen(!mobileOpen)}>
+            <span className="material-symbols-outlined" style={{ fontSize: 28 }}>{mobileOpen ? "close" : "menu"}</span>
           </button>
         </div>
       </header>
