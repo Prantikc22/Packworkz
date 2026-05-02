@@ -35,13 +35,16 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/api", router);
 
-// Serve frontend static files in production
-const frontendDist = path.resolve(__dirname, "../../packwerk/dist/public");
-app.use(express.static(frontendDist));
+// On Vercel, the CDN serves static files — only serve them when running
+// directly (Replit dev/prod, Railway, etc.)
+if (!process.env.VERCEL) {
+  const frontendDist = path.resolve(__dirname, "../../packwerk/dist/public");
+  app.use(express.static(frontendDist));
 
-// SPA fallback — send index.html for any non-API route
-app.get("/*path", (_req, res) => {
-  res.sendFile(path.join(frontendDist, "index.html"));
-});
+  // SPA fallback — send index.html for any non-API route
+  app.get("/*path", (_req, res) => {
+    res.sendFile(path.join(frontendDist, "index.html"));
+  });
+}
 
 export default app;
