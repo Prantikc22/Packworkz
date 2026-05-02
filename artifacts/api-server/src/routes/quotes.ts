@@ -78,50 +78,52 @@ router.post("/quotes", async (req, res): Promise<void> => {
   const resolvedArtwork = artwork_option || firstItem?.artwork_status || "none";
   const resolvedSample = sample_option || (firstItem?.sample_requested ? firstItem?.sample_tier : "none");
 
-  sendQuoteConfirmation({
-    to: email,
-    name: contact_name,
-    company: company_name,
-    quoteId,
-    productName: firstItem?.product_name || "Packaging",
-    qty: firstItem?.quantity || 0,
-    artworkOption: resolvedArtwork,
-    sampleOption: resolvedSample,
-    designPaid: !!design_paid,
-    samplePaid: !!sample_paid,
-    pincode: delivery_pincode,
-    notes: notes || undefined,
-    estimatedMin: total_estimated_min ? Number(total_estimated_min) : undefined,
-    estimatedMax: total_estimated_max ? Number(total_estimated_max) : undefined,
-  }).catch(err => console.error("[email] Failed to send confirmation:", err));
+  // Await all side-effects before responding — in Vercel serverless the function
+  // is terminated as soon as res.json() is called, so fire-and-forget tasks never complete.
+  await Promise.allSettled([
+    sendQuoteConfirmation({
+      to: email,
+      name: contact_name,
+      company: company_name,
+      quoteId,
+      productName: firstItem?.product_name || "Packaging",
+      qty: firstItem?.quantity || 0,
+      artworkOption: resolvedArtwork,
+      sampleOption: resolvedSample,
+      designPaid: !!design_paid,
+      samplePaid: !!sample_paid,
+      pincode: delivery_pincode,
+      notes: notes || undefined,
+      estimatedMin: total_estimated_min ? Number(total_estimated_min) : undefined,
+      estimatedMax: total_estimated_max ? Number(total_estimated_max) : undefined,
+    }).catch(err => console.error("[email] Failed to send confirmation:", err)),
 
-  const teamPhone = process.env.TEAM_WHATSAPP_PHONE || "+919999999999";
-  sendWhatsApp(
-    teamPhone,
-    `New quote: ${quoteId}\nCompany: ${company_name}\nProducts: ${itemSummary}\nValue: ₹${total_estimated_min}\nPhone: ${phone}`
-  ).catch(() => {});
+    pushToSheetDB({
+      quote_id: quoteId,
+      contact_name,
+      company_name,
+      email,
+      phone,
+      product_name: firstItem?.product_name || "",
+      quantity: firstItem?.quantity || "",
+      delivery_country,
+      delivery_pincode: delivery_pincode || "",
+      artwork_option: resolvedArtwork,
+      sample_option: resolvedSample,
+      estimated_budget_min: total_estimated_min || "",
+      estimated_budget_max: total_estimated_max || "",
+      preferred_timeline: preferred_timeline || "standard",
+      notes: notes || "",
+      design_paid: design_paid ? "Yes" : "No",
+      sample_paid: sample_paid ? "Yes" : "No",
+      submission_date: new Date().toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" }),
+    }).catch(err => console.error("[sheetdb] quote submit failed:", err)),
 
-  // Push to Google Sheet via SheetDB
-  pushToSheetDB({
-    quote_id: quoteId,
-    contact_name,
-    company_name,
-    email,
-    phone,
-    product_name: firstItem?.product_name || "",
-    quantity: firstItem?.quantity || "",
-    delivery_country,
-    delivery_pincode: delivery_pincode || "",
-    artwork_option: resolvedArtwork,
-    sample_option: resolvedSample,
-    estimated_budget_min: total_estimated_min || "",
-    estimated_budget_max: total_estimated_max || "",
-    preferred_timeline: preferred_timeline || "standard",
-    notes: notes || "",
-    design_paid: design_paid ? "Yes" : "No",
-    sample_paid: sample_paid ? "Yes" : "No",
-    submission_date: new Date().toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" }),
-  }).catch(() => {});
+    sendWhatsApp(
+      process.env.TEAM_WHATSAPP_PHONE || "+919999999999",
+      `New quote: ${quoteId}\nCompany: ${company_name}\nProducts: ${itemSummary}\nValue: ₹${total_estimated_min}\nPhone: ${phone}`
+    ).catch(() => {}),
+  ]);
 
   res.status(201).json({ quote_id: quote.quote_id, id: quote.id });
 });

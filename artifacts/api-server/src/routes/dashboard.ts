@@ -209,9 +209,10 @@ router.post("/dashboard/quotes/:id/accept", async (req, res): Promise<void> => {
     .update({ status: "accepted" })
     .eq("id", quoteUuid);
 
-  // Push accepted quote to Google Sheet
+  // Await SheetDB push before responding — Vercel terminates the function
+  // as soon as res.json() is called, so unawaited calls never complete.
   const firstItem = Array.isArray(quote.items) ? quote.items[0] : null;
-  pushToSheetDB({
+  await pushToSheetDB({
     quote_id: quote.quote_id,
     contact_name: quote.contact_name,
     company_name: quote.company_name,
@@ -231,7 +232,7 @@ router.post("/dashboard/quotes/:id/accept", async (req, res): Promise<void> => {
     order_id: order?.order_id || "",
     status: "accepted",
     accepted_date: new Date().toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" }),
-  }).catch(() => {});
+  }).catch(err => console.error("[sheetdb] accept push failed:", err));
 
   res.status(201).json({
     order_id: order?.order_id,
