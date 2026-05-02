@@ -40,9 +40,12 @@ router.post("/auth/login", async (req, res): Promise<void> => {
 
   const { password_hash: _, ...userWithoutPassword } = user;
 
+  // Check must_change_password flag stored in default_address JSONB
+  const mustChangePw = !!(user.default_address as any)?.must_change_password;
+
   res.json({
     access_token: token,
-    must_change_password: false,
+    must_change_password: mustChangePw,
     user: {
       ...userWithoutPassword,
       credit_limit: Number(userWithoutPassword.credit_limit ?? 0),
@@ -77,19 +80,31 @@ router.post("/auth/change-password", requireAuth as never, async (req, res): Pro
     return;
   }
 
-  if (current_password && !user.must_change_password) {
+  // Check must_change_password stored in default_address JSONB
+  const mustChangePw = !!(user.default_address as any)?.must_change_password;
+
+  if (!mustChangePw) {
+    // Normal password change — current password is required
+    if (!current_password) {
+      res.status(400).json({ error: "current_password is required" });
+      return;
+    }
     if (user.password_hash !== hashPassword(current_password)) {
       res.status(401).json({ error: "Current password is incorrect" });
       return;
     }
-  } else if (!current_password && !user.must_change_password) {
-    res.status(400).json({ error: "current_password is required" });
-    return;
   }
+
+  // Remove must_change_password flag from default_address
+  const existingAddress = (user.default_address as Record<string, any>) ?? {};
+  const { must_change_password: _removed, ...cleanAddress } = existingAddress;
 
   await sb
     .from("users_profile")
-    .update({ password_hash: hashPassword(new_password) })
+    .update({
+      password_hash: hashPassword(new_password),
+      default_address: Object.keys(cleanAddress).length > 0 ? cleanAddress : null,
+    })
     .eq("id", userId);
 
   res.json({ success: true });

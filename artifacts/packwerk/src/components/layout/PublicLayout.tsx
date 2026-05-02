@@ -46,6 +46,39 @@ const GLOBAL_STYLES = `
     to   { opacity: 1; transform: translateY(0); }
   }
 
+  /* ── Mobile responsive footer ── */
+  @media (max-width: 768px) {
+    .po-footer-grid {
+      grid-template-columns: 1fr 1fr !important;
+      padding: 32px 24px !important;
+      gap: 24px !important;
+    }
+    .po-footer-topbar {
+      padding: 20px 24px !important;
+      flex-direction: column !important;
+      align-items: flex-start !important;
+    }
+    .po-footer-bottom {
+      padding: 16px 24px !important;
+      flex-direction: column !important;
+      align-items: flex-start !important;
+    }
+  }
+  @media (max-width: 480px) {
+    .po-footer-grid {
+      grid-template-columns: 1fr !important;
+      padding: 24px 20px !important;
+    }
+  }
+
+  /* ── Mobile content padding ── */
+  @media (max-width: 640px) {
+    .po-section-pad {
+      padding-left: 20px !important;
+      padding-right: 20px !important;
+    }
+  }
+
   .po-menu-item {
     display: flex;
     align-items: flex-start;
@@ -635,6 +668,11 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
   const [location] = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(() => !!localStorage.getItem("packwerk_access_token"));
+
+  useEffect(() => {
+    setIsLoggedIn(!!localStorage.getItem("packwerk_access_token"));
+  }, [location]);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -683,7 +721,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
 
         {/* Right side */}
         <div className="flex items-center gap-1">
-          {localStorage.getItem("packwerk_access_token") ? (
+          {isLoggedIn ? (
             <Link href="/dashboard" className="hidden md:inline po-nav-link" style={{ color: "#E8A838" }}>
               Dashboard
             </Link>
@@ -724,7 +762,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
                 style={{ fontSize: 18, fontWeight: 700, color: "rgba(255,255,255,0.6)", textDecoration: "none" }}>
                 Sample
               </Link>
-              {localStorage.getItem("packwerk_access_token") ? (
+              {isLoggedIn ? (
                 <Link href="/dashboard" onClick={() => setMobileOpen(false)}
                   style={{ fontSize: 18, fontWeight: 700, color: "#E8A838", textDecoration: "none" }}>
                   Dashboard
@@ -754,7 +792,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
       <footer style={{ background: "#020617", fontFamily: "'Space Grotesk', sans-serif" }}>
 
         {/* Top bar: logo + socials + CTA */}
-        <div style={{ borderBottom: "1px solid rgba(255,255,255,0.08)", padding: "28px 64px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 16 }}>
+        <div className="po-footer-topbar" style={{ borderBottom: "1px solid rgba(255,255,255,0.08)", padding: "28px 64px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 16 }}>
           <span style={{ fontSize: 34, fontWeight: 900, color: "white", letterSpacing: "-0.03em" }}>Packworkz</span>
           <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
             {/* Social icons */}
@@ -782,7 +820,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
         </div>
 
         {/* Main link grid + newsletter */}
-        <div style={{ padding: "48px 64px", display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr 280px", gap: 32 }}>
+        <div className="po-footer-grid" style={{ padding: "48px 64px", display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr 280px", gap: 32 }}>
           {/* Products */}
           <div className="flex flex-col gap-3">
             <h4 style={{ color: "white", fontWeight: 700, fontSize: 11, letterSpacing: "2px", textTransform: "uppercase", marginBottom: 4 }}>PRODUCTS</h4>
@@ -885,7 +923,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
         </div>
 
         {/* Bottom bar */}
-        <div style={{ borderTop: "1px solid rgba(255,255,255,0.08)", padding: "18px 64px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
+        <div className="po-footer-bottom" style={{ borderTop: "1px solid rgba(255,255,255,0.08)", padding: "18px 64px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
           <p style={{ color: "#475569", fontSize: 13, margin: 0 }}>© {new Date().getFullYear()} Packworkz India. All rights reserved.</p>
           <div style={{ display: "flex", gap: 20 }}>
             {[{ label: "Privacy Policy", href: "#" }, { label: "Terms of Service", href: "#" }, { label: "Refund Policy", href: "#" }].map(l => (

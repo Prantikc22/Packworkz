@@ -33,12 +33,27 @@ router.get("/admin/quotes", async (req, res): Promise<void> => {
   }
 
   res.json(
-    (quotes || []).map(q => ({
-      ...q,
-      total_estimated_min: q.total_estimated_min ? Number(q.total_estimated_min) : null,
-      total_estimated_max: q.total_estimated_max ? Number(q.total_estimated_max) : null,
-      quoted_amount: q.quoted_amount ? Number(q.quoted_amount) : null,
-    }))
+    (quotes || []).map(q => {
+      // Parse admin metadata stored in rejection_reason fallback (pre-migration)
+      let adminMeta: Record<string, any> = {};
+      if (typeof q.rejection_reason === "string" && q.rejection_reason.startsWith("__ADMIN_META__")) {
+        try {
+          adminMeta = JSON.parse(q.rejection_reason.slice(14));
+        } catch { /* ignore */ }
+      }
+
+      return {
+        ...q,
+        total_estimated_min: q.total_estimated_min ? Number(q.total_estimated_min) : null,
+        total_estimated_max: q.total_estimated_max ? Number(q.total_estimated_max) : null,
+        quoted_amount: q.quoted_amount ? Number(q.quoted_amount) : (adminMeta.quoted_amount ? Number(adminMeta.quoted_amount) : null),
+        admin_notes: q.admin_notes ?? adminMeta.admin_notes ?? null,
+        payment_link: q.payment_link ?? adminMeta.payment_link ?? null,
+        delivery_date: q.delivery_date ?? adminMeta.delivery_date ?? null,
+        payment_terms: q.payment_terms ?? adminMeta.payment_terms ?? null,
+        rejection_reason: adminMeta.admin_notes ? null : q.rejection_reason,
+      };
+    })
   );
 });
 
@@ -74,24 +89,46 @@ router.put("/admin/quotes/:id/notes", async (req, res): Promise<void> => {
     fullUpdate.total_estimated_min = String(quoted_amount);
     fullUpdate.total_estimated_max = String(quoted_amount);
   }
-  if (delivery_date !== undefined) fullUpdate.delivery_date = delivery_date || null;
+  // Only save delivery_date to DB column if it's a valid ISO date (YYYY-MM-DD)
+  if (delivery_date !== undefined) {
+    const isoDate = delivery_date ? new Date(delivery_date) : null;
+    const isValidDate = isoDate && !isNaN(isoDate.getTime()) && /^\d{4}-\d{2}-\d{2}$/.test(delivery_date);
+    fullUpdate.delivery_date = isValidDate ? delivery_date : null;
+  }
   if (payment_terms !== undefined) fullUpdate.payment_terms = payment_terms;
 
   let result = await sb.from("quote_requests").update(fullUpdate).eq("id", id).select().maybeSingle();
 
   if (result.error?.message?.includes("column")) {
-    // Some new columns don't exist yet — fall back to only the confirmed-existing fields
+    // New columns don't exist yet — store all admin data in rejection_reason as JSON
+    // (safe to use for non-rejected quotes; auto-upgrades once migration is run)
+    console.warn("[admin/quotes/notes] New columns missing — using rejection_reason fallback. Run SQL migration to persist all fields.");
+
     const safeUpdate: Record<string, any> = {};
+
+    // Always safe to update: map quoted_amount → total_estimated_min/max
     if (quoted_amount !== undefined && quoted_amount !== "") {
       safeUpdate.total_estimated_min = String(quoted_amount);
       safeUpdate.total_estimated_max = String(quoted_amount);
     }
+
+    // Store all admin meta in rejection_reason as JSON with a prefix marker
+    const adminMeta: Record<string, any> = {};
+    if (admin_notes !== undefined) adminMeta.admin_notes = admin_notes;
+    if (payment_link !== undefined) adminMeta.payment_link = payment_link;
+    if (delivery_date !== undefined) adminMeta.delivery_date = delivery_date;
+    if (payment_terms !== undefined) adminMeta.payment_terms = payment_terms;
+    if (quoted_amount !== undefined) adminMeta.quoted_amount = quoted_amount;
+
+    if (Object.keys(adminMeta).length > 0) {
+      safeUpdate.rejection_reason = `__ADMIN_META__${JSON.stringify(adminMeta)}`;
+    }
+
     if (Object.keys(safeUpdate).length > 0) {
       result = await sb.from("quote_requests").update(safeUpdate).eq("id", id).select().maybeSingle();
     } else {
       result = await sb.from("quote_requests").select("*").eq("id", id).maybeSingle() as typeof result;
     }
-    console.warn("[admin/quotes/notes] Some columns missing — run SQL migration. Partial update applied.");
   }
 
   if (result.error) {
@@ -169,6 +206,7 @@ router.post("/admin/quotes/:id/accept", async (req, res): Promise<void> => {
         orders_completed: 0,
         credit_eligible: false,
         credit_limit: 0,
+        default_address: { must_change_password: true },
       })
       .select()
       .single();
@@ -369,6 +407,7 @@ router.post("/admin/users", async (req, res): Promise<void> => {
       orders_completed: 0,
       credit_eligible: false,
       credit_limit: 0,
+      default_address: { must_change_password: true },
     })
     .select("id,email,company_name,contact_name,created_at")
     .single();

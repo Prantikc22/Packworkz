@@ -72,9 +72,46 @@ See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and pa
 
 ### Demo Credentials
 
-- Email: `demo@packwerk.in`
-- Password: `demo123`
-- Admin key: `packwerk-admin-2024`
+- Email: `demo@packwerk.in` / Password: `Demo@1234`
+- Email: `test@packops.in` / Password: `Test@1234`
+- Admin key: `PackOps-Admin@2024!`
+
+### Environment Variables (full list)
+
+| Variable | Purpose | Default/Notes |
+|---|---|---|
+| `ADMIN_KEY` | Admin panel access key | `PackOps-Admin@2024!` |
+| `OPENROUTER_API_KEY` | PackAI OpenRouter key | `sk-or-v1-173112b...` hardcoded fallback |
+| `RESEND_API_KEY` | Email via Resend | Required for emails |
+| `RAZORPAY_KEY_ID` / `RAZORPAY_KEY_SECRET` | Payments | Test keys set |
+| `VITE_RAZORPAY_KEY_ID` | Frontend Razorpay key | Same as KEY_ID |
+| `TEAM_WHATSAPP_PHONE` | Receives new quote alerts | Update with real number |
+| `SHEETDB_API_KEY` | Pushes quote submissions to Google Sheet | Awaiting API key from user |
+
+### SQL Migration Required
+
+Run `artifacts/api-server/sql_migration.sql` in Supabase SQL Editor to add:
+- `quote_requests`: `admin_notes`, `payment_link`, `quoted_amount`, `delivery_date`, `payment_terms`, `artwork_option`, `sample_option`
+- `orders`: `payment_link`
+
+Until migration runs, admin notes fall back to `rejection_reason` JSON encoding.
+
+### First-Login Password Change Flow
+
+- When admin creates a user, `default_address: { must_change_password: true }` is set in Supabase
+- On login, server reads this flag and returns `must_change_password: true` in response
+- Frontend stores flag in localStorage user object and redirects to `/change-password`
+- On password change, the flag is cleared from `default_address`
+
+### SheetDB Integration
+
+Quote submissions are pushed to a Google Sheet via SheetDB.
+Set `SHEETDB_API_KEY` env var to the SheetDB API ID (not full URL — just the ID from `sheetdb.io/api/v1/{API_ID}`).
+Columns in the sheet: `quote_id`, `contact_name`, `company_name`, `email`, `phone`, `product_name`, `quantity`, `delivery_country`, `delivery_pincode`, `artwork_option`, `sample_option`, `estimated_budget_min`, `estimated_budget_max`, `preferred_timeline`, `notes`, `design_paid`, `sample_paid`, `submission_date`
+
+### PackAI Models (OpenRouter)
+
+Preferred model rotation (in order): `google/gemma-4-26b-a4b-it:free`, `minimax/minimax-m2.5:free`, `qwen/qwen3-next-80b-a3b-instruct:free`, `openai/gpt-oss-120b:free`, `mistralai/mistral-nemo:free`, then legacy fallbacks.
 
 ### Pages
 

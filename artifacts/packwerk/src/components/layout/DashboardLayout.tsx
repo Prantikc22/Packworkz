@@ -162,9 +162,6 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
             </Link>
           ))}
           <div className="ml-auto flex items-center gap-3">
-            <Link href="/login">
-              <span className="text-xs font-bold uppercase tracking-widest" style={{ color: "#74777d" }}>LOGIN</span>
-            </Link>
             <Link href="/quote">
               <button className="flex items-center gap-1 text-xs font-bold px-5 py-2 rounded border-2 hover:opacity-90 transition-all" style={{ borderColor: "#1B6CA8", color: "#1B6CA8" }}>
                 GET QUOTE

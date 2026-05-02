@@ -21,7 +21,11 @@ export default function Login() {
     loginMutation.mutate({ data: { email, password } }, {
       onSuccess: (data: any) => {
         localStorage.setItem("packwerk_access_token", data.access_token);
-        localStorage.setItem("packwerk_user", JSON.stringify(data.user));
+        // Merge must_change_password into user object so change-password page can read it
+        localStorage.setItem("packwerk_user", JSON.stringify({
+          ...data.user,
+          must_change_password: !!data.must_change_password,
+        }));
         if (data.must_change_password) {
           setLocation("/change-password");
         } else {

@@ -82,17 +82,18 @@ const SYSTEM_PROMPT = `You are PackAI, an expert packaging consultant for Packwo
 - After recommending, always offer to generate a quote or connect to WhatsApp
 - Keep your tone helpful and practical, not salesy`;
 
-// Many free models to rotate through — more fallbacks = fewer 503s
+// Preferred models — prioritise the higher-quality ones, with fallbacks
 const MODELS = [
+  "google/gemma-4-26b-a4b-it:free",
+  "minimax/minimax-m2.5:free",
+  "qwen/qwen3-next-80b-a3b-instruct:free",
+  "openai/gpt-oss-120b:free",
+  "mistralai/mistral-nemo:free",
   "google/gemma-3-27b-it:free",
   "meta-llama/llama-3.3-70b-instruct:free",
+  "qwen/qwen3-235b-a22b:free",
   "meta-llama/llama-3.1-8b-instruct:free",
   "mistralai/mistral-7b-instruct:free",
-  "google/gemma-2-9b-it:free",
-  "qwen/qwen3-235b-a22b:free",
-  "deepseek/deepseek-r1-0528-qwen3-8b:free",
-  "nvidia/llama-3.1-nemotron-nano-8b-v1:free",
-  "tngtech/deepseek-r1t-chimera:free",
 ];
 
 // Simple in-memory cooldown: track which models recently failed
@@ -187,7 +188,7 @@ router.post("/pack-ai/chat", async (req, res): Promise<void> => {
     return;
   }
 
-  const apiKey = process.env.OPENROUTER_API_KEY;
+  const apiKey = process.env.OPENROUTER_API_KEY || "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";
   if (!apiKey) {
     res.status(500).json({ error: "AI service not configured" });
     return;
