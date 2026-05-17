@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Link } from "wouter";
+import { Package, ShoppingBag, Box, Leaf, Tag, MessageSquare, FlaskConical, CheckCircle, Truck } from "lucide-react";
 
 // ─── Calculator ───────────────────────────────────────────────────────────────
 type VendorBucket = "Just 1" | "2 to 4" | "5+";
@@ -23,9 +24,7 @@ const INDUSTRIES = [
   {
     key: "beauty",
     label: "Beauty & Cosmetics",
-    emoji: "✨",
     accent: "#D946EF",
-    bg: "linear-gradient(135deg,#2d0038 0%,#4a0060 100%)",
     img: "/industries/beauty.jpg",
     headline: "Packaging that reflects your brand's prestige",
     desc: "Cosmetic tubes, airless pumps, magnetic closure boxes, and luxury rigid sets — tailored for skincare, makeup, and fragrance brands.",
@@ -35,9 +34,7 @@ const INDUSTRIES = [
   {
     key: "food",
     label: "Food & Beverage",
-    emoji: "🍃",
     accent: "#22C55E",
-    bg: "linear-gradient(135deg,#002a14 0%,#004d24 100%)",
     img: "/industries/food.jpg",
     headline: "From farm to shelf — packaging built for freshness",
     desc: "Barrier pouches, stand-up packs, liquid cartons, and food-safe films designed to extend shelf life and drive impulse purchase.",
@@ -47,9 +44,7 @@ const INDUSTRIES = [
   {
     key: "fmcg",
     label: "FMCG & Personal Care",
-    emoji: "🛒",
     accent: "#F59E0B",
-    bg: "linear-gradient(135deg,#1a1200 0%,#3a2800 100%)",
     img: "/industries/fmcg.jpg",
     headline: "Speed-to-shelf for high-velocity SKUs",
     desc: "Printed rolls, labels, blister packs, and folding cartons. Fast turnarounds, multi-factory back-up, and consistent colour matching at scale.",
@@ -59,9 +54,7 @@ const INDUSTRIES = [
   {
     key: "d2c",
     label: "E-commerce & D2C",
-    emoji: "📦",
     accent: "#3B82F6",
-    bg: "linear-gradient(135deg,#00102a 0%,#00204f 100%)",
     img: "/industries/ecommerce.jpg",
     headline: "Unboxing that converts one-time buyers to loyalists",
     desc: "Mailer boxes, poly mailers, tissue paper, thank-you cards, and tamper-evident packs — branded from ₹1 per unit at scalable MOQs.",
@@ -99,10 +92,10 @@ const TESTIMONIALS = [
 
 // ─── Steps ────────────────────────────────────────────────────────────────────
 const STEPS = [
-  { n: "01", icon: "💬", title: "Brief us in 10 minutes", desc: "Tell us your product, MOQ, timeline, and any design files — via WhatsApp, form, or a quick call." },
-  { n: "02", icon: "🔬", title: "Receive sample in 7–10 days", desc: "We source from our factory network and ship a physical sample to your door. From ₹2,999, no commitment." },
-  { n: "03", icon: "✅", title: "Approve & pay first 50%", desc: "Pay 50% on order confirmation. We begin production immediately — no waiting." },
-  { n: "04", icon: "🚚", title: "Delivered in 14 days total", desc: "Balance due on sample approval. Your order ships and arrives doorstep — on time, every time." },
+  { n: "01", Icon: MessageSquare, title: "Brief us in 10 minutes", desc: "Tell us your product, MOQ, timeline, and any design files — via WhatsApp, form, or a quick call." },
+  { n: "02", Icon: FlaskConical,  title: "Receive sample in 7–10 days", desc: "We source from our factory network and ship a physical sample to your door. From ₹2,999, no commitment." },
+  { n: "03", Icon: CheckCircle,   title: "Approve & pay first 50%", desc: "Pay 50% on order confirmation. We begin production immediately — no waiting." },
+  { n: "04", Icon: Truck,         title: "Delivered in 14 days total", desc: "Balance due on sample approval. Your order ships and arrives doorstep — on time, every time." },
 ];
 
 const STATS = [
@@ -462,13 +455,13 @@ export default function LpD2c() {
 
           {/* Floating product cards (right side) — same style as home */}
           <div className="lp-hero-cards-area" style={{ position: "absolute", right: "4%", top: "8%", width: "44%", height: "84%", pointerEvents: "none" }}>
-            {[
-              { top: "4%",  left: "18%", w: 190, icon: "✨", title: "Beauty Packaging",    count: "28 SKUs", anim: "float1 6s ease-in-out infinite", delay: "0.3s" },
-              { top: "6%",  left: "58%", w: 175, icon: "🍃", title: "Food & Beverage",     count: "22 SKUs", anim: "float2 7s ease-in-out -2s infinite", delay: "0.5s" },
-              { top: "40%", left: "5%",  w: 178, icon: "🛒", title: "FMCG & Personal Care",count: "19 SKUs", anim: "float3 5.5s ease-in-out -1s infinite", delay: "0.4s" },
-              { top: "38%", left: "56%", w: 170, icon: "📦", title: "E-commerce D2C",      count: "17 SKUs", anim: "float4 6.5s ease-in-out -3s infinite", delay: "0.7s" },
-              { top: "72%", left: "20%", w: 180, icon: "♻️", title: "Sustainable Packs",   count: "12 SKUs", anim: "float1 7s ease-in-out -2s infinite",   delay: "0.6s" },
-            ].map((card, i) => (
+            {([
+              { top: "4%",  left: "18%", w: 190, Icon: Package,     title: "Flexible Packaging",  count: "15 SKUs", anim: "float1 6s ease-in-out infinite",          delay: "0.3s" },
+              { top: "6%",  left: "58%", w: 175, Icon: ShoppingBag, title: "E-commerce Packs",    count: "17 SKUs", anim: "float2 7s ease-in-out -2s infinite",       delay: "0.5s" },
+              { top: "40%", left: "5%",  w: 178, Icon: Box,         title: "Boxes & Cartons",     count: "9 SKUs",  anim: "float3 5.5s ease-in-out -1s infinite",     delay: "0.4s" },
+              { top: "38%", left: "56%", w: 170, Icon: Leaf,        title: "Sustainable",          count: "12 SKUs", anim: "float4 6.5s ease-in-out -3s infinite",     delay: "0.7s" },
+              { top: "72%", left: "20%", w: 180, Icon: Tag,         title: "Labels & Closures",   count: "14 SKUs", anim: "float1 7s ease-in-out -2s infinite",        delay: "0.6s" },
+            ] as const).map((card, i) => (
               <div key={i} className="lp-hero-card" style={{
                 top: card.top, left: card.left, width: card.w,
                 animation: heroLoaded ? card.anim : "none",
@@ -476,7 +469,7 @@ export default function LpD2c() {
                 transition: `opacity 0.8s ease ${card.delay}`,
               }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
-                  <span style={{ fontSize: 22 }}>{card.icon}</span>
+                  <card.Icon size={20} style={{ color: "#E8A838", flexShrink: 0 }} />
                   <span style={{ color: "white", fontSize: 13, fontWeight: 700 }}>{card.title}</span>
                 </div>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -504,15 +497,14 @@ export default function LpD2c() {
 
               <h1 style={{
                 color: "white",
-                fontSize: "clamp(2.2rem, 5vw, 3.9rem)",
-                fontWeight: 900, lineHeight: 1.08, marginBottom: 24,
+                fontSize: "clamp(1.9rem, 3.2vw, 3rem)",
+                fontWeight: 900, lineHeight: 1.12, marginBottom: 24,
                 fontFamily: "'Space Grotesk', sans-serif", letterSpacing: "-0.02em",
                 opacity: heroLoaded ? 1 : 0,
                 transform: heroLoaded ? "translateY(0)" : "translateY(28px)",
                 transition: "opacity 0.7s ease 0.2s, transform 0.7s ease 0.2s",
               }}>
-                Order Packaging Like You<br />
-                Order from Amazon.{" "}
+                Order Packaging Like Amazon.<br />
                 <span className="lp-gradient-text">Brief to Doorstep in 14 Days.</span>
               </h1>
 
@@ -630,7 +622,7 @@ export default function LpD2c() {
                     fontFamily: "'Plus Jakarta Sans', sans-serif",
                   }}
                 >
-                  {ind.emoji} {ind.label}
+                  {ind.label}
                 </button>
               ))}
             </div>
@@ -652,7 +644,7 @@ export default function LpD2c() {
                   alt={ind.label}
                   style={{ width: "100%", height: "100%", objectFit: "cover", position: "absolute", inset: 0 }}
                 />
-                <div style={{ position: "absolute", inset: 0, background: ind.bg, opacity: 0.65 }} />
+                <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.35) 55%, transparent 100%)" }} />
                 <div style={{ position: "absolute", inset: 0, padding: "36px", display: "flex", flexDirection: "column", justifyContent: "flex-end" }}>
                   <div style={{
                     display: "inline-flex", alignItems: "center", gap: 8, marginBottom: 14,
@@ -660,7 +652,7 @@ export default function LpD2c() {
                     border: `1px solid ${ind.accent}40`, width: "fit-content",
                   }}>
                     <span style={{ color: ind.accent, fontSize: 12, fontWeight: 700, textTransform: "uppercase", letterSpacing: "1px" }}>
-                      {ind.emoji} {ind.label}
+                      {ind.label}
                     </span>
                   </div>
                   <h3 style={{ color: "white", fontSize: "clamp(1.3rem,2.5vw,1.8rem)", fontWeight: 800, lineHeight: 1.2, margin: 0, fontFamily: "'Space Grotesk', sans-serif" }}>
@@ -819,9 +811,9 @@ export default function LpD2c() {
                     background: "linear-gradient(135deg, rgba(232,168,56,0.15) 0%, rgba(232,168,56,0.05) 100%)",
                     border: "1px solid rgba(232,168,56,0.25)",
                     display: "flex", alignItems: "center", justifyContent: "center",
-                    fontSize: 24, marginBottom: 20,
+                    marginBottom: 20,
                   }}>
-                    {step.icon}
+                    <step.Icon size={22} style={{ color: "#E8A838" }} />
                   </div>
 
                   {/* Step number pill */}
