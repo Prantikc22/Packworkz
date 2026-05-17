@@ -10,10 +10,6 @@
   },
   "rewrites": [
     { "source": "/api/:path*", "destination": "/api/server" },
-    {
-      "source": "/((?!api/).*)",
-      "destination": "/index.html",
-      "missing": [{ "type": "file" }]
-    }
+    { "source": "/((?!api/).*)", "destination": "/index.html" }
   ]
 }
