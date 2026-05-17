@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "Packworkz"
+version = "1.0.0"
+id = "artifacts/packwerk"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 19798
+
+[services.development]
+run = "pnpm --filter @workspace/packwerk run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/packwerk", "run", "build" ]
+publicDir = "artifacts/packwerk/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "19798"
+BASE_PATH = "/"

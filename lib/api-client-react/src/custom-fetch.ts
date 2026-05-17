@@ -17,6 +17,7 @@ const DEFAULT_JSON_ACCEPT = "application/json, application/problem+json";
 
 let _baseUrl: string | null = null;
 let _authTokenGetter: AuthTokenGetter | null = null;
+const _extraHeaders: Record<string, string> = {};
 
 /**
  * Set a base URL that is prepended to every relative request URL
@@ -42,6 +43,19 @@ export function setBaseUrl(url: string | null): void {
  */
 export function setAuthTokenGetter(getter: AuthTokenGetter | null): void {
   _authTokenGetter = getter;
+}
+
+/**
+ * Set (or clear) a persistent extra header attached to every request.
+ * Use this to inject headers like `x-admin-key` globally.
+ * Pass `null` as value to remove the header.
+ */
+export function setExtraHeader(key: string, value: string | null): void {
+  if (value === null) {
+    delete _extraHeaders[key];
+  } else {
+    _extraHeaders[key] = value;
+  }
 }
 
 function isRequest(input: RequestInfo | URL): input is Request {
@@ -355,6 +369,13 @@ export async function customFetch<T = unknown>(
     const token = await _authTokenGetter();
     if (token) {
       headers.set("authorization", `Bearer ${token}`);
+    }
+  }
+
+  // Inject persistent extra headers (e.g. x-admin-key) if not already present.
+  for (const [key, value] of Object.entries(_extraHeaders)) {
+    if (!headers.has(key)) {
+      headers.set(key, value);
     }
   }
 
