@@ -46,7 +46,7 @@ const FAQS = [
   },
   {
     q: "Where are you based?",
-    a: "Our team is headquartered in Mumbai, with warehouse partners across India for fast nationwide delivery.",
+    a: "We operate pan-India with warehouse partners across the country for fast nationwide delivery.",
   },
 ];
 
@@ -155,19 +155,6 @@ export default function Contact() {
           <div>
             <h3 style={{ color: "white", fontSize: 22, fontWeight: 800, marginBottom: 32 }}>Our Office</h3>
             <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
-              <div style={{ display: "flex", gap: 16 }}>
-                <div style={{ width: 40, height: 40, borderRadius: 10, background: "rgba(232,168,56,0.12)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                  <MapPin size={18} color="#E8A838" />
-                </div>
-                <div>
-                  <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 12, fontWeight: 700, letterSpacing: "1px", textTransform: "uppercase", marginBottom: 4 }}>Headquarters</p>
-                  <p style={{ color: "white", fontSize: 14, lineHeight: 1.6, margin: 0 }}>
-                    Packworkz India Pvt. Ltd.<br />
-                    Mumbai, Maharashtra — 400001<br />
-                    India
-                  </p>
-                </div>
-              </div>
               <div style={{ display: "flex", gap: 16 }}>
                 <div style={{ width: 40, height: 40, borderRadius: 10, background: "rgba(232,168,56,0.12)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                   <Clock size={18} color="#E8A838" />
