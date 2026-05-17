@@ -271,11 +271,27 @@ async function prerender() {
       fallbackCount++;
     }
 
-    // Inject rendered HTML into root div
+    // React 19 auto-injects <link rel="preload"> hints when images have
+    // fetchPriority="high". With renderToString() these land inside
+    // <div id="root"> — browsers discard <link> inside a <div> as invalid
+    // HTML, which wipes out all visible content. Extract them and hoist to
+    // <head> instead.
+    const hoistedLinks = [];
+    const cleanedHtml = appHtml.replace(/<link\b[^>]*\/?>/gi, (match) => {
+      hoistedLinks.push(match);
+      return "";
+    });
+
+    // Inject cleaned rendered HTML into root div
     let html = template.replace(
       /<div id="root"><\/div>/,
-      `<div id="root">${appHtml}</div>`,
+      `<div id="root">${cleanedHtml}</div>`,
     );
+
+    // Hoist extracted <link> tags into <head> (before closing </head>)
+    if (hoistedLinks.length > 0) {
+      html = html.replace("</head>", `${hoistedLinks.join("\n")}\n</head>`);
+    }
 
     // Update per-page title
     html = html.replace(
