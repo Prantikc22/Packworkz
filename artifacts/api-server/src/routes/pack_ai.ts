@@ -128,7 +128,8 @@ async function tryModel(
         ]
       : [{ role: "system", content: systemPrompt }, ...messages];
 
-    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+    const baseUrl = process.env.AI_INTEGRATIONS_OPENROUTER_BASE_URL ?? "https://openrouter.ai/api/v1";
+    const response = await fetch(`${baseUrl}/chat/completions`, {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${apiKey}`,
@@ -188,9 +189,10 @@ router.post("/pack-ai/chat", async (req, res): Promise<void> => {
     return;
   }
 
-  const apiKey = process.env.OPENROUTER_API_KEY;
+  const apiKey = process.env.AI_INTEGRATIONS_OPENROUTER_API_KEY || process.env.OPENROUTER_API_KEY;
   if (!apiKey) {
-    res.status(500).json({ error: "AI service not configured" });
+    const fallback = smartFallback(messages as Array<{ role: string; content: string }>);
+    res.json({ reply: fallback });
     return;
   }
 

@@ -527,7 +527,7 @@ export default function Home() {
             <div className="flex flex-wrap gap-x-7 gap-y-3 pt-7 border-t border-white/15">
               {[
                 { icon: "inventory_2",       value: "110+", label: "Packaging SKUs" },
-                { icon: "workspace_premium", value: "500+", label: "Brands Served" },
+                { icon: "workspace_premium", value: "220+", label: "Brands Served" },
                 { icon: "public",            value: "20+",  label: "Countries" },
                 { icon: "verified",          value: "Zero", label: "Quality Compromise" },
               ].map((s) => (
