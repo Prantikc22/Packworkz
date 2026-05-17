@@ -4,6 +4,7 @@ import {
   Package, Box, ShoppingBag, Layers, RotateCcw, Tag, Leaf, Gift,
   Zap, Factory, Pill, Sparkles, Cpu, UtensilsCrossed, Gem, Globe,
   ChevronDown, BookOpen, Info, Network, Paintbrush, FlaskConical,
+  Users, Mail,
 } from "lucide-react";
 
 const PRODUCT_CATS = [
@@ -33,6 +34,8 @@ const ABOUT_ITEMS = [
   { icon: Info,     label: "Our Story",       href: "/about" },
   { icon: BookOpen, label: "How It Works",    href: "/how-it-works" },
   { icon: Network,  label: "Factory Network", href: "/network" },
+  { icon: Users,    label: "Careers",         href: "/careers" },
+  { icon: Mail,     label: "Contact Us",      href: "/contact" },
 ];
 
 // ── Styles injected once ──────────────────────────────────────────────────────
@@ -715,7 +718,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
           </NavItem>
           <NavItem label="Sustainability" href="/sustainable" active={location.startsWith("/sustainable")} />
           <NavItem label="Resources" href="/resources" active={location.startsWith("/resources")} />
-          <NavItem label="About" active={location.startsWith("/about") || location.startsWith("/how-it-works") || location.startsWith("/network")}>
+          <NavItem label="About" active={location.startsWith("/about") || location.startsWith("/how-it-works") || location.startsWith("/network") || location.startsWith("/careers") || location.startsWith("/contact")}>
             <AboutMenu />
           </NavItem>
         </nav>
