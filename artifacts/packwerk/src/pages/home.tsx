@@ -445,46 +445,54 @@ export default function Home() {
         </svg>
 
         {/* Floor reflection — flipped image fading up from bottom edge */}
-        <img
-          src="/images/hero-products-transparent.png"
-          aria-hidden="true"
-          className="hidden lg:block absolute pointer-events-none select-none"
-          style={{
-            right: 0,
-            bottom: 0,
-            height: "28%",
-            width: "auto",
-            maxWidth: "56%",
-            objectFit: "contain",
-            objectPosition: "right top",
-            transform: "scaleY(-1)",
-            opacity: heroLoaded ? 0.22 : 0,
-            transition: "opacity 1.2s ease",
-            maskImage: "linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.2) 50%, transparent 100%)",
-            WebkitMaskImage: "linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.2) 50%, transparent 100%)",
-            filter: "blur(3px) saturate(0.6)",
-          }}
-        />
+        <picture>
+          <source srcSet="/images/hero-products-transparent.webp" type="image/webp" />
+          <img
+            src="/images/hero-products-transparent.png"
+            aria-hidden="true"
+            className="hidden lg:block absolute pointer-events-none select-none"
+            loading="eager"
+            style={{
+              right: 0,
+              bottom: 0,
+              height: "28%",
+              width: "auto",
+              maxWidth: "56%",
+              objectFit: "contain",
+              objectPosition: "right top",
+              transform: "scaleY(-1)",
+              opacity: heroLoaded ? 0.22 : 0,
+              transition: "opacity 1.2s ease",
+              maskImage: "linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.2) 50%, transparent 100%)",
+              WebkitMaskImage: "linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.2) 50%, transparent 100%)",
+              filter: "blur(3px) saturate(0.6)",
+            }}
+          />
+        </picture>
 
         {/* Main product image */}
-        <img
-          src="/images/hero-products-transparent.png"
-          alt="Premium packaging products"
-          className="hidden lg:block absolute pointer-events-none"
-          style={{
-            right: 0,
-            bottom: 0,
-            height: "85%",
-            width: "auto",
-            maxWidth: "56%",
-            objectFit: "contain",
-            objectPosition: "right bottom",
-            opacity: heroLoaded ? 1 : 0,
-            transition: "opacity 1s ease",
-            animation: heroLoaded ? "heroProductFloat 5s ease-in-out infinite" : "none",
-            filter: "drop-shadow(0 24px 48px rgba(0,0,20,0.65)) drop-shadow(0 0 60px rgba(59,130,246,0.2))",
-          }}
-        />
+        <picture className="hidden lg:block absolute pointer-events-none" style={{ right: 0, bottom: 0, height: "85%", maxWidth: "56%", aspectRatio: "748/498" }}>
+          <source srcSet="/images/hero-products-transparent.webp" type="image/webp" />
+          <img
+            src="/images/hero-products-transparent.png"
+            alt="Premium packaging products"
+            width="748"
+            height="498"
+            fetchPriority="high"
+            loading="eager"
+            style={{
+              width: "auto",
+              height: "100%",
+              objectFit: "contain",
+              objectPosition: "right bottom",
+              aspectRatio: "748/498",
+              opacity: heroLoaded ? 1 : 0,
+              transition: "opacity 1s ease",
+              animation: heroLoaded ? "heroProductFloat 5s ease-in-out infinite" : "none",
+              filter: "drop-shadow(0 24px 48px rgba(0,0,20,0.65)) drop-shadow(0 0 60px rgba(59,130,246,0.2))",
+            }}
+          />
+        </picture>
 
         {/* Vignette — protects left text, softens right edges */}
         <div
@@ -916,16 +924,15 @@ export default function Home() {
       <section style={{ background: "#0A3326", padding: "88px 0", position: "relative", overflow: "hidden" }}>
 
         {/* Layer 1: Photo background */}
-        <img
-          src="/images/sustainable-bg.jpg"
-          alt=""
-          style={{
-            position: "absolute", inset: 0,
-            width: "100%", height: "100%",
-            objectFit: "cover", objectPosition: "center",
-            zIndex: 0,
-          }}
-        />
+        <picture style={{ position: "absolute", inset: 0, width: "100%", height: "100%", zIndex: 0 }}>
+          <source srcSet="/images/sustainable-bg.webp" type="image/webp" />
+          <img
+            src="/images/sustainable-bg.jpg"
+            alt=""
+            loading="lazy"
+            style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" }}
+          />
+        </picture>
 
         {/* Layer 2: Dark overlay */}
         <div style={{
@@ -1227,7 +1234,7 @@ export default function Home() {
                 }}
               >
                 {/* Input 1: Spend slider */}
-                <label style={{
+                <label htmlFor="spend-slider" style={{
                   display: "block", color: "#0D1B2A", fontSize: 13,
                   fontWeight: 600, letterSpacing: "0.3px", marginBottom: 20,
                 }}>
@@ -1235,6 +1242,7 @@ export default function Home() {
                 </label>
 
                 <input
+                  id="spend-slider"
                   type="range"
                   className="calc-slider"
                   min={50000} max={5000000} step={10000}

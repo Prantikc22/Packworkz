@@ -1,14 +1,14 @@
 export const INDUSTRY_IMAGES: Record<string, string> = {
-  food: "/industries/food.jpg",
-  beverage: "/industries/food.jpg",
-  pharma: "/industries/pharma.jpg",
-  cosmetics: "/industries/beauty.jpg",
-  ecommerce: "/industries/ecommerce.jpg",
-  fmcg: "/industries/fmcg.jpg",
-  industrial: "/industries/industrial.jpg",
-  agriculture: "/industries/agri.jpg",
-  electronics: "/industries/electronics.jpg",
-  homecare: "/industries/fmcg.jpg",
+  food: "/industries/food.webp",
+  beverage: "/industries/food.webp",
+  pharma: "/industries/pharma.webp",
+  cosmetics: "/industries/beauty.webp",
+  ecommerce: "/industries/ecommerce.webp",
+  fmcg: "/industries/fmcg.webp",
+  industrial: "/industries/industrial.webp",
+  agriculture: "/industries/agri.webp",
+  electronics: "/industries/electronics.webp",
+  homecare: "/industries/fmcg.webp",
 };
 
 // Category fallbacks use confirmed-working industry photo IDs

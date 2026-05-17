@@ -1,0 +1,92 @@
+Please fix these PageSpeed issues in priority order. Current score is 47/100.
+
+CRITICAL - FIX THESE FIRST:
+
+1. HERO IMAGE (biggest impact - saves ~2.5MB)
+File: /public/images/hero-products-transparent.png (currently 2.6MB)
+- Convert to WebP format: hero-products-transparent.webp
+- Resize to max 900px wide (it displays at 748px)
+- Target file size: under 200KB
+- Update the img tag to use WebP with PNG fallback:
+  <picture>
+    <source srcset="/images/hero-products-transparent.webp" type="image/webp">
+    <img src="/images/hero-products-transparent.png" alt="Premium packaging products" ...>
+  </picture>
+- Add fetchpriority="high" and loading="eager" to this image (it's above the fold)
+- Remove loading="lazy" if present on this image
+
+2. FIX CLS (layout shift score 0.203 - threshold is 0.1)
+The hero image container div.hidden.lg:block is causing layout shift.
+Add explicit width and height to the hero img tag:
+  width="748" height="498"
+Also add: style="aspect-ratio: 748/498"
+This reserves space before the image loads and eliminates the shift.
+
+3. GOOGLE FONTS - fix render blocking (saves 3,480ms)
+Currently loading 2 Google Font CSS files in <head> which block rendering.
+Replace:
+  <link href="https://fonts.googleapis.com/css2?family=..." rel="stylesheet">
+With:
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=...&display=swap" 
+        rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link href="https://fonts.googleapis.com/css2?family=...&display=swap" rel="stylesheet">
+  </noscript>
+
+Also check if you are loading variable fonts or multiple font weights unnecessarily.
+The woff2 file kJEhBvYX7 is 3,841KB which is abnormally large.
+Limit font weights to only what is used (e.g. 400,600,700 only).
+
+4. CONVERT ALL IMAGES TO WEBP
+Convert these specific files from PNG/JPG to WebP:
+- /images/logos/plum.png (169KB → target 20KB) - also resize to 130x72
+- /images/logos/neemans.png (88KB → target 15KB) - resize to 139x72  
+- /images/logos/ragecoffee.png (54KB → target 10KB) - resize to 102x72
+- /images/logos/pilgrim.png (26KB → target 8KB) - resize to 102x72
+- /images/logos/cosiq.png (24KB → target 5KB) - resize to 72x72
+- /images/logos/juicychemistry.png (20KB → target 5KB) - resize to 117x72
+- /images/logos/voltas.png (49KB → target 8KB) - resize to 130x72
+- /images/logos/mogumogi.png (21KB → target 5KB) - resize to 96x72
+- /images/sustainable-bg.jpg (1,937KB → convert to WebP, target under 200KB)
+- /industries/fmcg.jpg, food.jpg, agri.jpg, pharma.jpg, beauty.jpg, 
+  industrial.jpg, electronics.jpg, ecommerce.jpg 
+  (all 644x500 → resize to 333x208, convert to WebP)
+- /categories/*.jpg (all 461x400 → resize to 216x144, convert to WebP)
+- /smartstock.jpg (853x900 → resize to 732x732, convert to WebP)
+
+Use sharp npm package to batch convert. Install: npm install sharp
+Create a script convert-images.js that converts and resizes all the above.
+
+5. REPLACE UNSPLASH EXTERNAL IMAGE
+The Boxes & Cartons category uses an image from images.unsplash.com
+Download it locally and host at /categories/boxes.jpg, then convert to WebP.
+Update the src in the component.
+
+6. ADD LAZY LOADING TO BELOW-FOLD IMAGES
+All images EXCEPT the hero should have loading="lazy"
+Industry images, category images, and logos are all below fold — add loading="lazy" to all of them.
+
+7. FIX VIEWPORT META TAG (accessibility)
+Current: <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+Change to: <meta name="viewport" content="width=device-width, initial-scale=1.0">
+Remove maximum-scale=1 — it prevents zooming and hurts accessibility score.
+
+ACCESSIBILITY FIXES (to improve from 81 to 95+):
+
+8. Add aria-label to social media links in footer:
+  <a href="https://x.com/packworkz" aria-label="Packworkz on Twitter">...</a>
+  <a href="https://linkedin.com/company/packworkz" aria-label="Packworkz on LinkedIn">...</a>
+  <a href="https://facebook.com/packworkz" aria-label="Packworkz on Facebook">...</a>
+
+9. Add label to the savings calculator slider:
+  <label for="spend-slider" class="sr-only">Monthly packaging spend</label>
+  <input id="spend-slider" class="calc-slider" ...>
+
+10. Fix low contrast text - these colors fail WCAG AA:
+  - rgb(148, 163, 184) on white background → change to rgb(100, 116, 139)
+  - rgb(71, 85, 105) on dark background in footer → change to rgb(148, 163, 184)
+
+After all changes, run a new build and deploy to Vercel.
+Target: Performance score 75+, Accessibility 95+.

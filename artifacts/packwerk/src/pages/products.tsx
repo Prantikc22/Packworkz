@@ -25,16 +25,16 @@ const CATEGORIES = [
 ];
 
 const CATEGORY_IMAGES: Record<string, string> = {
-  flexible:   "/categories/flexiblepacks.jpg",
-  bottles:    "/categories/rigidpacks.jpg",
-  tubes:      "/categories/tubes.jpg",
+  flexible:   "/categories/flexiblepacks.webp",
+  bottles:    "/categories/rigidpacks.webp",
+  tubes:      "/categories/tubes.webp",
   boxes:      "https://images.unsplash.com/photo-1557821552-17105176677c?w=600&h=400&fit=crop&q=75",
-  ecommerce:  "/categories/ecom.jpg",
-  protective: "/categories/protectivepacks.jpg",
-  rolls:      "/categories/printedrolls.jpg",
-  labels:     "/categories/closures.jpg",
-  sustainable:"/categories/sustainable.jpg",
-  liquid:     "/categories/liquid.jpg",
+  ecommerce:  "/categories/ecom.webp",
+  protective: "/categories/protectivepacks.webp",
+  rolls:      "/categories/printedrolls.webp",
+  labels:     "/categories/closures.webp",
+  sustainable:"/categories/sustainable.webp",
+  liquid:     "/categories/liquid.webp",
 };
 
 function getCatImage(cat: string) {

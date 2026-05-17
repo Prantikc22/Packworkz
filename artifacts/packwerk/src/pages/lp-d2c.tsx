@@ -458,40 +458,50 @@ export default function LpD2c() {
           </svg>
 
           {/* Floor reflection — same as home */}
-          <img
-            src="/images/hero-products-transparent.png"
-            aria-hidden="true"
-            style={{
-              display: "block",
-              position: "absolute", right: 0, bottom: 0,
-              height: "28%", width: "auto", maxWidth: "56%",
-              objectFit: "contain", objectPosition: "right top",
-              transform: "scaleY(-1)",
-              opacity: heroLoaded ? 0.22 : 0,
-              transition: "opacity 1.2s ease",
-              maskImage: "linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.2) 50%, transparent 100%)",
-              WebkitMaskImage: "linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.2) 50%, transparent 100%)",
-              filter: "blur(3px) saturate(0.6)",
-              pointerEvents: "none",
-            }}
-          />
+          <picture>
+            <source srcSet="/images/hero-products-transparent.webp" type="image/webp" />
+            <img
+              src="/images/hero-products-transparent.png"
+              aria-hidden="true"
+              loading="eager"
+              style={{
+                display: "block",
+                position: "absolute", right: 0, bottom: 0,
+                height: "28%", width: "auto", maxWidth: "56%",
+                objectFit: "contain", objectPosition: "right top",
+                transform: "scaleY(-1)",
+                opacity: heroLoaded ? 0.22 : 0,
+                transition: "opacity 1.2s ease",
+                maskImage: "linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.2) 50%, transparent 100%)",
+                WebkitMaskImage: "linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.2) 50%, transparent 100%)",
+                filter: "blur(3px) saturate(0.6)",
+                pointerEvents: "none",
+              }}
+            />
+          </picture>
 
           {/* Main product image — same as home */}
-          <img
-            src="/images/hero-products-transparent.png"
-            alt="Premium packaging products"
-            style={{
-              display: "block",
-              position: "absolute", right: 0, bottom: 0,
-              height: "85%", width: "auto", maxWidth: "56%",
-              objectFit: "contain", objectPosition: "right bottom",
-              opacity: heroLoaded ? 1 : 0,
-              transition: "opacity 1s ease",
-              animation: heroLoaded ? "heroProductFloat 5s ease-in-out infinite" : "none",
-              filter: "drop-shadow(0 24px 48px rgba(0,0,20,0.65)) drop-shadow(0 0 60px rgba(59,130,246,0.2))",
-              pointerEvents: "none",
-            }}
-          />
+          <picture style={{ display: "block", position: "absolute", right: 0, bottom: 0, height: "85%", maxWidth: "56%", pointerEvents: "none" }}>
+            <source srcSet="/images/hero-products-transparent.webp" type="image/webp" />
+            <img
+              src="/images/hero-products-transparent.png"
+              alt="Premium packaging products"
+              width="748"
+              height="498"
+              fetchPriority="high"
+              loading="eager"
+              style={{
+                display: "block",
+                width: "auto", height: "100%",
+                objectFit: "contain", objectPosition: "right bottom",
+                aspectRatio: "748/498",
+                opacity: heroLoaded ? 1 : 0,
+                transition: "opacity 1s ease",
+                animation: heroLoaded ? "heroProductFloat 5s ease-in-out infinite" : "none",
+                filter: "drop-shadow(0 24px 48px rgba(0,0,20,0.65)) drop-shadow(0 0 60px rgba(59,130,246,0.2))",
+              }}
+            />
+          </picture>
 
 
           {/* Hero content */}
