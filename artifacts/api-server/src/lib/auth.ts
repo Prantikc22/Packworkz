@@ -56,9 +56,10 @@ export function generateTempPassword(): string {
 }
 
 export function requireAdmin(req: Request, res: Response, next: NextFunction): void {
-  const adminKey = req.headers["x-admin-key"] as string;
-  const expectedKey = process.env.ADMIN_KEY;
+  const adminKey = (req.headers["x-admin-key"] as string)?.trim();
+  const expectedKey = process.env.ADMIN_KEY?.trim();
   if (!expectedKey) {
+    console.error("[requireAdmin] ADMIN_KEY env var is not set");
     res.status(503).json({ error: "Admin auth not configured" });
     return;
   }

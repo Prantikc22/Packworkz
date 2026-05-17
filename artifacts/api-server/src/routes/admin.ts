@@ -8,13 +8,16 @@ import { sendWelcomeEmail } from "../lib/email";
 const router: IRouter = Router();
 
 router.post("/admin/verify-key", (req, res): void => {
-  const { key } = req.body as { key?: string };
-  const expectedKey = process.env.ADMIN_KEY;
+  const body = req.body as { key?: string } | undefined;
+  const key = body?.key?.trim();
+  const expectedKey = process.env.ADMIN_KEY?.trim();
   if (!expectedKey) {
+    console.error("[admin/verify-key] ADMIN_KEY env var is not set");
     res.status(503).json({ error: "Admin auth not configured" });
     return;
   }
   if (!key || key !== expectedKey) {
+    console.warn("[admin/verify-key] key mismatch — received length:", key?.length ?? 0, "expected length:", expectedKey.length);
     res.status(401).json({ error: "Invalid admin key" });
     return;
   }
