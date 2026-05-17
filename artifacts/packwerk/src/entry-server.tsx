@@ -13,9 +13,13 @@ import Contact from "@/pages/contact";
 import HowItWorks from "@/pages/how-it-works";
 import Sustainable from "@/pages/sustainable";
 import Products from "@/pages/products";
+import ProductDetail from "@/pages/product-detail";
 import Industries from "@/pages/industries";
 import IndustryDetail from "@/pages/industry-detail";
 import Resources from "@/pages/resources";
+import Quote from "@/pages/quote";
+import Samples from "@/pages/samples";
+import Design from "@/pages/design";
 
 function makeStaticHook(path: string) {
   return () => [path, (_: string) => {}] as [string, (to: string) => void];
@@ -23,7 +27,7 @@ function makeStaticHook(path: string) {
 
 function SSRApp({ url }: { url: string }) {
   const qc = new QueryClient({
-    defaultOptions: { queries: { retry: false, gcTime: 0 } },
+    defaultOptions: { queries: { retry: false, gcTime: 0, enabled: false } },
   });
   return (
     <QueryClientProvider client={qc}>
@@ -51,18 +55,32 @@ function SSRApp({ url }: { url: string }) {
             <Route path="/products">
               <PublicLayout><Products /></PublicLayout>
             </Route>
+            <Route path="/products/:slug">
+              {(params: { slug?: string }) => (
+                <PublicLayout>
+                  <ProductDetail params={{ slug: params.slug ?? "" }} />
+                </PublicLayout>
+              )}
+            </Route>
             <Route path="/industries">
               <PublicLayout><Industries /></PublicLayout>
             </Route>
             <Route path="/industries/:slug">
-              {(params: { slug?: string }) => (
-                <PublicLayout>
-                  <IndustryDetail />
-                </PublicLayout>
+              {(_params: { slug?: string }) => (
+                <PublicLayout><IndustryDetail /></PublicLayout>
               )}
             </Route>
             <Route path="/resources">
               <PublicLayout><Resources /></PublicLayout>
+            </Route>
+            <Route path="/quote">
+              <PublicLayout><Quote /></PublicLayout>
+            </Route>
+            <Route path="/samples">
+              <PublicLayout><Samples /></PublicLayout>
+            </Route>
+            <Route path="/design">
+              <PublicLayout><Design /></PublicLayout>
             </Route>
           </Switch>
         </Router>
