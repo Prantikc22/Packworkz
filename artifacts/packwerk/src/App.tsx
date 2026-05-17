@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { setAuthTokenGetter } from "@workspace/api-client-react";
+import { ScrollToTop } from "@/components/ScrollToTop";
 import NotFound from "@/pages/not-found";
 import { PublicLayout } from "@/components/layout/PublicLayout";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
@@ -22,6 +23,9 @@ import IndustryDetail from "@/pages/industry-detail";
 import HowItWorks from "@/pages/how-it-works";
 import Sustainable from "@/pages/sustainable";
 import About from "@/pages/about";
+import Resources from "@/pages/resources";
+import ResourceDetail from "@/pages/resource-detail";
+import LpD2c from "@/pages/lp-d2c";
 
 // Dashboard Pages
 import DashboardOverview from "@/pages/dashboard/overview";
@@ -39,7 +43,6 @@ import AdminDesigns from "@/pages/admin/designs";
 import AdminSamples from "@/pages/admin/samples";
 import AdminUsers from "@/pages/admin/users";
 
-// Wire up auth token so every API call includes Authorization: Bearer <token>
 setAuthTokenGetter(() => localStorage.getItem("packwerk_access_token"));
 
 const queryClient = new QueryClient();
@@ -100,6 +103,11 @@ function Router() {
       <PublicRoute path="/how-it-works" component={HowItWorks} layout={PublicLayout} />
       <PublicRoute path="/sustainable" component={Sustainable} layout={PublicLayout} />
       <PublicRoute path="/about" component={About} layout={PublicLayout} />
+      <PublicRoute path="/resources" component={Resources} layout={PublicLayout} />
+      <PublicRoute path="/resources/:slug" component={ResourceDetail} layout={PublicLayout} />
+
+      {/* Ad landing page — not linked from nav/footer */}
+      <Route path="/lp/d2c" component={LpD2c} />
 
       {/* Dashboard Routes */}
       <ProtectedRoute path="/dashboard" component={DashboardOverview} layout={DashboardLayout} />
@@ -128,6 +136,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
+          <ScrollToTop />
           <Router />
         </WouterRouter>
         <Toaster />

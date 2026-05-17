@@ -144,6 +144,89 @@
   }
 }
 
+/* ── Global mobile fixes ── */
+@media (max-width: 767px) {
+  /* Footer grid: stack all columns vertically */
+  .po-footer-grid {
+    grid-template-columns: 1fr !important;
+    padding: 32px 24px !important;
+    gap: 32px !important;
+  }
+
+  /* Footer top bar: stack logo/socials/CTA vertically */
+  .po-footer-topbar {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    padding: 24px 24px !important;
+    gap: 20px !important;
+  }
+
+  /* Footer bottom bar */
+  .po-footer-bottom {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    padding: 18px 24px !important;
+    gap: 12px !important;
+  }
+
+  /* Hero section: reduce padding, hide decorative float effect */
+  section[style*="minHeight: 620"] > div {
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+    padding-top: 100px !important;
+  }
+
+  /* Products grid on mobile: 2 cols */
+  .po-products-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+    padding: 0 16px !important;
+  }
+
+  /* Industry cards: 2 cols */
+  .po-industries-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+  }
+
+  /* Full-width sections: reduce horizontal padding */
+  .po-section-pad {
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+  }
+
+  /* Stat row: 2 cols on mobile instead of 4 */
+  .po-stats-row {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+/* ── Prevent horizontal overflow site-wide ── */
+body, html {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
+/* ── Resource/article pages mobile ── */
+@media (max-width: 767px) {
+  .po-resource-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ── Landing page (lp-d2c) mobile ── */
+@media (max-width: 767px) {
+  /* Comparison table: scroll horizontally */
+  .lp-compare-table {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+  /* Stats row: 2-col grid */
+  .lp-stats {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
