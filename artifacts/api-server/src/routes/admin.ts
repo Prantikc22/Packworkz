@@ -9,7 +9,11 @@ const router: IRouter = Router();
 
 router.post("/admin/verify-key", (req, res): void => {
   const { key } = req.body as { key?: string };
-  const expectedKey = process.env.ADMIN_KEY || "packwerk-admin-2024";
+  const expectedKey = process.env.ADMIN_KEY;
+  if (!expectedKey) {
+    res.status(503).json({ error: "Admin auth not configured" });
+    return;
+  }
   if (!key || key !== expectedKey) {
     res.status(401).json({ error: "Invalid admin key" });
     return;

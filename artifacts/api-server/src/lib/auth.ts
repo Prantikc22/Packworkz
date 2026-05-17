@@ -2,9 +2,48 @@ import { type Request, type Response, type NextFunction } from "express";
 import crypto from "crypto";
 
 const SESSION_TTL_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
+const SCRYPT_N = 32768;
+const SCRYPT_PREFIX = "scrypt:";
 
+/**
+ * Hash a password using scrypt with a random salt.
+ * Format: "scrypt:<salt_hex>:<hash_hex>"
+ */
 export function hashPassword(password: string): string {
-  return crypto.createHash("sha256").update(password + "packwerk_salt_2024").digest("hex");
+  const salt = crypto.randomBytes(16).toString("hex");
+  const hash = crypto.scryptSync(password, salt, 64, { N: SCRYPT_N }).toString("hex");
+  return `${SCRYPT_PREFIX}${salt}:${hash}`;
+}
+
+/**
+ * Verify a password against a stored hash.
+ * Supports both legacy SHA-256 hashes and new scrypt hashes.
+ * Returns true if the password matches.
+ */
+export function verifyPassword(password: string, storedHash: string): boolean {
+  if (storedHash.startsWith(SCRYPT_PREFIX)) {
+    const rest = storedHash.slice(SCRYPT_PREFIX.length);
+    const colonIdx = rest.indexOf(":");
+    if (colonIdx === -1) return false;
+    const salt = rest.slice(0, colonIdx);
+    const expectedHash = rest.slice(colonIdx + 1);
+    try {
+      const hash = crypto.scryptSync(password, salt, 64, { N: SCRYPT_N }).toString("hex");
+      return crypto.timingSafeEqual(Buffer.from(hash, "hex"), Buffer.from(expectedHash, "hex"));
+    } catch {
+      return false;
+    }
+  }
+  // Legacy SHA-256 path — used only for migrating existing accounts
+  const legacyHash = crypto.createHash("sha256").update(password + "packwerk_salt_2024").digest("hex");
+  return legacyHash === storedHash;
+}
+
+/**
+ * Returns true if the stored hash uses the legacy SHA-256 algorithm.
+ */
+export function isLegacyHash(storedHash: string): boolean {
+  return !storedHash.startsWith(SCRYPT_PREFIX);
 }
 
 export function generateTempPassword(): string {

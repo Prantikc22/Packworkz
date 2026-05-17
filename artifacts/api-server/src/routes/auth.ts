@@ -1,6 +1,6 @@
 import { Router, type IRouter } from "express";
 import { sb } from "../lib/supabase";
-import { hashPassword, generateToken, createSession, deleteSession, requireAuth, getSessionUserId } from "../lib/auth";
+import { hashPassword, verifyPassword, isLegacyHash, generateToken, createSession, deleteSession, requireAuth, getSessionUserId } from "../lib/auth";
 
 const router: IRouter = Router();
 
@@ -29,10 +29,17 @@ router.post("/auth/login", async (req, res): Promise<void> => {
     return;
   }
 
-  const passwordHash = hashPassword(password);
-  if (user.password_hash !== passwordHash) {
+  if (!verifyPassword(password, user.password_hash)) {
     res.status(401).json({ error: "Wrong email or password. Need help? WhatsApp us." });
     return;
+  }
+
+  // Migrate legacy SHA-256 hash to scrypt on successful login
+  if (isLegacyHash(user.password_hash)) {
+    await sb
+      .from("users_profile")
+      .update({ password_hash: hashPassword(password) })
+      .eq("id", user.id);
   }
 
   const token = generateToken(user.id);
@@ -89,7 +96,7 @@ router.post("/auth/change-password", requireAuth as never, async (req, res): Pro
       res.status(400).json({ error: "current_password is required" });
       return;
     }
-    if (user.password_hash !== hashPassword(current_password)) {
+    if (!verifyPassword(current_password, user.password_hash)) {
       res.status(401).json({ error: "Current password is incorrect" });
       return;
     }
