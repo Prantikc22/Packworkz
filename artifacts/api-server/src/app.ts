@@ -35,6 +35,11 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/api", router);
 
+// Catch unmatched /api/* routes and return JSON 404 instead of falling through to SPA
+app.use("/api/*path", (_req, res) => {
+  res.status(404).json({ error: "Not found" });
+});
+
 // On Vercel, the CDN serves static files — only serve them when running
 // directly (Replit dev/prod, Railway, etc.)
 if (!process.env.VERCEL) {
