@@ -37,7 +37,10 @@ router.post("/payments/create-order", async (req, res) => {
 router.post("/payments/verify", (req, res) => {
   try {
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
-    const secret = process.env.RAZORPAY_KEY_SECRET || "";
+    const secret = process.env.RAZORPAY_KEY_SECRET;
+    if (!secret) {
+      return res.status(503).json({ error: "Payment verification unavailable — RAZORPAY_KEY_SECRET not configured" });
+    }
     const body = `${razorpay_order_id}|${razorpay_payment_id}`;
     const expected = crypto.createHmac("sha256", secret).update(body).digest("hex");
     if (expected !== razorpay_signature) {
