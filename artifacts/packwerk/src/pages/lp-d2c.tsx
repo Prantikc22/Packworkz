@@ -493,32 +493,6 @@ export default function LpD2c() {
             }}
           />
 
-          {/* Floating product cards (right side) — overlaid on product image */}
-          <div className="lp-hero-cards-area" style={{ position: "absolute", right: "4%", top: "8%", width: "44%", height: "84%", pointerEvents: "none" }}>
-            {([
-              { top: "4%",  left: "18%", w: 190, Icon: Package,     title: "Flexible Packaging",  count: "15 SKUs", anim: "float1 6s ease-in-out infinite",          delay: "0.3s" },
-              { top: "6%",  left: "58%", w: 175, Icon: ShoppingBag, title: "E-commerce Packs",    count: "17 SKUs", anim: "float2 7s ease-in-out -2s infinite",       delay: "0.5s" },
-              { top: "40%", left: "5%",  w: 178, Icon: Box,         title: "Boxes & Cartons",     count: "9 SKUs",  anim: "float3 5.5s ease-in-out -1s infinite",     delay: "0.4s" },
-              { top: "38%", left: "56%", w: 170, Icon: Leaf,        title: "Sustainable",          count: "12 SKUs", anim: "float4 6.5s ease-in-out -3s infinite",     delay: "0.7s" },
-              { top: "72%", left: "20%", w: 180, Icon: Tag,         title: "Labels & Closures",   count: "14 SKUs", anim: "float1 7s ease-in-out -2s infinite",        delay: "0.6s" },
-            ] as const).map((card, i) => (
-              <div key={i} className="lp-hero-card" style={{
-                top: card.top, left: card.left, width: card.w,
-                animation: heroLoaded ? card.anim : "none",
-                opacity: heroLoaded ? 1 : 0,
-                transition: `opacity 0.8s ease ${card.delay}`,
-              }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
-                  <card.Icon size={20} style={{ color: "#E8A838", flexShrink: 0 }} />
-                  <span style={{ color: "white", fontSize: 13, fontWeight: 700 }}>{card.title}</span>
-                </div>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <span style={{ color: "rgba(255,255,255,0.45)", fontSize: 11, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.5px" }}>{card.count}</span>
-                  <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#22C55E", boxShadow: "0 0 6px #22C55E" }} />
-                </div>
-              </div>
-            ))}
-          </div>
 
           {/* Hero content */}
           <div style={{ maxWidth: 1100, margin: "0 auto", padding: "60px 32px", width: "100%", position: "relative", zIndex: 10 }}>
