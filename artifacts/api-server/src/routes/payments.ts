@@ -11,7 +11,7 @@ function getRazorpay(): Razorpay | null {
 
 const router = Router();
 
-router.post("/api/payments/create-order", async (req, res) => {
+router.post("/payments/create-order", async (req, res) => {
   const razorpay = getRazorpay();
   if (!razorpay) {
     return res.status(503).json({ error: "Payment gateway not configured" });
@@ -34,7 +34,7 @@ router.post("/api/payments/create-order", async (req, res) => {
   }
 });
 
-router.post("/api/payments/verify", (req, res) => {
+router.post("/payments/verify", (req, res) => {
   try {
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
     const secret = process.env.RAZORPAY_KEY_SECRET || "";

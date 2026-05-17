@@ -18,7 +18,11 @@ export function generateTempPassword(): string {
 
 export function requireAdmin(req: Request, res: Response, next: NextFunction): void {
   const adminKey = req.headers["x-admin-key"] as string;
-  const expectedKey = process.env.ADMIN_KEY || "packwerk-admin-2024";
+  const expectedKey = process.env.ADMIN_KEY;
+  if (!expectedKey) {
+    res.status(503).json({ error: "Admin auth not configured" });
+    return;
+  }
   if (!adminKey || adminKey !== expectedKey) {
     res.status(401).json({ error: "Unauthorized - invalid admin key" });
     return;
@@ -27,7 +31,9 @@ export function requireAdmin(req: Request, res: Response, next: NextFunction): v
 }
 
 function getJwtSecret(): string {
-  return process.env.JWT_SECRET || "packwerk_jwt_secret_2024_secure";
+  const secret = process.env.JWT_SECRET;
+  if (!secret) throw new Error("JWT_SECRET environment variable is not set");
+  return secret;
 }
 
 export function generateToken(userId: string): string {

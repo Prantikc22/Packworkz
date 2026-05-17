@@ -1,5 +1,5 @@
 export async function pushToSheetDB(data: Record<string, string | number | undefined>) {
-  const apiKey = process.env.SHEETDB_API_KEY || "bnbunpp7hb33q";
+  const apiKey = process.env.SHEETDB_API_KEY;
   if (!apiKey) return;
   try {
     const res = await fetch(`https://sheetdb.io/api/v1/${apiKey}`, {
