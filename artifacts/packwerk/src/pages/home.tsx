@@ -1097,17 +1097,20 @@ export default function Home() {
       {/* ══════════════════════════════════════════════════════════ */}
       {/*  SECTION 5 — COMPARISON (redesigned)                      */}
       {/* ══════════════════════════════════════════════════════════ */}
-      <section className="relative overflow-hidden" style={{ background: "#07111F", padding: "120px 0" }}>
+      <section className="relative overflow-hidden" style={{ background: "#09080f", padding: "120px 0" }}>
 
+        {/* Remarqd-style purple/violet centre glow */}
+        <div className="absolute inset-0 pointer-events-none" style={{
+          background: "radial-gradient(ellipse 70% 65% at 50% 60%, rgba(88,28,235,0.22) 0%, rgba(49,46,129,0.15) 35%, transparent 70%)",
+        }} />
+        {/* Blue edge accent */}
+        <div className="absolute inset-0 pointer-events-none" style={{
+          background: "radial-gradient(ellipse 50% 40% at 50% 100%, rgba(27,108,168,0.18) 0%, transparent 60%)",
+        }} />
         {/* Noise texture */}
         <div className="absolute inset-0 pointer-events-none opacity-[0.03]" style={{
           backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")",
           backgroundSize: "256px 256px",
-        }} />
-
-        {/* Radial glow */}
-        <div className="absolute inset-0 pointer-events-none" style={{
-          background: "radial-gradient(ellipse 80% 50% at 50% 0%, rgba(27,108,168,0.12) 0%, transparent 65%)",
         }} />
 
         <div className="relative" style={{ zIndex: 1, maxWidth: 1100, margin: "0 auto", padding: "0 40px" }}>
@@ -1128,32 +1131,43 @@ export default function Home() {
           <div style={{ textAlign: "center", marginBottom: 16 }}>
             <h2 className="scroll-animate scroll-animate-delay-1" style={{ color: "white", fontSize: "clamp(2.2rem,4.5vw,3.5rem)", fontWeight: 800, lineHeight: 1.05, letterSpacing: "-1.5px" }}>
               Built for modern<br />
-              <span style={{ color: "#C8952A", fontStyle: "italic" }}>procurement teams.</span>
+              <span style={{ color: "#a5b4fc", fontStyle: "italic" }}>procurement teams.</span>
             </h2>
           </div>
           <p className="scroll-animate scroll-animate-delay-2" style={{ color: "rgba(255,255,255,0.42)", fontSize: 17, textAlign: "center", maxWidth: 480, margin: "0 auto 56px", lineHeight: 1.7 }}>
             Operational resilience designed into every order.
           </p>
 
-          {/* ── Credibility bar ── */}
+          {/* ── Credibility stats — Remarqd large-number card ── */}
           <div className="scroll-animate scroll-animate-delay-2" style={{
-            display: "grid", gridTemplateColumns: "repeat(4, 1fr)",
-            gap: 1, background: "rgba(255,255,255,0.06)",
-            border: "1px solid rgba(255,255,255,0.08)",
-            marginBottom: 64, maxWidth: 860, margin: "0 auto 64px",
+            maxWidth: 860, margin: "0 auto 64px",
+            border: "1px solid rgba(255,255,255,0.10)",
+            borderRadius: 4,
+            background: "rgba(255,255,255,0.03)",
+            backdropFilter: "blur(8px)",
+            display: "grid", gridTemplateColumns: "repeat(4,1fr)",
           }}>
             {[
-              { val: "120+",  label: "Manufacturing Partners" },
-              { val: "99.2%", label: "Dispatch Reliability" },
-              { val: "3×",    label: "Backup Vendors / Order" },
-              { val: "48 hr", label: "Resolution Guarantee" },
+              { target: 120, suffix: "+",   label: "Manufacturing Partners",  color: "#60a5fa" },
+              { target: 99,  suffix: ".2%", label: "Dispatch Reliability",    color: "#2dd4bf" },
+              { target: 3,   suffix: "×",   label: "Backup Vendors / Order",  color: "#a78bfa" },
+              { target: 48,  suffix: " hr", label: "Resolution Guarantee",    color: "#fb7185" },
             ].map((s, i) => (
               <div key={i} style={{
-                padding: "22px 16px", textAlign: "center",
-                borderRight: i < 3 ? "1px solid rgba(255,255,255,0.06)" : "none",
+                padding: "32px 20px", textAlign: "left",
+                borderRight: i < 3 ? "1px solid rgba(255,255,255,0.07)" : "none",
               }}>
-                <p style={{ color: "white", fontSize: 22, fontWeight: 800, lineHeight: 1, marginBottom: 6 }}>{s.val}</p>
-                <p style={{ color: "rgba(255,255,255,0.40)", fontSize: 11, textTransform: "uppercase", letterSpacing: "1.5px", fontWeight: 600 }}>{s.label}</p>
+                <p style={{ color: s.color, fontSize: "clamp(2.4rem,4vw,3.2rem)", fontWeight: 800, lineHeight: 1, marginBottom: 12, letterSpacing: "-1px" }}>
+                  <CountUp target={s.target} suffix={s.suffix} duration={1800} />
+                </p>
+                <p style={{ color: "rgba(255,255,255,0.80)", fontSize: 12, fontWeight: 700, textTransform: "uppercase", letterSpacing: "1.5px", marginBottom: 6 }}>
+                  {s.label.split(" ").slice(0,2).join(" ")}
+                </p>
+                {s.label.split(" ").length > 2 && (
+                  <p style={{ color: "rgba(255,255,255,0.35)", fontSize: 11, letterSpacing: "1px", textTransform: "uppercase" }}>
+                    {s.label.split(" ").slice(2).join(" ")}
+                  </p>
+                )}
               </div>
             ))}
           </div>
@@ -1162,12 +1176,12 @@ export default function Home() {
           <div className="scroll-animate" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 12, maxWidth: 860, margin: "0 auto 12px" }}>
             <div style={{
               background: "linear-gradient(135deg, rgba(27,108,168,0.18) 0%, rgba(13,27,42,0.6) 100%)",
-              border: "1px solid rgba(232,168,56,0.35)",
-              borderBottom: "2px solid rgba(200,149,42,0.8)",
+              border: "1px solid rgba(96,165,250,0.30)",
+              borderBottom: "2px solid rgba(96,165,250,0.70)",
               padding: "18px 24px", display: "flex", alignItems: "center", gap: 12,
               backdropFilter: "blur(8px)",
             }}>
-              <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#C8952A", boxShadow: "0 0 10px rgba(200,149,42,0.6)", flexShrink: 0 }} />
+              <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#60a5fa", boxShadow: "0 0 10px rgba(96,165,250,0.5)", flexShrink: 0 }} />
               <div>
                 <p style={{ color: "white", fontSize: 15, fontWeight: 700 }}>Packworkz</p>
                 <p style={{ color: "rgba(255,255,255,0.40)", fontSize: 11, textTransform: "uppercase", letterSpacing: "1.5px", marginTop: 2 }}>Managed Platform</p>
@@ -1251,7 +1265,7 @@ export default function Home() {
                   style={{
                     background: "linear-gradient(135deg, rgba(27,108,168,0.14) 0%, rgba(13,27,42,0.55) 100%)",
                     border: "1px solid rgba(255,255,255,0.08)",
-                    borderLeft: "2px solid rgba(200,149,42,0.55)",
+                    borderLeft: "2px solid rgba(96,165,250,0.55)",
                     padding: "18px 20px",
                     backdropFilter: "blur(6px)",
                     transition: "border-color 0.25s, box-shadow 0.25s",
@@ -1259,24 +1273,24 @@ export default function Home() {
                   }}
                   onMouseEnter={e => {
                     const el = e.currentTarget as HTMLElement;
-                    el.style.borderColor = "rgba(200,149,42,0.5)";
-                    el.style.borderLeftColor = "rgba(200,149,42,0.9)";
+                    el.style.borderColor = "rgba(96,165,250,0.35)";
+                    el.style.borderLeftColor = "rgba(96,165,250,0.90)";
                     el.style.boxShadow = "0 8px 28px rgba(0,0,0,0.25)";
                   }}
                   onMouseLeave={e => {
                     const el = e.currentTarget as HTMLElement;
                     el.style.borderColor = "rgba(255,255,255,0.08)";
-                    el.style.borderLeftColor = "rgba(200,149,42,0.55)";
+                    el.style.borderLeftColor = "rgba(96,165,250,0.55)";
                     el.style.boxShadow = "none";
                   }}
                 >
                   <div style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
                     <span style={{
                       width: 22, height: 22, borderRadius: "50%",
-                      background: "rgba(200,149,42,0.18)", border: "1px solid rgba(200,149,42,0.45)",
+                      background: "rgba(96,165,250,0.15)", border: "1px solid rgba(96,165,250,0.40)",
                       display: "flex", alignItems: "center", justifyContent: "center",
                       flexShrink: 0, marginTop: 2,
-                      color: "#C8952A", fontSize: 12, fontWeight: 800,
+                      color: "#60a5fa", fontSize: 12, fontWeight: 800,
                     }}>✓</span>
                     <div>
                       <p style={{ color: "rgba(255,255,255,0.45)", fontSize: 10, fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", marginBottom: 5 }}>{row.feature}</p>
@@ -1315,14 +1329,14 @@ export default function Home() {
             ))}
           </div>
 
-          {/* ── Gold summary bar ── */}
+          {/* ── Summary bar ── */}
           <div className="scroll-animate" style={{
             maxWidth: 860, margin: "24px auto 0",
-            background: "linear-gradient(135deg, rgba(200,149,42,0.15) 0%, rgba(200,149,42,0.06) 100%)",
-            border: "1px solid rgba(200,149,42,0.30)",
+            background: "linear-gradient(135deg, rgba(96,165,250,0.10) 0%, rgba(88,28,235,0.07) 100%)",
+            border: "1px solid rgba(96,165,250,0.20)",
             padding: "18px 28px", textAlign: "center",
           }}>
-            <p style={{ color: "#C8952A", fontSize: 14, fontWeight: 700, letterSpacing: "0.3px" }}>
+            <p style={{ color: "rgba(255,255,255,0.75)", fontSize: 14, fontWeight: 600, letterSpacing: "0.3px" }}>
               Even factoring in vendor credit lines — Packworkz delivers better total cost of ownership.
             </p>
           </div>
@@ -1332,7 +1346,7 @@ export default function Home() {
             maxWidth: 860, margin: "48px auto 0",
             background: "linear-gradient(135deg, rgba(27,108,168,0.18) 0%, rgba(13,27,42,0.75) 100%)",
             border: "1px solid rgba(255,255,255,0.10)",
-            borderTop: "1px solid rgba(200,149,42,0.35)",
+            borderTop: "1px solid rgba(96,165,250,0.25)",
             padding: "44px 48px",
             display: "flex", flexDirection: "column" as const, alignItems: "center", textAlign: "center",
             backdropFilter: "blur(12px)",
