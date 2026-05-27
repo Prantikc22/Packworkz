@@ -436,7 +436,7 @@ export default function Home() {
       <section
         className="relative overflow-hidden"
         style={{
-          background: "linear-gradient(135deg, #020817 0%, #071a45 40%, #153e9f 100%)",
+          background: "linear-gradient(160deg, #04060f 0%, #070d1e 35%, #0b1535 65%, #0f1e48 100%)",
           minHeight: 620,
           marginTop: -68,
         }}
@@ -573,36 +573,21 @@ export default function Home() {
               <span className="w-1.5 h-1.5 rounded-full inline-block" style={{ background: "#93c5fd" }} />
               Built for D2C, FMCG &amp; Pharma Brands Globally
             </p>
-            <div className="flex flex-col sm:flex-row gap-3 mb-4">
-              <Link href="/products">
-                <button style={{
-                  background: "linear-gradient(135deg, #E8A838 0%, #c98b10 100%)",
-                  color: "#0D1B2A", padding: "15px 34px",
-                  borderRadius: 9999, fontWeight: 700, fontSize: 15,
-                  border: "none", cursor: "pointer",
-                  display: "inline-flex", alignItems: "center", gap: 8,
-                  whiteSpace: "nowrap",
-                  boxShadow: "0 4px 24px rgba(232,168,56,0.4)",
-                }}>
-                  Browse 110+ SKUs <span>→</span>
-                </button>
-              </Link>
-              <Link href="/samples">
-                <button style={{
-                  background: "rgba(255,255,255,0.06)",
-                  color: "white", padding: "15px 34px",
-                  borderRadius: 9999, fontWeight: 600, fontSize: 15,
-                  border: "1px solid rgba(255,255,255,0.22)",
-                  cursor: "pointer",
-                  display: "inline-flex", alignItems: "center", gap: 8,
-                  whiteSpace: "nowrap",
-                  backdropFilter: "blur(8px)",
-                }}>
-                  Get a sample from ₹2,999
+            <div className="flex flex-col sm:flex-row gap-4 mb-3" style={{ alignItems: "stretch" }}>
+              <span className="animated-border animated-border-white" style={{ display: "flex" }}>
+                <Link href="/products" style={{ flex: 1, display: "flex" }}>
+                  <button className="btn-fill btn-amber px-9 py-4 text-base whitespace-nowrap" style={{ flex: 1 }}>
+                    <span>Browse 110+ SKUs</span><MS icon="arrow_forward" />
+                  </button>
+                </Link>
+              </span>
+              <Link href="/samples" style={{ display: "flex" }}>
+                <button className="btn-fill btn-outline-white px-9 py-4 text-base whitespace-nowrap" style={{ flex: 1 }}>
+                  <span>Get a sample from ₹2,999</span>
                 </button>
               </Link>
             </div>
-            <p style={{ color: "rgba(255,255,255,0.35)", fontSize: 13, marginBottom: 28, letterSpacing: "0.2px" }}>
+            <p style={{ color: "rgba(255,255,255,0.32)", fontSize: 12, marginBottom: 24, letterSpacing: "0.2px" }}>
               No MOQ surprises · No vendor chasing · Just results
             </p>
 
@@ -1220,6 +1205,22 @@ export default function Home() {
                     <div style={{ display: "inline-block", marginTop: 10, background: "rgba(27,108,168,0.08)", border: "1px solid rgba(27,108,168,0.2)", padding: "4px 12px" }}>
                       <span style={{ color: "#1B6CA8", fontSize: 12, fontWeight: 600 }}>{cs.metric}</span>
                     </div>
+
+                    {/* Mobile-only inline detail — hidden on desktop via CSS */}
+                    {isActive && (
+                      <div className="po-case-inline-detail" style={{ marginTop: 20, paddingTop: 20, borderTop: "1px solid #E2EAF4" }}>
+                        <p style={{ color: "#1B6CA8", fontSize: 10, fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", marginBottom: 8 }}>THE RESULT</p>
+                        <p style={{ color: "#0D1B2A", fontSize: 13, lineHeight: 1.65, fontWeight: 600, marginBottom: 16 }}>{cs.result}</p>
+                        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8 }}>
+                          {cs.metrics.map((m) => (
+                            <div key={m.label} style={{ background: "#F1F5F9", padding: "10px 8px", textAlign: "center" }}>
+                              <p style={{ color: "#E8A838", fontSize: 18, fontWeight: 700, lineHeight: 1 }}>{m.val}</p>
+                              <p style={{ color: "#64748B", fontSize: 10, marginTop: 4, lineHeight: 1.3 }}>{m.label}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 );
               })}

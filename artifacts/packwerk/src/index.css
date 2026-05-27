@@ -102,6 +102,9 @@
   }
 }
 
+/* Hidden by default — only revealed on mobile via media query */
+.po-case-inline-detail { display: none; }
+
 /* ── Home page mobile responsiveness ── */
 @media (max-width: 767px) {
   /* Customers section: stack text + marquee vertically */
@@ -111,15 +114,20 @@
     padding: 0 20px !important;
   }
 
-  /* Case studies: stack selector + detail vertically */
+  /* Case studies: single column, hide separate detail panel */
   .po-case-grid {
     grid-template-columns: 1fr !important;
-    gap: 20px !important;
+    gap: 12px !important;
   }
 
-  /* Case detail: reduce heavy side padding */
+  /* Hide full detail panel on mobile — shown inline inside card */
   .po-case-detail {
-    padding: 28px 20px !important;
+    display: none !important;
+  }
+
+  /* Show inline detail on mobile */
+  .po-case-inline-detail {
+    display: block !important;
   }
 
   /* Comparison table: switch to card layout on mobile */
