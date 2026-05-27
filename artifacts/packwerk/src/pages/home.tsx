@@ -172,9 +172,11 @@ const HOW_IT_WORKS_STEPS = [
 
 const CASE_STUDIES = [
   {
-    initials: "ZF",
-    company: "Zestful Foods",
-    industry: "D2C Snacks · Mumbai",
+    initials: "HP",
+    logo: "/images/logos/happilo.png",
+    logoBg: "#1a4a2e",
+    company: "Happilo",
+    industry: "Premium Foods · Bangalore",
     metric: "7 vendors → 1 platform",
     challenge: "We were managing 7 different packaging vendors for our snack range. Every month was a coordination nightmare — delays from one vendor cascaded across our entire production schedule.",
     whatWeDid: "Consolidated all 7 SKUs onto the Packworkz platform. Assigned backup vendors for each. Integrated their reorder into the dashboard with SmartStock pre-positioning.",
@@ -186,9 +188,11 @@ const CASE_STUDIES = [
     ],
   },
   {
-    initials: "DI",
-    company: "Dermatica India",
-    industry: "Cosmetics · Bangalore",
+    initials: "BC",
+    logo: "/images/logos/bodycraft.png",
+    logoBg: "#8b1a2e",
+    company: "Bodycraft",
+    industry: "Cosmetics & Salon · Bangalore",
     metric: "₹3.8L saved in Year 1",
     challenge: "Our previous vendor's QC was self-certified. We received two batches with print registration errors that our retail partners rejected. The cost of returns was significant.",
     whatWeDid: "Moved cosmetic jar and carton orders to Packworkz. Pre-dispatch inspection with photo evidence on every batch. Design also migrated — artwork now stored on platform.",
@@ -200,9 +204,11 @@ const CASE_STUDIES = [
     ],
   },
   {
-    initials: "NC",
-    company: "NatureCraft Organics",
-    industry: "Organic Food · Pune",
+    initials: "OC",
+    logo: "/images/logos/oliva.png",
+    logoBg: "#1a2a3a",
+    company: "Oliva Clinics",
+    industry: "Dermatology · Pan-India",
     metric: "14 days · Fully certified",
     challenge: "We needed FSC certified kraft pouches with compostability certification for a UK export order. Our local vendor couldn't provide the documentation and we nearly lost the contract.",
     whatWeDid: "Sourced FSC certified kraft stand-up pouches from our verified sustainable packaging network. Provided full export documentation including FSC chain of custody certificate.",
@@ -719,7 +725,7 @@ export default function Home() {
             {PAIN_POINTS.map((p, i) => (
               <div
                 key={i}
-                className="group"
+                className={`group scroll-animate scroll-animate-delay-${Math.min(i + 1, 4)}`}
                 style={{
                   background: "#FFFFFF", padding: "32px 24px",
                   transition: "background 0.2s", cursor: "default",
@@ -743,12 +749,15 @@ export default function Home() {
       {/* ══════════════════════════════════════════════════════════ */}
       {/*  SECTION 6 — HOW IT WORKS (dark animated timeline)        */}
       {/* ══════════════════════════════════════════════════════════ */}
-      <section style={{ background: "#0A1628", padding: "100px 0" }}>
-        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 40px" }}>
+      <section className="relative overflow-hidden" style={{ background: "#08080f", padding: "100px 0" }}>
+        {/* Remarqd-style blue radial glow */}
+        <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse 70% 60% at 50% 90%, rgba(27,108,168,0.50) 0%, rgba(10,30,80,0.25) 45%, transparent 70%)" }} />
+        <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse 40% 30% at 50% 100%, rgba(232,168,56,0.10) 0%, transparent 60%)" }} />
+        <div className="relative" style={{ zIndex: 1, maxWidth: 1200, margin: "0 auto", padding: "0 40px" }}>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-start">
 
             {/* Left — sticky heading */}
-            <div className="lg:sticky" style={{ top: 96 }}>
+            <div className="relative lg:sticky" style={{ top: 96 }}>
               <span className="scroll-animate" style={{ color: "#E8A838", fontSize: 11, fontWeight: 600, letterSpacing: "2.5px", textTransform: "uppercase", display: "block", marginBottom: 20 }}>
                 THE PROCESS
               </span>
@@ -855,10 +864,10 @@ export default function Home() {
             </Link>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5">
-            {CATEGORIES.map((cat) => (
-              <Link href={`/products?category=${cat.cat}`} key={cat.title}>
-                <div className="group bg-white shadow-sm hover:-translate-y-2 transition-all cursor-pointer border overflow-hidden" style={{ borderColor: "#E2EAF4" }}>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5" style={{ alignItems: "stretch" }}>
+            {CATEGORIES.map((cat, ci) => (
+              <Link href={`/products?category=${cat.cat}`} key={cat.title} style={{ display: "flex", flexDirection: "column" }}>
+                <div className={`group bg-white shadow-sm hover:-translate-y-2 transition-all cursor-pointer border overflow-hidden scroll-animate scroll-animate-delay-${Math.min(ci % 4 + 1, 4)}`} style={{ borderColor: "#E2EAF4", display: "flex", flexDirection: "column", height: "100%" }}>
                   <div className="w-full overflow-hidden" style={{ height: 160 }}>
                     <img
                       src={CAT_IMAGES[cat.cat]}
@@ -866,9 +875,9 @@ export default function Home() {
                       className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
                     />
                   </div>
-                  <div className="p-4">
+                  <div className="p-4" style={{ flex: 1, display: "flex", flexDirection: "column" }}>
                     <h4 className="font-bold text-sm leading-tight mb-1" style={{ color: "#0D1B2A" }}>{cat.title}</h4>
-                    <p className="text-xs leading-snug" style={{ color: "#64748B" }}>{cat.sub}</p>
+                    <p className="text-xs leading-snug" style={{ color: "#64748B", flex: 1 }}>{cat.sub}</p>
                     <p className="text-xs font-bold mt-2" style={{ color: "#1B6CA8" }}>{cat.skus} SKU{cat.skus !== 1 ? "s" : ""}</p>
                   </div>
                 </div>
@@ -947,15 +956,15 @@ export default function Home() {
           <div className="px-8 md:px-16 lg:px-20 py-24 flex flex-col justify-center">
 
             {/* Eyebrow */}
-            <div style={{ display: "inline-flex", alignItems: "center", gap: 10, marginBottom: 28 }}>
+            <div className="scroll-animate" style={{ display: "inline-flex", alignItems: "center", gap: 10, marginBottom: 28 }}>
               <div style={{ width: 7, height: 7, background: "#3b82f6", borderRadius: "50%", boxShadow: "0 0 10px rgba(59,130,246,0.7)" }} />
               <span style={{ color: "#60a5fa", fontSize: 11, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase" }}>SMARTSTOCK™ AI INVENTORY</span>
             </div>
 
-            <h2 className="clash-display" style={{ color: "white", fontSize: "clamp(2rem,4vw,3.2rem)", fontWeight: 700, lineHeight: 1.1, marginBottom: 16 }}>
+            <h2 className="clash-display scroll-animate scroll-animate-delay-1" style={{ color: "white", fontSize: "clamp(2rem,4vw,3.2rem)", fontWeight: 700, lineHeight: 1.1, marginBottom: 16 }}>
               Never run out<br />of boxes again.
             </h2>
-            <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 16, lineHeight: 1.8, marginBottom: 36 }}>
+            <p className="scroll-animate scroll-animate-delay-2" style={{ color: "rgba(255,255,255,0.65)", fontSize: 16, lineHeight: 1.8, marginBottom: 36 }}>
               Our AI analyses your sales velocity across 500+ factory partners and automatically triggers replenishment — before you even think to reorder.
             </p>
 
@@ -966,9 +975,9 @@ export default function Home() {
                 { val: "12",   label: "City Nodes" },
                 { val: "4 wk", label: "Buffer Stock" },
               ].map((m, i) => (
-                <div key={i} style={{ padding: "18px 12px", textAlign: "center", borderRight: i < 2 ? "1px solid rgba(255,255,255,0.07)" : "none" }}>
-                  <p style={{ color: "#60a5fa", fontSize: 22, fontWeight: 700, lineHeight: 1, marginBottom: 6 }}>{m.val}</p>
-                  <p style={{ color: "rgba(255,255,255,0.35)", fontSize: 10, textTransform: "uppercase", letterSpacing: "1.5px" }}>{m.label}</p>
+                <div key={i} style={{ padding: "20px 14px", textAlign: "center", borderRight: i < 2 ? "1px solid rgba(255,255,255,0.10)" : "none" }}>
+                  <p style={{ color: "white", fontSize: 24, fontWeight: 800, lineHeight: 1, marginBottom: 6 }}>{m.val}</p>
+                  <p style={{ color: "rgba(255,255,255,0.65)", fontSize: 11, textTransform: "uppercase", letterSpacing: "1.5px", fontWeight: 600 }}>{m.label}</p>
                 </div>
               ))}
             </div>
@@ -1197,8 +1206,11 @@ export default function Home() {
                     {isActive && (
                       <div style={{ position: "absolute", bottom: 0, left: 0, height: 2, background: "#1B6CA8", animation: "progress-fill 4s linear forwards" }} />
                     )}
-                    <div style={{ width: 38, height: 38, background: "#0D1B2A", color: "white", fontSize: 13, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 12 }}>
-                      {cs.initials}
+                    <div style={{ width: 44, height: 44, background: cs.logoBg ?? "#0D1B2A", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 12, overflow: "hidden", flexShrink: 0 }}>
+                      {cs.logo
+                        ? <img src={cs.logo} alt={cs.company} style={{ width: "100%", height: "100%", objectFit: "contain", padding: 4 }} />
+                        : <span style={{ color: "white", fontSize: 13, fontWeight: 700 }}>{cs.initials}</span>
+                      }
                     </div>
                     <p style={{ color: "#0D1B2A", fontSize: 15, fontWeight: 700, marginBottom: 3 }}>{cs.company}</p>
                     <p style={{ color: "#64748B", fontSize: 12 }}>{cs.industry}</p>
