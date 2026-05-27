@@ -337,6 +337,7 @@ export default function Home() {
   const [stepVisible, setStepVisible] = useState([false, false, false, false]);
   const [activeStep, setActiveStep] = useState(-1);
   const [heroParallax, setHeroParallax] = useState(0);
+  const [showAllComparisons, setShowAllComparisons] = useState(false);
   const caseIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const processRef = useRef<HTMLDivElement>(null);
   const stepEls = useRef<(HTMLDivElement | null)[]>([]);
@@ -578,7 +579,15 @@ export default function Home() {
               Design. Source. QC. Deliver. One platform.{" "}
               <span className="text-white font-medium italic">Zero vendor chaos.</span>
             </p>
-            <p style={{ color: "rgba(255,255,255,0.48)", fontSize: 13, marginBottom: 18, letterSpacing: "0.1px" }}>
+            <p style={{ color: "rgba(255,255,255,0.48)", fontSize: 13, marginBottom: 18, letterSpacing: "0.1px", display: "flex", alignItems: "center", gap: 7, flexWrap: "wrap" }}>
+              <span style={{
+                display: "inline-flex", alignItems: "center", justifyContent: "center",
+                width: 18, height: 18, borderRadius: "50%",
+                background: "rgba(232,168,56,0.15)", border: "1px solid rgba(232,168,56,0.45)",
+                flexShrink: 0,
+              }}>
+                <span className="material-symbols-outlined" style={{ fontSize: 11, color: "#E8A838", fontVariationSettings: "'FILL' 1, 'wght' 700" }}>verified</span>
+              </span>
               Trusted by{" "}
               <span style={{ color: "rgba(255,255,255,0.78)", fontWeight: 600 }}>Plum, Happilo, Bodycraft</span>
               {" "}and 220+ brands across India
@@ -766,7 +775,7 @@ export default function Home() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-start">
 
             {/* Left — sticky heading */}
-            <div className="relative lg:sticky" style={{ top: 96 }}>
+            <div className="relative lg:sticky lg:top-24">
               <span className="scroll-animate" style={{ color: "#E8A838", fontSize: 11, fontWeight: 600, letterSpacing: "2.5px", textTransform: "uppercase", display: "block", marginBottom: 20 }}>
                 THE PROCESS
               </span>
@@ -1195,7 +1204,7 @@ export default function Home() {
 
           {/* ── Comparison rows ── */}
           <div style={{ maxWidth: 860, margin: "0 auto", display: "flex", flexDirection: "column", gap: 6 }}>
-            {[
+            {([
               { feature: "Vendor redundancy",    good: "3 vetted backup vendors per order — production never stalls.",  bad: "One vendor. Their delay is your delay." },
               { feature: "Quality control",       good: "Our team inspects every dispatch. Photo evidence in dashboard.", bad: "Vendor self-certifies. Rejection risk is yours." },
               { feature: "Pricing transparency",  good: "Transparent pricing + 3% discount for upfront payment.",        bad: "Credit terms hide 10–15% markup per unit." },
@@ -1204,7 +1213,7 @@ export default function Home() {
               { feature: "Design service",        good: "Print-ready artwork from ₹1,999. Files yours forever.",         bad: "Mostly unavailable. Third-party dependency." },
               { feature: "Order visibility",      good: "Real-time dashboard — status, dispatch, ETA in one place.",     bad: "WhatsApp updates. No audit trail." },
               { feature: "Problem resolution",    good: "48-hour resolution SLA. Dedicated account manager.",            bad: "Call them. Hope they answer." },
-            ].map((row, i) => (
+            ] as { feature: string; good: string; bad: string }[]).slice(0, showAllComparisons ? 8 : 3).map((row, i) => (
               <div key={i} className="scroll-animate cmp-card-row" style={{ animationDelay: `${i * 0.055}s` }}>
 
                 {/* Packworkz card */}
@@ -1278,6 +1287,27 @@ export default function Home() {
               </div>
             ))}
           </div>
+
+          {/* ── Show more / less button ── */}
+          {!showAllComparisons && (
+            <div style={{ maxWidth: 860, margin: "12px auto 0", textAlign: "center" }}>
+              <button
+                onClick={() => setShowAllComparisons(true)}
+                style={{
+                  display: "inline-flex", alignItems: "center", gap: 8,
+                  background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.12)",
+                  color: "rgba(255,255,255,0.65)", fontSize: 13, fontWeight: 600,
+                  padding: "11px 24px", cursor: "pointer",
+                  transition: "background 0.2s, color 0.2s",
+                }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.09)"; (e.currentTarget as HTMLElement).style.color = "white"; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.05)"; (e.currentTarget as HTMLElement).style.color = "rgba(255,255,255,0.65)"; }}
+              >
+                <span>Show all 8 comparisons</span>
+                <span style={{ fontSize: 16, lineHeight: 1 }}>↓</span>
+              </button>
+            </div>
+          )}
 
           {/* ── Summary bar ── */}
           <div className="scroll-animate" style={{
