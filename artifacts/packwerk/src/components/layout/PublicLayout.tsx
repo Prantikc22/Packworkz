@@ -690,11 +690,11 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
       <header
         className="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-6 md:px-10 h-[68px]"
         style={{
-          background: scrolled ? "rgba(2,6,23,0.85)" : "#020617",
-          backdropFilter: scrolled ? "blur(16px)" : "none",
-          WebkitBackdropFilter: scrolled ? "blur(16px)" : "none",
-          borderBottom: scrolled ? "1px solid rgba(255,255,255,0.1)" : "1px solid rgba(255,255,255,0.06)",
-          transition: "background 0.35s ease, border-color 0.35s ease",
+          background: scrolled ? "rgba(2,6,23,0.88)" : "transparent",
+          backdropFilter: scrolled ? "blur(18px)" : "none",
+          WebkitBackdropFilter: scrolled ? "blur(18px)" : "none",
+          borderBottom: scrolled ? "1px solid rgba(255,255,255,0.10)" : "1px solid transparent",
+          transition: "background 0.4s ease, border-color 0.4s ease, backdrop-filter 0.4s ease",
         }}
       >
         {/* Logo */}
@@ -736,9 +736,17 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
                 Login
               </Link>
             )}
-            <Link href="/quote" className="po-cta-btn" style={{ marginLeft: 8 }}>
-              <span>Get Quote</span>
-            </Link>
+            {scrolled ? (
+              <span className="animated-border" style={{ marginLeft: 8 }}>
+                <Link href="/quote" className="po-cta-btn" style={{ background: "#0D1B2A" }}>
+                  <span>Get Quote</span>
+                </Link>
+              </span>
+            ) : (
+              <Link href="/quote" className="po-cta-btn" style={{ marginLeft: 8 }}>
+                <span>Get Quote</span>
+              </Link>
+            )}
           </div>
 
           {/* Mobile hamburger only */}

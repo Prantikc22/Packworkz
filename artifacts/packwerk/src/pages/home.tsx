@@ -520,9 +520,11 @@ export default function Home() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 mb-12">
               <Link href="/products">
-                <button className="btn-fill btn-amber px-9 py-4 text-base whitespace-nowrap">
-                  <span>Browse 110+ SKUs</span><MS icon="arrow_forward" />
-                </button>
+                <span className="animated-border animated-border-white">
+                  <button className="btn-fill btn-amber px-9 py-4 text-base whitespace-nowrap">
+                    <span>Browse 110+ SKUs</span><MS icon="arrow_forward" />
+                  </button>
+                </span>
               </Link>
               <Link href="/samples">
                 <button className="btn-fill btn-outline-white px-9 py-4 text-base">
@@ -1485,9 +1487,11 @@ export default function Home() {
           {/* CTAs */}
           <div style={{ display: "flex", gap: 16, justifyContent: "center", alignItems: "center", flexWrap: "wrap" }}>
             <Link href="/products">
-              <button className="btn-fill btn-amber px-11 py-5 text-base">
-                <span>Browse 110+ SKUs →</span>
-              </button>
+              <span className="animated-border animated-border-white">
+                <button className="btn-fill btn-amber px-11 py-5 text-base">
+                  <span>Browse 110+ SKUs →</span>
+                </button>
+              </span>
             </Link>
 
             <a
