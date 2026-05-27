@@ -737,24 +737,9 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
               </Link>
             )}
             {scrolled ? (
-              <span className="animated-border" style={{ marginLeft: 8 }}>
-                <Link
-                  href="/quote"
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    padding: "8px 20px",
-                    fontSize: 13,
-                    fontWeight: 800,
-                    letterSpacing: "0.05em",
-                    textTransform: "uppercase",
-                    textDecoration: "none",
-                    color: "white",
-                    background: "#0D1B2A",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  Get Quote
+              <span className="animated-border animated-border-white" style={{ marginLeft: 8 }}>
+                <Link href="/quote" className="po-cta-btn">
+                  <span>Get Quote</span>
                 </Link>
               </span>
             ) : (

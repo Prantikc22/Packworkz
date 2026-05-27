@@ -519,16 +519,16 @@ export default function Home() {
               <span className="w-1.5 h-1.5 rounded-full inline-block" style={{ background: "#93c5fd" }} />
               Built for D2C, FMCG &amp; Pharma Brands Globally
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 mb-12">
-              <Link href="/products">
-                <span className="animated-border animated-border-white">
+            <div className="flex flex-col sm:flex-row items-start gap-4 mb-12">
+              <span className="animated-border animated-border-white">
+                <Link href="/products">
                   <button className="btn-fill btn-amber px-9 py-4 text-base whitespace-nowrap">
                     <span>Browse 110+ SKUs</span><MS icon="arrow_forward" />
                   </button>
-                </span>
-              </Link>
+                </Link>
+              </span>
               <Link href="/samples">
-                <button className="btn-fill btn-outline-white px-9 py-4 text-base">
+                <button className="btn-fill btn-outline-white px-9 py-4 text-base whitespace-nowrap">
                   <span>Get a sample from ₹2,999</span>
                 </button>
               </Link>
