@@ -30,6 +30,9 @@ import Careers from "@/pages/careers";
 import Contact from "@/pages/contact";
 import SmartStock from "@/pages/smartstock";
 import Network from "@/pages/network";
+import Privacy from "@/pages/privacy";
+import Terms from "@/pages/terms";
+import Refund from "@/pages/refund";
 
 // Dashboard Pages
 import DashboardOverview from "@/pages/dashboard/overview";
@@ -114,6 +117,9 @@ function Router() {
       <PublicRoute path="/contact" component={Contact} layout={PublicLayout} />
       <PublicRoute path="/smartstock" component={SmartStock} layout={PublicLayout} />
       <PublicRoute path="/network" component={Network} layout={PublicLayout} />
+      <PublicRoute path="/privacy" component={Privacy} layout={PublicLayout} />
+      <PublicRoute path="/terms" component={Terms} layout={PublicLayout} />
+      <PublicRoute path="/refund" component={Refund} layout={PublicLayout} />
 
       {/* Ad landing page — not linked from nav/footer */}
       <Route path="/lp/d2c" component={LpD2c} />

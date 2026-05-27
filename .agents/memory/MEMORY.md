@@ -1,0 +1,2 @@
+- [Stats canon](stats-canon.md) — brands served = 220+, factory partners = 500+, SKUs = 110+, countries = 20+; keep these consistent across all pages.
+- [Animation system](animation-system.md) — pwFadeUp/pwSlowDrift/pwFadeIn keyframes + .pw-reveal/.pw-in/.pw-d1-6/.pw-lift/.pw-glow-drift classes in index.css; global IntersectionObserver + MutationObserver in main.tsx.

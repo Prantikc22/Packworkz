@@ -21,7 +21,10 @@ const MS = ({ icon, className = "", style }: IconProps) => (
   <span className={`material-symbols-outlined ${className}`} style={style}>{icon}</span>
 );
 
-const MARQUEE_1 = Array(8).fill("We are not a vendor. We are your packaging partner.");
+const MARQUEE_PHRASES = [
+  "One platform.", "110+ SKUs.", "3 backup vendors per order.", "98.7% on-time delivery.", "Zero vendor chaos.",
+];
+const MARQUEE_1 = Array(6).fill(MARQUEE_PHRASES).flat();
 
 const LOGO_ROW_1 = [
   { name: "Plum",             file: "/images/logos/plum.png" },
@@ -575,26 +578,31 @@ export default function Home() {
               Design. Source. QC. Deliver. One platform.{" "}
               <span className="text-white font-medium italic">Zero vendor chaos.</span>
             </p>
-            <p className="text-sm font-bold tracking-wide mb-9 uppercase flex items-center gap-2" style={{ color: "#93c5fd" }}>
+            <p className="text-sm font-bold tracking-wide mb-6 uppercase flex items-center gap-2" style={{ color: "#93c5fd" }}>
               <span className="w-1.5 h-1.5 rounded-full inline-block" style={{ background: "#93c5fd" }} />
               Built for D2C, FMCG &amp; Pharma Brands Globally
             </p>
+            <p style={{ color: "rgba(255,255,255,0.48)", fontSize: 13, marginBottom: 18, letterSpacing: "0.1px" }}>
+              Trusted by{" "}
+              <span style={{ color: "rgba(255,255,255,0.78)", fontWeight: 600 }}>Plum, Happilo, Bodycraft</span>
+              {" "}and 220+ brands across India
+            </p>
             <div className="flex flex-col sm:flex-row gap-4 mb-3" style={{ alignItems: "stretch" }}>
               <span className="animated-border animated-border-white" style={{ display: "flex" }}>
-                <Link href="/products" style={{ flex: 1, display: "flex" }}>
+                <Link href="/quote" style={{ flex: 1, display: "flex" }}>
                   <button className="btn-fill btn-amber px-9 py-4 text-base whitespace-nowrap" style={{ flex: 1 }}>
-                    <span>Browse 110+ SKUs</span><MS icon="arrow_forward" />
+                    <span>Get a Quote</span><MS icon="arrow_forward" />
                   </button>
                 </Link>
               </span>
-              <Link href="/samples" style={{ display: "flex" }}>
+              <Link href="/products" style={{ display: "flex" }}>
                 <button className="btn-fill btn-outline-white px-9 py-4 text-base whitespace-nowrap" style={{ flex: 1 }}>
-                  <span>Get a sample from ₹2,999</span>
+                  <span>Browse 110+ SKUs</span>
                 </button>
               </Link>
             </div>
             <p style={{ color: "rgba(255,255,255,0.32)", fontSize: 12, marginBottom: 24, letterSpacing: "0.2px" }}>
-              No MOQ surprises · No vendor chasing · Just results
+              No minimum for samples · MOQ from 500 units for bulk
             </p>
 
             {/* Stats badges — locked inside left column */}
@@ -622,7 +630,12 @@ export default function Home() {
       <div className="overflow-hidden py-3 border-y border-white/10" style={{ background: "#1e3a8a" }}>
         <div className="animate-marquee">
           {MARQUEE_1.map((t, i) => (
-            <span key={i} className="text-white font-bold tracking-[0.2em] text-xs uppercase mx-8">{t}</span>
+            <span key={i} className="text-white font-bold tracking-[0.2em] text-xs uppercase mx-6">
+              {t}
+              {i % MARQUEE_PHRASES.length < MARQUEE_PHRASES.length - 1 && (
+                <span className="mx-6 opacity-30">·</span>
+              )}
+            </span>
           ))}
         </div>
       </div>

@@ -1122,6 +1122,28 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                       <span className="text-slate-500"> your slot will be held for 48 hrs after submission.</span>
                     </div>
                   )}
+
+                  {/* What happens next */}
+                  <div style={{ background: "#F8F9FC", border: "1px solid #E2EAF4", borderTop: "2px solid #1B6CA8", borderRadius: 10, padding: "20px 20px 16px" }}>
+                    <p style={{ color: "#1B6CA8", fontSize: 10, fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", marginBottom: 14 }}>WHAT HAPPENS NEXT</p>
+                    <div style={{ display: "flex", gap: 0, flexDirection: "column" as const }}>
+                      {[
+                        { n: "1", title: "We review your spec", body: "Same day — our team checks SKU, quantity, and delivery requirements.", color: "#1B6CA8" },
+                        { n: "2", title: "You receive an itemised quote", body: "Within 48 hours via WhatsApp and email — line-item breakdown, no surprises.", color: "#E8A838" },
+                        { n: "3", title: "You approve before anything starts", body: "Nothing is ordered or produced until you give the green light.", color: "#22C55E" },
+                      ].map((step, i) => (
+                        <div key={i} style={{ display: "flex", gap: 12, padding: "10px 0", borderBottom: i < 2 ? "1px solid #E8ECF4" : "none", alignItems: "flex-start" }}>
+                          <div style={{ width: 22, height: 22, borderRadius: "50%", background: step.color, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 1 }}>
+                            <span style={{ color: "white", fontSize: 11, fontWeight: 800 }}>{step.n}</span>
+                          </div>
+                          <div>
+                            <p style={{ color: "#0D1B2A", fontSize: 13, fontWeight: 700, marginBottom: 2 }}>{step.title}</p>
+                            <p style={{ color: "#64748B", fontSize: 12, lineHeight: 1.5 }}>{step.body}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               </>
             )}

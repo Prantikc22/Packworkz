@@ -678,6 +678,14 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     setIsLoggedIn(!!localStorage.getItem("packwerk_access_token"));
+    // Per-page canonical tag for SEO
+    let canonical = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;
+    if (!canonical) {
+      canonical = document.createElement("link");
+      canonical.rel = "canonical";
+      document.head.appendChild(canonical);
+    }
+    canonical.href = `https://packworkz.com${location === "/" ? "" : location}`;
   }, [location]);
 
   useEffect(() => {
@@ -827,13 +835,8 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d={s.path}/></svg>
               </a>
             ))}
-            <Link href="/quote" style={{
-              background: "#E8A838", color: "#0D1B2A",
-              fontWeight: 800, fontSize: 13, padding: "10px 22px",
-              borderRadius: 6, textDecoration: "none",
-              letterSpacing: "0.02em", whiteSpace: "nowrap",
-            }}>
-              Get a Quote Now →
+            <Link href="/quote" className="po-cta-btn">
+              <span>GET QUOTE NOW →</span>
             </Link>
           </div>
         </div>
@@ -947,13 +950,13 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
         <div className="po-footer-bottom" style={{ borderTop: "1px solid rgba(255,255,255,0.08)", padding: "18px 64px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
           <p style={{ color: "#94A3B8", fontSize: 13, margin: 0 }}>© {new Date().getFullYear()} Packworkz India. All rights reserved.</p>
           <div style={{ display: "flex", gap: 20 }}>
-            {[{ label: "Privacy Policy", href: "#" }, { label: "Terms of Service", href: "#" }, { label: "Refund Policy", href: "#" }].map(l => (
-              <a key={l.label} href={l.href}
+            {[{ label: "Privacy Policy", href: "/privacy" }, { label: "Terms of Service", href: "/terms" }, { label: "Refund Policy", href: "/refund" }].map(l => (
+              <Link key={l.label} href={l.href}
                 style={{ color: "#94A3B8", fontSize: 13, textDecoration: "none", transition: "color 0.15s" }}
                 onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = "white"}
                 onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = "#94A3B8"}>
                 {l.label}
-              </a>
+              </Link>
             ))}
           </div>
         </div>

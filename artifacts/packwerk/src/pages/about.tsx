@@ -4,7 +4,7 @@ const TIMELINE = [
   { year: "2024",    title: "The Idea",           desc: "Founders run D2C brands, hit every packaging pain point — opaque pricing, vendor delays, zero tech. Decide to build what they wished existed." },
   { year: "2025 Q1", title: "Platform Launch",    desc: "Packworkz goes live with 33 SKUs, 50+ factory partners, and the first version of the managed procurement layer." },
   { year: "2025 Q2", title: "SmartStock™ Launches", desc: "AI inventory intelligence layer ships. Brands on Packworkz record zero stockouts within months of launch." },
-  { year: "2025",    title: "Growing Fast",        desc: "500+ brands, 110+ SKUs, expanding across FMCG, D2C, pharma and e-commerce. India's first managed packaging platform." },
+  { year: "2025",    title: "Growing Fast",        desc: "220+ brands, 110+ SKUs, expanding across FMCG, D2C, pharma and e-commerce. India's first managed packaging platform." },
 ];
 
 const VALUES = [
@@ -15,7 +15,7 @@ const VALUES = [
 ];
 
 const STATS = [
-  { val: "500+", label: "Brands Served" },
+  { val: "220+", label: "Brands Served" },
   { val: "110+", label: "Packaging SKUs" },
   { val: "500+", label: "Factory Partners" },
   { val: "2025", label: "Founded" },
@@ -81,7 +81,7 @@ export default function About() {
               We started in 2025 with a simple idea: connect India's best packaging factories directly to brands, cut out 3 distributor layers, and use technology to manage everything from quote to delivery.
             </p>
             <p style={{ color: "rgba(255,255,255,0.48)", fontSize: 15, lineHeight: 1.8, marginBottom: 32 }}>
-              Today, Packworkz serves 500+ brands across FMCG, D2C, pharma, and e-commerce — delivering consistent quality at 18–35% lower cost than traditional procurement routes.
+              Today, Packworkz serves 220+ brands across FMCG, D2C, pharma, and e-commerce — delivering consistent quality at 18–35% lower cost than traditional procurement routes.
             </p>
             <span className="animated-border animated-border-white" style={{ display: "inline-block" }}>
               <Link href="/quote"><button className="btn-fill btn-amber px-8 py-3 text-sm pw-btn-transition">Get a Quote →</button></Link>
@@ -162,6 +162,9 @@ export default function About() {
               <button className="btn-fill btn-outline-white px-8 py-3 text-sm pw-btn-transition">WhatsApp Us</button>
             </a>
           </div>
+          <p style={{ color: "rgba(255,255,255,0.28)", fontSize: 12, marginTop: 14, letterSpacing: "0.2px" }}>
+            No minimum for samples · MOQ from 500 units for bulk
+          </p>
         </div>
       </section>
 
