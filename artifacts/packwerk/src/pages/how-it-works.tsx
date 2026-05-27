@@ -199,7 +199,7 @@ export default function HowItWorks() {
             color: "white", fontSize: 52, fontWeight: 700,
             lineHeight: 1.1, marginBottom: 20,
           }}>
-            How every Packworkz order works.
+            How to source custom packaging in India — and never chase a vendor again.
           </h1>
           <p style={{ color: "rgba(255,255,255,0.6)", fontSize: 18, lineHeight: 1.65 }}>
             Four stages. Zero ambiguity. One team responsible for all of it.

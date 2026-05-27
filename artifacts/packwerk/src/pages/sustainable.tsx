@@ -107,7 +107,7 @@ export default function Sustainable() {
             SUSTAINABLE PACKAGING
           </p>
           <h1 className="clash-display text-white mb-6" style={{ fontSize: "clamp(2.5rem,6vw,4.5rem)", lineHeight: 1.1 }}>
-            Packaging that doesn't<br />cost the planet.
+            Sustainable packaging manufacturer India — EPR compliant, FSC certified.
           </h1>
           <p className="text-lg mb-12 mx-auto" style={{ color: "rgba(255,255,255,0.75)", maxWidth: 600 }}>
             12 certified sustainable SKUs. All fully customisable with your brand design. Food-safe, leak-proof, EPR compliant, and built for Indian manufacturing conditions.

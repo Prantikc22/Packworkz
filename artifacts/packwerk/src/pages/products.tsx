@@ -75,7 +75,7 @@ export default function Products() {
               33 SKUs, 110+ CUSTOMIZATION ACROSS 10 CATEGORIES
             </p>
             <h1 className="text-4xl font-black" style={{ fontFamily: "'Space Grotesk', sans-serif", color: "#0D1B2A" }}>
-              Product Catalogue
+              Packaging Manufacturer India — 110+ SKUs
             </h1>
             <p className="text-slate-500 mt-2 max-w-xl text-sm">
               Every SKU is configurable — variants, dimensions, and print spec — and generates a live price range.

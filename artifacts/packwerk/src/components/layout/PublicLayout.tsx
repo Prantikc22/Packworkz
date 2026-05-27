@@ -7,6 +7,130 @@ import {
   Users, Mail,
 } from "lucide-react";
 
+// ── Per-page SEO metadata ────────────────────────────────────────────────────
+const PAGE_SEO: Record<string, { title: string; description: string; keywords: string }> = {
+  "/": {
+    title: "Packworkz — Packaging Manufacturer & Managed Platform India | D2C, FMCG, Pharma",
+    description: "India's first managed packaging manufacturer platform. 110+ SKUs, 3 backup vendors per order, 98.7% on-time delivery. Custom packaging for D2C, FMCG & pharma brands. Quote in 48 hours.",
+    keywords: "packaging manufacturer India, managed packaging platform, custom packaging India, D2C packaging manufacturer, FMCG packaging supplier India, packaging vendor India",
+  },
+  "/products": {
+    title: "Packaging Manufacturer India | 110+ SKUs — Pouches, Boxes, Bottles | Packworkz",
+    description: "Browse 110+ packaging SKUs from India's verified manufacturer network. Stand-up pouches, corrugated boxes, PET jars, poly mailers & more. MOQ from 200 units. Get a quote online.",
+    keywords: "packaging manufacturer India, custom packaging manufacturer, stand-up pouch manufacturer India, corrugated box manufacturer, flexible packaging manufacturer India",
+  },
+  "/industries": {
+    title: "Packaging Manufacturer for D2C, FMCG, Pharma & Exports | India | Packworkz",
+    description: "Custom packaging solutions for every industry — D2C brands, FMCG manufacturers, pharma, cosmetics, food & beverage, electronics, and exporters. India's managed packaging platform.",
+    keywords: "packaging manufacturer D2C India, FMCG packaging manufacturer, pharma packaging manufacturer India, cosmetics packaging supplier, B2B packaging India",
+  },
+  "/how-it-works": {
+    title: "How to Source Custom Packaging in India | 4-Step Process | Packworkz",
+    description: "Source custom packaging in 4 simple steps. Submit specs, get competitive quotes in 48 hours, approve samples, track production. India's simplest managed packaging sourcing process.",
+    keywords: "source packaging India, custom packaging process, packaging supplier India, managed packaging procurement, B2B packaging platform",
+  },
+  "/about": {
+    title: "About Packworkz | India's First Managed Packaging Manufacturer Platform",
+    description: "Founded to solve India's packaging vendor chaos. Packworkz connects D2C, FMCG & pharma brands with verified packaging manufacturers — owned QC, real-time tracking, Net-30 credit.",
+    keywords: "Packworkz about, packaging manufacturer platform India, managed packaging company India",
+  },
+  "/quote": {
+    title: "Get a Custom Packaging Quote in 48 Hours | India | Packworkz",
+    description: "Submit packaging specs and receive a detailed, competitive quote within 48 hours. Pouches, boxes, bottles, mailers and more. No vendor calls needed. 220+ brands trust Packworkz.",
+    keywords: "custom packaging quote India, packaging manufacturer quote, get packaging quote online, bulk packaging price India",
+  },
+  "/samples": {
+    title: "Order Packaging Samples India | From ₹2,999 | 3–5 Day Delivery | Packworkz",
+    description: "Order physical packaging samples before bulk production. 500+ combinations from ₹2,999. 3–5 day delivery pan-India. Custom printed samples for all SKUs.",
+    keywords: "packaging samples India, order packaging samples, custom packaging sample, packaging manufacturer sample India",
+  },
+  "/sustainable": {
+    title: "Sustainable Packaging Manufacturer India | EPR Compliant, FSC Certified | Packworkz",
+    description: "FSC-certified kraft, compostable mailers, recycled PE and EPR-compliant packaging from India's verified sustainable packaging manufacturers. Serving D2C and export brands.",
+    keywords: "sustainable packaging manufacturer India, eco-friendly packaging India, compostable packaging, EPR compliant packaging India, FSC certified packaging",
+  },
+  "/design": {
+    title: "Custom Packaging Design Service India | From ₹1,999 | Packworkz",
+    description: "Professional packaging design from ₹1,999. Full branding across 110+ SKUs. Print-ready artwork, dieline templates, and design management included.",
+    keywords: "custom packaging design India, packaging design service, packaging artwork India, D2C packaging design, print-ready packaging",
+  },
+  "/contact": {
+    title: "Contact Packworkz | Custom Packaging India | +91 82089 90366",
+    description: "Contact Packworkz for custom packaging quotes, sample orders, or design enquiries. Call +91 82089 90366 or send an enquiry online. 48-hour response guaranteed.",
+    keywords: "contact Packworkz, packaging manufacturer contact India, packaging enquiry India",
+  },
+  "/network": {
+    title: "Packworkz Manufacturer Network | 220+ Verified Packaging Factories India",
+    description: "220+ verified packaging manufacturers across India. 3 backup vendors assigned per order. Full traceability, QC certificates, and compliance documentation for every factory.",
+    keywords: "packaging manufacturer network India, verified packaging factories, packaging supplier network India, B2B packaging manufacturers",
+  },
+  "/industries/d2c": {
+    title: "D2C Packaging Manufacturer India | Custom Branded Pouches & Boxes | Packworkz",
+    description: "Custom branded packaging for D2C brands. Stand-up pouches, mailers, gift boxes and more. Low MOQ from 200 units. Fast 10–15 day delivery. Trusted by 150+ D2C brands.",
+    keywords: "D2C packaging manufacturer India, custom packaging D2C brand, branded packaging India, ecommerce packaging manufacturer",
+  },
+  "/industries/fmcg": {
+    title: "FMCG Packaging Manufacturer India | Bulk Supplier | Packworkz",
+    description: "High-volume FMCG packaging from India's verified manufacturer network. Flexible pouches, glass jars, cartons, labels and more. Net-30 credit available for qualifying brands.",
+    keywords: "FMCG packaging manufacturer India, bulk packaging supplier India, FMCG packaging platform, packaging supplier FMCG",
+  },
+  "/industries/pharma": {
+    title: "Pharma Packaging Manufacturer India | CPCB & FDA Compliant | Packworkz",
+    description: "Pharma-grade packaging with full compliance documentation. Blister packs, HDPE bottles, amber glass, foil laminates — all with QC certificates and CPCB compliance.",
+    keywords: "pharma packaging manufacturer India, pharmaceutical packaging supplier, FDA compliant packaging India, CPCB packaging India",
+  },
+  "/industries/beauty": {
+    title: "Beauty & Cosmetics Packaging Manufacturer India | Packworkz",
+    description: "Custom cosmetics packaging — airless pumps, glass jars, aluminium tubes, serum bottles and luxury boxes. Low MOQ, custom branding, pre-dispatch QC.",
+    keywords: "cosmetics packaging manufacturer India, beauty packaging supplier India, skincare packaging manufacturer, cosmetic bottle manufacturer India",
+  },
+  "/industries/food": {
+    title: "Food Packaging Manufacturer India | FSSAI Compliant | Packworkz",
+    description: "FSSAI-compliant food packaging — stand-up pouches, flat bottom bags, spout pouches, kraft boxes and more. Custom printing, retort pouches, and bulk orders available.",
+    keywords: "food packaging manufacturer India, FSSAI packaging India, food grade packaging supplier, snack packaging manufacturer India",
+  },
+  "/industries/exports": {
+    title: "Export Packaging Manufacturer India | SASO, FDA, CE Compliant | Packworkz",
+    description: "Packaging for Indian exporters targeting UAE, US, UK, and Europe. SASO-ready, FDA-grade, FSC-certified with full chain-of-custody documentation for every shipment.",
+    keywords: "export packaging India, SASO compliant packaging, FDA grade packaging India, packaging for Indian exporters, international packaging India",
+  },
+  "/industries/electronics": {
+    title: "Electronics Packaging Manufacturer India | Anti-Static, ESD Safe | Packworkz",
+    description: "Anti-static bags, ESD-safe packaging, corrugated inserts and custom foam for electronics brands. Full compliance documentation. Low MOQ, pan-India delivery.",
+    keywords: "electronics packaging manufacturer India, anti-static packaging India, ESD packaging supplier, custom packaging electronics brand",
+  },
+  "/products/flexible": {
+    title: "Flexible Packaging Manufacturer India | Stand-Up Pouches, Rollstock | Packworkz",
+    description: "Custom flexible packaging from India's verified manufacturers. Stand-up pouches, pillow pouches, spout pouches, flat bottom bags and rollstock. MOQ from 500 units.",
+    keywords: "flexible packaging manufacturer India, stand-up pouch manufacturer India, pouch packaging supplier, rollstock film manufacturer",
+  },
+  "/products/bottles": {
+    title: "Bottle & Jar Manufacturer India | PET, HDPE, Glass | Packworkz",
+    description: "PET jars, HDPE bottles, glass containers and more from India's verified rigid packaging manufacturers. Custom shapes, colours, closures and labelling available.",
+    keywords: "bottle manufacturer India, PET jar manufacturer India, HDPE bottle supplier, glass bottle manufacturer India, rigid packaging manufacturer",
+  },
+  "/products/boxes": {
+    title: "Box & Carton Manufacturer India | Mono Carton, Corrugated, Gift Box | Packworkz",
+    description: "Mono cartons, corrugated shippers, gift boxes and rigid boxes from India's verified packaging manufacturers. Full custom printing, embossing, foiling and finishing.",
+    keywords: "box manufacturer India, mono carton manufacturer India, corrugated box supplier India, gift box manufacturer, carton packaging India",
+  },
+  "/products/ecommerce": {
+    title: "E-commerce Packaging Manufacturer India | Poly Mailers, Courier Bags | Packworkz",
+    description: "Custom poly mailers, kraft mailers, compostable mailers and courier bags for D2C and e-commerce brands. Low MOQ from 200 units. Custom branded and plain stock available.",
+    keywords: "ecommerce packaging manufacturer India, poly mailer manufacturer, courier bag supplier India, D2C mailer packaging, shipping bag manufacturer",
+  },
+  "/products/sustainable": {
+    title: "Sustainable Packaging Products India | Compostable, Kraft, Recycled | Packworkz",
+    description: "Shop eco-friendly packaging — compostable mailers, kraft bags, recycled PE pouches and FSC-certified boxes. EPR compliance documentation included with every order.",
+    keywords: "sustainable packaging products India, compostable packaging manufacturer, eco packaging India, recycled packaging supplier",
+  },
+  "/products/labels": {
+    title: "Label Manufacturer India | Self-Adhesive, Shrink Sleeve, Sticker | Packworkz",
+    description: "Custom labels and shrink sleeves from India's verified label manufacturers. Self-adhesive labels, shrink sleeves, tamper-evident seals and more. MOQ from 1,000 units.",
+    keywords: "label manufacturer India, self-adhesive label supplier India, shrink sleeve manufacturer, sticker label manufacturer India",
+  },
+};
+
 const PRODUCT_CATS = [
   { icon: Package,      label: "Flexible Packaging",   desc: "Pouches, films & wraps",           href: "/products/flexible" },
   { icon: Box,          label: "Rigid Packaging",       desc: "Jars, bottles & hard shells",      href: "/products/rigid" },
@@ -678,14 +802,46 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     setIsLoggedIn(!!localStorage.getItem("packwerk_access_token"));
-    // Per-page canonical tag for SEO
+
+    const canonicalUrl = `https://packworkz.com${location === "/" ? "" : location}`;
+
+    // Resolve SEO: exact match → longest prefix → homepage fallback
+    const seo = PAGE_SEO[location] ??
+      (Object.entries(PAGE_SEO)
+        .filter(([k]) => k !== "/" && location.startsWith(k))
+        .sort((a, b) => b[0].length - a[0].length)[0]?.[1]) ??
+      PAGE_SEO["/"];
+
+    // Title
+    document.title = seo.title;
+
+    // Meta description
+    const descEl = document.querySelector('meta[name="description"]') as HTMLMetaElement | null;
+    if (descEl) descEl.content = seo.description;
+
+    // Meta keywords
+    const kwEl = document.querySelector('meta[name="keywords"]') as HTMLMetaElement | null;
+    if (kwEl) kwEl.content = seo.keywords;
+
+    // Open Graph
+    const setMeta = (selector: string, content: string) => {
+      const el = document.querySelector(selector) as HTMLMetaElement | null;
+      if (el) el.setAttribute("content", content);
+    };
+    setMeta('meta[property="og:title"]', seo.title);
+    setMeta('meta[property="og:description"]', seo.description);
+    setMeta('meta[property="og:url"]', canonicalUrl);
+    setMeta('meta[name="twitter:title"]', seo.title);
+    setMeta('meta[name="twitter:description"]', seo.description);
+
+    // Canonical
     let canonical = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;
     if (!canonical) {
       canonical = document.createElement("link");
       canonical.rel = "canonical";
       document.head.appendChild(canonical);
     }
-    canonical.href = `https://packworkz.com${location === "/" ? "" : location}`;
+    canonical.href = canonicalUrl;
   }, [location]);
 
   useEffect(() => {
