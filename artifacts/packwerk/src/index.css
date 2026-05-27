@@ -105,6 +105,24 @@
 /* Hidden by default — only revealed on mobile via media query */
 .po-case-inline-detail { display: none; }
 
+/* ── Comparison section base layout ── */
+.cmp-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+.cmp-col-headers {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.cmp-card-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+.cmp-mobile-label { display: none !important; }
+
 /* ── Home page mobile responsiveness ── */
 @media (max-width: 767px) {
   /* Customers section: stack text + marquee vertically */
@@ -178,6 +196,37 @@
   /* How It Works step padding */
   .grid.grid-cols-2 > div[style*="padding: \"0 32px\""] {
     padding: 0 12px !important;
+  }
+
+  /* Comparison section — mobile */
+  .cmp-stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 0 !important;
+  }
+  .cmp-stat-item {
+    padding: 24px 20px !important;
+    border-bottom: 1px solid rgba(255,255,255,0.07) !important;
+  }
+  .cmp-stat-item:nth-child(2),
+  .cmp-stat-item:nth-child(4) {
+    border-right: none !important;
+  }
+  .cmp-stat-item:nth-child(3),
+  .cmp-stat-item:nth-child(4) {
+    border-bottom: none !important;
+  }
+  .cmp-col-headers {
+    display: none !important;
+  }
+  .cmp-card-row {
+    grid-template-columns: 1fr !important;
+    gap: 4px !important;
+  }
+  .cmp-mobile-label {
+    display: inline !important;
+  }
+  .cmp-cta {
+    padding: 32px 24px !important;
   }
 }
 

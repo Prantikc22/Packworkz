@@ -1097,23 +1097,14 @@ export default function Home() {
       {/* ══════════════════════════════════════════════════════════ */}
       {/*  SECTION 5 — COMPARISON (redesigned)                      */}
       {/* ══════════════════════════════════════════════════════════ */}
-      <section className="relative overflow-hidden" style={{ background: "#09080f", padding: "120px 0" }}>
+      <section className="relative overflow-hidden" style={{ background: "#08080f", padding: "100px 0 120px" }}>
 
-        {/* Remarqd-style purple/violet centre glow */}
+        {/* Single subtle blue glow — top centre only */}
         <div className="absolute inset-0 pointer-events-none" style={{
-          background: "radial-gradient(ellipse 70% 65% at 50% 60%, rgba(88,28,235,0.22) 0%, rgba(49,46,129,0.15) 35%, transparent 70%)",
-        }} />
-        {/* Blue edge accent */}
-        <div className="absolute inset-0 pointer-events-none" style={{
-          background: "radial-gradient(ellipse 50% 40% at 50% 100%, rgba(27,108,168,0.18) 0%, transparent 60%)",
-        }} />
-        {/* Noise texture */}
-        <div className="absolute inset-0 pointer-events-none opacity-[0.03]" style={{
-          backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")",
-          backgroundSize: "256px 256px",
+          background: "radial-gradient(ellipse 55% 30% at 50% 0%, rgba(27,108,168,0.13) 0%, transparent 70%)",
         }} />
 
-        <div className="relative" style={{ zIndex: 1, maxWidth: 1100, margin: "0 auto", padding: "0 40px" }}>
+        <div className="relative" style={{ zIndex: 1, maxWidth: 940, margin: "0 auto", padding: "0 24px" }}>
 
           {/* ── Eyebrow ── */}
           <div className="scroll-animate" style={{ textAlign: "center", marginBottom: 20 }}>
@@ -1128,173 +1119,120 @@ export default function Home() {
           </div>
 
           {/* ── Heading ── */}
-          <div style={{ textAlign: "center", marginBottom: 16 }}>
-            <h2 className="scroll-animate scroll-animate-delay-1" style={{ color: "white", fontSize: "clamp(2.2rem,4.5vw,3.5rem)", fontWeight: 800, lineHeight: 1.05, letterSpacing: "-1.5px" }}>
+          <div style={{ textAlign: "center", marginBottom: 14 }}>
+            <h2 className="scroll-animate scroll-animate-delay-1" style={{ color: "white", fontSize: "clamp(2.2rem,4.5vw,3.4rem)", fontWeight: 800, lineHeight: 1.05, letterSpacing: "-1.5px" }}>
               Built for modern<br />
-              <span style={{ color: "#a5b4fc", fontStyle: "italic" }}>procurement teams.</span>
+              <span style={{ color: "white", fontStyle: "italic", opacity: 0.75 }}>procurement teams.</span>
             </h2>
           </div>
-          <p className="scroll-animate scroll-animate-delay-2" style={{ color: "rgba(255,255,255,0.42)", fontSize: 17, textAlign: "center", maxWidth: 480, margin: "0 auto 56px", lineHeight: 1.7 }}>
+          <p className="scroll-animate scroll-animate-delay-2" style={{ color: "rgba(255,255,255,0.40)", fontSize: 16, textAlign: "center", maxWidth: 420, margin: "0 auto 72px", lineHeight: 1.7 }}>
             Operational resilience designed into every order.
           </p>
 
-          {/* ── Credibility stats — Remarqd large-number card ── */}
-          <div className="scroll-animate scroll-animate-delay-2" style={{
-            maxWidth: 860, margin: "0 auto 64px",
-            border: "1px solid rgba(255,255,255,0.10)",
-            borderRadius: 4,
-            background: "rgba(255,255,255,0.03)",
-            backdropFilter: "blur(8px)",
-            display: "grid", gridTemplateColumns: "repeat(4,1fr)",
-          }}>
+          {/* ── Stats row — white numbers, gold accent underline ── */}
+          <div className="scroll-animate cmp-stats-grid" style={{ maxWidth: 860, margin: "0 auto 88px" }}>
             {[
-              { target: 120, suffix: "+",   label: "Manufacturing Partners",  color: "#60a5fa" },
-              { target: 99,  suffix: ".2%", label: "Dispatch Reliability",    color: "#2dd4bf" },
-              { target: 3,   suffix: "×",   label: "Backup Vendors / Order",  color: "#a78bfa" },
-              { target: 48,  suffix: " hr", label: "Resolution Guarantee",    color: "#fb7185" },
+              { target: 500, suffix: "+",   label: "Manufacturing Partners" },
+              { target: 99,  suffix: ".2%", label: "Dispatch Reliability" },
+              { target: 3,   suffix: "×",   label: "Backup Vendors / Order" },
+              { target: 48,  suffix: " hr", label: "Resolution SLA" },
             ].map((s, i) => (
-              <div key={i} style={{
-                padding: "32px 20px", textAlign: "left",
-                borderRight: i < 3 ? "1px solid rgba(255,255,255,0.07)" : "none",
-              }}>
-                <p style={{ color: s.color, fontSize: "clamp(2.4rem,4vw,3.2rem)", fontWeight: 800, lineHeight: 1, marginBottom: 12, letterSpacing: "-1px" }}>
+              <div
+                key={i}
+                className="cmp-stat-item"
+                style={{
+                  padding: "0 28px",
+                  borderRight: i < 3 ? "1px solid rgba(255,255,255,0.07)" : "none",
+                }}
+              >
+                <p style={{ color: "white", fontSize: "clamp(2.6rem,3.8vw,3.8rem)", fontWeight: 800, lineHeight: 1, letterSpacing: "-2px" }}>
                   <CountUp target={s.target} suffix={s.suffix} duration={1800} />
                 </p>
-                <p style={{ color: "rgba(255,255,255,0.80)", fontSize: 12, fontWeight: 700, textTransform: "uppercase", letterSpacing: "1.5px", marginBottom: 6 }}>
-                  {s.label.split(" ").slice(0,2).join(" ")}
+                {/* Gold accent underline */}
+                <div style={{ width: 28, height: 2, background: "#C8952A", margin: "10px 0 14px", flexShrink: 0 }} />
+                <p style={{ color: "rgba(255,255,255,0.55)", fontSize: 12, fontWeight: 600, textTransform: "uppercase", letterSpacing: "1.5px", lineHeight: 1.4 }}>
+                  {s.label}
                 </p>
-                {s.label.split(" ").length > 2 && (
-                  <p style={{ color: "rgba(255,255,255,0.35)", fontSize: 11, letterSpacing: "1px", textTransform: "uppercase" }}>
-                    {s.label.split(" ").slice(2).join(" ")}
-                  </p>
-                )}
               </div>
             ))}
           </div>
 
           {/* ── Column headers ── */}
-          <div className="scroll-animate" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 12, maxWidth: 860, margin: "0 auto 12px" }}>
+          <div className="scroll-animate cmp-col-headers" style={{ maxWidth: 860, margin: "0 auto 10px" }}>
             <div style={{
-              background: "linear-gradient(135deg, rgba(27,108,168,0.18) 0%, rgba(13,27,42,0.6) 100%)",
-              border: "1px solid rgba(96,165,250,0.30)",
-              borderBottom: "2px solid rgba(96,165,250,0.70)",
-              padding: "18px 24px", display: "flex", alignItems: "center", gap: 12,
-              backdropFilter: "blur(8px)",
+              background: "rgba(13,27,42,0.70)",
+              border: "1px solid rgba(59,130,246,0.25)",
+              borderBottom: "2px solid rgba(59,130,246,0.65)",
+              padding: "16px 22px", display: "flex", alignItems: "center", gap: 10,
             }}>
-              <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#60a5fa", boxShadow: "0 0 10px rgba(96,165,250,0.5)", flexShrink: 0 }} />
+              <div style={{ width: 7, height: 7, borderRadius: "50%", background: "#3B82F6", flexShrink: 0 }} />
               <div>
-                <p style={{ color: "white", fontSize: 15, fontWeight: 700 }}>Packworkz</p>
-                <p style={{ color: "rgba(255,255,255,0.40)", fontSize: 11, textTransform: "uppercase", letterSpacing: "1.5px", marginTop: 2 }}>Managed Platform</p>
+                <p style={{ color: "white", fontSize: 14, fontWeight: 700 }}>Packworkz</p>
+                <p style={{ color: "rgba(255,255,255,0.35)", fontSize: 10, textTransform: "uppercase", letterSpacing: "1.5px", marginTop: 2 }}>Managed Platform</p>
               </div>
             </div>
             <div style={{
-              background: "rgba(255,255,255,0.03)",
-              border: "1px solid rgba(255,255,255,0.07)",
-              padding: "18px 24px", display: "flex", alignItems: "center", gap: 12,
+              background: "rgba(255,255,255,0.02)",
+              border: "1px solid rgba(255,255,255,0.06)",
+              padding: "16px 22px", display: "flex", alignItems: "center", gap: 10,
             }}>
-              <div style={{ width: 8, height: 8, borderRadius: "50%", background: "rgba(255,255,255,0.20)", flexShrink: 0 }} />
+              <div style={{ width: 7, height: 7, borderRadius: "50%", background: "rgba(255,255,255,0.18)", flexShrink: 0 }} />
               <div>
-                <p style={{ color: "rgba(255,255,255,0.55)", fontSize: 15, fontWeight: 600 }}>Traditional Vendors</p>
-                <p style={{ color: "rgba(255,255,255,0.25)", fontSize: 11, textTransform: "uppercase", letterSpacing: "1.5px", marginTop: 2 }}>Direct Procurement</p>
+                <p style={{ color: "rgba(255,255,255,0.50)", fontSize: 14, fontWeight: 600 }}>Traditional Vendors</p>
+                <p style={{ color: "rgba(255,255,255,0.22)", fontSize: 10, textTransform: "uppercase", letterSpacing: "1.5px", marginTop: 2 }}>Direct Procurement</p>
               </div>
             </div>
           </div>
 
-          {/* ── Comparison cards ── */}
-          <div style={{ maxWidth: 860, margin: "0 auto", display: "flex", flexDirection: "column", gap: 8 }}>
+          {/* ── Comparison rows ── */}
+          <div style={{ maxWidth: 860, margin: "0 auto", display: "flex", flexDirection: "column", gap: 6 }}>
             {[
-              {
-                feature: "Vendor redundancy",
-                icon: "🛡",
-                good: "3 vetted backup vendors per order — production never stalls",
-                bad: "One vendor. Their delay is your delay.",
-              },
-              {
-                feature: "Quality control",
-                icon: "🔍",
-                good: "Our team inspects every dispatch. Photo evidence on dashboard.",
-                bad: "Vendor self-certifies. Rejection risk is yours.",
-              },
-              {
-                feature: "Pricing transparency",
-                icon: "💡",
-                good: "Transparent pricing + 3% discount for upfront payment.",
-                bad: "Credit terms hide 10–15% markup per unit.",
-              },
-              {
-                feature: "SKU coverage",
-                icon: "📦",
-                good: "110+ SKUs across all categories. One invoice.",
-                bad: "Specialised in one category. Source the rest yourself.",
-              },
-              {
-                feature: "Compliance & certs",
-                icon: "📋",
-                good: "ISO, BRC, FDA, FSC on file. Export-ready documentation.",
-                bad: "Certification varies by vendor. Risk sits with you.",
-              },
-              {
-                feature: "Design service",
-                icon: "🎨",
-                good: "Print-ready artwork from ₹1,999. Files yours forever.",
-                bad: "Mostly unavailable. Third-party dependency.",
-              },
-              {
-                feature: "Order visibility",
-                icon: "📡",
-                good: "Real-time dashboard — status, dispatch, ETA in one place.",
-                bad: "WhatsApp updates. No audit trail.",
-              },
-              {
-                feature: "Problem resolution",
-                icon: "⚡",
-                good: "48-hour resolution SLA. Dedicated account manager.",
-                bad: "Call them. Hope they answer.",
-              },
+              { feature: "Vendor redundancy",    good: "3 vetted backup vendors per order — production never stalls.",  bad: "One vendor. Their delay is your delay." },
+              { feature: "Quality control",       good: "Our team inspects every dispatch. Photo evidence in dashboard.", bad: "Vendor self-certifies. Rejection risk is yours." },
+              { feature: "Pricing transparency",  good: "Transparent pricing + 3% discount for upfront payment.",        bad: "Credit terms hide 10–15% markup per unit." },
+              { feature: "SKU coverage",          good: "110+ SKUs across all categories. One invoice.",                 bad: "Specialised in one category. Source the rest yourself." },
+              { feature: "Compliance & certs",    good: "ISO, BRC, FDA, FSC on file. Export-ready documentation.",       bad: "Certification varies by vendor. Risk sits with you." },
+              { feature: "Design service",        good: "Print-ready artwork from ₹1,999. Files yours forever.",         bad: "Mostly unavailable. Third-party dependency." },
+              { feature: "Order visibility",      good: "Real-time dashboard — status, dispatch, ETA in one place.",     bad: "WhatsApp updates. No audit trail." },
+              { feature: "Problem resolution",    good: "48-hour resolution SLA. Dedicated account manager.",            bad: "Call them. Hope they answer." },
             ].map((row, i) => (
-              <div
-                key={i}
-                className="scroll-animate"
-                style={{
-                  animationDelay: `${i * 0.06}s`,
-                  display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8,
-                }}
-              >
+              <div key={i} className="scroll-animate cmp-card-row" style={{ animationDelay: `${i * 0.055}s` }}>
+
                 {/* Packworkz card */}
                 <div
+                  className="cmp-card-good"
                   style={{
-                    background: "linear-gradient(135deg, rgba(27,108,168,0.14) 0%, rgba(13,27,42,0.55) 100%)",
-                    border: "1px solid rgba(255,255,255,0.08)",
-                    borderLeft: "2px solid rgba(96,165,250,0.55)",
-                    padding: "18px 20px",
-                    backdropFilter: "blur(6px)",
-                    transition: "border-color 0.25s, box-shadow 0.25s",
+                    background: "rgba(13,27,42,0.65)",
+                    border: "1px solid rgba(255,255,255,0.07)",
+                    borderLeft: "2px solid rgba(59,130,246,0.55)",
+                    padding: "16px 18px",
+                    transition: "border-left-color 0.2s, box-shadow 0.2s",
                     cursor: "default",
                   }}
                   onMouseEnter={e => {
                     const el = e.currentTarget as HTMLElement;
-                    el.style.borderColor = "rgba(96,165,250,0.35)";
-                    el.style.borderLeftColor = "rgba(96,165,250,0.90)";
-                    el.style.boxShadow = "0 8px 28px rgba(0,0,0,0.25)";
+                    el.style.borderLeftColor = "#3B82F6";
+                    el.style.boxShadow = "0 6px 24px rgba(0,0,0,0.28)";
                   }}
                   onMouseLeave={e => {
                     const el = e.currentTarget as HTMLElement;
-                    el.style.borderColor = "rgba(255,255,255,0.08)";
-                    el.style.borderLeftColor = "rgba(96,165,250,0.55)";
+                    el.style.borderLeftColor = "rgba(59,130,246,0.55)";
                     el.style.boxShadow = "none";
                   }}
                 >
-                  <div style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
+                  <div style={{ display: "flex", alignItems: "flex-start", gap: 11 }}>
                     <span style={{
-                      width: 22, height: 22, borderRadius: "50%",
-                      background: "rgba(96,165,250,0.15)", border: "1px solid rgba(96,165,250,0.40)",
+                      width: 20, height: 20, borderRadius: "50%",
+                      background: "rgba(34,197,94,0.12)", border: "1px solid rgba(34,197,94,0.35)",
                       display: "flex", alignItems: "center", justifyContent: "center",
-                      flexShrink: 0, marginTop: 2,
-                      color: "#60a5fa", fontSize: 12, fontWeight: 800,
+                      flexShrink: 0, marginTop: 2, color: "#22c55e", fontSize: 11, fontWeight: 800,
                     }}>✓</span>
                     <div>
-                      <p style={{ color: "rgba(255,255,255,0.45)", fontSize: 10, fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", marginBottom: 5 }}>{row.feature}</p>
-                      <p style={{ color: "rgba(255,255,255,0.85)", fontSize: 13, lineHeight: 1.6, fontWeight: 500 }}>{row.good}</p>
+                      <p style={{ color: "rgba(255,255,255,0.38)", fontSize: 10, fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", marginBottom: 4 }}>
+                        {row.feature}
+                        <span className="cmp-mobile-label" style={{ display: "none", marginLeft: 8, color: "#3B82F6" }}>· Packworkz</span>
+                      </p>
+                      <p style={{ color: "rgba(255,255,255,0.88)", fontSize: 13, lineHeight: 1.55, fontWeight: 500 }}>{row.good}</p>
                     </div>
                   </div>
                 </div>
@@ -1302,62 +1240,64 @@ export default function Home() {
                 {/* Traditional vendor card */}
                 <div
                   style={{
-                    background: "rgba(255,255,255,0.025)",
-                    border: "1px solid rgba(255,255,255,0.05)",
-                    padding: "18px 20px",
-                    transition: "box-shadow 0.25s",
+                    background: "rgba(255,255,255,0.02)",
+                    border: "1px solid rgba(255,255,255,0.04)",
+                    padding: "16px 18px",
+                    transition: "box-shadow 0.2s",
                     cursor: "default",
                   }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.boxShadow = "0 4px 16px rgba(0,0,0,0.2)"; }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.boxShadow = "0 4px 14px rgba(0,0,0,0.18)"; }}
                   onMouseLeave={e => { (e.currentTarget as HTMLElement).style.boxShadow = "none"; }}
                 >
-                  <div style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
+                  <div style={{ display: "flex", alignItems: "flex-start", gap: 11 }}>
                     <span style={{
-                      width: 22, height: 22, borderRadius: "50%",
-                      background: "rgba(239,68,68,0.10)", border: "1px solid rgba(239,68,68,0.25)",
+                      width: 20, height: 20, borderRadius: "50%",
+                      background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.22)",
                       display: "flex", alignItems: "center", justifyContent: "center",
-                      flexShrink: 0, marginTop: 2,
-                      color: "rgba(239,68,68,0.7)", fontSize: 12, fontWeight: 800,
+                      flexShrink: 0, marginTop: 2, color: "rgba(239,68,68,0.60)", fontSize: 11, fontWeight: 800,
                     }}>✗</span>
                     <div>
-                      <p style={{ color: "rgba(255,255,255,0.22)", fontSize: 10, fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", marginBottom: 5 }}>{row.feature}</p>
-                      <p style={{ color: "rgba(255,255,255,0.35)", fontSize: 13, lineHeight: 1.6 }}>{row.bad}</p>
+                      <p style={{ color: "rgba(255,255,255,0.20)", fontSize: 10, fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", marginBottom: 4 }}>
+                        {row.feature}
+                        <span className="cmp-mobile-label" style={{ display: "none", marginLeft: 8, color: "rgba(255,255,255,0.25)" }}>· Traditional</span>
+                      </p>
+                      <p style={{ color: "rgba(255,255,255,0.32)", fontSize: 13, lineHeight: 1.55 }}>{row.bad}</p>
                     </div>
                   </div>
                 </div>
+
               </div>
             ))}
           </div>
 
           {/* ── Summary bar ── */}
           <div className="scroll-animate" style={{
-            maxWidth: 860, margin: "24px auto 0",
-            background: "linear-gradient(135deg, rgba(96,165,250,0.10) 0%, rgba(88,28,235,0.07) 100%)",
-            border: "1px solid rgba(96,165,250,0.20)",
-            padding: "18px 28px", textAlign: "center",
+            maxWidth: 860, margin: "20px auto 0",
+            background: "rgba(13,27,42,0.50)",
+            border: "1px solid rgba(59,130,246,0.18)",
+            padding: "16px 24px", textAlign: "center",
           }}>
-            <p style={{ color: "rgba(255,255,255,0.75)", fontSize: 14, fontWeight: 600, letterSpacing: "0.3px" }}>
+            <p style={{ color: "rgba(255,255,255,0.60)", fontSize: 13, fontWeight: 600 }}>
               Even factoring in vendor credit lines — Packworkz delivers better total cost of ownership.
             </p>
           </div>
 
-          {/* ── Premium CTA block ── */}
-          <div className="scroll-animate" style={{
+          {/* ── CTA block ── */}
+          <div className="scroll-animate cmp-cta" style={{
             maxWidth: 860, margin: "48px auto 0",
-            background: "linear-gradient(135deg, rgba(27,108,168,0.18) 0%, rgba(13,27,42,0.75) 100%)",
-            border: "1px solid rgba(255,255,255,0.10)",
-            borderTop: "1px solid rgba(96,165,250,0.25)",
+            background: "rgba(13,27,42,0.60)",
+            border: "1px solid rgba(255,255,255,0.08)",
+            borderTop: "1px solid rgba(59,130,246,0.30)",
             padding: "44px 48px",
             display: "flex", flexDirection: "column" as const, alignItems: "center", textAlign: "center",
-            backdropFilter: "blur(12px)",
           }}>
-            <p style={{ color: "rgba(255,255,255,0.38)", fontSize: 11, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", marginBottom: 14 }}>
+            <p style={{ color: "rgba(255,255,255,0.35)", fontSize: 11, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", marginBottom: 14 }}>
               READY TO MODERNIZE
             </p>
-            <h3 style={{ color: "white", fontSize: "clamp(1.5rem,3vw,2.2rem)", fontWeight: 800, lineHeight: 1.15, marginBottom: 12, letterSpacing: "-0.5px" }}>
+            <h3 style={{ color: "white", fontSize: "clamp(1.5rem,3vw,2.1rem)", fontWeight: 800, lineHeight: 1.15, marginBottom: 12, letterSpacing: "-0.5px" }}>
               Operational certainty at scale.
             </h3>
-            <p style={{ color: "rgba(255,255,255,0.42)", fontSize: 15, maxWidth: 400, lineHeight: 1.7, marginBottom: 32 }}>
+            <p style={{ color: "rgba(255,255,255,0.40)", fontSize: 15, maxWidth: 400, lineHeight: 1.7, marginBottom: 32 }}>
               Talk to a packaging specialist and see exactly how Packworkz fits your supply chain.
             </p>
             <div style={{ display: "flex", gap: 12, flexWrap: "wrap" as const, justifyContent: "center" }}>
