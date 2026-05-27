@@ -1,0 +1,10 @@
+2026-05-27 14:23:28.974 [info] [supabase] client initialised → https://tmvbjbmudxyvimdnhrmw.supabase.co
+2026-05-27 14:23:29.014 [info] [PackAI] env=isReplitProxy:false apiKey:present baseUrl:https://openrouter.ai/api/v1 models:meta-llama/llama-3.3-70b-instruct:free,google/gemma-3-27b-it:free,mistralai/mistral-nemo:free,meta-llama/llama-3.1-8b-instruct:free,qwen/qwen3-235b-a22b:free,mistralai/mistral-7b-instruct:free
+2026-05-27 14:23:29.170 [error] [PackAI] model=meta-llama/llama-3.3-70b-instruct:free status=429 err={"error":{"message":"Provider returned error","code":429,"metadata":{"raw":"meta-llama/llama-3.3-70b-instruct:free is temporarily rate-limited upstream. Please retry shortly, or add your own key to ac
+2026-05-27 14:23:29.254 [error] [PackAI] model=google/gemma-3-27b-it:free status=404 err={"error":{"message":"No endpoints found for google/gemma-3-27b-it:free.","code":404},"user_id":"user_36IBA9Q1vY25ytbnyNeRoFHpy0u"}
+2026-05-27 14:23:29.278 [error] [PackAI] model=mistralai/mistral-nemo:free status=404 err={"error":{"message":"No endpoints found for mistralai/mistral-nemo:free.","code":404},"user_id":"user_36IBA9Q1vY25ytbnyNeRoFHpy0u"}
+2026-05-27 14:23:29.300 [error] [PackAI] model=meta-llama/llama-3.1-8b-instruct:free status=404 err={"error":{"message":"No endpoints found for meta-llama/llama-3.1-8b-instruct:free.","code":404},"user_id":"user_36IBA9Q1vY25ytbnyNeRoFHpy0u"}
+2026-05-27 14:23:29.331 [error] [PackAI] model=qwen/qwen3-235b-a22b:free status=404 err={"error":{"message":"No endpoints found for qwen/qwen3-235b-a22b:free.","code":404},"user_id":"user_36IBA9Q1vY25ytbnyNeRoFHpy0u"}
+2026-05-27 14:23:29.363 [error] [PackAI] model=mistralai/mistral-7b-instruct:free status=404 err={"error":{"message":"No endpoints found for mistralai/mistral-7b-instruct:free.","code":404},"user_id":"user_36IBA9Q1vY25ytbnyNeRoFHpy0u"}
+2026-05-27 14:23:29.363 [error] [PackAI] All models failed — returning smart fallback
+2026-05-27 14:23:29.363 [info] {"level":30,"time":1779891809334,"pid":4,"hostname":"169.254.4.103","req":{"id":1,"method":"POST","url":"/api/pack-ai/chat"},"res":{"statusCode":200},"responseTime":328,"msg":"request completed"}

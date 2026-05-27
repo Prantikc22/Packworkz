@@ -93,11 +93,12 @@ const MODELS = isReplitProxy
     ]
   : [
       "meta-llama/llama-3.3-70b-instruct:free",
-      "google/gemma-3-27b-it:free",
-      "mistralai/mistral-nemo:free",
-      "meta-llama/llama-3.1-8b-instruct:free",
-      "qwen/qwen3-235b-a22b:free",
-      "mistralai/mistral-7b-instruct:free",
+      "qwen/qwen3-next-80b-a3b-instruct:free",
+      "openai/gpt-oss-120b:free",
+      "google/gemma-4-31b-it:free",
+      "deepseek/deepseek-v4-flash:free",
+      "nousresearch/hermes-3-llama-3.1-405b:free",
+      "meta-llama/llama-3.2-3b-instruct:free",
     ];
 
 // Simple in-memory cooldown: track which models recently failed
