@@ -690,7 +690,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
       <header
         className="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-6 md:px-10 h-[68px]"
         style={{
-          background: scrolled ? "#1B3FA8" : "transparent",
+          background: scrolled ? "#162d6b" : "transparent",
           backdropFilter: "none",
           WebkitBackdropFilter: "none",
           borderBottom: scrolled ? "1px solid rgba(255,255,255,0.08)" : "1px solid transparent",
