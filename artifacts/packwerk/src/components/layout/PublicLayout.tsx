@@ -212,7 +212,7 @@ function ProductsMenu() {
               Predict reorder points before you run out. Zero stockouts.
             </div>
           </div>
-          <Link href="/products/smartstock" style={{
+          <Link href="/smartstock" style={{
             display: "inline-block", marginTop: 16,
             background: "#E8A838", color: "#0D1B2A",
             padding: "8px 14px", borderRadius: 6,
@@ -673,6 +673,9 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
   const [scrolled, setScrolled] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(() => !!localStorage.getItem("packwerk_access_token"));
 
+  const isHome = location === "/";
+  const navSolid = scrolled || !isHome;
+
   useEffect(() => {
     setIsLoggedIn(!!localStorage.getItem("packwerk_access_token"));
   }, [location]);
@@ -690,10 +693,10 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
       <header
         className="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-6 md:px-10 h-[68px]"
         style={{
-          background: scrolled ? "#162d6b" : "transparent",
+          background: navSolid ? "#162d6b" : "transparent",
           backdropFilter: "none",
           WebkitBackdropFilter: "none",
-          borderBottom: scrolled ? "1px solid rgba(255,255,255,0.08)" : "1px solid transparent",
+          borderBottom: navSolid ? "1px solid rgba(255,255,255,0.08)" : "1px solid transparent",
           transition: "background 0.3s ease, border-color 0.3s ease",
         }}
       >
@@ -736,15 +739,15 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
                 Login
               </Link>
             )}
-            {scrolled ? (
+            {navSolid ? (
               <span className="animated-border animated-border-white" style={{ marginLeft: 8 }}>
                 <Link href="/quote" className="po-cta-btn">
-                  <span>Get Quote</span>
+                  <span>GET QUOTE</span>
                 </Link>
               </span>
             ) : (
               <Link href="/quote" className="po-cta-btn" style={{ marginLeft: 8 }}>
-                <span>Get Quote</span>
+                <span>GET QUOTE</span>
               </Link>
             )}
           </div>

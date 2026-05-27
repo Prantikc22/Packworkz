@@ -72,7 +72,7 @@ export default function Products() {
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.2em] mb-3" style={{ color: "#1B6CA8" }}>
-              33 SKUs ACROSS 10 CATEGORIES
+              33 SKUs, 110+ CUSTOMIZATION ACROSS 10 CATEGORIES
             </p>
             <h1 className="text-4xl font-black" style={{ fontFamily: "'Space Grotesk', sans-serif", color: "#0D1B2A" }}>
               Product Catalogue

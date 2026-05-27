@@ -1,91 +1,189 @@
 import { Link } from "wouter";
-import { PublicLayout } from "@/components/layout/PublicLayout";
+
+const TIMELINE = [
+  { year: "2022", title: "The Idea", desc: "Founders run D2C brands, hit every packaging pain point — opaque pricing, vendor delays, zero tech. Decide to build what they wished existed." },
+  { year: "2023", title: "Platform Launch", desc: "Packworkz goes live with 33 SKUs, 50+ factory partners, and the first version of the managed procurement layer." },
+  { year: "2024", title: "SmartStock™ Launches", desc: "AI inventory intelligence layer ships. Brands on Packworkz record zero stockouts in H2 2024." },
+  { year: "2025", title: "Scale", desc: "500+ brands, 110+ SKUs, 20+ countries. India's first managed packaging platform becomes a category of its own." },
+];
+
+const VALUES = [
+  {
+    title: "Radical Transparency",
+    desc: "Every price, lead time, and factory name is visible to you. No hidden markups, no black boxes, no 'trust us' procurement.",
+    icon: "🔍",
+  },
+  {
+    title: "Quality Without Compromise",
+    desc: "Three-stage QC before dispatch, every batch. You only pay for what meets spec — rejects are on us.",
+    icon: "✦",
+  },
+  {
+    title: "Technology Over Tradition",
+    desc: "We built SmartStock™, real-time dashboards, and digital QC trails because the industry ran on WhatsApp and Excel for too long.",
+    icon: "⚡",
+  },
+  {
+    title: "Sustainability First",
+    desc: "We actively push brands toward lower-footprint alternatives. The planet is a stakeholder in every order we place.",
+    icon: "🌱",
+  },
+];
 
 export default function About() {
   return (
     <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-      {/* Hero */}
-      <section style={{ background: "#020617", padding: "100px 64px 80px", textAlign: "center" }}>
-        <p style={{ color: "#E8A838", fontSize: 12, fontWeight: 700, letterSpacing: "3px", textTransform: "uppercase", marginBottom: 16 }}>OUR STORY</p>
-        <h1 style={{ color: "white", fontSize: "clamp(36px,5vw,64px)", fontWeight: 900, lineHeight: 1.1, marginBottom: 24, letterSpacing: "-0.03em" }}>
-          Built by Brand Owners,<br />for Brand Owners.
-        </h1>
-        <p style={{ color: "rgba(255,255,255,0.6)", fontSize: 18, lineHeight: 1.7, maxWidth: 620, margin: "0 auto 40px" }}>
-          Packworkz was born from the frustration of running a D2C brand and realising India's packaging supply chain was broken — opaque pricing, inconsistent quality, and zero tech. We decided to fix it.
-        </p>
-      </section>
 
-      {/* Story */}
-      <section style={{ background: "#F8F9FC", padding: "80px 64px" }}>
-        <div style={{ maxWidth: 900, margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 64, alignItems: "center" }}>
-          <div>
-            <h2 style={{ color: "#0D1B2A", fontSize: 32, fontWeight: 800, lineHeight: 1.2, marginBottom: 20 }}>
-              India's first managed packaging platform.
-            </h2>
-            <p style={{ color: "#475569", fontSize: 15, lineHeight: 1.8, marginBottom: 16 }}>
-              We started in 2022 with a simple idea: connect India's best packaging factories directly to brands, cut out 3 distributor layers, and use technology to manage everything from quote to delivery.
-            </p>
-            <p style={{ color: "#475569", fontSize: 15, lineHeight: 1.8, marginBottom: 24 }}>
-              Today, Packworkz serves 500+ brands across FMCG, D2C, pharma, and e-commerce — delivering consistent quality at 18–35% lower cost than traditional procurement routes.
-            </p>
-            <Link href="/quote" style={{
-              display: "inline-block", background: "#E8A838", color: "#0D1B2A",
-              fontWeight: 800, fontSize: 14, padding: "12px 28px",
-              borderRadius: 8, textDecoration: "none",
-            }}>
-              Get a Quote →
+      {/* ── HERO ── */}
+      <section className="relative overflow-hidden" style={{ background: "linear-gradient(135deg, #020817 0%, #071a45 40%, #0f2455 100%)", padding: "140px 40px 100px", textAlign: "center", minHeight: "65vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse 65% 55% at 50% 40%, rgba(27,108,168,0.18) 0%, transparent 70%)" }} />
+        <div style={{ position: "relative", zIndex: 1, maxWidth: 800, margin: "0 auto" }}>
+          <div style={{ display: "inline-flex", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 9999, padding: "6px 18px", marginBottom: 28 }}>
+            <span style={{ color: "rgba(255,255,255,0.45)", fontSize: 10, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase" }}>OUR STORY</span>
+          </div>
+          <h1 style={{ color: "white", fontSize: "clamp(2.8rem,6vw,5rem)", fontWeight: 900, lineHeight: 1.05, letterSpacing: "-2px", marginBottom: 24 }}>
+            Built by Brand Owners,<br />
+            <span style={{ color: "#60a5fa", fontStyle: "italic" }}>for Brand Owners.</span>
+          </h1>
+          <p style={{ color: "rgba(255,255,255,0.52)", fontSize: "clamp(15px,2vw,18px)", lineHeight: 1.75, maxWidth: 580, margin: "0 auto 48px" }}>
+            Packworkz was born from the frustration of running D2C brands in India and realising the packaging supply chain was broken — opaque pricing, inconsistent quality, and zero technology. We decided to fix it.
+          </p>
+          <div style={{ display: "flex", gap: 14, justifyContent: "center", flexWrap: "wrap" }}>
+            <span className="animated-border animated-border-white">
+              <Link href="/quote">
+                <button className="btn-fill btn-amber px-8 py-3 text-sm">Get a Quote →</button>
+              </Link>
+            </span>
+            <Link href="/how-it-works">
+              <button className="btn-fill btn-outline-white px-8 py-3 text-sm">How It Works</button>
             </Link>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+        </div>
+      </section>
+
+      {/* ── STATS ── */}
+      <section style={{ background: "#08080f", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+        <div style={{ maxWidth: 860, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(4,1fr)", padding: "0 24px" }}>
+          {[
+            { val: "500+",  label: "Brands Served" },
+            { val: "110+",  label: "Packaging SKUs" },
+            { val: "500+",  label: "Factory Partners" },
+            { val: "2022",  label: "Founded" },
+          ].map((s, i) => (
+            <div key={i} style={{ padding: "36px 16px", textAlign: "center", borderRight: i < 3 ? "1px solid rgba(255,255,255,0.06)" : "none" }}>
+              <p style={{ color: "white", fontSize: "clamp(2.2rem,3.5vw,3.2rem)", fontWeight: 800, lineHeight: 1, letterSpacing: "-1px" }}>{s.val}</p>
+              <div style={{ width: 24, height: 2, background: "#C8952A", margin: "10px auto 12px" }} />
+              <p style={{ color: "rgba(255,255,255,0.42)", fontSize: 11, fontWeight: 600, textTransform: "uppercase", letterSpacing: "1.5px" }}>{s.label}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── MISSION ── */}
+      <section style={{ background: "#08080f", padding: "100px 40px" }}>
+        <div style={{ maxWidth: 900, margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 80, alignItems: "center" }}>
+          <div>
+            <p style={{ color: "#60a5fa", fontSize: 11, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", marginBottom: 16 }}>THE MISSION</p>
+            <h2 style={{ color: "white", fontSize: "clamp(2rem,4vw,3rem)", fontWeight: 800, lineHeight: 1.1, letterSpacing: "-1px", marginBottom: 24 }}>
+              India's first managed packaging platform.
+            </h2>
+            <p style={{ color: "rgba(255,255,255,0.50)", fontSize: 15, lineHeight: 1.8, marginBottom: 16 }}>
+              We started in 2022 with a simple idea: connect India's best packaging factories directly to brands, cut out 3 distributor layers, and use technology to manage everything from quote to delivery.
+            </p>
+            <p style={{ color: "rgba(255,255,255,0.50)", fontSize: 15, lineHeight: 1.8, marginBottom: 32 }}>
+              Today, Packworkz serves 500+ brands across FMCG, D2C, pharma, and e-commerce — delivering consistent quality at 18–35% lower cost than traditional procurement routes.
+            </p>
+            <span className="animated-border animated-border-white" style={{ display: "inline-block" }}>
+              <Link href="/quote">
+                <button className="btn-fill btn-amber px-8 py-3 text-sm">Get a Quote →</button>
+              </Link>
+            </span>
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
             {[
-              { num: "500+", label: "Brands Served" },
-              { num: "110+", label: "Packaging SKUs" },
-              { num: "20+", label: "Factory Partners" },
-              { num: "2022", label: "Founded" },
-            ].map(stat => (
-              <div key={stat.label} style={{ background: "white", borderRadius: 12, padding: "24px 20px", border: "1px solid #E2EAF4", textAlign: "center" }}>
-                <div style={{ color: "#1B6CA8", fontSize: 36, fontWeight: 900, lineHeight: 1 }}>{stat.num}</div>
-                <div style={{ color: "#64748B", fontSize: 13, fontWeight: 600, marginTop: 8 }}>{stat.label}</div>
+              { num: "18–35%", label: "Cost Savings vs. Traditional" },
+              { num: "110+",   label: "Packaging SKUs" },
+              { num: "0",      label: "Stockouts on SmartStock" },
+              { num: "48hr",   label: "Quote Turnaround" },
+            ].map((stat, i) => (
+              <div key={i} style={{ background: "rgba(13,27,42,0.70)", border: "1px solid rgba(59,130,246,0.15)", padding: "28px 20px", textAlign: "center" }}>
+                <div style={{ color: "white", fontSize: "clamp(1.5rem,2.5vw,2.2rem)", fontWeight: 900, lineHeight: 1, marginBottom: 10, letterSpacing: "-1px" }}>{stat.num}</div>
+                <div style={{ width: 20, height: 2, background: "#C8952A", margin: "0 auto 10px" }} />
+                <div style={{ color: "rgba(255,255,255,0.40)", fontSize: 11, fontWeight: 600, textTransform: "uppercase", letterSpacing: "1.2px", lineHeight: 1.4 }}>{stat.label}</div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Values */}
-      <section style={{ background: "white", padding: "80px 64px" }}>
+      {/* ── TIMELINE ── */}
+      <section style={{ background: "#0a0f1e", padding: "100px 40px" }}>
+        <div style={{ maxWidth: 800, margin: "0 auto" }}>
+          <div style={{ textAlign: "center", marginBottom: 64 }}>
+            <p style={{ color: "#60a5fa", fontSize: 11, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", marginBottom: 14 }}>THE JOURNEY</p>
+            <h2 style={{ color: "white", fontSize: "clamp(2rem,4vw,3rem)", fontWeight: 800, lineHeight: 1.1, letterSpacing: "-1px" }}>How we got here.</h2>
+          </div>
+          <div style={{ position: "relative" }}>
+            <div style={{ position: "absolute", left: 52, top: 0, bottom: 0, width: 1, background: "rgba(59,130,246,0.15)" }} />
+            {TIMELINE.map((t, i) => (
+              <div key={i} style={{ display: "flex", gap: 28, marginBottom: i < TIMELINE.length - 1 ? 40 : 0, position: "relative" }}>
+                <div style={{ flexShrink: 0, width: 80, textAlign: "right" }}>
+                  <span style={{ color: "#60a5fa", fontSize: 13, fontWeight: 800, letterSpacing: "-0.5px" }}>{t.year}</span>
+                </div>
+                <div style={{ width: 9, height: 9, borderRadius: "50%", background: "#3B82F6", border: "2px solid #1d4ed8", flexShrink: 0, marginTop: 5, zIndex: 1 }} />
+                <div style={{ paddingBottom: 8 }}>
+                  <h3 style={{ color: "white", fontSize: 16, fontWeight: 700, marginBottom: 8 }}>{t.title}</h3>
+                  <p style={{ color: "rgba(255,255,255,0.42)", fontSize: 13, lineHeight: 1.7 }}>{t.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── VALUES ── */}
+      <section style={{ background: "#08080f", padding: "100px 40px" }}>
         <div style={{ maxWidth: 900, margin: "0 auto" }}>
-          <p style={{ color: "#1B6CA8", fontSize: 12, fontWeight: 700, letterSpacing: "3px", textTransform: "uppercase", marginBottom: 12 }}>WHAT WE STAND FOR</p>
-          <h2 style={{ color: "#0D1B2A", fontSize: 32, fontWeight: 800, marginBottom: 48 }}>Our Values</h2>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 24 }}>
-            {[
-              { title: "Radical Transparency", desc: "Every price, lead time, and factory is visible to you. No hidden markups, no black boxes." },
-              { title: "Quality Without Compromise", desc: "Every batch goes through 3-stage QC before dispatch. You only pay for what meets spec." },
-              { title: "Sustainability First", desc: "We actively push brands toward lower-footprint packaging alternatives — because the planet is a stakeholder too." },
-            ].map(v => (
-              <div key={v.title} style={{ background: "#F8F9FC", borderRadius: 12, padding: "28px 24px", border: "1px solid #E2EAF4" }}>
-                <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#E8A838", marginBottom: 16 }} />
-                <h3 style={{ color: "#0D1B2A", fontSize: 16, fontWeight: 700, marginBottom: 10 }}>{v.title}</h3>
-                <p style={{ color: "#64748B", fontSize: 14, lineHeight: 1.7 }}>{v.desc}</p>
+          <div style={{ textAlign: "center", marginBottom: 56 }}>
+            <p style={{ color: "#60a5fa", fontSize: 11, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", marginBottom: 14 }}>WHAT WE STAND FOR</p>
+            <h2 style={{ color: "white", fontSize: "clamp(2rem,4vw,3rem)", fontWeight: 800, lineHeight: 1.1, letterSpacing: "-1px" }}>Our Values</h2>
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+            {VALUES.map((v, i) => (
+              <div key={i} style={{ background: "rgba(13,27,42,0.60)", border: "1px solid rgba(255,255,255,0.06)", borderTop: "2px solid rgba(59,130,246,0.35)", padding: "32px 28px" }}>
+                <div style={{ fontSize: 24, marginBottom: 16 }}>{v.icon}</div>
+                <h3 style={{ color: "white", fontSize: 16, fontWeight: 700, marginBottom: 10 }}>{v.title}</h3>
+                <p style={{ color: "rgba(255,255,255,0.42)", fontSize: 13, lineHeight: 1.75 }}>{v.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* CTA */}
-      <section style={{ background: "#020617", padding: "80px 64px", textAlign: "center" }}>
-        <h2 style={{ color: "white", fontSize: 32, fontWeight: 800, marginBottom: 16 }}>Ready to fix your packaging?</h2>
-        <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 16, marginBottom: 32 }}>Talk to our team. Get a quote in 24 hours.</p>
-        <div style={{ display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap" }}>
-          <Link href="/quote" style={{ background: "#E8A838", color: "#0D1B2A", fontWeight: 800, fontSize: 14, padding: "14px 32px", borderRadius: 8, textDecoration: "none" }}>
-            Get a Quote
-          </Link>
-          <a href="https://wa.me/918208990366" target="_blank" rel="noreferrer" style={{ background: "#25D366", color: "white", fontWeight: 800, fontSize: 14, padding: "14px 32px", borderRadius: 8, textDecoration: "none" }}>
-            WhatsApp Us
-          </a>
+      {/* ── CTA ── */}
+      <section className="relative overflow-hidden" style={{ background: "#08080f", padding: "100px 40px", textAlign: "center", borderTop: "1px solid rgba(255,255,255,0.05)" }}>
+        <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse 50% 60% at 50% 100%, rgba(27,108,168,0.14) 0%, transparent 65%)" }} />
+        <div style={{ position: "relative", zIndex: 1, maxWidth: 560, margin: "0 auto" }}>
+          <p style={{ color: "rgba(255,255,255,0.35)", fontSize: 11, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", marginBottom: 16 }}>WORK WITH US</p>
+          <h2 style={{ color: "white", fontSize: "clamp(2rem,4vw,3rem)", fontWeight: 800, lineHeight: 1.1, letterSpacing: "-1px", marginBottom: 16 }}>
+            Ready to fix your packaging?
+          </h2>
+          <p style={{ color: "rgba(255,255,255,0.40)", fontSize: 15, lineHeight: 1.7, marginBottom: 40 }}>
+            Talk to our team. Get a quote in 24 hours. No commitment required.
+          </p>
+          <div style={{ display: "flex", gap: 14, justifyContent: "center", flexWrap: "wrap" }}>
+            <span className="animated-border animated-border-white">
+              <Link href="/quote">
+                <button className="btn-fill btn-amber px-8 py-3 text-sm">Get a Quote →</button>
+              </Link>
+            </span>
+            <a href="https://wa.me/918208990366" target="_blank" rel="noreferrer">
+              <button className="btn-fill btn-outline-white px-8 py-3 text-sm">WhatsApp Us</button>
+            </a>
+          </div>
         </div>
       </section>
+
     </div>
   );
 }

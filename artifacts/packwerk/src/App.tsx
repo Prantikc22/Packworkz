@@ -28,6 +28,8 @@ import ResourceDetail from "@/pages/resource-detail";
 import LpD2c from "@/pages/lp-d2c";
 import Careers from "@/pages/careers";
 import Contact from "@/pages/contact";
+import SmartStock from "@/pages/smartstock";
+import Network from "@/pages/network";
 
 // Dashboard Pages
 import DashboardOverview from "@/pages/dashboard/overview";
@@ -110,6 +112,8 @@ function Router() {
 
       <PublicRoute path="/careers" component={Careers} layout={PublicLayout} />
       <PublicRoute path="/contact" component={Contact} layout={PublicLayout} />
+      <PublicRoute path="/smartstock" component={SmartStock} layout={PublicLayout} />
+      <PublicRoute path="/network" component={Network} layout={PublicLayout} />
 
       {/* Ad landing page — not linked from nav/footer */}
       <Route path="/lp/d2c" component={LpD2c} />
