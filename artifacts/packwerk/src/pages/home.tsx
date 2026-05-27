@@ -150,7 +150,7 @@ const HOW_IT_WORKS_STEPS = [
   {
     num: "Step 02",
     Icon: GitBranch,
-    title: "We Source and Match",
+    title: "We Source and Manufacture",
     desc: "PackOS matches your SKU to the best available factory from our verified network. 3 backup vendors assigned.",
     bg: "#0D1B2A",
   },
@@ -573,20 +573,38 @@ export default function Home() {
               <span className="w-1.5 h-1.5 rounded-full inline-block" style={{ background: "#93c5fd" }} />
               Built for D2C, FMCG &amp; Pharma Brands Globally
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 mb-12">
-              <span className="animated-border animated-border-white" style={{ display: "flex" }}>
-                <Link href="/products" style={{ flex: 1, display: "flex" }}>
-                  <button className="btn-fill btn-amber px-9 py-4 text-base whitespace-nowrap" style={{ flex: 1 }}>
-                    <span>Browse 110+ SKUs</span><MS icon="arrow_forward" />
-                  </button>
-                </Link>
-              </span>
-              <Link href="/samples" style={{ display: "flex" }}>
-                <button className="btn-fill btn-outline-white px-9 py-4 text-base whitespace-nowrap" style={{ flex: 1 }}>
-                  <span>Get a sample from ₹2,999</span>
+            <div className="flex flex-col sm:flex-row gap-3 mb-4">
+              <Link href="/products">
+                <button style={{
+                  background: "linear-gradient(135deg, #E8A838 0%, #c98b10 100%)",
+                  color: "#0D1B2A", padding: "15px 34px",
+                  borderRadius: 9999, fontWeight: 700, fontSize: 15,
+                  border: "none", cursor: "pointer",
+                  display: "inline-flex", alignItems: "center", gap: 8,
+                  whiteSpace: "nowrap",
+                  boxShadow: "0 4px 24px rgba(232,168,56,0.4)",
+                }}>
+                  Browse 110+ SKUs <span>→</span>
+                </button>
+              </Link>
+              <Link href="/samples">
+                <button style={{
+                  background: "rgba(255,255,255,0.06)",
+                  color: "white", padding: "15px 34px",
+                  borderRadius: 9999, fontWeight: 600, fontSize: 15,
+                  border: "1px solid rgba(255,255,255,0.22)",
+                  cursor: "pointer",
+                  display: "inline-flex", alignItems: "center", gap: 8,
+                  whiteSpace: "nowrap",
+                  backdropFilter: "blur(8px)",
+                }}>
+                  Get a sample from ₹2,999
                 </button>
               </Link>
             </div>
+            <p style={{ color: "rgba(255,255,255,0.35)", fontSize: 13, marginBottom: 28, letterSpacing: "0.2px" }}>
+              No MOQ surprises · No vendor chasing · Just results
+            </p>
 
             {/* Stats badges — locked inside left column */}
             <div className="flex flex-wrap gap-x-7 gap-y-3 pt-7 border-t border-white/15">
@@ -626,13 +644,13 @@ export default function Home() {
 
           {/* Left: text */}
           <div>
-            <p style={{ color: "#1B6CA8", fontSize: 11, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", marginBottom: 16 }}>
+            <p className="scroll-animate" style={{ color: "#1B6CA8", fontSize: 11, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", marginBottom: 16 }}>
               OUR CUSTOMERS
             </p>
-            <h2 style={{ color: "#0D1B2A", fontSize: 34, fontWeight: 800, lineHeight: 1.15, marginBottom: 18 }}>
+            <h2 className="scroll-animate scroll-animate-delay-1" style={{ color: "#0D1B2A", fontSize: 34, fontWeight: 800, lineHeight: 1.15, marginBottom: 18 }}>
               Trusted by India's fastest-growing brands.
             </h2>
-            <p style={{ color: "#475569", fontSize: 15, lineHeight: 1.75, marginBottom: 32 }}>
+            <p className="scroll-animate scroll-animate-delay-2" style={{ color: "#475569", fontSize: 15, lineHeight: 1.75, marginBottom: 32 }}>
               From D2C beauty &amp; wellness to FMCG and pharma — India's leading brands rely on Packworkz for consistent, compliant, beautiful packaging.
             </p>
             <div style={{ display: "flex", gap: 36, alignItems: "center" }}>
@@ -891,8 +909,8 @@ export default function Home() {
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 40px" }}>
           <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-4">
             <div>
-              <p className="font-bold tracking-[0.2em] text-sm uppercase mb-3" style={{ color: "#1B6CA8" }}>SECTORS WE SERVE</p>
-              <h2 className="clash-display text-white text-4xl">Built for every industry.</h2>
+              <p className="font-bold tracking-[0.2em] text-sm uppercase mb-3 scroll-animate" style={{ color: "#1B6CA8" }}>SECTORS WE SERVE</p>
+              <h2 className="clash-display text-white text-4xl scroll-animate scroll-animate-delay-1">Built for every industry.</h2>
             </div>
             <Link href="/industries">
               <button className="font-bold flex items-center gap-2 hover:underline" style={{ color: "#E8A838" }}>
@@ -1021,7 +1039,7 @@ export default function Home() {
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 40px", position: "relative", zIndex: 3 }}>
 
           {/* Top eyebrow */}
-          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 64 }}>
+          <div className="scroll-animate" style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 64 }}>
             <div style={{ width: 6, height: 6, background: "#4ade80", borderRadius: "50%", boxShadow: "0 0 8px rgba(74,222,128,0.7)" }} />
             <span style={{ color: "#86EFAC", fontSize: 11, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase" }}>SUSTAINABLE PACKAGING</span>
           </div>
@@ -1030,11 +1048,11 @@ export default function Home() {
 
             {/* Left */}
             <div>
-              <h2 style={{ color: "white", fontSize: "clamp(2rem,4vw,3.25rem)", fontWeight: 700, lineHeight: 1.1, marginBottom: 20, letterSpacing: "-0.5px" }}>
+              <h2 className="scroll-animate scroll-animate-delay-1" style={{ color: "white", fontSize: "clamp(2rem,4vw,3.25rem)", fontWeight: 700, lineHeight: 1.1, marginBottom: 20, letterSpacing: "-0.5px" }}>
                 Packaging that's<br />
                 <span style={{ color: "#4ade80" }}>good for the planet.</span>
               </h2>
-              <p style={{ color: "rgba(255,255,255,0.6)", fontSize: 16, lineHeight: 1.8, marginBottom: 36 }}>
+              <p className="scroll-animate scroll-animate-delay-2" style={{ color: "rgba(255,255,255,0.6)", fontSize: 16, lineHeight: 1.8, marginBottom: 36 }}>
                 12 certified sustainable SKUs. All customisable with your brand design. Food-safe, leak-proof, and built for Indian brands that take sustainability seriously. Full EPR compliance included.
               </p>
               <Link href="/products?category=sustainable">
@@ -1500,17 +1518,21 @@ export default function Home() {
           display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center",
         }}>
 
-          {/* Eyebrow */}
-          <span style={{
-            color: "#E8A838", fontSize: 11, fontWeight: 600,
-            letterSpacing: "2.5px", textTransform: "uppercase",
-            display: "block", marginBottom: 20,
-          }}>
-            READY TO START
-          </span>
+          {/* Eyebrow — pill tag Remarqd-style */}
+          <div className="scroll-animate" style={{ marginBottom: 24 }}>
+            <span style={{
+              display: "inline-flex", alignItems: "center", gap: 8,
+              background: "rgba(232,168,56,0.1)", border: "1px solid rgba(232,168,56,0.3)",
+              borderRadius: 9999, padding: "6px 18px",
+              color: "#E8A838", fontSize: 11, fontWeight: 700,
+              letterSpacing: "2px", textTransform: "uppercase",
+            }}>
+              YOUR MOVE
+            </span>
+          </div>
 
           {/* Headline */}
-          <h2 style={{
+          <h2 className="scroll-animate scroll-animate-delay-1" style={{
             color: "#FFFFFF", fontSize: "clamp(2.2rem, 5vw, 54px)", fontWeight: 700,
             lineHeight: 1.08, letterSpacing: "-1.5px", marginBottom: 24,
           }}>
@@ -1518,31 +1540,49 @@ export default function Home() {
           </h2>
 
           {/* Subheadline */}
-          <p style={{
+          <p className="scroll-animate scroll-animate-delay-2" style={{
             color: "rgba(255,255,255,0.6)", fontSize: 18,
-            maxWidth: 460, marginBottom: 52, lineHeight: 1.65,
+            maxWidth: 460, marginBottom: 40, lineHeight: 1.65,
           }}>
             Join brands across India and 40+ countries who have simplified their packaging supply chain.
           </p>
 
-          {/* CTAs */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center" style={{ alignItems: "stretch" }}>
-            <span className="animated-border animated-border-white" style={{ display: "flex" }}>
-              <Link href="/products" style={{ flex: 1, display: "flex" }}>
-                <button className="btn-fill btn-amber px-11 py-5 text-base" style={{ flex: 1, whiteSpace: "nowrap" }}>
-                  <span>Browse 110+ SKUs →</span>
-                </button>
-              </Link>
-            </span>
+          {/* CTAs — Remarqd pill style */}
+          <div className="scroll-animate scroll-animate-delay-3 flex flex-col sm:flex-row gap-3 justify-center mb-5">
+            <Link href="/products">
+              <button style={{
+                background: "linear-gradient(135deg, #E8A838 0%, #c98b10 100%)",
+                color: "#0D1B2A", padding: "16px 38px",
+                borderRadius: 9999, fontWeight: 700, fontSize: 16,
+                border: "none", cursor: "pointer",
+                display: "inline-flex", alignItems: "center", gap: 8,
+                whiteSpace: "nowrap",
+                boxShadow: "0 4px 28px rgba(232,168,56,0.45)",
+              }}>
+                Browse 110+ SKUs →
+              </button>
+            </Link>
             <a
               href={`https://wa.me/${WHATSAPP_NUM}?text=Hi%20Packworkz%2C%20I%27d%20like%20to%20discuss%20packaging.`}
-              target="_blank" rel="noopener noreferrer" style={{ display: "flex" }}
+              target="_blank" rel="noopener noreferrer"
             >
-              <button className="btn-fill btn-outline-white px-11 py-5 text-base" style={{ flex: 1, whiteSpace: "nowrap" }}>
-                <span>WhatsApp Us</span>
+              <button style={{
+                background: "rgba(255,255,255,0.06)",
+                color: "white", padding: "16px 38px",
+                borderRadius: 9999, fontWeight: 600, fontSize: 16,
+                border: "1px solid rgba(255,255,255,0.22)",
+                cursor: "pointer",
+                display: "inline-flex", alignItems: "center", gap: 8,
+                whiteSpace: "nowrap",
+                backdropFilter: "blur(8px)",
+              }}>
+                Talk to a human first
               </button>
             </a>
           </div>
+          <p className="scroll-animate scroll-animate-delay-4" style={{ color: "rgba(255,255,255,0.3)", fontSize: 13 }}>
+            No commitment · No sales pitch · Just results
+          </p>
 
           {/* Trust strip */}
           <div style={{
