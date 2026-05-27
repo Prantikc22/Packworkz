@@ -189,6 +189,9 @@ const CASE_STUDIES = [
       { val: "₹0", label: "Production delays" },
       { val: "6 mo", label: "Zero quality issues" },
     ],
+    quote: "We cut vendor coordination time by 80% in the first quarter. Packworkz handles everything — sourcing, QC, dispatch tracking. Our team finally has time to focus on growth.",
+    quoteName: "Rohan Mehta",
+    quoteTitle: "Supply Chain Head, Happilo",
   },
   {
     initials: "BC",
@@ -205,6 +208,9 @@ const CASE_STUDIES = [
       { val: "₹3.8L", label: "Annual saving" },
       { val: "14 mo", label: "Perfect record" },
     ],
+    quote: "Switched all 12 of our packaging SKUs to Packworkz after our previous vendor failed us three times. Six months in — zero delays, costs down 19%, and I sleep better on launch days.",
+    quoteName: "Prashant Kumar",
+    quoteTitle: "Procurement Manager, Bodycraft",
   },
   {
     initials: "OC",
@@ -221,6 +227,9 @@ const CASE_STUDIES = [
       { val: "3x", label: "Repeat orders won" },
       { val: "100%", label: "Certs provided" },
     ],
+    quote: "Our export buyer needed FSC certified packaging with full chain-of-custody documentation. Packworkz had it sourced, certified, and shipped in 14 days. No other vendor even understood the brief.",
+    quoteName: "Dr. Shalini Bhat",
+    quoteTitle: "Operations Director, Oliva Clinics",
   },
 ];
 
@@ -306,6 +315,31 @@ function CaseDetail({ cs }: { cs: typeof CASE_STUDIES[0] }) {
               <p style={{ color: "#64748B", fontSize: 12, marginTop: 6 }}>{m.label}</p>
             </div>
           ))}
+        </div>
+
+        {/* Customer quote */}
+        <div style={{
+          marginTop: 28,
+          borderLeft: "3px solid #E8A838",
+          background: "white",
+          padding: "20px 20px 20px 20px",
+        }}>
+          <p style={{ color: "#374151", fontSize: 14, lineHeight: 1.75, fontStyle: "italic", marginBottom: 12 }}>
+            "{cs.quote}"
+          </p>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <div style={{
+              width: 32, height: 32, borderRadius: "50%",
+              background: "#1B6CA8", display: "flex", alignItems: "center", justifyContent: "center",
+              fontSize: 12, fontWeight: 700, color: "white", flexShrink: 0,
+            }}>
+              {cs.quoteName.split(" ").map(w => w[0]).slice(0,2).join("")}
+            </div>
+            <div>
+              <p style={{ color: "#0D1B2A", fontSize: 13, fontWeight: 700, lineHeight: 1.2 }}>{cs.quoteName}</p>
+              <p style={{ color: "#94A3B8", fontSize: 11, marginTop: 2 }}>{cs.quoteTitle}</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>

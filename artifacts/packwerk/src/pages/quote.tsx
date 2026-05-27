@@ -120,14 +120,35 @@ function OrderSummary({
         </div>
 
         {onSubmit && sku && (
-          <button
-            onClick={onSubmit}
-            disabled={submitting}
-            className="w-full py-3 rounded font-black uppercase tracking-widest text-sm transition-all hover:opacity-90 active:scale-95 flex items-center justify-center gap-2 mt-2"
-            style={{ background: "#E8A838", color: "#0F1C2C" }}
-          >
-            {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <>SUBMIT REQUEST <ArrowRight className="w-4 h-4" /></>}
-          </button>
+          <>
+            <button
+              onClick={onSubmit}
+              disabled={submitting}
+              className="w-full py-3 rounded font-black uppercase tracking-widest text-sm transition-all hover:opacity-90 active:scale-95 flex items-center justify-center gap-2 mt-2"
+              style={{ background: "#E8A838", color: "#0F1C2C" }}
+            >
+              {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <>SUBMIT REQUEST <ArrowRight className="w-4 h-4" /></>}
+            </button>
+
+            <div className="mt-4 pt-4 border-t" style={{ borderColor: "rgba(255,255,255,0.08)" }}>
+              <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: "#94A3B8" }}>What happens next</p>
+              <div className="flex flex-col gap-2.5">
+                {[
+                  { n: "1", text: "We review your specs & call within 24 hours" },
+                  { n: "2", text: "You receive a detailed quote on WhatsApp & email" },
+                  { n: "3", text: "Accept & we source from 3 backup-verified factories" },
+                ].map(({ n, text }) => (
+                  <div key={n} className="flex items-start gap-2.5">
+                    <span className="w-5 h-5 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-black mt-0.5"
+                      style={{ background: "rgba(27,108,168,0.18)", color: "#1B6CA8" }}>
+                      {n}
+                    </span>
+                    <p className="text-xs leading-relaxed" style={{ color: "#94A3B8" }}>{text}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </>
         )}
 
         <div className="flex items-start gap-2 pt-2">
