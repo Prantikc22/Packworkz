@@ -11,22 +11,22 @@ const VALUES = [
   {
     title: "Radical Transparency",
     desc: "Every price, lead time, and factory name is visible to you. No hidden markups, no black boxes, no 'trust us' procurement.",
-    icon: "🔍",
+    index: "01",
   },
   {
     title: "Quality Without Compromise",
     desc: "Three-stage QC before dispatch, every batch. You only pay for what meets spec — rejects are on us.",
-    icon: "✦",
+    index: "02",
   },
   {
     title: "Technology Over Tradition",
     desc: "We built SmartStock™, real-time dashboards, and digital QC trails because the industry ran on WhatsApp and Excel for too long.",
-    icon: "⚡",
+    index: "03",
   },
   {
     title: "Sustainability First",
     desc: "We actively push brands toward lower-footprint alternatives. The planet is a stakeholder in every order we place.",
-    icon: "🌱",
+    index: "04",
   },
 ];
 
@@ -151,7 +151,7 @@ export default function About() {
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
             {VALUES.map((v, i) => (
               <div key={i} style={{ background: "rgba(13,27,42,0.60)", border: "1px solid rgba(255,255,255,0.06)", borderTop: "2px solid rgba(59,130,246,0.35)", padding: "32px 28px" }}>
-                <div style={{ fontSize: 24, marginBottom: 16 }}>{v.icon}</div>
+                <div style={{ color: "rgba(96,165,250,0.60)", fontSize: 11, fontWeight: 800, letterSpacing: "2px", marginBottom: 16 }}>{v.index}</div>
                 <h3 style={{ color: "white", fontSize: 16, fontWeight: 700, marginBottom: 10 }}>{v.title}</h3>
                 <p style={{ color: "rgba(255,255,255,0.42)", fontSize: 13, lineHeight: 1.75 }}>{v.desc}</p>
               </div>
