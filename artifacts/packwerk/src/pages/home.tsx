@@ -1213,8 +1213,16 @@ export default function Home() {
               { feature: "Design service",        good: "Print-ready artwork from ₹1,999. Files yours forever.",         bad: "Mostly unavailable. Third-party dependency." },
               { feature: "Order visibility",      good: "Real-time dashboard — status, dispatch, ETA in one place.",     bad: "WhatsApp updates. No audit trail." },
               { feature: "Problem resolution",    good: "48-hour resolution SLA. Dedicated account manager.",            bad: "Call them. Hope they answer." },
-            ] as { feature: string; good: string; bad: string }[]).slice(0, showAllComparisons ? 8 : 3).map((row, i) => (
-              <div key={i} className="scroll-animate cmp-card-row" style={{ animationDelay: `${i * 0.055}s` }}>
+            ] as { feature: string; good: string; bad: string }[]).map((row, i) => (
+              <div
+                key={i}
+                className="cmp-card-row"
+                style={{
+                  display: (i < 3 || showAllComparisons) ? undefined : "none",
+                  animation: (showAllComparisons && i >= 3) ? `cmp-reveal 0.32s ease ${(i - 3) * 0.07}s both` : undefined,
+                  marginBottom: 10,
+                }}
+              >
 
                 {/* Packworkz card */}
                 <div

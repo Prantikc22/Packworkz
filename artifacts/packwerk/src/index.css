@@ -193,6 +193,10 @@
   gap: 6px;
 }
 .cmp-mobile-label { display: none !important; }
+@keyframes cmp-reveal {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
 
 /* ── Home page mobile responsiveness ── */
 @media (max-width: 767px) {
