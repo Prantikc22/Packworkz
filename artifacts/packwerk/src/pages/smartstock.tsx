@@ -137,13 +137,13 @@ export default function SmartStock() {
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
             {[
-              { icon: "⚡", title: "5–7 Day Delivery", desc: "Pre-positioned buffer inventory means SmartStock SKUs ship in days, not weeks. Your launches never get delayed by packaging.", accent: "#60a5fa" },
-              { icon: "🛡", title: "Zero-Stockout Guarantee", desc: "If a SmartStock SKU goes out of stock due to a fulfilment failure on our end, Packworkz covers the emergency sourcing cost.", accent: "#34d399" },
-              { icon: "📊", title: "No Manual Forecasting", desc: "Your team stops tracking spreadsheets and starts scaling. The system raises the flag — all you do is approve.", accent: "#a78bfa" },
-              { icon: "🔄", title: "Always Getting Smarter", desc: "Every order cycle refines the model. The longer you're on Packworkz, the more accurate your SmartStock predictions become.", accent: "#f59e0b" },
+              { icon: "01", title: "5–7 Day Delivery", desc: "Pre-positioned buffer inventory means SmartStock SKUs ship in days, not weeks. Your launches never get delayed by packaging.", accent: "#60a5fa" },
+              { icon: "02", title: "Zero-Stockout Guarantee", desc: "If a SmartStock SKU goes out of stock due to a fulfilment failure on our end, Packworkz covers the emergency sourcing cost.", accent: "#34d399" },
+              { icon: "03", title: "No Manual Forecasting", desc: "Your team stops tracking spreadsheets and starts scaling. The system raises the flag — all you do is approve.", accent: "#a78bfa" },
+              { icon: "04", title: "Always Getting Smarter", desc: "Every order cycle refines the model. The longer you're on Packworkz, the more accurate your SmartStock predictions become.", accent: "#f59e0b" },
             ].map((v, i) => (
               <div key={i} style={{ background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.06)", borderTop: `2px solid ${v.accent}33`, padding: "32px 28px" }}>
-                <div style={{ fontSize: 28, marginBottom: 16 }}>{v.icon}</div>
+                <div style={{ color: v.accent, fontSize: 11, fontWeight: 800, letterSpacing: "2px", marginBottom: 16 }}>{v.icon}</div>
                 <h3 style={{ color: "white", fontSize: 16, fontWeight: 700, marginBottom: 10 }}>{v.title}</h3>
                 <p style={{ color: "rgba(255,255,255,0.45)", fontSize: 13, lineHeight: 1.7 }}>{v.desc}</p>
               </div>
