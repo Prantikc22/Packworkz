@@ -750,11 +750,11 @@ body, html {
 }
 
 .animated-border {
-  display: inline-block;
+  display: inline-flex;
+  align-items: stretch;
   position: relative;
-  border-radius: 10px;
+  border-radius: 0;
   padding: 2px;
-  /* rotating conic gradient produces the moving line */
   background: conic-gradient(
     from var(--ab-angle),
     transparent 0%,
@@ -764,13 +764,12 @@ body, html {
     transparent 100%
   );
   animation: ab-spin 2.4s linear infinite;
-  /* keep inner button corners matching wrapper */
-  line-height: 0;
+  vertical-align: middle;
 }
 
 .animated-border > * {
-  border-radius: 8px;
-  display: inline-flex;
+  border-radius: 0;
+  flex: 1;
 }
 
 /* Variant: white/cyan glow for dark hero backgrounds */

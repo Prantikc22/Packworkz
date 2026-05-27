@@ -397,6 +397,7 @@ export default function Home() {
         style={{
           background: "linear-gradient(135deg, #020817 0%, #071a45 40%, #153e9f 100%)",
           minHeight: 620,
+          marginTop: -68,
         }}
       >
         {/* Subtle geometric lines */}
