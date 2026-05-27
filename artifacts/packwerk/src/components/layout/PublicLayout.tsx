@@ -690,11 +690,11 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
       <header
         className="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-6 md:px-10 h-[68px]"
         style={{
-          background: scrolled ? "rgba(2,6,23,0.88)" : "transparent",
-          backdropFilter: scrolled ? "blur(18px)" : "none",
-          WebkitBackdropFilter: scrolled ? "blur(18px)" : "none",
-          borderBottom: scrolled ? "1px solid rgba(255,255,255,0.10)" : "1px solid transparent",
-          transition: "background 0.4s ease, border-color 0.4s ease, backdrop-filter 0.4s ease",
+          background: scrolled ? "#0D1B2A" : "transparent",
+          backdropFilter: "none",
+          WebkitBackdropFilter: "none",
+          borderBottom: scrolled ? "1px solid rgba(255,255,255,0.08)" : "1px solid transparent",
+          transition: "background 0.3s ease, border-color 0.3s ease",
         }}
       >
         {/* Logo */}

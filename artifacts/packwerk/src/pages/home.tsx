@@ -436,7 +436,7 @@ export default function Home() {
       <section
         className="relative overflow-hidden"
         style={{
-          background: "linear-gradient(160deg, #04060f 0%, #070d1e 35%, #0b1535 65%, #0f1e48 100%)",
+          background: "linear-gradient(135deg, #020817 0%, #071a45 40%, #153e9f 100%)",
           minHeight: 620,
           marginTop: -68,
         }}
@@ -1490,20 +1490,15 @@ export default function Home() {
       {/* ══════════════════════════════════════════════════════════ */}
       <section
         className="relative overflow-hidden"
-        style={{ background: "#09090f", padding: "160px 0" }}
+        style={{ background: "#08080f", padding: "160px 0" }}
       >
-        {/* Deep center glow — amber brand hue, like Remarqd's purple glow */}
+        {/* Rich blue spotlight — Remarqd-style radial glow at bottom center */}
         <div className="absolute inset-0 pointer-events-none" style={{
-          background: "radial-gradient(ellipse 70% 55% at 50% 85%, rgba(232,168,56,0.13) 0%, transparent 65%)",
+          background: "radial-gradient(ellipse 65% 60% at 50% 90%, rgba(27,108,168,0.55) 0%, rgba(13,40,90,0.30) 40%, transparent 70%)",
         }} />
-        {/* Secondary cool glow for depth */}
+        {/* Amber accent ring */}
         <div className="absolute inset-0 pointer-events-none" style={{
-          background: "radial-gradient(ellipse 50% 40% at 50% 100%, rgba(59,90,200,0.12) 0%, transparent 60%)",
-        }} />
-        {/* Very subtle noise/grain texture */}
-        <div className="absolute inset-0 pointer-events-none opacity-[0.025]" style={{
-          backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")",
-          backgroundSize: "256px 256px",
+          background: "radial-gradient(ellipse 35% 25% at 50% 100%, rgba(232,168,56,0.18) 0%, transparent 60%)",
         }} />
 
         {/* Content */}
