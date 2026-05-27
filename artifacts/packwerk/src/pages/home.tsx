@@ -252,7 +252,7 @@ function CaseDetail({ cs }: { cs: typeof CASE_STUDIES[0] }) {
     <div className="po-case-detail" style={{
       background: "#F8F9FC",
       border: "1px solid #E2EAF4",
-      borderTop: "3px solid #E8A838",
+      borderTop: "3px solid #1B6CA8",
       padding: "44px 48px",
       minHeight: 380,
     }}>
@@ -519,16 +519,16 @@ export default function Home() {
               <span className="w-1.5 h-1.5 rounded-full inline-block" style={{ background: "#93c5fd" }} />
               Built for D2C, FMCG &amp; Pharma Brands Globally
             </p>
-            <div className="flex flex-col sm:flex-row items-start gap-4 mb-12">
-              <span className="animated-border animated-border-white">
-                <Link href="/products">
-                  <button className="btn-fill btn-amber px-9 py-4 text-base whitespace-nowrap">
+            <div className="flex flex-col sm:flex-row gap-4 mb-12">
+              <span className="animated-border animated-border-white" style={{ display: "flex" }}>
+                <Link href="/products" style={{ flex: 1, display: "flex" }}>
+                  <button className="btn-fill btn-amber px-9 py-4 text-base whitespace-nowrap" style={{ flex: 1 }}>
                     <span>Browse 110+ SKUs</span><MS icon="arrow_forward" />
                   </button>
                 </Link>
               </span>
-              <Link href="/samples">
-                <button className="btn-fill btn-outline-white px-9 py-4 text-base whitespace-nowrap">
+              <Link href="/samples" style={{ display: "flex" }}>
+                <button className="btn-fill btn-outline-white px-9 py-4 text-base whitespace-nowrap" style={{ flex: 1 }}>
                   <span>Get a sample from ₹2,999</span>
                 </button>
               </Link>
@@ -688,103 +688,87 @@ export default function Home() {
       {/* ══════════════════════════════════════════════════════════ */}
       <section style={{ background: "#0A1628", padding: "100px 0" }}>
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 40px" }}>
-          {/* Heading */}
-          <div style={{ textAlign: "center", marginBottom: 80 }}>
-            <span style={{ color: "#E8A838", fontSize: 11, fontWeight: 600, letterSpacing: "2px", textTransform: "uppercase", display: "block", marginBottom: 14 }}>
-              THE PROCESS
-            </span>
-            <h2 style={{ color: "white", fontSize: "clamp(2rem,4vw,3.25rem)", fontWeight: 700, lineHeight: 1.1, marginBottom: 16 }}>
-              From brief to delivered.<br />Every time.
-            </h2>
-            <p style={{ color: "rgba(255,255,255,0.4)", fontSize: 18, maxWidth: 480, margin: "0 auto", lineHeight: 1.6 }}>
-              Four steps. Zero ambiguity. One team responsible for all of it.
-            </p>
-          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-start">
 
-          {/* Timeline track */}
-          <div ref={processRef} style={{ position: "relative" }}>
-            {/* Horizontal connector line — hidden on mobile */}
-            <div className="po-how-connector" style={{
-              position: "absolute",
-              top: 56,
-              left: "calc(12.5% + 32px)",
-              right: "calc(12.5% + 32px)",
-              height: 1,
-              background: "linear-gradient(to right, rgba(232,168,56,0.6), rgba(232,168,56,0.2), rgba(232,168,56,0.6))",
-              zIndex: 0,
-            }} />
+            {/* Left — sticky heading */}
+            <div className="lg:sticky" style={{ top: 96 }}>
+              <span style={{ color: "#E8A838", fontSize: 11, fontWeight: 600, letterSpacing: "2.5px", textTransform: "uppercase", display: "block", marginBottom: 20 }}>
+                THE PROCESS
+              </span>
+              <h2 style={{ color: "white", fontSize: "clamp(2.2rem,4.5vw,3.5rem)", fontWeight: 700, lineHeight: 1.08, marginBottom: 20, letterSpacing: "-1px" }}>
+                Four steps.<br />
+                <span style={{ color: "#E8A838", fontStyle: "italic" }}>Then you're sorted.</span>
+              </h2>
+              <p style={{ color: "rgba(255,255,255,0.45)", fontSize: 17, lineHeight: 1.75, marginBottom: 40, maxWidth: 380 }}>
+                From quote to delivery, one team owns every step. No finger-pointing. No vendor follow-ups.
+              </p>
+              <Link href="/how-it-works">
+                <span style={{
+                  display: "inline-flex", alignItems: "center", gap: 8,
+                  color: "#E8A838", fontSize: 14, fontWeight: 600,
+                  borderBottom: "1px solid rgba(232,168,56,0.35)", paddingBottom: 3,
+                }}>
+                  See the full process <ArrowRight size={15} />
+                </span>
+              </Link>
+            </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-4" style={{ gap: 0 }}>
+            {/* Right — vertical timeline */}
+            <div ref={processRef} style={{ display: "flex", flexDirection: "column" }}>
               {HOW_IT_WORKS_STEPS.map((step, i) => {
-                const Icon = step.Icon;
+                const isLast = i === HOW_IT_WORKS_STEPS.length - 1;
                 return (
                   <div
                     key={i}
                     style={{
-                      padding: "0 32px",
-                      textAlign: "center",
+                      display: "flex", gap: 20,
                       opacity: stepsVisible ? 1 : 0,
-                      transform: stepsVisible ? "translateY(0)" : "translateY(32px)",
-                      transition: `opacity 0.55s ease ${i * 0.13}s, transform 0.55s ease ${i * 0.13}s`,
+                      transform: stepsVisible ? "translateY(0)" : "translateY(24px)",
+                      transition: `opacity 0.5s ease ${i * 0.15}s, transform 0.5s ease ${i * 0.15}s`,
                     }}
                   >
-                    {/* Step label */}
-                    <p style={{
-                      color: "#E8A838", fontSize: 10, fontWeight: 700,
-                      letterSpacing: "2px", textTransform: "uppercase",
-                      marginBottom: 16,
-                    }}>
-                      {step.num}
-                    </p>
-
-                    {/* Icon box */}
-                    <div style={{
-                      width: 64, height: 64,
-                      background: "#E8A838",
-                      display: "flex", alignItems: "center", justifyContent: "center",
-                      margin: "0 auto 32px",
-                      position: "relative", zIndex: 1,
-                      boxShadow: "0 0 0 8px rgba(232,168,56,0.12)",
-                    }}>
-                      <Icon size={26} color="#0A1628" strokeWidth={2.5} />
+                    {/* Number circle + vertical connector */}
+                    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", flexShrink: 0 }}>
+                      <div style={{
+                        width: 44, height: 44,
+                        border: "1.5px solid rgba(232,168,56,0.5)",
+                        display: "flex", alignItems: "center", justifyContent: "center",
+                        color: "#E8A838", fontSize: 12, fontWeight: 700,
+                        letterSpacing: "0.5px", background: "#0A1628", position: "relative", zIndex: 1,
+                      }}>
+                        {String(i + 1).padStart(2, "0")}
+                      </div>
+                      {!isLast && (
+                        <div style={{ width: 1, flex: 1, minHeight: 32, background: "rgba(232,168,56,0.18)", margin: "8px 0" }} />
+                      )}
                     </div>
 
-                    {/* Title */}
-                    <h3 style={{
-                      color: "white", fontSize: 15, fontWeight: 700,
-                      marginBottom: 12, textTransform: "uppercase",
-                      letterSpacing: "0.5px", lineHeight: 1.3,
-                    }}>
-                      {step.title}
-                    </h3>
-
-                    {/* Description */}
-                    <p style={{
-                      color: "rgba(255,255,255,0.42)", fontSize: 13,
-                      lineHeight: 1.7, margin: 0,
-                    }}>
-                      {step.desc}
-                    </p>
+                    {/* Content */}
+                    <div style={{ paddingBottom: isLast ? 0 : 44, flex: 1 }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 10, flexWrap: "wrap" }}>
+                        <h3 style={{ color: "white", fontSize: 20, fontWeight: 700, lineHeight: 1.2, margin: 0 }}>
+                          {step.title}
+                        </h3>
+                        {!isLast && (
+                          <span style={{
+                            color: "#64748B", fontSize: 11, fontWeight: 600,
+                            letterSpacing: "1px", textTransform: "uppercase",
+                            background: "rgba(255,255,255,0.05)",
+                            padding: "3px 10px", border: "1px solid rgba(255,255,255,0.08)",
+                          }}>
+                            → Step {String(i + 2).padStart(2, "0")}
+                          </span>
+                        )}
+                      </div>
+                      <p style={{ color: "rgba(255,255,255,0.42)", fontSize: 14, lineHeight: 1.75, margin: 0 }}>
+                        {step.desc}
+                      </p>
+                    </div>
                   </div>
                 );
               })}
             </div>
-          </div>
 
-          <div style={{ marginTop: 64, textAlign: "center" }}>
-            <Link href="/how-it-works">
-              <span style={{
-                display: "inline-flex", alignItems: "center", gap: 8,
-                color: "#E8A838", fontSize: 14, fontWeight: 600,
-                cursor: "pointer",
-                borderBottom: "1px solid rgba(232,168,56,0.3)",
-                paddingBottom: 2,
-                transition: "border-color 0.2s",
-              }}>
-                See the full process
-                <ArrowRight size={15} />
-              </span>
-            </Link>
           </div>
         </div>
       </section>
@@ -812,17 +796,19 @@ export default function Home() {
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5">
             {CATEGORIES.map((cat) => (
               <Link href={`/products?category=${cat.cat}`} key={cat.title}>
-                <div className="group bg-white p-5 shadow-sm hover:-translate-y-2 transition-all cursor-pointer border" style={{ borderColor: "#E2EAF4" }}>
-                  <div className="w-full h-36 mb-4 overflow-hidden bg-slate-100">
+                <div className="group bg-white shadow-sm hover:-translate-y-2 transition-all cursor-pointer border overflow-hidden" style={{ borderColor: "#E2EAF4" }}>
+                  <div className="w-full overflow-hidden" style={{ height: 160 }}>
                     <img
                       src={CAT_IMAGES[cat.cat]}
                       alt={cat.title}
                       className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
                     />
                   </div>
-                  <h4 className="font-bold text-sm leading-tight mb-1" style={{ color: "#0D1B2A" }}>{cat.title}</h4>
-                  <p className="text-xs leading-snug" style={{ color: "#64748B" }}>{cat.sub}</p>
-                  <p className="text-xs font-bold mt-2" style={{ color: "#1B6CA8" }}>{cat.skus} SKU{cat.skus !== 1 ? "s" : ""}</p>
+                  <div className="p-4">
+                    <h4 className="font-bold text-sm leading-tight mb-1" style={{ color: "#0D1B2A" }}>{cat.title}</h4>
+                    <p className="text-xs leading-snug" style={{ color: "#64748B" }}>{cat.sub}</p>
+                    <p className="text-xs font-bold mt-2" style={{ color: "#1B6CA8" }}>{cat.skus} SKU{cat.skus !== 1 ? "s" : ""}</p>
+                  </div>
                 </div>
               </Link>
             ))}
@@ -875,37 +861,65 @@ export default function Home() {
       {/* ══════════════════════════════════════════════════════════ */}
       {/*  SMARTSTOCK — responsive: image visible on all screens     */}
       {/* ══════════════════════════════════════════════════════════ */}
-      <section className="relative overflow-hidden" style={{ background: "#0f172a", minHeight: 600 }}>
-        {/* Mobile: full-width bg image with dark overlay */}
+      <section className="relative overflow-hidden" style={{ background: "#020817", minHeight: 640 }}>
+        {/* Radial glow */}
+        <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse 65% 55% at 75% 50%, rgba(27,108,168,0.18) 0%, transparent 65%)" }} />
+
+        {/* Mobile bg */}
         <div className="absolute inset-0 lg:hidden">
-          <img src="/smartstock.jpg" alt="" className="w-full h-full object-cover" style={{ objectPosition: "center" }} />
-          <div className="absolute inset-0" style={{ background: "rgba(15,23,42,0.82)" }} />
+          <img src="/smartstock.jpg" alt="" className="w-full h-full object-cover" style={{ opacity: 0.25 }} />
+          <div className="absolute inset-0" style={{ background: "rgba(2,8,23,0.88)" }} />
         </div>
 
-        {/* Desktop: image on right 52% of section */}
-        <div className="absolute top-0 right-0 bottom-0 hidden lg:block" style={{ width: "52%" }}>
-          <img src="/smartstock.jpg" alt="SmartStock — India logistics network" className="w-full h-full object-cover" />
-          <div className="absolute inset-0" style={{
-            background: "linear-gradient(to right, #0f172a 0%, rgba(15,23,42,0.6) 38%, rgba(15,23,42,0.05) 100%)"
-          }} />
+        {/* Desktop image — right 50% */}
+        <div className="absolute top-0 right-0 bottom-0 hidden lg:block" style={{ width: "50%" }}>
+          <img src="/smartstock.jpg" alt="SmartStock AI" className="w-full h-full object-cover" style={{ opacity: 0.55 }} />
+          <div className="absolute inset-0" style={{ background: "linear-gradient(to right, #020817 0%, rgba(2,8,23,0.65) 45%, rgba(2,8,23,0.1) 100%)" }} />
         </div>
 
         {/* Content */}
-        <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 min-h-[600px]">
-          <div className="px-8 md:px-16 lg:px-20 py-24 flex flex-col justify-center text-white">
-            <span className="font-bold tracking-widest mb-6 uppercase text-sm" style={{ color: "#E8A838" }}>SMARTSTOCK™ AI INVENTORY</span>
-            <h2 className="clash-display text-4xl mb-8">Never run out of boxes again.</h2>
-            <p className="text-slate-400 text-lg mb-10 leading-relaxed">
-              Our AI analyses your sales velocity and lead times across 500+ factory partners to automatically trigger replenishment.
-              <br /><br />We hold up to <span className="text-white font-bold">4 weeks of buffer stock</span> in regional nodes so you never face a line-stop.
+        <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 min-h-[640px]">
+          <div className="px-8 md:px-16 lg:px-20 py-24 flex flex-col justify-center">
+
+            {/* Eyebrow */}
+            <div style={{ display: "inline-flex", alignItems: "center", gap: 10, marginBottom: 28 }}>
+              <div style={{ width: 7, height: 7, background: "#3b82f6", borderRadius: "50%", boxShadow: "0 0 10px rgba(59,130,246,0.7)" }} />
+              <span style={{ color: "#60a5fa", fontSize: 11, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase" }}>SMARTSTOCK™ AI INVENTORY</span>
+            </div>
+
+            <h2 className="clash-display" style={{ color: "white", fontSize: "clamp(2rem,4vw,3.2rem)", fontWeight: 700, lineHeight: 1.1, marginBottom: 16 }}>
+              Never run out<br />of boxes again.
+            </h2>
+            <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 16, lineHeight: 1.8, marginBottom: 36 }}>
+              Our AI analyses your sales velocity across 500+ factory partners and automatically triggers replenishment — before you even think to reorder.
             </p>
-            <ul className="space-y-4 mb-12">
-              {["Automated JIT Replenishment", "Regional Warehousing in 12 Cities", "SKU Consolidation Reporting"].map(item => (
-                <li key={item} className="flex items-center gap-3">
-                  <MS icon="check_circle" style={{ color: "#1B6CA8" }} /> {item}
-                </li>
+
+            {/* Metrics grid */}
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", marginBottom: 36, border: "1px solid rgba(255,255,255,0.07)", background: "rgba(255,255,255,0.03)" }}>
+              {[
+                { val: "500+", label: "Factory Partners" },
+                { val: "12",   label: "City Nodes" },
+                { val: "4 wk", label: "Buffer Stock" },
+              ].map((m, i) => (
+                <div key={i} style={{ padding: "18px 12px", textAlign: "center", borderRight: i < 2 ? "1px solid rgba(255,255,255,0.07)" : "none" }}>
+                  <p style={{ color: "#60a5fa", fontSize: 22, fontWeight: 700, lineHeight: 1, marginBottom: 6 }}>{m.val}</p>
+                  <p style={{ color: "rgba(255,255,255,0.35)", fontSize: 10, textTransform: "uppercase", letterSpacing: "1.5px" }}>{m.label}</p>
+                </div>
               ))}
-            </ul>
+            </div>
+
+            {/* Features */}
+            <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 36 }}>
+              {["Automated JIT Replenishment", "Regional Warehousing in 12 Cities", "SKU Consolidation Reporting"].map(item => (
+                <div key={item} style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                  <div style={{ width: 20, height: 20, background: "rgba(27,108,168,0.2)", border: "1px solid rgba(59,130,246,0.35)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                    <span style={{ color: "#60a5fa", fontSize: 10, fontWeight: 800, lineHeight: 1 }}>✓</span>
+                  </div>
+                  <span style={{ color: "rgba(255,255,255,0.65)", fontSize: 14 }}>{item}</span>
+                </div>
+              ))}
+            </div>
+
             <Link href="/quote">
               <button className="btn-fill btn-blue w-fit px-8 py-4">
                 <span>See SmartStock in Action</span>
@@ -924,79 +938,84 @@ export default function Home() {
       {/* ══════════════════════════════════════════════════════════ */}
       {/*  SECTION 10 — SUSTAINABLE PACKAGING BAND                  */}
       {/* ══════════════════════════════════════════════════════════ */}
-      <section style={{ background: "#0A3326", padding: "88px 0", position: "relative", overflow: "hidden" }}>
+      <section style={{ background: "#051A12", padding: "96px 0", position: "relative", overflow: "hidden" }}>
 
-        {/* Layer 1: Photo background */}
+        {/* Photo background */}
         <picture style={{ position: "absolute", inset: 0, width: "100%", height: "100%", zIndex: 0 }}>
           <source srcSet="/images/sustainable-bg.webp" type="image/webp" />
-          <img
-            src="/images/sustainable-bg.jpg"
-            alt=""
-            loading="lazy"
-            style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" }}
-          />
+          <img src="/images/sustainable-bg.jpg" alt="" loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" }} />
         </picture>
 
-        {/* Layer 2: Dark overlay */}
-        <div style={{
-          position: "absolute", inset: 0,
-          background: "rgba(10,51,38,0.78)",
-          zIndex: 1,
-        }} />
+        {/* Gradient overlay — dark green tint */}
+        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg, rgba(5,26,18,0.94) 0%, rgba(5,26,18,0.82) 60%, rgba(5,26,18,0.6) 100%)", zIndex: 1 }} />
 
-        {/* Layer 3: Subtle radial accent */}
-        <div style={{
-          position: "absolute", inset: 0, pointerEvents: "none", zIndex: 2,
-          background: "radial-gradient(ellipse 60% 70% at 85% 15%, rgba(34,197,94,0.15) 0%, transparent 60%)",
-        }} />
+        {/* Radial green glow */}
+        <div style={{ position: "absolute", inset: 0, pointerEvents: "none", zIndex: 2, background: "radial-gradient(ellipse 55% 60% at 80% 20%, rgba(34,197,94,0.12) 0%, transparent 55%)" }} />
+
+        {/* Subtle grid lines */}
+        <div style={{ position: "absolute", inset: 0, pointerEvents: "none", zIndex: 2, opacity: 0.04, backgroundImage: "linear-gradient(rgba(134,239,172,1) 1px, transparent 1px), linear-gradient(90deg, rgba(134,239,172,1) 1px, transparent 1px)", backgroundSize: "60px 60px" }} />
 
         {/* Content */}
-        <div
-          className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center"
-          style={{ maxWidth: 1100, margin: "0 auto", padding: "0 40px", position: "relative", zIndex: 3 }}
-        >
-          {/* Left */}
-          <div>
-            <span style={{ color: "#86EFAC", fontSize: 11, fontWeight: 600, letterSpacing: "2px", textTransform: "uppercase", display: "block", marginBottom: 14 }}>
-              SUSTAINABLE PACKAGING
-            </span>
-            <h2 style={{ color: "white", fontSize: "clamp(1.8rem, 3.5vw, 2.75rem)", fontWeight: 700, lineHeight: 1.2, margin: "0 0 20px" }}>
-              Eco packaging<br />at real scale.
-            </h2>
-            <p style={{ color: "rgba(255,255,255,0.7)", fontSize: 16, lineHeight: 1.7, marginBottom: 28 }}>
-              12 certified sustainable SKUs. All customisable with your brand design. Food-safe, leak-proof, and built for Indian brands that take sustainability seriously. Full EPR compliance documentation included with every order.
-            </p>
-            <Link href="/products?category=sustainable">
-              <button className="btn-fill btn-amber px-7 py-3 text-sm">
-                <span>See all sustainable SKUs →</span>
-              </button>
-            </Link>
+        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 40px", position: "relative", zIndex: 3 }}>
+
+          {/* Top eyebrow */}
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 64 }}>
+            <div style={{ width: 6, height: 6, background: "#4ade80", borderRadius: "50%", boxShadow: "0 0 8px rgba(74,222,128,0.7)" }} />
+            <span style={{ color: "#86EFAC", fontSize: 11, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase" }}>SUSTAINABLE PACKAGING</span>
           </div>
 
-          {/* Right */}
-          <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
-            {[
-              { Icon: Leaf,        title: "12 certified sustainable SKUs", desc: "Kraft, compostable, recycled, and mono-material" },
-              { Icon: Droplets,    title: "Food-safe and leak-proof",      desc: "Tested for spices, gravies, and Indian food products" },
-              { Icon: FileCheck,   title: "EPR compliance included",       desc: "Full documentation for your annual filing" },
-            ].map((row, i) => {
-              const Icon = row.Icon;
-              return (
-                <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 14 }}>
-                  <div style={{
-                    background: "rgba(134,239,172,0.15)", width: 40, height: 40,
-                    display: "flex", alignItems: "center",
-                    justifyContent: "center", flexShrink: 0,
-                  }}>
-                    <Icon size={18} color="#86EFAC" />
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+
+            {/* Left */}
+            <div>
+              <h2 style={{ color: "white", fontSize: "clamp(2rem,4vw,3.25rem)", fontWeight: 700, lineHeight: 1.1, marginBottom: 20, letterSpacing: "-0.5px" }}>
+                Packaging that's<br />
+                <span style={{ color: "#4ade80" }}>good for the planet.</span>
+              </h2>
+              <p style={{ color: "rgba(255,255,255,0.6)", fontSize: 16, lineHeight: 1.8, marginBottom: 36 }}>
+                12 certified sustainable SKUs. All customisable with your brand design. Food-safe, leak-proof, and built for Indian brands that take sustainability seriously. Full EPR compliance included.
+              </p>
+              <Link href="/products?category=sustainable">
+                <button className="btn-fill btn-amber px-8 py-4 text-sm">
+                  <span>See all sustainable SKUs →</span>
+                </button>
+              </Link>
+
+              {/* Stats row */}
+              <div style={{ display: "flex", gap: 32, marginTop: 40, paddingTop: 40, borderTop: "1px solid rgba(255,255,255,0.08)" }}>
+                {[{ val: "12", label: "Certified SKUs" }, { val: "100%", label: "EPR Compliant" }, { val: "0", label: "Plastic Waste" }].map((s, i) => (
+                  <div key={i}>
+                    <p style={{ color: "#4ade80", fontSize: 26, fontWeight: 700, lineHeight: 1 }}>{s.val}</p>
+                    <p style={{ color: "rgba(255,255,255,0.4)", fontSize: 12, marginTop: 4, textTransform: "uppercase", letterSpacing: "1px" }}>{s.label}</p>
                   </div>
-                  <div>
-                    <p style={{ color: "white", fontSize: 14, fontWeight: 700, marginBottom: 2 }}>{row.title}</p>
-                    <p style={{ color: "rgba(255,255,255,0.6)", fontSize: 13 }}>{row.desc}</p>
+                ))}
+              </div>
+            </div>
+
+            {/* Right — premium feature cards */}
+            <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+              {[
+                { Icon: Leaf,      num: "01", title: "12 Certified Sustainable SKUs",   desc: "Kraft, compostable, recycled, and mono-material options. All verified by third-party certifiers." },
+                { Icon: Droplets,  num: "02", title: "Food-safe and Leak-proof",        desc: "Rigorously tested for spices, gravies, oils, and Indian food products. No compromise." },
+                { Icon: FileCheck, num: "03", title: "EPR Compliance Included",         desc: "Full Extended Producer Responsibility documentation for your annual regulatory filing. Zero extra cost." },
+              ].map((row, i) => {
+                const Icon = row.Icon;
+                return (
+                  <div key={i} style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(134,239,172,0.1)", padding: "24px 28px", display: "flex", gap: 20, alignItems: "flex-start" }}>
+                    <div style={{ flexShrink: 0 }}>
+                      <p style={{ color: "rgba(134,239,172,0.4)", fontSize: 11, fontWeight: 700, letterSpacing: "1px", marginBottom: 10 }}>{row.num}</p>
+                      <div style={{ width: 44, height: 44, background: "rgba(74,222,128,0.1)", border: "1px solid rgba(74,222,128,0.2)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                        <Icon size={20} color="#4ade80" />
+                      </div>
+                    </div>
+                    <div>
+                      <p style={{ color: "white", fontSize: 15, fontWeight: 700, marginBottom: 8 }}>{row.title}</p>
+                      <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 13, lineHeight: 1.7 }}>{row.desc}</p>
+                    </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
         </div>
       </section>
@@ -1016,9 +1035,9 @@ export default function Home() {
             This question comes up every time. Here is the honest answer.
           </p>
 
-          <div className="po-comparison-wrap" style={{ maxWidth: 820, margin: "0 auto", borderRadius: 0, overflow: "hidden", boxShadow: "0 4px 32px rgba(13,27,42,0.08)" }}>
+          <div className="po-comparison-wrap" style={{ maxWidth: 820, margin: "0 auto", overflow: "hidden", boxShadow: "0 4px 32px rgba(13,27,42,0.08)" }}>
             {/* Header row */}
-            <div style={{ display: "grid", gridTemplateColumns: "2fr 1.5fr 1.5fr", borderBottom: "1px solid #E2EAF4" }}>
+            <div className="po-comparison-header" style={{ display: "grid", gridTemplateColumns: "2fr 1.5fr 1.5fr", borderBottom: "1px solid #E2EAF4" }}>
               <div style={{ background: "#F8F9FC", padding: "20px 28px" }} />
               <div style={{ background: "#0D1B2A", padding: "20px 28px", textAlign: "center", borderBottom: "2px solid #E8A838" }}>
                 <p style={{ color: "white", fontSize: 16, fontWeight: 700 }}>Packworkz</p>
@@ -1043,20 +1062,21 @@ export default function Home() {
             ].map((row, i) => (
               <div
                 key={i}
+                className="po-comparison-row"
                 style={{
                   display: "grid", gridTemplateColumns: "2fr 1.5fr 1.5fr",
                   borderBottom: "1px solid #E2EAF4",
                   background: i % 2 === 0 ? "white" : "#FAFBFC",
                 }}
               >
-                <div style={{ padding: "14px 28px", color: "#0D1B2A", fontSize: 14, fontWeight: 600, display: "flex", alignItems: "center" }}>
+                <div className="po-comparison-label" style={{ padding: "14px 28px", color: "#0D1B2A", fontSize: 14, fontWeight: 600, display: "flex", alignItems: "center" }}>
                   {row.label}
                 </div>
-                <div style={{ padding: "14px 28px", textAlign: "center", background: "rgba(13,27,42,0.015)" }}>
+                <div className="po-comparison-good" style={{ padding: "14px 28px", textAlign: "center", background: "rgba(13,27,42,0.015)" }}>
                   <p style={{ color: "#22C55E", fontSize: 18, fontWeight: 700, lineHeight: 1 }}>✓</p>
                   <p style={{ color: "#64748B", fontSize: 12, lineHeight: 1.4, maxWidth: 150, margin: "4px auto 0" }}>{row.good}</p>
                 </div>
-                <div style={{ padding: "14px 28px", textAlign: "center" }}>
+                <div className="po-comparison-bad" style={{ padding: "14px 28px", textAlign: "center" }}>
                   <p style={{ color: "#EF4444", fontSize: 18, fontWeight: 700, lineHeight: 1 }}>✗</p>
                   <p style={{ color: "#94A3B8", fontSize: 12, lineHeight: 1.4, maxWidth: 150, margin: "4px auto 0" }}>{row.bad}</p>
                 </div>
@@ -1064,7 +1084,7 @@ export default function Home() {
             ))}
 
             {/* Footer row */}
-            <div style={{ gridColumn: "1 / -1", background: "#E8A838", padding: "18px 28px", textAlign: "center" }}>
+            <div className="po-comparison-footer" style={{ background: "#E8A838", padding: "18px 28px", textAlign: "center" }}>
               <p style={{ color: "#0D1B2A", fontSize: 15, fontWeight: 700 }}>
                 Even with their credit — we are still the better financial choice.
               </p>
@@ -1096,83 +1116,41 @@ export default function Home() {
                     key={i}
                     onClick={() => { setActiveCase(i); startCaseRotation(); }}
                     style={{
-                      background: isActive ? "#FFFBF0" : "white",
-                      border: `1px solid ${isActive ? "#E8A838" : "#E2EAF4"}`,
+                      background: isActive ? "#EFF6FF" : "white",
+                      border: `1px solid ${isActive ? "#1B6CA8" : "#E2EAF4"}`,
                       padding: "22px 24px",
                       cursor: "pointer",
                       position: "relative",
                       overflow: "hidden",
                       transition: "all 0.3s ease",
-                      boxShadow: isActive ? "0 4px 20px rgba(232,168,56,0.15)" : "none",
+                      boxShadow: isActive ? "0 4px 20px rgba(27,108,168,0.12)" : "none",
                     }}
                   >
-                    {/* Left accent bar */}
                     {isActive && (
-                      <div style={{
-                        position: "absolute", left: 0, top: 0, bottom: 0,
-                        width: 3, background: "#E8A838",
-                      }} />
+                      <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 3, background: "#1B6CA8" }} />
                     )}
-
-                    {/* Auto-rotation progress bar */}
                     {isActive && (
-                      <div style={{
-                        position: "absolute", bottom: 0, left: 0,
-                        height: 2, background: "#E8A838",
-                        animation: "progress-fill 4s linear forwards",
-                      }} />
+                      <div style={{ position: "absolute", bottom: 0, left: 0, height: 2, background: "#1B6CA8", animation: "progress-fill 4s linear forwards" }} />
                     )}
-
-                    {/* Avatar — sharp square */}
-                    <div style={{
-                      width: 38, height: 38,
-                      background: "#0D1B2A", color: "white",
-                      fontSize: 13, fontWeight: 700,
-                      display: "flex", alignItems: "center", justifyContent: "center",
-                      marginBottom: 12,
-                    }}>
+                    <div style={{ width: 38, height: 38, background: "#0D1B2A", color: "white", fontSize: 13, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 12 }}>
                       {cs.initials}
                     </div>
-
                     <p style={{ color: "#0D1B2A", fontSize: 15, fontWeight: 700, marginBottom: 3 }}>{cs.company}</p>
                     <p style={{ color: "#64748B", fontSize: 12 }}>{cs.industry}</p>
-
-                    {/* Metric tag — sharp */}
-                    <div style={{
-                      display: "inline-block", marginTop: 10,
-                      background: "rgba(232,168,56,0.1)",
-                      border: "1px solid rgba(232,168,56,0.3)",
-                      padding: "4px 12px",
-                    }}>
-                      <span style={{ color: "#92600A", fontSize: 12, fontWeight: 600 }}>{cs.metric}</span>
+                    <div style={{ display: "inline-block", marginTop: 10, background: "rgba(27,108,168,0.08)", border: "1px solid rgba(27,108,168,0.2)", padding: "4px 12px" }}>
+                      <span style={{ color: "#1B6CA8", fontSize: 12, fontWeight: 600 }}>{cs.metric}</span>
                     </div>
                   </div>
                 );
               })}
 
-              {/* 4th slot: CTA — stretches to match right card height */}
-              <div style={{
-                background: "#0D1B2A",
-                border: "1px solid rgba(232,168,56,0.2)",
-                padding: "22px 24px",
-                display: "flex", flexDirection: "column", justifyContent: "center",
-                flex: 1,
-              }}>
-                <p style={{ color: "#E8A838", fontSize: 10, fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", marginBottom: 12 }}>
-                  YOUR BRAND
-                </p>
-                <p style={{ color: "white", fontSize: 15, fontWeight: 700, marginBottom: 8, lineHeight: 1.3 }}>
-                  Could your story be next?
-                </p>
-                <p style={{ color: "rgba(255,255,255,0.45)", fontSize: 12, lineHeight: 1.55, marginBottom: 18 }}>
-                  Join 220+ brands that simplified their packaging with Packworkz.
-                </p>
+              {/* 4th slot: CTA */}
+              <div style={{ background: "#0D1B2A", border: "1px solid rgba(27,108,168,0.2)", padding: "22px 24px", display: "flex", flexDirection: "column", justifyContent: "center", flex: 1 }}>
+                <p style={{ color: "#60a5fa", fontSize: 10, fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", marginBottom: 12 }}>YOUR BRAND</p>
+                <p style={{ color: "white", fontSize: 15, fontWeight: 700, marginBottom: 8, lineHeight: 1.3 }}>Could your story be next?</p>
+                <p style={{ color: "rgba(255,255,255,0.45)", fontSize: 12, lineHeight: 1.55, marginBottom: 18 }}>Join 220+ brands that simplified their packaging with Packworkz.</p>
                 <Link href="/quote">
-                  <button style={{
-                    background: "#E8A838", color: "#0D1B2A",
-                    padding: "10px 20px", fontSize: 13, fontWeight: 700,
-                    border: "none", cursor: "pointer",
-                  }}>
+                  <button style={{ background: "#1B6CA8", color: "white", padding: "10px 20px", fontSize: 13, fontWeight: 700, border: "none", cursor: "pointer" }}>
                     Get a quote →
                   </button>
                 </Link>
@@ -1486,20 +1464,19 @@ export default function Home() {
           </p>
 
           {/* CTAs */}
-          <div style={{ display: "flex", gap: 16, justifyContent: "center", alignItems: "center", flexWrap: "wrap" }}>
-            <Link href="/products">
-              <span className="animated-border animated-border-white">
-                <button className="btn-fill btn-amber px-11 py-5 text-base">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center" style={{ alignItems: "stretch" }}>
+            <span className="animated-border animated-border-white" style={{ display: "flex" }}>
+              <Link href="/products" style={{ flex: 1, display: "flex" }}>
+                <button className="btn-fill btn-amber px-11 py-5 text-base" style={{ flex: 1, whiteSpace: "nowrap" }}>
                   <span>Browse 110+ SKUs →</span>
                 </button>
-              </span>
-            </Link>
-
+              </Link>
+            </span>
             <a
               href={`https://wa.me/${WHATSAPP_NUM}?text=Hi%20Packworkz%2C%20I%27d%20like%20to%20discuss%20packaging.`}
-              target="_blank" rel="noopener noreferrer"
+              target="_blank" rel="noopener noreferrer" style={{ display: "flex" }}
             >
-              <button className="btn-fill btn-outline-white px-11 py-5 text-base">
+              <button className="btn-fill btn-outline-white px-11 py-5 text-base" style={{ flex: 1, whiteSpace: "nowrap" }}>
                 <span>WhatsApp Us</span>
               </button>
             </a>
