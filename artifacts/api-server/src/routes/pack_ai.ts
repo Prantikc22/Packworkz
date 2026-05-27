@@ -82,13 +82,23 @@ const SYSTEM_PROMPT = `You are PackAI, an expert packaging consultant for Packwo
 - After recommending, always offer to generate a quote or connect to WhatsApp
 - Keep your tone helpful and practical, not salesy`;
 
-// Preferred models — verified working on Replit's OpenRouter proxy (no :free suffix)
-const MODELS = [
-  "meta-llama/llama-3.3-70b-instruct",
-  "google/gemma-3-27b-it",
-  "mistralai/mistral-nemo",
-  "meta-llama/llama-3.1-8b-instruct",
-];
+// Replit proxy requires no :free suffix; real OpenRouter API requires :free for free-tier models
+const isReplitProxy = !!process.env.AI_INTEGRATIONS_OPENROUTER_BASE_URL;
+const MODELS = isReplitProxy
+  ? [
+      "meta-llama/llama-3.3-70b-instruct",
+      "google/gemma-3-27b-it",
+      "mistralai/mistral-nemo",
+      "meta-llama/llama-3.1-8b-instruct",
+    ]
+  : [
+      "meta-llama/llama-3.3-70b-instruct:free",
+      "google/gemma-3-27b-it:free",
+      "mistralai/mistral-nemo:free",
+      "meta-llama/llama-3.1-8b-instruct:free",
+      "qwen/qwen3-235b-a22b:free",
+      "mistralai/mistral-7b-instruct:free",
+    ];
 
 // Simple in-memory cooldown: track which models recently failed
 const modelCooldown = new Map<string, number>();
