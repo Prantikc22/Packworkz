@@ -1490,98 +1490,85 @@ export default function Home() {
       {/* ══════════════════════════════════════════════════════════ */}
       <section
         className="relative overflow-hidden"
-        style={{
-          background: "radial-gradient(circle at 30% 60%, rgba(59,130,246,0.18), transparent 45%), linear-gradient(135deg, #020617 0%, #0f172a 35%, #1e3a8a 65%, #1d4ed8 85%, #2563eb 100%)",
-          padding: "140px 0",
-        }}
+        style={{ background: "#09090f", padding: "160px 0" }}
       >
-        {/* Box pattern overlay */}
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='0.5' y='0.5' width='59' height='59' rx='3' fill='none' stroke='white' stroke-opacity='0.04'/%3E%3C/svg%3E")`,
-            backgroundSize: "60px 60px",
-          }}
-        />
-
-        {/* Radial depth overlay */}
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            zIndex: 0,
-            background: "radial-gradient(ellipse 80% 60% at 50% 100%, rgba(27,108,168,0.25) 0%, transparent 70%)",
-          }}
-        />
+        {/* Deep center glow — amber brand hue, like Remarqd's purple glow */}
+        <div className="absolute inset-0 pointer-events-none" style={{
+          background: "radial-gradient(ellipse 70% 55% at 50% 85%, rgba(232,168,56,0.13) 0%, transparent 65%)",
+        }} />
+        {/* Secondary cool glow for depth */}
+        <div className="absolute inset-0 pointer-events-none" style={{
+          background: "radial-gradient(ellipse 50% 40% at 50% 100%, rgba(59,90,200,0.12) 0%, transparent 60%)",
+        }} />
+        {/* Very subtle noise/grain texture */}
+        <div className="absolute inset-0 pointer-events-none opacity-[0.025]" style={{
+          backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")",
+          backgroundSize: "256px 256px",
+        }} />
 
         {/* Content */}
         <div className="relative" style={{
-          zIndex: 1, maxWidth: 640, margin: "0 auto", padding: "0 32px",
+          zIndex: 1, maxWidth: 600, margin: "0 auto", padding: "0 32px",
           display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center",
         }}>
 
-          {/* Eyebrow — pill tag Remarqd-style */}
-          <div className="scroll-animate" style={{ marginBottom: 24 }}>
+          {/* Eyebrow — frosted pill tag */}
+          <div className="scroll-animate" style={{ marginBottom: 28 }}>
             <span style={{
-              display: "inline-flex", alignItems: "center", gap: 8,
-              background: "rgba(232,168,56,0.1)", border: "1px solid rgba(232,168,56,0.3)",
-              borderRadius: 9999, padding: "6px 18px",
-              color: "#E8A838", fontSize: 11, fontWeight: 700,
-              letterSpacing: "2px", textTransform: "uppercase",
+              display: "inline-flex", alignItems: "center",
+              background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)",
+              borderRadius: 9999, padding: "7px 20px",
+              color: "rgba(255,255,255,0.55)", fontSize: 11, fontWeight: 600,
+              letterSpacing: "2.5px", textTransform: "uppercase",
             }}>
               YOUR MOVE
             </span>
           </div>
 
-          {/* Headline */}
+          {/* Headline — split like Remarqd */}
           <h2 className="scroll-animate scroll-animate-delay-1" style={{
-            color: "#FFFFFF", fontSize: "clamp(2.2rem, 5vw, 54px)", fontWeight: 700,
-            lineHeight: 1.08, letterSpacing: "-1.5px", marginBottom: 24,
+            color: "#FFFFFF", fontSize: "clamp(2.4rem, 5.5vw, 60px)", fontWeight: 800,
+            lineHeight: 1.05, letterSpacing: "-2px", marginBottom: 8,
           }}>
-            Packaging sorted. Forever.
+            Packaging sorted.
+          </h2>
+          <h2 className="scroll-animate scroll-animate-delay-2 clash-display" style={{
+            color: "#E8A838", fontSize: "clamp(2.4rem, 5.5vw, 60px)", fontWeight: 800,
+            lineHeight: 1.05, letterSpacing: "-2px", marginBottom: 28, fontStyle: "italic",
+          }}>
+            Forever.
           </h2>
 
           {/* Subheadline */}
           <p className="scroll-animate scroll-animate-delay-2" style={{
-            color: "rgba(255,255,255,0.6)", fontSize: 18,
-            maxWidth: 460, marginBottom: 40, lineHeight: 1.65,
+            color: "rgba(255,255,255,0.45)", fontSize: 17,
+            maxWidth: 420, marginBottom: 44, lineHeight: 1.7,
           }}>
             Join brands across India and 40+ countries who have simplified their packaging supply chain.
           </p>
 
-          {/* CTAs — Remarqd pill style */}
-          <div className="scroll-animate scroll-animate-delay-3 flex flex-col sm:flex-row gap-3 justify-center mb-5">
-            <Link href="/products">
-              <button style={{
-                background: "linear-gradient(135deg, #E8A838 0%, #c98b10 100%)",
-                color: "#0D1B2A", padding: "16px 38px",
-                borderRadius: 9999, fontWeight: 700, fontSize: 16,
-                border: "none", cursor: "pointer",
-                display: "inline-flex", alignItems: "center", gap: 8,
-                whiteSpace: "nowrap",
-                boxShadow: "0 4px 28px rgba(232,168,56,0.45)",
-              }}>
-                Browse 110+ SKUs →
-              </button>
-            </Link>
+          {/* CTAs — sharp animated-border (our design) */}
+          <div className="scroll-animate scroll-animate-delay-3 flex flex-col sm:flex-row gap-4 justify-center mb-5" style={{ alignItems: "stretch" }}>
+            <span className="animated-border animated-border-white" style={{ display: "flex" }}>
+              <Link href="/products" style={{ flex: 1, display: "flex" }}>
+                <button className="btn-fill btn-amber px-10 py-4 text-base whitespace-nowrap" style={{ flex: 1 }}>
+                  Browse 110+ SKUs →
+                </button>
+              </Link>
+            </span>
             <a
               href={`https://wa.me/${WHATSAPP_NUM}?text=Hi%20Packworkz%2C%20I%27d%20like%20to%20discuss%20packaging.`}
-              target="_blank" rel="noopener noreferrer"
+              target="_blank" rel="noopener noreferrer" style={{ display: "flex" }}
             >
-              <button style={{
-                background: "rgba(255,255,255,0.06)",
-                color: "white", padding: "16px 38px",
-                borderRadius: 9999, fontWeight: 600, fontSize: 16,
-                border: "1px solid rgba(255,255,255,0.22)",
-                cursor: "pointer",
-                display: "inline-flex", alignItems: "center", gap: 8,
-                whiteSpace: "nowrap",
-                backdropFilter: "blur(8px)",
-              }}>
+              <button className="btn-fill btn-outline-white px-10 py-4 text-base whitespace-nowrap" style={{ flex: 1 }}>
                 Talk to a human first
               </button>
             </a>
           </div>
-          <p className="scroll-animate scroll-animate-delay-4" style={{ color: "rgba(255,255,255,0.3)", fontSize: 13 }}>
+
+          <p className="scroll-animate scroll-animate-delay-4" style={{
+            color: "rgba(255,255,255,0.22)", fontSize: 13, letterSpacing: "0.3px",
+          }}>
             No commitment · No sales pitch · Just results
           </p>
 
