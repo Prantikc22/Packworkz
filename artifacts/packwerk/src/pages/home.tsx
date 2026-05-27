@@ -325,8 +325,12 @@ export default function Home() {
   const [activeCase, setActiveCase] = useState(0);
   const [heroLoaded, setHeroLoaded] = useState(false);
   const [stepsVisible, setStepsVisible] = useState(false);
+  const [stepVisible, setStepVisible] = useState([false, false, false, false]);
+  const [activeStep, setActiveStep] = useState(-1);
+  const [heroParallax, setHeroParallax] = useState(0);
   const caseIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const processRef = useRef<HTMLDivElement>(null);
+  const stepEls = useRef<(HTMLDivElement | null)[]>([]);
 
   const startCaseRotation = () => {
     if (caseIntervalRef.current) clearInterval(caseIntervalRef.current);
@@ -352,6 +356,43 @@ export default function Home() {
       if (e.isIntersecting) { setStepsVisible(true); obs.disconnect(); }
     }, { threshold: 0.15 });
     obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
+  // Hero parallax on scroll
+  useEffect(() => {
+    const onScroll = () => setHeroParallax(window.scrollY);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // Per-step intersection observers (run after first render)
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => {
+      const cleanups: (() => void)[] = [];
+      stepEls.current.forEach((el, i) => {
+        if (!el) return;
+        const obs = new IntersectionObserver(([entry]) => {
+          if (entry.isIntersecting) {
+            setStepVisible(prev => { const n = [...prev]; n[i] = true; return n; });
+            setActiveStep(i);
+          }
+        }, { threshold: 0.45 });
+        obs.observe(el);
+        cleanups.push(() => obs.disconnect());
+      });
+      return () => cleanups.forEach(fn => fn());
+    });
+    return () => cancelAnimationFrame(frame);
+  }, []);
+
+  // Global scroll-reveal observer
+  useEffect(() => {
+    const elements = document.querySelectorAll(".scroll-animate");
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add("scroll-animate-done"); });
+    }, { threshold: 0.15 });
+    elements.forEach(el => obs.observe(el));
     return () => obs.disconnect();
   }, []);
 
@@ -471,7 +512,7 @@ export default function Home() {
           />
         </picture>
 
-        {/* Main product image */}
+        {/* Main product image — with parallax depth */}
         <picture className="hidden lg:block absolute pointer-events-none" style={{ right: 0, bottom: 0, height: "85%", maxWidth: "56%", aspectRatio: "748/498" }}>
           <source srcSet="/images/hero-products-transparent.webp" type="image/webp" />
           <img
@@ -491,9 +532,22 @@ export default function Home() {
               transition: "opacity 1s ease",
               animation: heroLoaded ? "heroProductFloat 5s ease-in-out infinite" : "none",
               filter: "drop-shadow(0 24px 48px rgba(0,0,20,0.65)) drop-shadow(0 0 60px rgba(59,130,246,0.2))",
+              transform: `translateY(${heroParallax * 0.22}px) scale(${1 + heroParallax * 0.00008})`,
             }}
           />
         </picture>
+
+        {/* Depth layer: secondary glow orb that moves faster for parallax depth */}
+        <div
+          className="hidden lg:block absolute pointer-events-none"
+          style={{
+            right: "8%", bottom: "10%", width: 340, height: 340,
+            borderRadius: "50%",
+            background: "radial-gradient(circle, rgba(59,130,246,0.13) 0%, transparent 70%)",
+            transform: `translateY(${heroParallax * 0.35}px)`,
+            transition: "transform 0.05s linear",
+          }}
+        />
 
         {/* Vignette — protects left text, softens right edges */}
         <div
@@ -645,10 +699,10 @@ export default function Home() {
       {/* ══════════════════════════════════════════════════════════ */}
       <section style={{ background: "#FFFFFF", padding: "100px 0" }}>
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 40px" }}>
-          <span style={{ color: "#1B6CA8", fontSize: 11, fontWeight: 600, letterSpacing: "2px", textTransform: "uppercase", display: "block", marginBottom: 14 }}>
+          <span className="scroll-animate" style={{ color: "#1B6CA8", fontSize: 11, fontWeight: 600, letterSpacing: "2px", textTransform: "uppercase", display: "block", marginBottom: 14 }}>
             THE PROBLEM
           </span>
-          <h2 style={{ color: "#0D1B2A", fontSize: "clamp(2rem,4vw,3.25rem)", fontWeight: 700, lineHeight: 1.15, marginBottom: 56 }}>
+          <h2 className="scroll-animate scroll-animate-delay-1" style={{ color: "#0D1B2A", fontSize: "clamp(2rem,4vw,3.25rem)", fontWeight: 700, lineHeight: 1.15, marginBottom: 56 }}>
             Traditional sourcing is broken.<br />We fixed it.
           </h2>
 
@@ -692,10 +746,10 @@ export default function Home() {
 
             {/* Left — sticky heading */}
             <div className="lg:sticky" style={{ top: 96 }}>
-              <span style={{ color: "#E8A838", fontSize: 11, fontWeight: 600, letterSpacing: "2.5px", textTransform: "uppercase", display: "block", marginBottom: 20 }}>
+              <span className="scroll-animate" style={{ color: "#E8A838", fontSize: 11, fontWeight: 600, letterSpacing: "2.5px", textTransform: "uppercase", display: "block", marginBottom: 20 }}>
                 THE PROCESS
               </span>
-              <h2 style={{ color: "white", fontSize: "clamp(2.2rem,4.5vw,3.5rem)", fontWeight: 700, lineHeight: 1.08, marginBottom: 20, letterSpacing: "-1px" }}>
+              <h2 className="scroll-animate scroll-animate-delay-1" style={{ color: "white", fontSize: "clamp(2.2rem,4.5vw,3.5rem)", fontWeight: 700, lineHeight: 1.08, marginBottom: 20, letterSpacing: "-1px" }}>
                 Four steps.<br />
                 <span style={{ color: "#E8A838", fontStyle: "italic" }}>Then you're sorted.</span>
               </h2>
@@ -717,49 +771,54 @@ export default function Home() {
             <div ref={processRef} style={{ display: "flex", flexDirection: "column" }}>
               {HOW_IT_WORKS_STEPS.map((step, i) => {
                 const isLast = i === HOW_IT_WORKS_STEPS.length - 1;
+                const isVisible = stepVisible[i];
+                const isActive = activeStep === i;
                 return (
                   <div
                     key={i}
+                    ref={el => { stepEls.current[i] = el; }}
+                    data-step={i}
                     style={{
                       display: "flex", gap: 20,
-                      opacity: stepsVisible ? 1 : 0,
-                      transform: stepsVisible ? "translateY(0)" : "translateY(24px)",
-                      transition: `opacity 0.5s ease ${i * 0.15}s, transform 0.5s ease ${i * 0.15}s`,
+                      opacity: isVisible ? 1 : 0,
+                      transform: isVisible ? "translateY(0)" : "translateY(28px)",
+                      transition: `opacity 0.6s cubic-bezier(0.22,1,0.36,1), transform 0.6s cubic-bezier(0.22,1,0.36,1)`,
                     }}
                   >
                     {/* Number circle + vertical connector */}
                     <div style={{ display: "flex", flexDirection: "column", alignItems: "center", flexShrink: 0 }}>
                       <div style={{
                         width: 44, height: 44,
-                        border: "1.5px solid rgba(232,168,56,0.5)",
+                        border: isActive ? "1.5px solid #E8A838" : "1.5px solid rgba(232,168,56,0.35)",
                         display: "flex", alignItems: "center", justifyContent: "center",
-                        color: "#E8A838", fontSize: 12, fontWeight: 700,
-                        letterSpacing: "0.5px", background: "#0A1628", position: "relative", zIndex: 1,
+                        color: isActive ? "#E8A838" : "rgba(232,168,56,0.55)",
+                        fontSize: 12, fontWeight: 700,
+                        letterSpacing: "0.5px",
+                        background: isActive ? "rgba(232,168,56,0.07)" : "#0A1628",
+                        position: "relative", zIndex: 1,
+                        boxShadow: isActive ? "0 0 22px rgba(232,168,56,0.28), inset 0 0 8px rgba(232,168,56,0.05)" : "none",
+                        transition: "all 0.45s cubic-bezier(0.22,1,0.36,1)",
                       }}>
                         {String(i + 1).padStart(2, "0")}
                       </div>
                       {!isLast && (
-                        <div style={{ width: 1, flex: 1, minHeight: 32, background: "rgba(232,168,56,0.18)", margin: "8px 0" }} />
+                        <div style={{
+                          width: 1, flex: 1, minHeight: 32, margin: "8px 0",
+                          background: isVisible ? "rgba(232,168,56,0.38)" : "rgba(232,168,56,0.1)",
+                          transition: "background 0.6s ease",
+                        }} />
                       )}
                     </div>
 
                     {/* Content */}
                     <div style={{ paddingBottom: isLast ? 0 : 44, flex: 1 }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 10, flexWrap: "wrap" }}>
-                        <h3 style={{ color: "white", fontSize: 20, fontWeight: 700, lineHeight: 1.2, margin: 0 }}>
-                          {step.title}
-                        </h3>
-                        {!isLast && (
-                          <span style={{
-                            color: "#64748B", fontSize: 11, fontWeight: 600,
-                            letterSpacing: "1px", textTransform: "uppercase",
-                            background: "rgba(255,255,255,0.05)",
-                            padding: "3px 10px", border: "1px solid rgba(255,255,255,0.08)",
-                          }}>
-                            → Step {String(i + 2).padStart(2, "0")}
-                          </span>
-                        )}
-                      </div>
+                      <h3 style={{
+                        color: isActive ? "white" : "rgba(255,255,255,0.7)",
+                        fontSize: 20, fontWeight: 700, lineHeight: 1.2, marginBottom: 10,
+                        transition: "color 0.4s ease",
+                      }}>
+                        {step.title}
+                      </h3>
                       <p style={{ color: "rgba(255,255,255,0.42)", fontSize: 14, lineHeight: 1.75, margin: 0 }}>
                         {step.desc}
                       </p>
@@ -780,11 +839,11 @@ export default function Home() {
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 40px" }}>
           <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 gap-4">
             <div>
-              <span style={{ color: "#1B6CA8", fontSize: 11, fontWeight: 600, letterSpacing: "2px", textTransform: "uppercase", display: "block", marginBottom: 14 }}>
+              <span className="scroll-animate" style={{ color: "#1B6CA8", fontSize: 11, fontWeight: 600, letterSpacing: "2px", textTransform: "uppercase", display: "block", marginBottom: 14 }}>
                 PRODUCTS
               </span>
-              <h2 className="clash-display text-4xl" style={{ color: "#0D1B2A" }}>Core Product Categories</h2>
-              <p className="mt-2 text-lg" style={{ color: "#64748B" }}>110+ curated SKUs across 10 managed categories.</p>
+              <h2 className="clash-display text-4xl scroll-animate scroll-animate-delay-1" style={{ color: "#0D1B2A" }}>Core Product Categories</h2>
+              <p className="mt-2 text-lg scroll-animate scroll-animate-delay-2" style={{ color: "#64748B" }}>110+ curated SKUs across 10 managed categories.</p>
             </div>
             <Link href="/products">
               <button className="font-bold flex items-center gap-2 hover:underline" style={{ color: "#1B6CA8" }}>
@@ -865,16 +924,19 @@ export default function Home() {
         {/* Radial glow */}
         <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse 65% 55% at 75% 50%, rgba(27,108,168,0.18) 0%, transparent 65%)" }} />
 
-        {/* Mobile bg */}
+        {/* Mobile bg — subtle image hint */}
         <div className="absolute inset-0 lg:hidden">
-          <img src="/smartstock.jpg" alt="" className="w-full h-full object-cover" style={{ opacity: 0.25 }} />
-          <div className="absolute inset-0" style={{ background: "rgba(2,8,23,0.88)" }} />
+          <img src="/smartstock.jpg" alt="" className="w-full h-full object-cover" style={{ opacity: 0.45 }} />
+          <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, rgba(2,8,23,0.78) 0%, rgba(2,8,23,0.65) 50%, rgba(2,8,23,0.82) 100%)" }} />
         </div>
 
-        {/* Desktop image — right 50% */}
-        <div className="absolute top-0 right-0 bottom-0 hidden lg:block" style={{ width: "50%" }}>
-          <img src="/smartstock.jpg" alt="SmartStock AI" className="w-full h-full object-cover" style={{ opacity: 0.55 }} />
-          <div className="absolute inset-0" style={{ background: "linear-gradient(to right, #020817 0%, rgba(2,8,23,0.65) 45%, rgba(2,8,23,0.1) 100%)" }} />
+        {/* Desktop image — right 50%, seamlessly blended */}
+        <div className="absolute top-0 right-0 bottom-0 hidden lg:block" style={{ width: "55%" }}>
+          <img src="/smartstock.jpg" alt="SmartStock AI" className="w-full h-full object-cover" style={{ opacity: 0.6 }} />
+          {/* Multi-stop gradient: strong dark on left, feathers out smoothly */}
+          <div className="absolute inset-0" style={{
+            background: "linear-gradient(to right, #020817 0%, rgba(2,8,23,0.97) 15%, rgba(2,8,23,0.82) 32%, rgba(2,8,23,0.48) 58%, rgba(2,8,23,0.12) 80%, rgba(2,8,23,0) 100%)"
+          }} />
         </div>
 
         {/* Content */}
@@ -1025,13 +1087,13 @@ export default function Home() {
       {/* ══════════════════════════════════════════════════════════ */}
       <section style={{ background: "#F8F9FC", padding: "100px 0" }}>
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 40px" }}>
-          <span style={{ color: "#1B6CA8", fontSize: 11, fontWeight: 600, letterSpacing: "2px", textTransform: "uppercase", display: "block", marginBottom: 14 }}>
+          <span className="scroll-animate" style={{ color: "#1B6CA8", fontSize: 11, fontWeight: 600, letterSpacing: "2px", textTransform: "uppercase", display: "block", marginBottom: 14 }}>
             THE HONEST COMPARISON
           </span>
-          <h2 style={{ color: "#0D1B2A", fontSize: "clamp(2rem,4vw,3.25rem)", fontWeight: 700, lineHeight: 1.1, marginBottom: 16 }}>
+          <h2 className="scroll-animate scroll-animate-delay-1" style={{ color: "#0D1B2A", fontSize: "clamp(2rem,4vw,3.25rem)", fontWeight: 700, lineHeight: 1.1, marginBottom: 16 }}>
             Why brands switch<br />to Packworkz.
           </h2>
-          <p style={{ color: "#64748B", fontSize: 18, maxWidth: 520, marginBottom: 48, lineHeight: 1.6 }}>
+          <p className="scroll-animate scroll-animate-delay-2" style={{ color: "#64748B", fontSize: 18, maxWidth: 520, marginBottom: 48, lineHeight: 1.6 }}>
             This question comes up every time. Here is the honest answer.
           </p>
 
@@ -1099,10 +1161,10 @@ export default function Home() {
       {/* ══════════════════════════════════════════════════════════ */}
       <section style={{ background: "#FFFFFF", padding: "100px 0" }}>
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 40px" }}>
-          <span style={{ color: "#1B6CA8", fontSize: 11, fontWeight: 600, letterSpacing: "2px", textTransform: "uppercase", display: "block", marginBottom: 14 }}>
+          <span className="scroll-animate" style={{ color: "#1B6CA8", fontSize: 11, fontWeight: 600, letterSpacing: "2px", textTransform: "uppercase", display: "block", marginBottom: 14 }}>
             CLIENT RESULTS
           </span>
-          <h2 style={{ color: "#0D1B2A", fontSize: "clamp(2rem,4vw,3.25rem)", fontWeight: 700, lineHeight: 1.1, marginBottom: 0 }}>
+          <h2 className="scroll-animate scroll-animate-delay-1" style={{ color: "#0D1B2A", fontSize: "clamp(2rem,4vw,3.25rem)", fontWeight: 700, lineHeight: 1.1, marginBottom: 0 }}>
             Brands that switched.<br />Numbers that speak.
           </h2>
 
@@ -1171,7 +1233,7 @@ export default function Home() {
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 40px" }}>
 
           {/* Eyebrow */}
-          <span style={{
+          <span className="scroll-animate" style={{
             color: "#1B6CA8", fontSize: 11, fontWeight: 600,
             letterSpacing: "2px", textTransform: "uppercase",
             display: "block", marginBottom: 14,
@@ -1180,7 +1242,7 @@ export default function Home() {
           </span>
 
           {/* Headline */}
-          <h2 style={{
+          <h2 className="scroll-animate scroll-animate-delay-1" style={{
             color: "#0D1B2A", fontSize: "clamp(2rem, 5vw, 3.25rem)", fontWeight: 700,
             lineHeight: 1.15, marginBottom: 16,
           }}>
@@ -1188,7 +1250,7 @@ export default function Home() {
           </h2>
 
           {/* Subheadline */}
-          <p style={{ color: "#64748B", fontSize: 18, marginBottom: 56 }}>
+          <p className="scroll-animate scroll-animate-delay-2" style={{ color: "#64748B", fontSize: 18, marginBottom: 56 }}>
             Most brands overpay by 8–15% without realising it.
           </p>
 
