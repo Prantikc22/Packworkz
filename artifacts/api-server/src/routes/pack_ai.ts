@@ -133,6 +133,7 @@ async function tryModel(
       : [{ role: "system", content: systemPrompt }, ...messages];
 
     const baseUrl = process.env.AI_INTEGRATIONS_OPENROUTER_BASE_URL ?? "https://openrouter.ai/api/v1";
+    // Keep per-model timeout under Vercel's function limit (10s hobby / 60s pro)
     const response = await fetch(`${baseUrl}/chat/completions`, {
       method: "POST",
       headers: {
@@ -142,11 +143,12 @@ async function tryModel(
         "X-Title": "Packworkz PackAI",
       },
       body: JSON.stringify({ model, messages: preparedMessages, max_tokens: 600, temperature: 0.7 }),
-      signal: AbortSignal.timeout(15000),
+      signal: AbortSignal.timeout(8000),
     });
 
     if (!response.ok) {
       const errText = await response.text();
+      console.error(`[PackAI] model=${model} status=${response.status} err=${errText.substring(0, 200)}`);
       const isRateLimit = response.status === 429 || errText.includes("rate") || errText.includes("limit") || errText.includes("temporarily");
       if (isRateLimit) setCooldown(model);
       return { ok: false, rateLimited: isRateLimit };
@@ -154,10 +156,14 @@ async function tryModel(
 
     const data = await response.json() as { choices: Array<{ message: { content: string } }> };
     const reply = data.choices?.[0]?.message?.content?.trim() ?? "";
-    if (!reply) return { ok: false, rateLimited: false };
+    if (!reply) {
+      console.error(`[PackAI] model=${model} returned empty reply`);
+      return { ok: false, rateLimited: false };
+    }
 
     return { ok: true, reply };
-  } catch {
+  } catch (err) {
+    console.error(`[PackAI] model=${model} threw:`, err instanceof Error ? err.message : String(err));
     return { ok: false, rateLimited: false };
   }
 }
@@ -194,7 +200,11 @@ router.post("/pack-ai/chat", async (req, res): Promise<void> => {
   }
 
   const apiKey = process.env.AI_INTEGRATIONS_OPENROUTER_API_KEY || process.env.OPENROUTER_API_KEY;
+  const baseUrl = process.env.AI_INTEGRATIONS_OPENROUTER_BASE_URL ?? "https://openrouter.ai/api/v1";
+  console.log(`[PackAI] env=isReplitProxy:${isReplitProxy} apiKey:${apiKey ? "present" : "MISSING"} baseUrl:${baseUrl.substring(0, 50)} models:${MODELS.join(",")}`);
+
   if (!apiKey) {
+    console.error("[PackAI] No API key found — returning fallback");
     const fallback = smartFallback(messages as Array<{ role: string; content: string }>);
     res.json({ reply: fallback });
     return;
@@ -204,16 +214,18 @@ router.post("/pack-ai/chat", async (req, res): Promise<void> => {
 
   // Try each model, skipping ones on cooldown
   for (const model of MODELS) {
-    if (isOnCooldown(model)) continue;
+    if (isOnCooldown(model)) { console.log(`[PackAI] skipping ${model} (on cooldown)`); continue; }
 
     const result = await tryModel(model, typedMessages, SYSTEM_PROMPT, apiKey);
     if (result.ok) {
+      console.log(`[PackAI] success with ${model}`);
       res.json({ reply: result.reply });
       return;
     }
   }
 
   // All AI models failed — return intelligent static fallback instead of 503
+  console.error("[PackAI] All models failed — returning smart fallback");
   const fallback = smartFallback(typedMessages);
   res.json({ reply: fallback });
 });
