@@ -181,7 +181,7 @@ export default function BrandAdvantageSection() {
                     padding: "22px 0",
                     cursor: "pointer",
                     position: "relative",
-                    borderBottom: "1px solid #E8ECF4",
+                    borderBottom: "1px solid rgba(232,236,244,0.45)",
                     borderLeft: `3px solid ${isActive ? "#E8A838" : "transparent"}`,
                     paddingLeft: isActive ? 20 : 3,
                     transition: "all 0.25s ease",

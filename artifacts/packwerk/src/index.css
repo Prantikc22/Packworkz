@@ -50,6 +50,77 @@
   animation: floatCard 4s ease-in-out infinite;
 }
 
+/* ── Scroll reveal ──────────────────────────────────────────────────────────── */
+@keyframes pwFadeUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes pwFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes pwSlowDrift {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%       { transform: translate(-24px, -16px) scale(1.03); }
+  66%       { transform: translate(18px, -12px) scale(0.97); }
+}
+
+.pw-reveal {
+  opacity: 0;
+  transform: translateY(28px);
+}
+.pw-reveal.pw-in {
+  animation: pwFadeUp 0.75s cubic-bezier(0.22, 1, 0.36, 1) var(--pw-delay, 0ms) both;
+}
+.pw-fadein.pw-in {
+  animation: pwFadeIn 0.9s ease var(--pw-delay, 0ms) both;
+}
+.pw-d1  { --pw-delay: 60ms;  }
+.pw-d2  { --pw-delay: 130ms; }
+.pw-d3  { --pw-delay: 200ms; }
+.pw-d4  { --pw-delay: 270ms; }
+.pw-d5  { --pw-delay: 340ms; }
+.pw-d6  { --pw-delay: 410ms; }
+
+/* ── Hover lift ─────────────────────────────────────────────────────────────── */
+.pw-lift {
+  transition: transform 0.38s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.38s ease !important;
+}
+.pw-lift:hover {
+  transform: translateY(-6px) !important;
+  box-shadow: 0 28px 60px rgba(0, 0, 0, 0.45) !important;
+}
+
+/* ── Slow hero glow drift ───────────────────────────────────────────────────── */
+.pw-glow-drift {
+  animation: pwSlowDrift 20s ease-in-out infinite;
+  will-change: transform;
+}
+.pw-glow-drift-slow {
+  animation: pwSlowDrift 28s ease-in-out 6s infinite;
+  will-change: transform;
+}
+
+/* ── Buttery global transitions ─────────────────────────────────────────────── */
+.pw-btn-transition {
+  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 0.28s ease,
+              opacity 0.22s ease !important;
+}
+.pw-btn-transition:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* ── Mobile luxury ──────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .pw-reveal { transform: translateY(20px); }
+  .pw-lift:hover {
+    transform: translateY(-3px) !important;
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.35) !important;
+  }
+}
+
 /* ── Savings calculator custom slider ── */
 .calc-slider {
   -webkit-appearance: none;
