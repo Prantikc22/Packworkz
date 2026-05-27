@@ -578,10 +578,6 @@ export default function Home() {
               Design. Source. QC. Deliver. One platform.{" "}
               <span className="text-white font-medium italic">Zero vendor chaos.</span>
             </p>
-            <p className="text-sm font-bold tracking-wide mb-6 uppercase flex items-center gap-2" style={{ color: "#93c5fd" }}>
-              <span className="w-1.5 h-1.5 rounded-full inline-block" style={{ background: "#93c5fd" }} />
-              Built for D2C, FMCG &amp; Pharma Brands Globally
-            </p>
             <p style={{ color: "rgba(255,255,255,0.48)", fontSize: 13, marginBottom: 18, letterSpacing: "0.1px" }}>
               Trusted by{" "}
               <span style={{ color: "rgba(255,255,255,0.78)", fontWeight: 600 }}>Plum, Happilo, Bodycraft</span>

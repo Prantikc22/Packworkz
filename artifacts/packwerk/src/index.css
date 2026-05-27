@@ -766,7 +766,7 @@ body, html {
 .animate-marquee {
   display: inline-flex;
   white-space: nowrap;
-  animation: marquee 22s linear infinite;
+  animation: marquee 50s linear infinite;
 }
 
 /* Client logo marquee */
@@ -840,6 +840,7 @@ body, html {
 /* ── Global fill-in button system ───────────────────────────────────── */
 .btn-fill {
   position: relative;
+  z-index: 0;
   overflow: hidden;
   display: inline-flex;
   align-items: center;
@@ -858,7 +859,7 @@ body, html {
   inset: 0;
   transform: translateX(-101%);
   transition: transform 0.3s ease;
-  z-index: 0;
+  z-index: -1;
 }
 .btn-fill > * { position: relative; z-index: 1; }
 .btn-fill:hover::before { transform: translateX(0); }
