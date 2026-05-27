@@ -196,7 +196,7 @@ export default function HowItWorks() {
             THE PROCESS
           </span>
           <h1 style={{
-            color: "white", fontSize: 52, fontWeight: 700,
+            color: "white", fontSize: "clamp(1.5rem, 3vw, 2.25rem)", fontWeight: 700,
             lineHeight: 1.1, marginBottom: 20,
           }}>
             How to source custom packaging in India — and never chase a vendor again.

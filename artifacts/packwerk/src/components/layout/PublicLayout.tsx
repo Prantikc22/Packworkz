@@ -794,6 +794,7 @@ function PackAIWidget() {
 export function PublicLayout({ children }: { children: React.ReactNode }) {
   const [location] = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [mobileAboutOpen, setMobileAboutOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(() => !!localStorage.getItem("packwerk_access_token"));
 
@@ -926,39 +927,67 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
       {/* Mobile drawer */}
       {mobileOpen && (
         <div className="fixed inset-0 z-40 pt-[68px] overflow-y-auto" style={{ background: "#020617" }}>
-          <nav className="flex flex-col px-8 py-8 gap-6">
+          <nav className="flex flex-col px-8 py-8 gap-1">
             {[
               { label: "Products", href: "/products" },
               { label: "Industries", href: "/industries" },
-              { label: "Design", href: "/design" },
               { label: "Sustainability", href: "/sustainable" },
               { label: "Resources", href: "/resources" },
-              { label: "How It Works", href: "/how-it-works" },
             ].map(item => (
               <Link key={item.href} href={item.href} onClick={() => setMobileOpen(false)}
-                style={{ fontSize: 24, fontWeight: 900, textTransform: "uppercase", color: "white", textDecoration: "none" }}>
+                style={{ fontSize: 22, fontWeight: 900, textTransform: "uppercase", color: "white", textDecoration: "none", padding: "10px 0", borderBottom: "1px solid rgba(255,255,255,0.07)" }}>
                 {item.label}
               </Link>
             ))}
-            <div className="border-t border-white/10 pt-6 flex flex-col gap-4">
+
+            {/* About accordion */}
+            <button
+              onClick={() => setMobileAboutOpen(o => !o)}
+              style={{
+                display: "flex", alignItems: "center", justifyContent: "space-between",
+                fontSize: 22, fontWeight: 900, textTransform: "uppercase", color: "white",
+                background: "none", border: "none", borderBottom: "1px solid rgba(255,255,255,0.07)",
+                padding: "10px 0", cursor: "pointer", width: "100%", textAlign: "left",
+              }}
+            >
+              About
+              <ChevronDown size={18} color="rgba(255,255,255,0.5)" style={{ transition: "transform 0.2s", transform: mobileAboutOpen ? "rotate(180deg)" : "rotate(0deg)", flexShrink: 0 }} />
+            </button>
+            {mobileAboutOpen && (
+              <div style={{ paddingLeft: 8, paddingBottom: 4, borderBottom: "1px solid rgba(255,255,255,0.07)" }}>
+                {ABOUT_ITEMS.map(item => (
+                  <Link key={item.href} href={item.href} onClick={() => { setMobileOpen(false); setMobileAboutOpen(false); }}
+                    style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 4px", fontSize: 15, fontWeight: 700, color: "rgba(255,255,255,0.7)", textDecoration: "none" }}>
+                    <item.icon size={16} color="#E8A838" />
+                    {item.label}
+                  </Link>
+                ))}
+              </div>
+            )}
+
+            <div className="pt-6 flex flex-col gap-4">
+              <Link href="/design" onClick={() => setMobileOpen(false)}
+                style={{ fontSize: 16, fontWeight: 700, color: "rgba(255,255,255,0.55)", textDecoration: "none" }}>
+                Design Service
+              </Link>
               <Link href="/samples" onClick={() => setMobileOpen(false)}
-                style={{ fontSize: 18, fontWeight: 700, color: "rgba(255,255,255,0.6)", textDecoration: "none" }}>
-                Sample
+                style={{ fontSize: 16, fontWeight: 700, color: "rgba(255,255,255,0.55)", textDecoration: "none" }}>
+                Order a Sample
               </Link>
               {isLoggedIn ? (
                 <Link href="/dashboard" onClick={() => setMobileOpen(false)}
-                  style={{ fontSize: 18, fontWeight: 700, color: "#E8A838", textDecoration: "none" }}>
+                  style={{ fontSize: 16, fontWeight: 700, color: "#E8A838", textDecoration: "none" }}>
                   Dashboard
                 </Link>
               ) : (
                 <Link href="/login" onClick={() => setMobileOpen(false)}
-                  style={{ fontSize: 18, fontWeight: 700, color: "rgba(255,255,255,0.6)", textDecoration: "none" }}>
+                  style={{ fontSize: 16, fontWeight: 700, color: "rgba(255,255,255,0.55)", textDecoration: "none" }}>
                   Login
                 </Link>
               )}
               <Link href="/quote" onClick={() => setMobileOpen(false)}
-                style={{ display: "inline-block", padding: "14px 28px", background: "#E8A838", color: "#0D1B2A", fontWeight: 800, fontSize: 14, textDecoration: "none", borderRadius: 8, textTransform: "uppercase", letterSpacing: "0.05em" }}>
-                Get Quote
+                style={{ display: "inline-block", marginTop: 8, padding: "14px 28px", background: "#E8A838", color: "#0D1B2A", fontWeight: 800, fontSize: 14, textDecoration: "none", borderRadius: 8, textTransform: "uppercase", letterSpacing: "0.05em", textAlign: "center" }}>
+                Get Quote →
               </Link>
             </div>
           </nav>
