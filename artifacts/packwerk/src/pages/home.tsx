@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Link } from "wouter";
 import { INDUSTRY_IMAGES } from "@/lib/images";
 import BrandAdvantageSection from "@/components/home/BrandAdvantageSection";
+import ComparisonSection from "@/components/home/ComparisonSection";
 import {
   Search, GitBranch, ShieldCheck, Truck,
   Leaf, Droplets, FileCheck, ArrowRight,
@@ -404,6 +405,7 @@ export default function Home() {
   const [activeStep, setActiveStep] = useState(-1);
   const [heroParallax, setHeroParallax] = useState(0);
   const [showAllComparisons, setShowAllComparisons] = useState(false);
+
   const caseIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const processRef = useRef<HTMLDivElement>(null);
   const stepEls = useRef<(HTMLDivElement | null)[]>([]);
@@ -642,8 +644,7 @@ export default function Home() {
               Your Packaging.<br />Sorted. Forever.
             </h1>
             <p className="text-blue-100 text-lg md:text-xl mb-3 max-w-lg font-light">
-              AI-powered packaging procurement that eliminates vendor chaos, prevents stockouts, and keeps your production line moving —{" "}
-              <span className="text-white font-medium">for D2C, FMCG &amp; Pharma brands globally.</span>
+              AI-powered packaging procurement that eliminates vendor chaos, prevents stockouts, and keeps your production line moving.
             </p>
             <p style={{ color: "rgba(255,255,255,0.48)", fontSize: 13, marginBottom: 18, letterSpacing: "0.1px", display: "flex", alignItems: "center", gap: 7, flexWrap: "wrap" }}>
               <span style={{
@@ -788,52 +789,9 @@ export default function Home() {
       </section>
 
       {/* ══════════════════════════════════════════════════════════ */}
-      {/*  WHAT BRANDS ACTUALLY GAIN                               */}
+      {/*  WHY BRANDS CHOOSE PACKWORKZ                              */}
       {/* ══════════════════════════════════════════════════════════ */}
-      <section style={{ background: "#060d1f", padding: "100px 0", position: "relative", overflow: "hidden" }}>
-        {/* Radial glow */}
-        <div style={{ position: "absolute", inset: 0, pointerEvents: "none", background: "radial-gradient(ellipse 70% 55% at 50% 50%, rgba(27,108,168,0.20) 0%, transparent 65%)" }} />
-        {/* Subtle dot grid */}
-        <div style={{ position: "absolute", inset: 0, pointerEvents: "none", opacity: 0.03, backgroundImage: "radial-gradient(circle, white 1px, transparent 1px)", backgroundSize: "32px 32px" }} />
-
-        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 40px", position: "relative", zIndex: 1 }}>
-          <div style={{ textAlign: "center", marginBottom: 72 }}>
-            <p className="scroll-animate" style={{ color: "#60a5fa", fontSize: 11, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", marginBottom: 14 }}>
-              REAL OUTCOMES
-            </p>
-            <h2 className="scroll-animate scroll-animate-delay-1" style={{ color: "white", fontSize: "clamp(2rem,4vw,3rem)", fontWeight: 800, lineHeight: 1.1, letterSpacing: "-1px" }}>
-              What Brands Actually Gain
-            </h2>
-            <p className="scroll-animate scroll-animate-delay-2" style={{ color: "rgba(255,255,255,0.42)", fontSize: 16, marginTop: 14, maxWidth: 500, margin: "14px auto 0" }}>
-              Numbers brands on Packworkz report — 6 months in.
-            </p>
-          </div>
-
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 2 }} className="gains-grid">
-            {([
-              { target: 30, suffix: "%", label: "less procurement effort per month", color: "#60a5fa" },
-              { target: 20, suffix: "%", label: "faster packaging turnaround vs. managing vendors directly", color: "#a78bfa" },
-              { target: 40, suffix: "%", label: "fewer emergency orders — and the 20–30% premium that comes with them", color: "#34d399" },
-              { target: 1,  suffix: "",  label: "platform replacing 5–7 vendor relationships. Zero production delays in 6 months.", color: "#E8A838" },
-            ] as { target: number; suffix: string; label: string; color: string }[]).map((stat, i) => (
-              <div key={i} className={`scroll-animate scroll-animate-delay-${i + 1}`} style={{
-                background: "rgba(255,255,255,0.025)",
-                border: "1px solid rgba(255,255,255,0.06)",
-                borderTop: `2px solid ${stat.color}`,
-                padding: "40px 28px",
-                textAlign: "center",
-                transition: "background 0.25s",
-              }}
-                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.045)"; }}
-                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.025)"; }}
-              >
-                <StatCount target={stat.target} suffix={stat.suffix} color={stat.color} />
-                <p style={{ color: "rgba(255,255,255,0.46)", fontSize: 13, lineHeight: 1.65, marginTop: 14 }}>{stat.label}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <ComparisonSection />
 
       {/* ══════════════════════════════════════════════════════════ */}
       {/*  SECTION 4 — PAIN POINTS                                   */}
@@ -1253,16 +1211,9 @@ export default function Home() {
       </section>
 
       {/* ══════════════════════════════════════════════════════════ */}
-      {/*  SECTION 5 — COMPARISON (redesigned)                      */}
+      {/*  (comparison section moved up — see ComparisonSection)    */}
       {/* ══════════════════════════════════════════════════════════ */}
-      <section className="relative overflow-hidden" style={{ background: "#08080f", padding: "100px 0 120px" }}>
-
-        {/* Single subtle blue glow — top centre only */}
-        <div className="absolute inset-0 pointer-events-none" style={{
-          background: "radial-gradient(ellipse 55% 30% at 50% 0%, rgba(27,108,168,0.13) 0%, transparent 70%)",
-        }} />
-
-        <div className="relative" style={{ zIndex: 1, maxWidth: 940, margin: "0 auto", padding: "0 24px" }}>
+      {false && <div className="relative" style={{ zIndex: 1, maxWidth: 940, margin: "0 auto", padding: "0 24px" }}>
 
           {/* ── Eyebrow ── */}
           <div className="scroll-animate" style={{ textAlign: "center", marginBottom: 20 }}>
@@ -1503,8 +1454,7 @@ export default function Home() {
             </div>
           </div>
 
-        </div>
-      </section>
+        </div>}
 
 
       {/* ══════════════════════════════════════════════════════════ */}
