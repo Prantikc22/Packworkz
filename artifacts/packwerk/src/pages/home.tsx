@@ -361,6 +361,38 @@ function calcNewSavings(monthly: number, vendors: VendorBucket, credit: CreditOp
   return { annual, annualSaving, creditMarkup, upfrontSaving, totalValue, timeSaved };
 }
 
+function StatCount({ target, suffix = "", color = "#60a5fa" }: { target: number; suffix?: string; color?: string }) {
+  const [count, setCount] = useState(0);
+  const ref = useRef<HTMLDivElement>(null);
+  const started = useRef(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting && !started.current) {
+        started.current = true;
+        const startTime = performance.now();
+        const duration = 1800;
+        const tick = (now: number) => {
+          const t = Math.min((now - startTime) / duration, 1);
+          const eased = 1 - Math.pow(1 - t, 3);
+          setCount(Math.round(target * eased));
+          if (t < 1) requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+        obs.disconnect();
+      }
+    }, { threshold: 0.4 });
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [target]);
+  return (
+    <div ref={ref} style={{ color, fontSize: "clamp(3rem,5.5vw,4.5rem)", fontWeight: 900, lineHeight: 1, letterSpacing: "-2px" }}>
+      {count}{suffix}
+    </div>
+  );
+}
+
 export default function Home() {
   const [monthlySpend, setMonthlySpend] = useState(500000);
   const [vendorBucket, setVendorBucket] = useState<VendorBucket>("2 to 4");
@@ -604,14 +636,14 @@ export default function Home() {
           {/* All text + CTAs + stats pinned to left column */}
           <div className="lg:max-w-[48%]">
             <p className="font-bold tracking-[0.2em] mb-5 text-sm uppercase" style={{ color: "#93c5fd" }}>
-              INDIA'S FIRST MANAGED PACKAGING PLATFORM
+              AI-POWERED PACKAGING PROCUREMENT PLATFORM
             </p>
             <h1 className="clash-display text-white leading-[1.05] mb-6" style={{ fontSize: "clamp(2.6rem, 5vw, 5rem)" }}>
               Your Packaging.<br />Sorted. Forever.
             </h1>
             <p className="text-blue-100 text-lg md:text-xl mb-3 max-w-lg font-light">
-              Design. Source. QC. Deliver. One platform.{" "}
-              <span className="text-white font-medium italic">Zero vendor chaos.</span>
+              AI-powered packaging procurement that eliminates vendor chaos, prevents stockouts, and keeps your production line moving —{" "}
+              <span className="text-white font-medium">for D2C, FMCG &amp; Pharma brands globally.</span>
             </p>
             <p style={{ color: "rgba(255,255,255,0.48)", fontSize: 13, marginBottom: 18, letterSpacing: "0.1px", display: "flex", alignItems: "center", gap: 7, flexWrap: "wrap" }}>
               <span style={{
@@ -756,6 +788,54 @@ export default function Home() {
       </section>
 
       {/* ══════════════════════════════════════════════════════════ */}
+      {/*  WHAT BRANDS ACTUALLY GAIN                               */}
+      {/* ══════════════════════════════════════════════════════════ */}
+      <section style={{ background: "#060d1f", padding: "100px 0", position: "relative", overflow: "hidden" }}>
+        {/* Radial glow */}
+        <div style={{ position: "absolute", inset: 0, pointerEvents: "none", background: "radial-gradient(ellipse 70% 55% at 50% 50%, rgba(27,108,168,0.20) 0%, transparent 65%)" }} />
+        {/* Subtle dot grid */}
+        <div style={{ position: "absolute", inset: 0, pointerEvents: "none", opacity: 0.03, backgroundImage: "radial-gradient(circle, white 1px, transparent 1px)", backgroundSize: "32px 32px" }} />
+
+        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 40px", position: "relative", zIndex: 1 }}>
+          <div style={{ textAlign: "center", marginBottom: 72 }}>
+            <p className="scroll-animate" style={{ color: "#60a5fa", fontSize: 11, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", marginBottom: 14 }}>
+              REAL OUTCOMES
+            </p>
+            <h2 className="scroll-animate scroll-animate-delay-1" style={{ color: "white", fontSize: "clamp(2rem,4vw,3rem)", fontWeight: 800, lineHeight: 1.1, letterSpacing: "-1px" }}>
+              What Brands Actually Gain
+            </h2>
+            <p className="scroll-animate scroll-animate-delay-2" style={{ color: "rgba(255,255,255,0.42)", fontSize: 16, marginTop: 14, maxWidth: 500, margin: "14px auto 0" }}>
+              Numbers brands on Packworkz report — 6 months in.
+            </p>
+          </div>
+
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 2 }} className="gains-grid">
+            {([
+              { target: 30, suffix: "%", label: "less procurement effort per month", color: "#60a5fa" },
+              { target: 20, suffix: "%", label: "faster packaging turnaround vs. managing vendors directly", color: "#a78bfa" },
+              { target: 40, suffix: "%", label: "fewer emergency orders — and the 20–30% premium that comes with them", color: "#34d399" },
+              { target: 1,  suffix: "",  label: "platform replacing 5–7 vendor relationships. Zero production delays in 6 months.", color: "#E8A838" },
+            ] as { target: number; suffix: string; label: string; color: string }[]).map((stat, i) => (
+              <div key={i} className={`scroll-animate scroll-animate-delay-${i + 1}`} style={{
+                background: "rgba(255,255,255,0.025)",
+                border: "1px solid rgba(255,255,255,0.06)",
+                borderTop: `2px solid ${stat.color}`,
+                padding: "40px 28px",
+                textAlign: "center",
+                transition: "background 0.25s",
+              }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.045)"; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.025)"; }}
+              >
+                <StatCount target={stat.target} suffix={stat.suffix} color={stat.color} />
+                <p style={{ color: "rgba(255,255,255,0.46)", fontSize: 13, lineHeight: 1.65, marginTop: 14 }}>{stat.label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════════════════ */}
       {/*  SECTION 4 — PAIN POINTS                                   */}
       {/* ══════════════════════════════════════════════════════════ */}
       <section style={{ background: "#FFFFFF", padding: "100px 0" }}>
@@ -792,8 +872,9 @@ export default function Home() {
             ))}
           </div>
 
-          <p style={{ color: "#0D1B2A", fontSize: 22, fontWeight: 700, textAlign: "center", marginTop: 40 }}>
-            We built Packworkz to eliminate every single one of these.
+          <p style={{ color: "#0D1B2A", fontSize: 18, fontWeight: 700, textAlign: "center", marginTop: 40, lineHeight: 1.5 }}>
+            The cheapest packaging is the packaging you never have to rush order.<br />
+            <span style={{ color: "#1B6CA8" }}>Packworkz eliminates all five.</span> That's why brands with ₹5L/month spend save ₹6L+ annually.
           </p>
         </div>
       </section>
@@ -1016,9 +1097,34 @@ export default function Home() {
             <h2 className="clash-display scroll-animate scroll-animate-delay-1" style={{ color: "white", fontSize: "clamp(2rem,4vw,3.2rem)", fontWeight: 700, lineHeight: 1.1, marginBottom: 16 }}>
               Never run out<br />of boxes again.
             </h2>
-            <p className="scroll-animate scroll-animate-delay-2" style={{ color: "rgba(255,255,255,0.65)", fontSize: 16, lineHeight: 1.8, marginBottom: 36 }}>
-              Our AI analyses your sales velocity across 500+ factory partners and automatically triggers replenishment — before you even think to reorder.
+            <p className="scroll-animate scroll-animate-delay-2" style={{ color: "rgba(255,255,255,0.65)", fontSize: 16, lineHeight: 1.8, marginBottom: 28 }}>
+              Most companies use AI to write emails or run ads. We use it to solve a problem that costs brands billions — packaging that delays production, bleeds cash, and burns your team's time.
             </p>
+
+            {/* AI feature bullets */}
+            <div className="scroll-animate scroll-animate-delay-3" style={{
+              background: "linear-gradient(135deg, rgba(15,25,65,0.95) 0%, rgba(5,10,35,0.98) 100%)",
+              border: "1px solid rgba(59,130,246,0.18)",
+              borderLeft: "3px solid #3b82f6",
+              padding: "24px 28px",
+              marginBottom: 28,
+              boxShadow: "0 0 40px rgba(27,108,168,0.12), inset 0 0 20px rgba(59,130,246,0.04)",
+            }}>
+              {[
+                { label: "AI demand forecasting", desc: "predicts your reorder window before you run out" },
+                { label: "AI vendor matching", desc: "routes each SKU to the best-fit factory in real time" },
+                { label: "AI quality flags", desc: "pre-dispatch anomaly detection before it leaves the floor" },
+                { label: "AI stockout alerts", desc: "pushes notifications 4 weeks before you'd discover the gap yourself" },
+              ].map((item, i) => (
+                <div key={i} style={{ display: "flex", gap: 14, alignItems: "flex-start", marginBottom: i < 3 ? 16 : 0 }}>
+                  <span style={{ color: "#60a5fa", fontSize: 17, fontWeight: 700, lineHeight: 1.4, flexShrink: 0 }}>→</span>
+                  <p style={{ margin: 0, fontSize: 14, lineHeight: 1.55 }}>
+                    <span style={{ color: "white", fontWeight: 700 }}>{item.label}</span>
+                    <span style={{ color: "rgba(255,255,255,0.52)" }}> — {item.desc}</span>
+                  </p>
+                </div>
+              ))}
+            </div>
 
             {/* Metrics grid */}
             <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", marginBottom: 36, border: "1px solid rgba(255,255,255,0.07)", background: "rgba(255,255,255,0.03)" }}>
@@ -1095,8 +1201,8 @@ export default function Home() {
             {/* Left */}
             <div>
               <h2 className="scroll-animate scroll-animate-delay-1" style={{ color: "white", fontSize: "clamp(2rem,4vw,3.25rem)", fontWeight: 700, lineHeight: 1.1, marginBottom: 20, letterSpacing: "-0.5px" }}>
-                Packaging that's<br />
-                <span style={{ color: "#4ade80" }}>good for the planet.</span>
+                Sustainable Packaging.<br />
+                <span style={{ color: "#4ade80" }}>No Premium Required.</span>
               </h2>
               <p className="scroll-animate scroll-animate-delay-2" style={{ color: "rgba(255,255,255,0.6)", fontSize: 16, lineHeight: 1.8, marginBottom: 36 }}>
                 12 certified sustainable SKUs. All customisable with your brand design. Food-safe, leak-proof, and built for Indian brands that take sustainability seriously. Full EPR compliance included.
@@ -1710,16 +1816,16 @@ export default function Home() {
                 {/* CTA button */}
                 <Link href="/quote" style={{ display: "block", marginTop: 28 }}>
                   <button className="btn-fill btn-amber w-full py-4 text-sm">
-                    <span>Get a quote — see real prices →</span>
+                    <span>Get My Free Packaging Audit →</span>
                   </button>
                 </Link>
 
                 {/* Disclaimer */}
                 <p style={{
-                  color: "rgba(255,255,255,0.3)", fontSize: 11,
-                  textAlign: "center", marginTop: 12,
+                  color: "rgba(255,255,255,0.45)", fontSize: 12,
+                  textAlign: "center", marginTop: 12, lineHeight: 1.6,
                 }}>
-                  Estimates based on industry averages.
+                  We'll show you exactly where you're overpaying. No commitment.
                 </p>
               </div>
 

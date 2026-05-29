@@ -143,6 +143,36 @@ export default function About() {
         </div>
       </section>
 
+      {/* ── WHY WE BUILT THIS ── */}
+      <section style={{ background: "#04080f", padding: "100px 40px", borderTop: "1px solid rgba(255,255,255,0.04)" }}>
+        <div style={{ maxWidth: 860, margin: "0 auto" }}>
+          <div className="pw-reveal" style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 24 }}>
+            <div style={{ width: 6, height: 6, background: "#E8A838", borderRadius: "50%", boxShadow: "0 0 8px rgba(232,168,56,0.7)", flexShrink: 0 }} />
+            <p style={{ color: "#E8A838", fontSize: 11, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase" }}>THE ORIGIN STORY</p>
+          </div>
+          <h2 className="pw-reveal pw-d1" style={{ color: "white", fontSize: "clamp(1.8rem,3.5vw,2.6rem)", fontWeight: 800, lineHeight: 1.15, letterSpacing: "-0.5px", marginBottom: 32 }}>
+            Why We Built Packworkz
+          </h2>
+          <div className="pw-reveal pw-d2" style={{ background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.06)", borderLeft: "3px solid #E8A838", padding: "36px 40px", borderRadius: 4 }}>
+            <p style={{ color: "rgba(255,255,255,0.72)", fontSize: 17, lineHeight: 1.85, margin: 0 }}>
+              We watched D2C brands spend 30% of their operational energy on a problem that shouldn't exist — chasing vendors, firefighting delays, and absorbing hidden costs they couldn't see. Packaging touches every product that ships, yet it was managed like it was 1995. We built Packworkz to change that — using AI and managed operations to give brands the supply chain certainty that used to be reserved for large enterprises.
+            </p>
+          </div>
+          <div className="pw-reveal pw-d3" style={{ display: "flex", gap: 48, marginTop: 48, paddingTop: 40, borderTop: "1px solid rgba(255,255,255,0.05)", flexWrap: "wrap" }}>
+            {[
+              { val: "30%", label: "of brand ops energy lost to packaging vendor problems" },
+              { val: "₹6L+", label: "average annual saving for brands spending ₹5L/month" },
+              { val: "2025", label: "when we decided enough was enough" },
+            ].map((s, i) => (
+              <div key={i}>
+                <p style={{ color: "#E8A838", fontSize: "clamp(1.8rem,3vw,2.5rem)", fontWeight: 900, lineHeight: 1, letterSpacing: "-1px", marginBottom: 8 }}>{s.val}</p>
+                <p style={{ color: "rgba(255,255,255,0.36)", fontSize: 12, fontWeight: 600, textTransform: "uppercase", letterSpacing: "1px", maxWidth: 180, lineHeight: 1.5 }}>{s.label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ── CTA ── */}
       <section className="relative overflow-hidden" style={{ background: "#08080f", padding: "100px 40px", textAlign: "center", borderTop: "1px solid rgba(255,255,255,0.03)" }}>
         <div className="pw-glow-drift absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse 50% 60% at 50% 100%, rgba(27,108,168,0.12) 0%, transparent 65%)" }} />
