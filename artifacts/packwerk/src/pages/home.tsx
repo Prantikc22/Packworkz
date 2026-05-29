@@ -789,11 +789,6 @@ export default function Home() {
       </section>
 
       {/* ══════════════════════════════════════════════════════════ */}
-      {/*  WHY BRANDS CHOOSE PACKWORKZ                              */}
-      {/* ══════════════════════════════════════════════════════════ */}
-      <ComparisonSection />
-
-      {/* ══════════════════════════════════════════════════════════ */}
       {/*  SECTION 4 — PAIN POINTS                                   */}
       {/* ══════════════════════════════════════════════════════════ */}
       <section style={{ background: "#FFFFFF", padding: "100px 0" }}>
@@ -1211,8 +1206,9 @@ export default function Home() {
       </section>
 
       {/* ══════════════════════════════════════════════════════════ */}
-      {/*  (comparison section moved up — see ComparisonSection)    */}
+      {/*  BUILT FOR MODERN PROCUREMENT TEAMS                        */}
       {/* ══════════════════════════════════════════════════════════ */}
+      <ComparisonSection />
       {false && <div className="relative" style={{ zIndex: 1, maxWidth: 940, margin: "0 auto", padding: "0 24px" }}>
 
           {/* ── Eyebrow ── */}
