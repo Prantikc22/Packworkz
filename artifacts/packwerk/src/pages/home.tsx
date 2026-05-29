@@ -644,7 +644,7 @@ export default function Home() {
               Your Packaging.<br />Sorted. Forever.
             </h1>
             <p className="text-blue-100 text-lg md:text-xl mb-3 max-w-lg font-light">
-              AI-powered packaging procurement that eliminates vendor chaos, prevents stockouts, and keeps your production line moving.
+              Design. Source. QC. Deliver. One platform. Zero vendor chaos.
             </p>
             <p style={{ color: "rgba(255,255,255,0.48)", fontSize: 13, marginBottom: 18, letterSpacing: "0.1px", display: "flex", alignItems: "center", gap: 7, flexWrap: "wrap" }}>
               <span style={{
