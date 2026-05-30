@@ -660,8 +660,15 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
         items: [{
           product_id: selectedSkuId,
           product_name: selectedSku?.name || selectedSkuId,
-          quantity: qty, quantity_unit: qtyUnit, artwork_status: artworkOption, custom_specs: Object.keys(customFieldValues).length ? customFieldValues : undefined,
-          sample_requested: sampleOption !== "none", sample_tier: sampleOption === "express" ? "premium" : sampleOption === "standard" ? "standard" : "none"
+          category: selectedCategory,
+          quantity: qty, quantity_unit: qtyUnit,
+          artwork_status: artworkOption,
+          variant_selections: Object.keys(variantSelections).length ? variantSelections : undefined,
+          custom_specs: Object.keys(customFieldValues).length ? customFieldValues : undefined,
+          sample_requested: sampleOption !== "none",
+          sample_tier: sampleOption === "express" ? "premium" : sampleOption === "standard" ? "standard" : "none",
+          design_paid: designPaid,
+          sample_paid: samplePaid,
         }],
         artwork_option: artworkOption,
         artwork_file_url: artworkFileUrl || undefined,
@@ -1176,6 +1183,10 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                         ...Object.entries(variantSelections).map(([k, v]) => {
                           const group = selectedSku?.variants.find(g => g.key === k);
                           return [group?.label || k, v];
+                        }),
+                        ...Object.entries(customFieldValues).filter(([, v]) => v).map(([k, v]) => {
+                          const field = selectedSku?.customization_fields.find(f => f.key === k);
+                          return [(field?.label || k), field?.unit ? `${v} ${field.unit}` : v];
                         }),
                         ["Artwork", artworkOption === "upload" ? "Upload ready-to-print file" : artworkOption === "design" ? `Design Service — ₹1,999 ${designPaid ? "✓ Paid" : "(pending payment)"}` : "Plain / unprinted"],
                         ["Delivery", deliveryOption === "standard" ? "Standard Pro (Free)" : deliveryOption === "blitz" ? "Blitz Logistics (+₹240)" : "Warehouse Hold (₹15/mo)"],

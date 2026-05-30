@@ -67,7 +67,13 @@ function QuoteRow({ q, onRefetch }: { q: any; onRefetch: () => void }) {
       `📋 *Quote ID:* ${q.quote_id}`,
       `🏢 *Company:* ${q.company_name}`,
       `📦 *Product:* ${firstItem.product_name || "—"}`,
-      `🔢 *Quantity:* ${firstItem.quantity?.toLocaleString() || "—"}`,
+      `🔢 *Quantity:* ${firstItem.quantity?.toLocaleString() || "—"} ${firstItem.quantity_unit || ""}`.trim(),
+      ...(firstItem.variant_selections && Object.keys(firstItem.variant_selections).length
+        ? Object.entries(firstItem.variant_selections).map(([k, v]) => `   • ${k.replace(/_/g, " ")}: ${v}`)
+        : []),
+      ...(firstItem.custom_specs && Object.keys(firstItem.custom_specs).length
+        ? [`📐 *Dimensions:* ${Object.entries(firstItem.custom_specs).filter(([,v]) => v).map(([k,v]) => `${k.replace(/_/g," ")}: ${v}`).join(", ")}`]
+        : []),
       ...(quotedAmount ? [``, `💰 *Quoted Price:* ₹${Number(quotedAmount).toLocaleString("en-IN")}`] : []),
       ...(deliveryDate ? [`📅 *Estimated Delivery:* ${deliveryDate}`] : []),
       ``,
@@ -95,7 +101,13 @@ function QuoteRow({ q, onRefetch }: { q: any; onRefetch: () => void }) {
       `Quote ID: ${q.quote_id}`,
       `Company: ${q.company_name}`,
       `Product: ${firstItem.product_name || "—"}`,
-      `Quantity: ${firstItem.quantity?.toLocaleString() || "—"}`,
+      `Quantity: ${firstItem.quantity?.toLocaleString() || "—"} ${firstItem.quantity_unit || ""}`.trim(),
+      ...(firstItem.variant_selections && Object.keys(firstItem.variant_selections).length
+        ? Object.entries(firstItem.variant_selections).map(([k, v]) => `  - ${k.replace(/_/g, " ")}: ${v}`)
+        : []),
+      ...(firstItem.custom_specs && Object.keys(firstItem.custom_specs).length
+        ? [`Dimensions: ${Object.entries(firstItem.custom_specs).filter(([,v]) => v).map(([k,v]) => `${k.replace(/_/g," ")}: ${v}`).join(", ")}`]
+        : []),
       ...(quotedAmount ? [`Quoted Price: ₹${Number(quotedAmount).toLocaleString("en-IN")}`] : []),
       ...(deliveryDate ? [`Estimated Delivery: ${deliveryDate}`] : []),
       ``,
@@ -194,10 +206,23 @@ function QuoteRow({ q, onRefetch }: { q: any; onRefetch: () => void }) {
                   {items.map((item: any, i: number) => (
                     <div key={i} className="text-sm mb-2 pb-2 border-b border-[#E2EAF4] last:border-0">
                       <div className="font-semibold text-[#0D1B2A]">{item.product_name || item.product_id || "—"}</div>
+                      {item.category && <div className="text-xs text-[#94A3B8] capitalize mb-0.5">{item.category}</div>}
                       <div className="text-[#64748B] mt-0.5">
                         Qty: <span className="font-medium">{item.quantity?.toLocaleString()}{item.quantity_unit ? ` ${item.quantity_unit}` : ""}</span>
-                        {item.artwork_status && <> · Artwork: <span className="font-medium">{item.artwork_status}</span></>}
                       </div>
+                      {item.variant_selections && Object.keys(item.variant_selections).length > 0 && (
+                        <div className="mt-1.5 pt-1.5 border-t border-[#F1F5F9]">
+                          <div className="text-xs font-semibold text-[#94A3B8] uppercase tracking-wide mb-1">Configuration</div>
+                          <div className="grid grid-cols-2 gap-x-3 gap-y-0.5">
+                            {Object.entries(item.variant_selections).map(([k, v]) => (
+                              <div key={k} className="flex justify-between text-xs">
+                                <span className="text-[#94A3B8] capitalize">{k.replace(/_/g, " ")}</span>
+                                <span className="font-medium text-[#0D1B2A]">{String(v)}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                       {item.custom_specs && Object.keys(item.custom_specs).length > 0 && (
                         <div className="mt-1.5 pt-1.5 border-t border-[#F1F5F9]">
                           <div className="text-xs font-semibold text-[#94A3B8] uppercase tracking-wide mb-1">Package Specs</div>
@@ -209,6 +234,25 @@ function QuoteRow({ q, onRefetch }: { q: any; onRefetch: () => void }) {
                               </div>
                             ))}
                           </div>
+                        </div>
+                      )}
+                      {(item.sample_requested || item.design_paid || item.sample_paid) && (
+                        <div className="mt-1.5 pt-1.5 border-t border-[#F1F5F9] flex flex-wrap gap-1.5">
+                          {item.sample_requested && (
+                            <span className="text-xs px-2 py-0.5 rounded-full font-medium" style={{ background: "#EFF6FF", color: "#1B6CA8" }}>
+                              Sample: {item.sample_tier || "requested"}
+                            </span>
+                          )}
+                          {item.design_paid && (
+                            <span className="text-xs px-2 py-0.5 rounded-full font-medium" style={{ background: "#F0FDF4", color: "#16A34A" }}>
+                              Design fee ✓ paid
+                            </span>
+                          )}
+                          {item.sample_paid && (
+                            <span className="text-xs px-2 py-0.5 rounded-full font-medium" style={{ background: "#F0FDF4", color: "#16A34A" }}>
+                              Sample fee ✓ paid
+                            </span>
+                          )}
                         </div>
                       )}
                     </div>
