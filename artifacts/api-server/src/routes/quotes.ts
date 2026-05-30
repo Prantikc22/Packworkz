@@ -129,6 +129,7 @@ router.post("/quotes", async (req, res): Promise<void> => {
       phone,
       productName: firstItem?.product_name || "Packaging",
       qty: firstItem?.quantity || 0,
+      qtyUnit: firstItem?.quantity_unit || undefined,
       artworkOption: resolvedArtwork,
       sampleOption: resolvedSample,
       pincode: delivery_pincode,
@@ -136,6 +137,8 @@ router.post("/quotes", async (req, res): Promise<void> => {
       estimatedMin: total_estimated_min ? Number(total_estimated_min) : undefined,
       estimatedMax: total_estimated_max ? Number(total_estimated_max) : undefined,
       artworkFileUrl: artwork_file_url || undefined,
+      variantSelections: firstItem?.variant_selections || undefined,
+      customSpecs: firstItem?.custom_specs || undefined,
     }).catch(err => console.error("[email] Failed to send admin notification:", err)),
 
     sendWhatsApp(

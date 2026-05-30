@@ -164,6 +164,7 @@ export async function sendAdminQuoteNotification(opts: {
   phone: string;
   productName: string;
   qty: number;
+  qtyUnit?: string;
   artworkOption: string;
   sampleOption: string;
   pincode?: string;
@@ -171,9 +172,23 @@ export async function sendAdminQuoteNotification(opts: {
   estimatedMin?: number;
   estimatedMax?: number;
   artworkFileUrl?: string;
+  variantSelections?: Record<string, string>;
+  customSpecs?: Record<string, string>;
 }) {
   const artworkFileRow = opts.artworkFileUrl
     ? `<tr><td style="padding:6px 0;color:#64748B">Artwork File</td><td style="padding:6px 0;font-weight:700;text-align:right"><a href="${opts.artworkFileUrl}" style="color:#1B6CA8">${opts.artworkFileUrl.split("/").pop() || "View File"}</a></td></tr>`
+    : "";
+
+  const variantRows = opts.variantSelections && Object.keys(opts.variantSelections).length
+    ? Object.entries(opts.variantSelections).map(([k, v]) =>
+        `<tr><td style="padding:4px 0 4px 16px;color:#94A3B8;font-size:13px">↳ ${k.replace(/_/g, " ")}</td><td style="padding:4px 0;font-weight:600;text-align:right;font-size:13px">${v}</td></tr>`
+      ).join("")
+    : "";
+
+  const specRows = opts.customSpecs && Object.keys(opts.customSpecs).length
+    ? `<tr><td style="padding:6px 0;color:#64748B">Dimensions</td><td style="padding:6px 0;font-weight:600;text-align:right;font-size:13px">${
+        Object.entries(opts.customSpecs).filter(([,v]) => v).map(([k,v]) => `${k.replace(/_/g," ")}: ${v}`).join(" · ")
+      }</td></tr>`
     : "";
 
   const html = `
@@ -195,7 +210,9 @@ export async function sendAdminQuoteNotification(opts: {
             <tr><td style="padding:6px 0;color:#64748B">Email</td><td style="padding:6px 0;font-weight:700;text-align:right"><a href="mailto:${opts.email}" style="color:#1B6CA8">${opts.email}</a></td></tr>
             <tr><td style="padding:6px 0;color:#64748B">Phone</td><td style="padding:6px 0;font-weight:700;text-align:right"><a href="https://wa.me/${opts.phone.replace(/\D/g, "")}" style="color:#25D366;font-weight:800">${opts.phone}</a></td></tr>
             <tr><td style="padding:6px 0;color:#64748B">Product</td><td style="padding:6px 0;font-weight:700;text-align:right">${opts.productName}</td></tr>
-            <tr><td style="padding:6px 0;color:#64748B">Quantity</td><td style="padding:6px 0;font-weight:700;text-align:right">${opts.qty.toLocaleString("en-IN")}</td></tr>
+            <tr><td style="padding:6px 0;color:#64748B">Quantity</td><td style="padding:6px 0;font-weight:700;text-align:right">${opts.qty.toLocaleString("en-IN")} ${opts.qtyUnit || ""}</td></tr>
+            ${variantRows}
+            ${specRows}
             <tr><td style="padding:6px 0;color:#64748B">Artwork</td><td style="padding:6px 0;font-weight:700;text-align:right">${opts.artworkOption}</td></tr>
             ${artworkFileRow}
             <tr><td style="padding:6px 0;color:#64748B">Sample</td><td style="padding:6px 0;font-weight:700;text-align:right">${opts.sampleOption}</td></tr>
