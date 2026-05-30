@@ -65,6 +65,7 @@ router.post("/quotes", async (req, res): Promise<void> => {
       total_estimated_min: total_estimated_min?.toString() ?? null,
       total_estimated_max: total_estimated_max?.toString() ?? null,
       artwork_option: resolvedArtwork,
+      ...(firstItem?.artwork_file_url ? { artwork_file_url: firstItem.artwork_file_url } : {}),
       sample_option: resolvedSample,
       status: "submitted",
       ...(userId ? { user_id: userId } : {}),
