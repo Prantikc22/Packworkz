@@ -521,9 +521,10 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
   const [selectedCategory, setSelectedCategory] = useState<string>(() => loadDraft().selectedCategory || CATEGORIES[0].slug);
   const [ecoFilter, setEcoFilter] = useState<boolean>(() => loadDraft().ecoFilter ?? false);
   const [selectedSkuId, setSelectedSkuId] = useState<string>(() => loadDraft().selectedSkuId || SKUS[0].id);
-  const [qty, setQty] = useState<number>(() => loadDraft().qty || 1000);
+  const [qty, setQty] = useState<number>(() => loadDraft().qty || 500);
   const [qtyUnit, setQtyUnit] = useState<'pieces' | 'kg'>(() => loadDraft().qtyUnit || 'pieces');
   const [variantSelections, setVariantSelections] = useState<Record<string, string>>(() => loadDraft().variantSelections || {});
+  const [customFieldValues, setCustomFieldValues] = useState<Record<string, string>>(() => loadDraft().customFieldValues || {});
 
   // ── Artwork / Design ─────────────────────────────────────────────────────
   const [artworkOption, setArtworkOption] = useState<ArtworkOption>(() => loadDraft().artworkOption || "upload");
@@ -596,7 +597,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
   // ── Helper: collect all state into one object for saving ──────────────────
   const getAllState = () => ({
     contactName, company, email, phone,
-    selectedCategory, selectedSkuId, qty, qtyUnit, variantSelections, ecoFilter,
+    selectedCategory, selectedSkuId, qty, qtyUnit, variantSelections, customFieldValues, ecoFilter,
     artworkOption, designPaid,
     deliveryOption, pincode,
     sampleOption, samplePaid, notes,
@@ -659,7 +660,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
         items: [{
           product_id: selectedSkuId,
           product_name: selectedSku?.name || selectedSkuId,
-          quantity: qty, quantity_unit: qtyUnit, artwork_status: artworkOption,
+          quantity: qty, quantity_unit: qtyUnit, artwork_status: artworkOption, custom_specs: Object.keys(customFieldValues).length ? customFieldValues : undefined,
           sample_requested: sampleOption !== "none", sample_tier: sampleOption === "express" ? "premium" : sampleOption === "standard" ? "standard" : "none"
         }],
         artwork_option: artworkOption,
@@ -843,6 +844,43 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                   </div>
                 )}
 
+                {/* Package Size & Specs */}
+                {selectedSku && selectedSku.customization_fields.length > 0 && selectedSku.category !== "rolls" && (
+                  <div className="bg-white rounded-lg border border-slate-200 p-5">
+                    <div className="font-bold text-slate-800 text-sm mb-1" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+                      Package Size &amp; Specs
+                    </div>
+                    <p className="text-xs text-slate-400 mb-4">Enter your required dimensions and print specifications.</p>
+                    <div className="grid grid-cols-2 gap-3">
+                      {selectedSku.customization_fields.map(field => (
+                        <div key={field.key}>
+                          <label className="text-xs font-medium text-slate-600 mb-1 block">
+                            {field.label}{field.unit ? ` (${field.unit})` : ""}
+                          </label>
+                          {field.type === "select" ? (
+                            <select
+                              value={customFieldValues[field.key] || field.options?.[0] || ""}
+                              onChange={e => setCustomFieldValues(prev => ({ ...prev, [field.key]: e.target.value }))}
+                              className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-400 bg-slate-50"
+                            >
+                              {field.options?.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                            </select>
+                          ) : (
+                            <input
+                              type="number"
+                              value={customFieldValues[field.key] || ""}
+                              onChange={e => setCustomFieldValues(prev => ({ ...prev, [field.key]: e.target.value }))}
+                              placeholder={field.placeholder || ""}
+                              className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-400 bg-slate-50"
+                            />
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                    <p className="text-xs text-slate-400 mt-3">All dimensions in mm unless stated. Leave blank if flexible.</p>
+                  </div>
+                )}
+
                 {/* Quantity selector */}
                 <div className="bg-white rounded-lg border border-slate-200 p-5">
                   <div className="font-bold text-slate-800 text-sm mb-3" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
@@ -852,7 +890,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                     {/* Unit toggle */}
                     <div className="flex gap-0 rounded-lg border border-slate-200 overflow-hidden w-fit">
                       {(["pieces", "kg"] as const).map(u => (
-                        <button key={u} onClick={() => { setQtyUnit(u); setQty(u === "pieces" ? 1000 : 50); }}
+                        <button key={u} onClick={() => { setQtyUnit(u); setQty(u === "pieces" ? 500 : 50); }}
                           className="px-4 py-1.5 text-sm font-semibold transition-all"
                           style={{ background: qtyUnit === u ? "#1B6CA8" : "white", color: qtyUnit === u ? "white" : "#64748B" }}>
                           {u === "pieces" ? "Pieces" : "Kg (film)"}
@@ -860,7 +898,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                       ))}
                     </div>
                     <div className="flex gap-2 flex-wrap">
-                      {(qtyUnit === "pieces" ? [1000, 2500, 5000, 10000, 25000] : [50, 100, 250, 500, 1000]).map(q => (
+                      {(qtyUnit === "pieces" ? [500, 1000, 2500, 5000, 10000] : [50, 100, 250, 500, 1000]).map(q => (
                         <button key={q} onClick={() => setQty(q)}
                           className="px-4 py-2 rounded-lg border text-sm font-bold transition-all"
                           style={{ borderColor: qty === q ? "#1B6CA8" : "#E2E8F0", background: qty === q ? "rgba(27,108,168,0.08)" : "white", color: qty === q ? "#1B6CA8" : "#64748B" }}>
@@ -868,12 +906,20 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                         </button>
                       ))}
                       <input type="number" value={qty}
-                        onChange={e => setQty(Math.max(qtyUnit === "pieces" ? 1000 : 50, parseInt(e.target.value) || (qtyUnit === "pieces" ? 1000 : 50)))}
+                        onChange={e => setQty(Math.max(qtyUnit === "pieces" ? 500 : 50, parseInt(e.target.value) || (qtyUnit === "pieces" ? 500 : 50)))}
                         className="w-28 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-400 bg-slate-50" placeholder="Custom" />
                     </div>
                     <p className="text-xs text-slate-400">
-                      {qtyUnit === "pieces" ? "Minimum: 1,000 pieces of printed packaging" : "Minimum: 50 kg of printed packaging film"}
+                      {qtyUnit === "pieces" ? "Minimum: 500 pieces" : "Minimum: 50 kg of packaging film"}
                     </p>
+                    {qtyUnit === "pieces" && qty <= 1000 && (
+                      <div className="flex items-start gap-2 p-3 rounded-lg bg-amber-50 border border-amber-200">
+                        <span className="text-amber-500 text-base leading-none mt-0.5">⚠️</span>
+                        <p className="text-xs text-amber-800 leading-snug">
+                          <strong>Prices are higher at low quantities.</strong> Ordering 2,500+ pieces can reduce your unit cost by 30–50%. The estimate shown reflects your current quantity — your actual savings will be shown in the full quote.
+                        </p>
+                      </div>
+                    )}
                   </div>
                 </div>
               </>
@@ -886,11 +932,11 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
 
                 {/* Artwork section */}
                 <div className="bg-white rounded-lg border border-slate-200 p-6">
-                  <div className="font-bold text-slate-800 text-sm mb-1" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>Artwork / Branding</div>
-                  <div className="text-xs text-slate-400 mb-5">How will your packaging be printed?</div>
+                  <div className="font-bold text-slate-800 text-sm mb-1" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>Artwork &amp; Dieline</div>
+                  <div className="text-xs text-slate-400 mb-5">Upload your artwork or dieline file, or let us design it.</div>
                   <div className="grid grid-cols-3 gap-4">
                     {([
-                      { id: "upload" as ArtworkOption, icon: <Upload className="w-8 h-8" />, label: "Upload My File", sub: "PDF, AI, SVG — ready to print", badge: null },
+                      { id: "upload" as ArtworkOption, icon: <Upload className="w-8 h-8" />, label: "Upload My File", sub: "PDF, AI, CDR, SVG — artwork or dieline", badge: null },
                       { id: "design" as ArtworkOption, icon: <Palette className="w-8 h-8" />, label: "Design It For Me", sub: "Expert design + dieline", badge: "+₹1,999" },
                       { id: "none" as ArtworkOption, icon: <X className="w-8 h-8" />, label: "Plain / Unprinted", sub: "No artwork needed", badge: null },
                     ]).map(opt => (
