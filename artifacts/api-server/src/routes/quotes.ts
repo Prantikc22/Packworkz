@@ -2,7 +2,7 @@ import { Router, type IRouter } from "express";
 import { sb } from "../lib/supabase";
 import { generateId } from "../lib/generateId";
 import { sendWhatsApp } from "../lib/whatsapp";
-import { sendQuoteConfirmation } from "../lib/email";
+import { sendQuoteConfirmation, sendAdminQuoteNotification } from "../lib/email";
 import { getSessionUserId } from "../lib/auth";
 import { pushToSheetDB } from "../lib/sheetdb";
 
@@ -118,6 +118,23 @@ router.post("/quotes", async (req, res): Promise<void> => {
       sample_paid: sample_paid ? "Yes" : "No",
       submission_date: new Date().toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" }),
     }).catch(err => console.error("[sheetdb] quote submit failed:", err)),
+
+    sendAdminQuoteNotification({
+      quoteId,
+      contactName: contact_name,
+      company: company_name,
+      email,
+      phone,
+      productName: firstItem?.product_name || "Packaging",
+      qty: firstItem?.quantity || 0,
+      artworkOption: resolvedArtwork,
+      sampleOption: resolvedSample,
+      pincode: delivery_pincode,
+      notes: notes || undefined,
+      estimatedMin: total_estimated_min ? Number(total_estimated_min) : undefined,
+      estimatedMax: total_estimated_max ? Number(total_estimated_max) : undefined,
+      artworkFileUrl: artwork_file_url || undefined,
+    }).catch(err => console.error("[email] Failed to send admin notification:", err)),
 
     sendWhatsApp(
       process.env.TEAM_WHATSAPP_PHONE || "+919999999999",

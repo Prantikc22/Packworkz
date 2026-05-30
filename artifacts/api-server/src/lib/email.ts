@@ -154,6 +154,72 @@ export async function sendQuoteConfirmation(opts: {
   });
 }
 
+// ─── Admin Internal Quote Notification ───────────────────────────────────────
+
+export async function sendAdminQuoteNotification(opts: {
+  quoteId: string;
+  contactName: string;
+  company: string;
+  email: string;
+  phone: string;
+  productName: string;
+  qty: number;
+  artworkOption: string;
+  sampleOption: string;
+  pincode?: string;
+  notes?: string;
+  estimatedMin?: number;
+  estimatedMax?: number;
+  artworkFileUrl?: string;
+}) {
+  const artworkFileRow = opts.artworkFileUrl
+    ? `<tr><td style="padding:6px 0;color:#64748B">Artwork File</td><td style="padding:6px 0;font-weight:700;text-align:right"><a href="${opts.artworkFileUrl}" style="color:#1B6CA8">${opts.artworkFileUrl.split("/").pop() || "View File"}</a></td></tr>`
+    : "";
+
+  const html = `
+    <div style="font-family:'Plus Jakarta Sans',sans-serif;max-width:560px;margin:0 auto;color:#0D1B2A">
+      ${emailHeader("New Quote Alert")}
+      <div style="padding:40px 40px 0">
+        <p style="font-size:13px;color:#E04B4B;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px">Action Required</p>
+        <h1 style="font-size:24px;font-weight:900;margin:0 0 8px">New quote from ${opts.company}</h1>
+        <p style="font-size:15px;color:#475569;line-height:1.7;margin-bottom:28px">
+          A new quote request just came in. Review and respond within 48 hours.
+        </p>
+
+        <div style="background:#F8F9FC;border:1px solid #E2EAF4;padding:24px;margin-bottom:28px;border-radius:4px">
+          <p style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#94A3B8;margin-bottom:16px">Quote Details</p>
+          <table style="width:100%;border-collapse:collapse;font-size:14px">
+            <tr><td style="padding:6px 0;color:#64748B">Quote ID</td><td style="padding:6px 0;font-weight:700;text-align:right;font-family:monospace;color:#1B6CA8">${opts.quoteId}</td></tr>
+            <tr><td style="padding:6px 0;color:#64748B">Company</td><td style="padding:6px 0;font-weight:700;text-align:right">${opts.company}</td></tr>
+            <tr><td style="padding:6px 0;color:#64748B">Contact</td><td style="padding:6px 0;font-weight:700;text-align:right">${opts.contactName}</td></tr>
+            <tr><td style="padding:6px 0;color:#64748B">Email</td><td style="padding:6px 0;font-weight:700;text-align:right"><a href="mailto:${opts.email}" style="color:#1B6CA8">${opts.email}</a></td></tr>
+            <tr><td style="padding:6px 0;color:#64748B">Phone</td><td style="padding:6px 0;font-weight:700;text-align:right"><a href="https://wa.me/${opts.phone.replace(/\D/g, "")}" style="color:#25D366;font-weight:800">${opts.phone}</a></td></tr>
+            <tr><td style="padding:6px 0;color:#64748B">Product</td><td style="padding:6px 0;font-weight:700;text-align:right">${opts.productName}</td></tr>
+            <tr><td style="padding:6px 0;color:#64748B">Quantity</td><td style="padding:6px 0;font-weight:700;text-align:right">${opts.qty.toLocaleString("en-IN")}</td></tr>
+            <tr><td style="padding:6px 0;color:#64748B">Artwork</td><td style="padding:6px 0;font-weight:700;text-align:right">${opts.artworkOption}</td></tr>
+            ${artworkFileRow}
+            <tr><td style="padding:6px 0;color:#64748B">Sample</td><td style="padding:6px 0;font-weight:700;text-align:right">${opts.sampleOption}</td></tr>
+            ${opts.pincode ? `<tr><td style="padding:6px 0;color:#64748B">Pincode</td><td style="padding:6px 0;font-weight:700;text-align:right">${opts.pincode}</td></tr>` : ""}
+            ${opts.estimatedMin ? `<tr><td style="padding:6px 0;color:#64748B">Est. Budget</td><td style="padding:6px 0;font-weight:700;text-align:right">₹${opts.estimatedMin.toLocaleString("en-IN")} – ₹${(opts.estimatedMax ?? opts.estimatedMin).toLocaleString("en-IN")}</td></tr>` : ""}
+            ${opts.notes ? `<tr><td style="padding:6px 0;color:#64748B;vertical-align:top">Notes</td><td style="padding:6px 0;font-weight:500;text-align:right;font-size:13px">${opts.notes}</td></tr>` : ""}
+          </table>
+        </div>
+
+        <div style="margin-bottom:28px">
+          <a href="https://packworkz.com/admin/quotes" style="display:inline-block;background:#1B6CA8;color:white;padding:12px 28px;text-decoration:none;font-weight:800;font-size:14px;border-radius:6px">Open Admin Panel →</a>
+        </div>
+      </div>
+      ${emailFooter()}
+    </div>`;
+
+  await sendEmail({
+    from: FROM,
+    to: "prantik.chatterjee@packworkz.com",
+    subject: `🔔 New quote: ${opts.quoteId} — ${opts.company} (${opts.productName})`,
+    html,
+  });
+}
+
 // ─── Design Request Confirmation ─────────────────────────────────────────────
 
 export async function sendDesignConfirmation(opts: {

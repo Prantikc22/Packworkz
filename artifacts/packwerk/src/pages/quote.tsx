@@ -521,7 +521,8 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
   const [selectedCategory, setSelectedCategory] = useState<string>(() => loadDraft().selectedCategory || CATEGORIES[0].slug);
   const [ecoFilter, setEcoFilter] = useState<boolean>(() => loadDraft().ecoFilter ?? false);
   const [selectedSkuId, setSelectedSkuId] = useState<string>(() => loadDraft().selectedSkuId || SKUS[0].id);
-  const [qty, setQty] = useState<number>(() => loadDraft().qty || 500);
+  const [qty, setQty] = useState<number>(() => loadDraft().qty || 1000);
+  const [qtyUnit, setQtyUnit] = useState<'pieces' | 'kg'>(() => loadDraft().qtyUnit || 'pieces');
   const [variantSelections, setVariantSelections] = useState<Record<string, string>>(() => loadDraft().variantSelections || {});
 
   // ── Artwork / Design ─────────────────────────────────────────────────────
@@ -595,7 +596,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
   // ── Helper: collect all state into one object for saving ──────────────────
   const getAllState = () => ({
     contactName, company, email, phone,
-    selectedCategory, selectedSkuId, qty, variantSelections, ecoFilter,
+    selectedCategory, selectedSkuId, qty, qtyUnit, variantSelections, ecoFilter,
     artworkOption, designPaid,
     deliveryOption, pincode,
     sampleOption, samplePaid, notes,
@@ -658,7 +659,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
         items: [{
           product_id: selectedSkuId,
           product_name: selectedSku?.name || selectedSkuId,
-          quantity: qty, artwork_status: artworkOption,
+          quantity: qty, quantity_unit: qtyUnit, artwork_status: artworkOption,
           sample_requested: sampleOption !== "none", sample_tier: sampleOption === "express" ? "premium" : sampleOption === "standard" ? "standard" : "none"
         }],
         artwork_option: artworkOption,
@@ -844,22 +845,35 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
 
                 {/* Quantity selector */}
                 <div className="bg-white rounded-lg border border-slate-200 p-5">
-                  <div className="font-bold text-slate-800 text-sm mb-4" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+                  <div className="font-bold text-slate-800 text-sm mb-3" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
                     Quantity
                   </div>
                   <div className="space-y-3">
+                    {/* Unit toggle */}
+                    <div className="flex gap-0 rounded-lg border border-slate-200 overflow-hidden w-fit">
+                      {(["pieces", "kg"] as const).map(u => (
+                        <button key={u} onClick={() => { setQtyUnit(u); setQty(u === "pieces" ? 1000 : 50); }}
+                          className="px-4 py-1.5 text-sm font-semibold transition-all"
+                          style={{ background: qtyUnit === u ? "#1B6CA8" : "white", color: qtyUnit === u ? "white" : "#64748B" }}>
+                          {u === "pieces" ? "Pieces" : "Kg (film)"}
+                        </button>
+                      ))}
+                    </div>
                     <div className="flex gap-2 flex-wrap">
-                      {[250, 500, 1000, 2500, 5000].map(q => (
+                      {(qtyUnit === "pieces" ? [1000, 2500, 5000, 10000, 25000] : [50, 100, 250, 500, 1000]).map(q => (
                         <button key={q} onClick={() => setQty(q)}
                           className="px-4 py-2 rounded-lg border text-sm font-bold transition-all"
                           style={{ borderColor: qty === q ? "#1B6CA8" : "#E2E8F0", background: qty === q ? "rgba(27,108,168,0.08)" : "white", color: qty === q ? "#1B6CA8" : "#64748B" }}>
                           {q.toLocaleString()}
                         </button>
                       ))}
-                      <input type="number" value={qty} onChange={e => setQty(Math.max(50, parseInt(e.target.value) || 500))}
+                      <input type="number" value={qty}
+                        onChange={e => setQty(Math.max(qtyUnit === "pieces" ? 1000 : 50, parseInt(e.target.value) || (qtyUnit === "pieces" ? 1000 : 50)))}
                         className="w-28 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-400 bg-slate-50" placeholder="Custom" />
                     </div>
-                    {selectedSku && <p className="text-xs text-slate-400">Min order: {selectedSku.moq.toLocaleString()} {selectedSku.moq_unit}</p>}
+                    <p className="text-xs text-slate-400">
+                      {qtyUnit === "pieces" ? "Minimum: 1,000 pieces of printed packaging" : "Minimum: 50 kg of printed packaging film"}
+                    </p>
                   </div>
                 </div>
               </>
@@ -1112,7 +1126,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                         ["Category", CATEGORIES.find(c => c.slug === selectedCategory)?.label || selectedCategory],
                         ["SKU", selectedSku?.name || "—"],
                         ["SKU Code", selectedSku?.code || "—"],
-                        ["Quantity", `${qty.toLocaleString()} ${selectedSku?.moq_unit || "units"}`],
+                        ["Quantity", `${qty.toLocaleString()} ${qtyUnit}`],
                         ...Object.entries(variantSelections).map(([k, v]) => {
                           const group = selectedSku?.variants.find(g => g.key === k);
                           return [group?.label || k, v];

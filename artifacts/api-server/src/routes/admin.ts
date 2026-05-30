@@ -164,6 +164,13 @@ router.put("/admin/quotes/:id/notes", async (req, res): Promise<void> => {
   res.json({ success: true, quote: result.data });
 });
 
+router.delete("/admin/quotes/:id", async (req, res): Promise<void> => {
+  const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
+  const { error } = await sb.from("quote_requests").delete().eq("id", id);
+  if (error) { res.status(500).json({ error: "Failed to delete quote" }); return; }
+  res.json({ success: true });
+});
+
 router.put("/admin/samples/:id/update", async (req, res): Promise<void> => {
   const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
   const { status, admin_notes, payment_link } = req.body;
