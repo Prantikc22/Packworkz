@@ -3,9 +3,35 @@ import { sb } from "../lib/supabase";
 import { requireAdmin, hashPassword, generateTempPassword } from "../lib/auth";
 import { generateId } from "../lib/generateId";
 import { sendWhatsApp } from "../lib/whatsapp";
-import { sendWelcomeEmail } from "../lib/email";
+import { sendWelcomeEmail, sendAdminQuoteNotification } from "../lib/email";
 
 const router: IRouter = Router();
+
+router.post("/admin/test-email", requireAdmin, (req, res): void => {
+  void (async () => {
+    try {
+      await sendAdminQuoteNotification({
+        quoteId: "PKG-TEST-0001",
+        contactName: "Test User",
+        company: "Test Company",
+        email: "test@example.com",
+        phone: "+919999999999",
+        productName: "Stand-up Pouch",
+        qty: 1000,
+        qtyUnit: "pieces",
+        artworkOption: "upload",
+        sampleOption: "none",
+        pincode: "400001",
+        estimatedMin: 5000,
+        estimatedMax: 8000,
+        notes: "This is a test email to verify admin notifications.",
+      });
+      res.json({ ok: true, message: "Admin notification email sent — check prantik.chatterjee@packworkz.com" });
+    } catch (err) {
+      res.status(500).json({ ok: false, error: String(err) });
+    }
+  })();
+});
 
 router.post("/admin/verify-key", (req, res): void => {
   const body = req.body as { key?: string } | undefined;

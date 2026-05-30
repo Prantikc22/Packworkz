@@ -4,23 +4,25 @@ const REPLY_TO = "quote@packworkz.com";
 const WHATSAPP = "+91 82089 90366";
 const SITE = "packworkz.com";
 
-async function sendEmail(body: { from: string; to: string; reply_to?: string; subject: string; html: string }) {
+async function sendEmail(body: { from: string; to: string; reply_to?: string; subject: string; html: string }): Promise<{ ok: boolean; status: number; body: unknown }> {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
     console.warn("[email] RESEND_API_KEY not set — skipping email");
-    return;
+    return { ok: false, status: 0, body: "RESEND_API_KEY not set" };
   }
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
     body: JSON.stringify({ ...body, reply_to: body.reply_to ?? REPLY_TO }),
   });
+  const responseBody = await res.text();
   if (!res.ok) {
-    const err = await res.text();
-    console.error("[email] Resend error:", err);
+    console.error("[email] Resend error →", body.to, "| status:", res.status, "| body:", responseBody);
+    return { ok: false, status: res.status, body: responseBody };
   } else {
-    const data = await res.json() as { id: string };
+    const data = JSON.parse(responseBody) as { id: string };
     console.info("[email] Sent:", data.id, "→", body.to);
+    return { ok: true, status: res.status, body: data };
   }
 }
 
