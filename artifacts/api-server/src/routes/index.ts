@@ -9,6 +9,7 @@ import testimonialsRouter from "./testimonials";
 import adminRouter from "./admin";
 import paymentsRouter from "./payments";
 import packAiRouter from "./pack_ai";
+import uploadRouter from "./upload";
 
 const router: IRouter = Router();
 
@@ -22,5 +23,6 @@ router.use(testimonialsRouter);
 router.use(adminRouter);
 router.use(paymentsRouter);
 router.use(packAiRouter);
+router.use(uploadRouter);
 
 export default router;

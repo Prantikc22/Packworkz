@@ -198,6 +198,19 @@ function QuoteRow({ q, onRefetch }: { q: any; onRefetch: () => void }) {
                         Qty: <span className="font-medium">{item.quantity?.toLocaleString()}{item.quantity_unit ? ` ${item.quantity_unit}` : ""}</span>
                         {item.artwork_status && <> · Artwork: <span className="font-medium">{item.artwork_status}</span></>}
                       </div>
+                      {item.custom_specs && Object.keys(item.custom_specs).length > 0 && (
+                        <div className="mt-1.5 pt-1.5 border-t border-[#F1F5F9]">
+                          <div className="text-xs font-semibold text-[#94A3B8] uppercase tracking-wide mb-1">Package Specs</div>
+                          <div className="grid grid-cols-2 gap-x-3 gap-y-0.5">
+                            {Object.entries(item.custom_specs).map(([k, v]) => (
+                              <div key={k} className="flex justify-between text-xs">
+                                <span className="text-[#94A3B8] capitalize">{k.replace(/_/g, " ")}</span>
+                                <span className="font-medium text-[#0D1B2A]">{String(v)}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                     </div>
                   ))}
                   <dl className="space-y-1 text-sm mt-2">

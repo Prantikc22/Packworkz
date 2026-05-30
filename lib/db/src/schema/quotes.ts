@@ -17,6 +17,7 @@ export const quoteRequestsTable = pgTable("quote_requests", {
   total_estimated_min: numeric("total_estimated_min"),
   total_estimated_max: numeric("total_estimated_max"),
   artwork_option: text("artwork_option"),
+  artwork_file_url: text("artwork_file_url"),
   sample_option: text("sample_option"),
   status: text("status").notNull().default("submitted"),
   user_id: uuid("user_id"),

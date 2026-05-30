@@ -42,6 +42,14 @@ router.post("/quotes", async (req, res): Promise<void> => {
 
   const quoteId = await generateId("PKG", "quote_requests", "quote_id");
 
+  const firstItem = Array.isArray(items) ? items[0] : null;
+  const itemSummary = Array.isArray(items)
+    ? items.map((i: { product_name?: string; quantity?: number }) => `${i.product_name} x${i.quantity}`).join(", ")
+    : "items";
+
+  const resolvedArtwork = artwork_option || firstItem?.artwork_status || "none";
+  const resolvedSample = sample_option || (firstItem?.sample_requested ? firstItem?.sample_tier : "none");
+
   const { data: quote, error } = await sb
     .from("quote_requests")
     .insert({
@@ -57,9 +65,11 @@ router.post("/quotes", async (req, res): Promise<void> => {
       notes,
       total_estimated_min: total_estimated_min?.toString() ?? null,
       total_estimated_max: total_estimated_max?.toString() ?? null,
+      artwork_option: resolvedArtwork,
+      ...(artwork_file_url && !artwork_file_url.startsWith("local:") ? { artwork_file_url } : {}),
+      sample_option: resolvedSample,
       status: "submitted",
       ...(userId ? { user_id: userId } : {}),
-      ...(artwork_file_url ? { artwork_file_url } : {}),
     })
     .select()
     .single();
@@ -69,14 +79,6 @@ router.post("/quotes", async (req, res): Promise<void> => {
     res.status(500).json({ error: "Failed to create quote" });
     return;
   }
-
-  const firstItem = Array.isArray(items) ? items[0] : null;
-  const itemSummary = Array.isArray(items)
-    ? items.map((i: { product_name?: string; quantity?: number }) => `${i.product_name} x${i.quantity}`).join(", ")
-    : "items";
-
-  const resolvedArtwork = artwork_option || firstItem?.artwork_status || "none";
-  const resolvedSample = sample_option || (firstItem?.sample_requested ? firstItem?.sample_tier : "none");
 
   // Await all side-effects before responding — in Vercel serverless the function
   // is terminated as soon as res.json() is called, so fire-and-forget tasks never complete.
