@@ -1,0 +1,177 @@
+{
+  "event_message": "GET | 200 | https://tmvbjbmudxyvimdnhrmw.supabase.co/rest/v1/quote_requests?select=*&order=created_at.desc&status=eq.submitted | node",
+  "metadata": [
+    {
+      "load_balancer_experimental_routing": null,
+      "load_balancer_geo_aware_info": [],
+      "load_balancer_redirect_identifier": null,
+      "logflare_worker": [],
+      "request": [
+        {
+          "cf": [
+            {
+              "asOrganization": "Amazon.com, Inc.",
+              "asn": null,
+              "botManagement": [
+                {
+                  "corporateProxy": null,
+                  "detectionIds": [],
+                  "ja3Hash": "4a228e363d473f3fb66a05d65eee612a",
+                  "ja4": "t13d5311h1_ed6c8d7875f9_518fb456ca59",
+                  "ja4Signals": [],
+                  "jsDetection": [],
+                  "score": null,
+                  "staticResource": null,
+                  "verifiedBot": null
+                }
+              ],
+              "city": "Ashburn",
+              "clientAcceptEncoding": null,
+              "clientTcpRtt": null,
+              "clientTrustScore": 1,
+              "colo": "IAD",
+              "continent": null,
+              "country": "US",
+              "edgeRequestKeepAliveStatus": null,
+              "httpProtocol": "HTTP/1.1",
+              "isEUCountry": null,
+              "latitude": null,
+              "longitude": null,
+              "metroCode": null,
+              "postalCode": "20147",
+              "region": "Virginia",
+              "regionCode": null,
+              "requestPriority": null,
+              "timezone": "America/New_York",
+              "tlsCipher": null,
+              "tlsClientAuth": [],
+              "tlsClientCiphersSha1": null,
+              "tlsClientExtensionsSha1": null,
+              "tlsClientExtensionsSha1Le": null,
+              "tlsClientHelloLength": null,
+              "tlsClientRandom": null,
+              "tlsExportedAuthenticator": [],
+              "tlsVersion": null,
+              "verifiedBotCategory": null
+            }
+          ],
+          "headers": [
+            {
+              "accept": "*/*",
+              "cf_cache_status": null,
+              "cf_connecting_ip": "32.199.164.192",
+              "cf_ipcountry": "US",
+              "cf_ray": "a03ffb0019c10833",
+              "content_length": null,
+              "content_location": null,
+              "content_range": null,
+              "content_type": null,
+              "date": null,
+              "host": "tmvbjbmudxyvimdnhrmw.supabase.co",
+              "prefer": null,
+              "range": null,
+              "referer": null,
+              "sb_forwarded_for": null,
+              "sb_gateway_mode": null,
+              "sb_gateway_version": null,
+              "traceparent": null,
+              "transfer_encoding": null,
+              "user_agent": "node",
+              "x_amz_content_sha256": null,
+              "x_amz_date": null,
+              "x_client_info": "supabase-js-node/2.105.4",
+              "x_forwarded_for": null,
+              "x_forwarded_host": null,
+              "x_forwarded_proto": "https",
+              "x_forwarded_user_agent": null,
+              "x_kong_proxy_latency": null,
+              "x_kong_upstream_latency": null,
+              "x_real_ip": "32.199.164.192"
+            }
+          ],
+          "host": "tmvbjbmudxyvimdnhrmw.supabase.co",
+          "method": "GET",
+          "path": "/rest/v1/quote_requests",
+          "port": null,
+          "protocol": "https:",
+          "sb": [
+            {
+              "apikey": [],
+              "auth_user": null,
+              "aws_v4": [],
+              "jwt": [
+                {
+                  "apikey": [
+                    {
+                      "invalid": null,
+                      "payload": [
+                        {
+                          "algorithm": "HS256",
+                          "expires_at": 2091383768,
+                          "issued_at": 1775807768,
+                          "issuer": "supabase",
+                          "key_id": null,
+                          "role": "service_role",
+                          "session_id": null,
+                          "signature_prefix": "fT65Gi",
+                          "subject": null
+                        }
+                      ]
+                    }
+                  ],
+                  "authorization": [
+                    {
+                      "invalid": null,
+                      "payload": [
+                        {
+                          "algorithm": "HS256",
+                          "expires_at": 2091383768,
+                          "issued_at": 1775807768,
+                          "issuer": "supabase",
+                          "key_id": null,
+                          "role": "service_role",
+                          "session_id": null,
+                          "signature_prefix": "fT65Gi",
+                          "subject": null
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "search": "?select=*&order=created_at.desc&status=eq.submitted",
+          "url": "https://tmvbjbmudxyvimdnhrmw.supabase.co/rest/v1/quote_requests?select=*&order=created_at.desc&status=eq.submitted"
+        }
+      ],
+      "response": [
+        {
+          "headers": [
+            {
+              "cf_cache_status": "DYNAMIC",
+              "cf_ray": "a03ffb0039f50833-IAD",
+              "content_length": null,
+              "content_location": "/quote_requests?order=created_at.desc&select=%2A&status=eq.submitted",
+              "content_range": "0-22/*",
+              "content_type": "application/json; charset=utf-8",
+              "date": "Sat, 30 May 2026 19:00:14 GMT",
+              "proxy_status": null,
+              "sb_gateway_mode": null,
+              "sb_gateway_version": "1",
+              "sb_request_id": null,
+              "server_timing": null,
+              "transfer_encoding": "chunked",
+              "x_kong_proxy_latency": null,
+              "x_kong_upstream_latency": null,
+              "x_sb_error_code": null
+            }
+          ],
+          "origin_time": 819,
+          "status_code": 200
+        }
+      ]
+    }
+  ],
+  "timestamp": "2026-05-30T19:00:13.468000"
+}
