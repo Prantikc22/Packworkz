@@ -259,18 +259,32 @@ function QuoteRow({ q, onRefetch }: { q: any; onRefetch: () => void }) {
                   ))}
                   <dl className="space-y-1 text-sm mt-2">
                     <div className="flex justify-between"><dt className="text-[#64748B]">Artwork</dt><dd className="font-medium text-[#0D1B2A]">{q.artwork_option || "—"}</dd></div>
-                    {q.artwork_file_url && (
-                      <div className="flex justify-between items-center">
-                        <dt className="text-[#64748B]">Artwork File</dt>
-                        <dd>
-                          <a href={q.artwork_file_url} target="_blank" rel="noopener noreferrer"
-                            className="flex items-center gap-1 text-xs text-[#1B6CA8] font-semibold hover:underline">
-                            <ExternalLink className="w-3 h-3" />
-                            {q.artwork_file_url.split("/").pop()?.substring(0, 32) || "View File"}
-                          </a>
-                        </dd>
-                      </div>
-                    )}
+                    {(() => {
+                      const fileUrl = (q.items?.[0] as any)?.artwork_file_url || q.artwork_file_url;
+                      if (!fileUrl) return null;
+                      const isLocal = fileUrl.startsWith("local:");
+                      const label = isLocal
+                        ? fileUrl.replace("local:", "")
+                        : (fileUrl.split("/").pop()?.substring(0, 40) || "View File");
+                      return (
+                        <div className="flex justify-between items-center">
+                          <dt className="text-[#64748B]">Artwork File</dt>
+                          <dd>
+                            {isLocal ? (
+                              <span className="flex items-center gap-1 text-xs text-amber-600 font-semibold" title="File saved on client — upload may have failed">
+                                ⚠ {label}
+                              </span>
+                            ) : (
+                              <a href={fileUrl} target="_blank" rel="noopener noreferrer"
+                                className="flex items-center gap-1 text-xs text-[#1B6CA8] font-semibold hover:underline">
+                                <ExternalLink className="w-3 h-3" />
+                                {label}
+                              </a>
+                            )}
+                          </dd>
+                        </div>
+                      );
+                    })()}
                     <div className="flex justify-between"><dt className="text-[#64748B]">Sample</dt><dd className="font-medium text-[#0D1B2A]">{q.sample_option || "—"}</dd></div>
                     <div className="flex justify-between"><dt className="text-[#64748B]">Timeline</dt><dd className="font-medium text-[#0D1B2A]">{q.preferred_timeline || "standard"}</dd></div>
                   </dl>
