@@ -1188,7 +1188,9 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                           const field = selectedSku?.customization_fields.find(f => f.key === k);
                           return [(field?.label || k), field?.unit ? `${v} ${field.unit}` : v];
                         }),
-                        ["Artwork", artworkOption === "upload" ? "Upload ready-to-print file" : artworkOption === "design" ? `Design Service — ₹1,999 ${designPaid ? "✓ Paid" : "(pending payment)"}` : "Plain / unprinted"],
+                        ["Artwork", artworkOption === "upload"
+                          ? (artworkUploading ? "⏳ Uploading…" : artworkFileUrl && !artworkFileUrl.startsWith("local:") ? `✓ ${artworkFileUrl.split("/").pop()?.substring(0, 28) || "File uploaded"}` : artworkFile ? `⚠ ${artworkFile.name} (not uploaded)` : "Upload ready-to-print file")
+                          : artworkOption === "design" ? `Design Service — ₹1,999 ${designPaid ? "✓ Paid" : "(pending payment)"}` : "Plain / unprinted"],
                         ["Delivery", deliveryOption === "standard" ? "Standard Pro (Free)" : deliveryOption === "blitz" ? "Blitz Logistics (+₹240)" : "Warehouse Hold (₹15/mo)"],
                         ["Pincode", pincode || "—"],
                         ["Sample", sampleOption === "express" ? `Express Kit — ₹4,999 ${samplePaid ? "✓ Paid" : "(pending payment)"}` : sampleOption === "standard" ? "Standard — ₹2,999" : "Skipped"],
@@ -1250,10 +1252,10 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                   Continue →
                 </button>
               ) : (
-                <button onClick={handleSubmit} disabled={submitMutation.isPending}
-                  className="px-8 py-2.5 rounded-lg text-sm font-black uppercase tracking-wider transition-all hover:opacity-90 flex items-center gap-2"
+                <button onClick={handleSubmit} disabled={submitMutation.isPending || artworkUploading}
+                  className="px-8 py-2.5 rounded-lg text-sm font-black uppercase tracking-wider transition-all hover:opacity-90 flex items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
                   style={{ background: "#E8A838", color: "#0F1C2C" }}>
-                  {submitMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <>Submit Request <ArrowRight className="w-4 h-4" /></>}
+                  {artworkUploading ? <><Loader2 className="w-4 h-4 animate-spin" /> Uploading artwork…</> : submitMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <>Submit Request <ArrowRight className="w-4 h-4" /></>}
                 </button>
               )}
             </div>
