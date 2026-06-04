@@ -57,6 +57,29 @@ function calcPrice(sku: Sku | undefined, qty: number, delivery: DeliveryOption, 
   return { low, high, mat, setup, logistics, artAdd, perPiece };
 }
 
+// ── Spec unit helpers ───────────────────────────────────────────────────────
+function stripUnitSuffix(label: string) {
+  return label.replace(/\s*\([^)]+\)\s*$/, "").trim();
+}
+function fieldDisplayUnit(fieldUnit: string | undefined, du: "mm"|"cm"|"in", wu: "g"|"kg"|"t"): string {
+  if (!fieldUnit) return "";
+  if (fieldUnit === "mm") return du;
+  if (fieldUnit === "g") return wu;
+  return fieldUnit;
+}
+function toDisplay(stored: string, fieldUnit: string | undefined, du: "mm"|"cm"|"in", wu: "g"|"kg"|"t"): string {
+  const n = parseFloat(stored); if (isNaN(n) || !fieldUnit) return stored;
+  if (fieldUnit === "mm") { if (du === "cm") return String(+(n / 10).toFixed(3)); if (du === "in") return String(+(n / 25.4).toFixed(4)); }
+  if (fieldUnit === "g") { if (wu === "kg") return String(+(n / 1000).toFixed(4)); if (wu === "t") return String(+(n / 1e6).toFixed(6)); }
+  return stored;
+}
+function fromDisplay(display: string, fieldUnit: string | undefined, du: "mm"|"cm"|"in", wu: "g"|"kg"|"t"): string {
+  const n = parseFloat(display); if (isNaN(n) || !fieldUnit) return display;
+  if (fieldUnit === "mm") { if (du === "cm") return String(Math.round(n * 10)); if (du === "in") return String(Math.round(n * 25.4)); }
+  if (fieldUnit === "g") { if (wu === "kg") return String(n * 1000); if (wu === "t") return String(n * 1e6); }
+  return display;
+}
+
 function fmt(n: number) {
   return new Intl.NumberFormat("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
 }
@@ -543,6 +566,8 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
   const [qtyUnit, setQtyUnit] = useState<'pieces' | 'kg'>(() => loadDraft().qtyUnit || 'pieces');
   const [variantSelections, setVariantSelections] = useState<Record<string, string>>(() => loadDraft().variantSelections || {});
   const [customFieldValues, setCustomFieldValues] = useState<Record<string, string>>(() => loadDraft().customFieldValues || {});
+  const [dimUnit, setDimUnit] = useState<"mm"|"cm"|"in">("mm");
+  const [weightUnit, setWeightUnit] = useState<"g"|"kg"|"t">("g");
 
   // ── Artwork / Design ─────────────────────────────────────────────────────
   const [artworkOption, setArtworkOption] = useState<ArtworkOption>(() => loadDraft().artworkOption || "upload");
@@ -875,34 +900,73 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                     <div className="font-bold text-slate-800 text-sm mb-1" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
                       Package Size &amp; Specs
                     </div>
-                    <p className="text-xs text-slate-400 mb-4">Enter your required dimensions and print specifications.</p>
-                    <div className="grid grid-cols-2 gap-3">
-                      {selectedSku.customization_fields.map(field => (
-                        <div key={field.key}>
-                          <label className="text-xs font-medium text-slate-600 mb-1 block">
-                            {field.label}{field.unit ? ` (${field.unit})` : ""}
-                          </label>
-                          {field.type === "select" ? (
-                            <select
-                              value={customFieldValues[field.key] || field.options?.[0] || ""}
-                              onChange={e => setCustomFieldValues(prev => ({ ...prev, [field.key]: e.target.value }))}
-                              className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-400 bg-slate-50"
-                            >
-                              {field.options?.map(opt => <option key={opt} value={opt}>{opt}</option>)}
-                            </select>
-                          ) : (
-                            <input
-                              type="number"
-                              value={customFieldValues[field.key] || ""}
-                              onChange={e => setCustomFieldValues(prev => ({ ...prev, [field.key]: e.target.value }))}
-                              placeholder={field.placeholder || ""}
-                              className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-400 bg-slate-50"
-                            />
-                          )}
+                    <p className="text-xs text-slate-400 mb-3">Enter your required dimensions and print specifications.</p>
+
+                    {/* Unit switchers */}
+                    <div className="flex flex-wrap gap-3 mb-4 pb-3 border-b border-slate-100">
+                      {/* Dimension unit */}
+                      {selectedSku.customization_fields.some(f => f.unit === "mm") && (
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs text-slate-500 font-medium">Dimensions:</span>
+                          <div className="flex rounded border border-slate-200 overflow-hidden">
+                            {(["mm","cm","in"] as const).map(u => (
+                              <button key={u} onClick={() => setDimUnit(u)}
+                                className="px-2.5 py-1 text-xs font-semibold transition-all"
+                                style={{ background: dimUnit === u ? "#0D1B2A" : "#F8FAFC", color: dimUnit === u ? "white" : "#64748B" }}>
+                                {u}
+                              </button>
+                            ))}
+                          </div>
                         </div>
-                      ))}
+                      )}
+                      {/* Weight unit */}
+                      {selectedSku.customization_fields.some(f => f.unit === "g") && (
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs text-slate-500 font-medium">Weight:</span>
+                          <div className="flex rounded border border-slate-200 overflow-hidden">
+                            {(["g","kg","t"] as const).map(u => (
+                              <button key={u} onClick={() => setWeightUnit(u)}
+                                className="px-2.5 py-1 text-xs font-semibold transition-all"
+                                style={{ background: weightUnit === u ? "#0D1B2A" : "#F8FAFC", color: weightUnit === u ? "white" : "#64748B" }}>
+                                {u}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                     </div>
-                    <p className="text-xs text-slate-400 mt-3">All dimensions in mm unless stated. Leave blank if flexible.</p>
+
+                    <div className="grid grid-cols-2 gap-3">
+                      {selectedSku.customization_fields.map(field => {
+                        const dispUnit = fieldDisplayUnit(field.unit, dimUnit, weightUnit);
+                        const dispVal = toDisplay(customFieldValues[field.key] || "", field.unit, dimUnit, weightUnit);
+                        return (
+                          <div key={field.key}>
+                            <label className="text-xs font-medium text-slate-600 mb-1 block">
+                              {stripUnitSuffix(field.label)}{dispUnit ? ` (${dispUnit})` : ""}
+                            </label>
+                            {field.type === "select" ? (
+                              <select
+                                value={customFieldValues[field.key] || field.options?.[0] || ""}
+                                onChange={e => setCustomFieldValues(prev => ({ ...prev, [field.key]: e.target.value }))}
+                                className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-400 bg-slate-50"
+                              >
+                                {field.options?.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                              </select>
+                            ) : (
+                              <input
+                                type="number"
+                                value={dispVal}
+                                onChange={e => setCustomFieldValues(prev => ({ ...prev, [field.key]: fromDisplay(e.target.value, field.unit, dimUnit, weightUnit) }))}
+                                placeholder={field.placeholder || ""}
+                                className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-400 bg-slate-50"
+                              />
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                    <p className="text-xs text-slate-400 mt-3">Leave blank if flexible — we'll confirm at quote stage.</p>
                   </div>
                 )}
 
