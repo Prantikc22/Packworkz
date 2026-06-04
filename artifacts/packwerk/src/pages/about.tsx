@@ -1,31 +1,34 @@
 import { Link } from "wouter";
 
+const kalyanFactory = "/kalyani-factory.png";
+
 const TIMELINE = [
-  { year: "2024",    title: "The Idea",           desc: "Founders run D2C brands, hit every packaging pain point — opaque pricing, vendor delays, zero tech. Decide to build what they wished existed." },
-  { year: "2025 Q1", title: "Platform Launch",    desc: "Packworkz goes live with 33 SKUs, 50+ factory partners, and the first version of the managed procurement layer." },
-  { year: "2025 Q2", title: "SmartStock™ Launches", desc: "AI inventory intelligence layer ships. Brands on Packworkz record zero stockouts within months of launch." },
-  { year: "2025",    title: "Growing Fast",        desc: "220+ brands, 110+ SKUs, expanding across FMCG, D2C, pharma and e-commerce. India's first managed packaging platform." },
+  { year: "1993", title: "Kalyani Packaging Founded", desc: "Our family established Kalyani Packaging in West Bengal — a flexographic printing and lamination plant serving regional FMCG brands. Built on precision, not promises." },
+  { year: "2008", title: "Expansion & Modernisation", desc: "Kalyani Rotopack Pvt Ltd is formally incorporated. We invest in rotogravure printing lines, barrier laminates, and food-grade film processing — serving national brands across India." },
+  { year: "2018", title: "Global Supply Network", desc: "A decade of supplier relationships evolves into a curated global network — raw material sourcing from Japan, South Korea, Germany, and domestic mills — giving us cost and quality leverage." },
+  { year: "2024", title: "Packworkz is Born", desc: "Armed with 30 years of manufacturing know-how and a network of 500+ vetted factories, we launch Packworkz — India's first managed packaging platform — to give every brand the supply chain we always wished we had." },
+  { year: "2025", title: "Platform Scales Nationally", desc: "110+ SKUs, 220+ brand clients, real-time dashboards, and AI-driven inventory intelligence. Packworkz becomes the go-to packaging partner for India's fastest-growing D2C, FMCG, and pharma brands." },
 ];
 
 const VALUES = [
-  { title: "Radical Transparency",    desc: "Every price, lead time, and factory name is visible to you. No hidden markups, no black boxes, no 'trust us' procurement.", index: "01" },
+  { title: "Radical Transparency", desc: "Every price, lead time, and factory name is visible to you. No hidden markups, no black boxes, no 'trust us' procurement.", index: "01" },
   { title: "Quality Without Compromise", desc: "Three-stage QC before dispatch, every batch. You only pay for what meets spec — rejects are on us.", index: "02" },
   { title: "Technology Over Tradition", desc: "We built SmartStock™, real-time dashboards, and digital QC trails because the industry ran on WhatsApp and Excel for too long.", index: "03" },
-  { title: "Sustainability First",    desc: "We actively push brands toward lower-footprint alternatives. The planet is a stakeholder in every order we place.", index: "04" },
+  { title: "Sustainability First", desc: "We actively push brands toward lower-footprint alternatives. The planet is a stakeholder in every order we place.", index: "04" },
 ];
 
 const STATS = [
-  { val: "220+", label: "Brands Served" },
+  { val: "30+", label: "Years Manufacturing" },
   { val: "110+", label: "Packaging SKUs" },
   { val: "500+", label: "Factory Partners" },
-  { val: "2025", label: "Founded" },
+  { val: "220+", label: "Brands Served" },
 ];
 
 const MISSION_STATS = [
   { num: "18–35%", label: "Cost Savings vs. Traditional" },
-  { num: "110+",   label: "Packaging SKUs" },
-  { num: "0",      label: "Stockouts on SmartStock" },
-  { num: "48hr",   label: "Quote Turnaround" },
+  { num: "110+", label: "Packaging SKUs" },
+  { num: "0", label: "Stockouts on SmartStock" },
+  { num: "48hr", label: "Quote Turnaround" },
 ];
 
 export default function About() {
@@ -41,11 +44,11 @@ export default function About() {
             <span style={{ color: "rgba(255,255,255,0.45)", fontSize: 10, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase" }}>OUR STORY</span>
           </div>
           <h1 className="pw-reveal pw-d1" style={{ color: "white", fontSize: "clamp(2.8rem,6vw,5rem)", fontWeight: 900, lineHeight: 1.05, letterSpacing: "-2px", marginBottom: 24 }}>
-            Built by Brand Owners,<br />
-            <span style={{ color: "#60a5fa", fontStyle: "italic" }}>for Brand Owners.</span>
+            30 Years of Manufacturing.<br />
+            <span style={{ color: "#60a5fa", fontStyle: "italic" }}>One Platform. Every Brand.</span>
           </h1>
-          <p className="pw-reveal pw-d2" style={{ color: "rgba(255,255,255,0.50)", fontSize: "clamp(15px,2vw,18px)", lineHeight: 1.75, maxWidth: 580, margin: "0 auto 48px" }}>
-            Packworkz was born from the frustration of running D2C brands in India and realising the packaging supply chain was broken — opaque pricing, inconsistent quality, and zero technology.
+          <p className="pw-reveal pw-d2" style={{ color: "rgba(255,255,255,0.50)", fontSize: "clamp(15px,2vw,18px)", lineHeight: 1.75, maxWidth: 600, margin: "0 auto 48px" }}>
+            Packworkz is built on the backbone of Kalyani Rotopack Pvt Ltd — our family's 30-year-old packaging manufacturing legacy — now reimagined as India's first managed packaging platform.
           </p>
           <div className="pw-reveal pw-d3" style={{ display: "flex", gap: 14, justifyContent: "center", flexWrap: "wrap" }}>
             <span className="animated-border animated-border-white">
@@ -69,19 +72,73 @@ export default function About() {
         </div>
       </section>
 
-      {/* ── MISSION ── */}
+      {/* ── KALYANI ORIGIN STORY ── */}
+      <section style={{ background: "#04080f", padding: "100px 40px", borderTop: "1px solid rgba(255,255,255,0.04)" }}>
+        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+          <div className="pw-reveal" style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 24 }}>
+            <div style={{ width: 6, height: 6, background: "#E8A838", borderRadius: "50%", boxShadow: "0 0 8px rgba(232,168,56,0.7)", flexShrink: 0 }} />
+            <p style={{ color: "#E8A838", fontSize: 11, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase" }}>THE ORIGIN STORY</p>
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 72, alignItems: "center" }}>
+            <div>
+              <h2 className="pw-reveal pw-d1" style={{ color: "white", fontSize: "clamp(1.8rem,3.5vw,2.8rem)", fontWeight: 800, lineHeight: 1.12, letterSpacing: "-0.5px", marginBottom: 28 }}>
+                Built on Three Decades of Packaging Manufacturing
+              </h2>
+              <div className="pw-reveal pw-d2" style={{ color: "rgba(255,255,255,0.65)", fontSize: 16, lineHeight: 1.85 }}>
+                <p style={{ marginBottom: 18 }}>
+                  In 1993, our family founded <strong style={{ color: "white" }}>Kalyani Packaging</strong> in West Bengal — a flexographic printing and lamination unit serving India's growing FMCG sector. What started as a regional operation grew into <strong style={{ color: "white" }}>Kalyani Rotopack Pvt Ltd</strong>, one of India's trusted flexible packaging manufacturers, running rotogravure presses, multi-layer barrier laminates, and food-grade film lines.
+                </p>
+                <p style={{ marginBottom: 18 }}>
+                  Over 30 years, we built something most packaging platforms cannot buy: <strong style={{ color: "white" }}>manufacturer-grade relationships</strong>. We know which factories never miss a colour register. We know which mills in South Korea supply the best barrier films. We know what "real quality" looks like on a press — because we ran one.
+                </p>
+                <p>
+                  In 2024, we made a decision. Instead of keeping this advantage inside one factory, we would <strong style={{ color: "white" }}>open it up to every brand in India</strong>. That's Packworkz — our 30-year supply chain expertise, packaged into a platform any brand can access from Day 1.
+                </p>
+              </div>
+            </div>
+            <div className="pw-reveal pw-d2">
+              <div style={{ position: "relative", borderRadius: 8, overflow: "hidden", border: "1px solid rgba(255,255,255,0.08)" }}>
+                <img
+                  src={kalyanFactory}
+                  alt="Kalyani Packaging — Flexo Printing & Lamination Plant"
+                  style={{ width: "100%", height: 340, objectFit: "cover", display: "block" }}
+                />
+                <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "20px 24px", background: "linear-gradient(to top, rgba(4,8,15,0.92), transparent)" }}>
+                  <p style={{ color: "white", fontSize: 13, fontWeight: 700, marginBottom: 2 }}>Kalyani Rotopack Pvt Ltd</p>
+                  <p style={{ color: "rgba(255,255,255,0.45)", fontSize: 12 }}>Flexo Printing & Lamination Plant · Est. 1993</p>
+                </div>
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginTop: 10 }}>
+                {[
+                  { val: "1993", label: "Year Founded" },
+                  { val: "30+", label: "Years in Production" },
+                  { val: "Global", label: "Supplier Network" },
+                  { val: "500+", label: "Factory Partners" },
+                ].map((s, i) => (
+                  <div key={i} style={{ background: "rgba(13,27,42,0.60)", border: "1px solid rgba(59,130,246,0.10)", padding: "16px 18px", borderRadius: 6, textAlign: "center" }}>
+                    <div style={{ color: "white", fontSize: 22, fontWeight: 900, letterSpacing: "-0.5px", marginBottom: 4 }}>{s.val}</div>
+                    <div style={{ color: "rgba(255,255,255,0.36)", fontSize: 11, fontWeight: 600, textTransform: "uppercase", letterSpacing: "1px" }}>{s.label}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── HOW PACKWORKZ DISRUPTS PACKAGING ── */}
       <section style={{ background: "#08080f", padding: "100px 40px" }}>
         <div style={{ maxWidth: 900, margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 80, alignItems: "center" }}>
           <div className="pw-reveal">
-            <p style={{ color: "#60a5fa", fontSize: 11, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", marginBottom: 16 }}>THE MISSION</p>
-            <h2 style={{ color: "white", fontSize: "clamp(2rem,4vw,3rem)", fontWeight: 800, lineHeight: 1.1, letterSpacing: "-1px", marginBottom: 24 }}>
-              India's first managed packaging platform.
+            <p style={{ color: "#60a5fa", fontSize: 11, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", marginBottom: 16 }}>THE DISRUPTION</p>
+            <h2 style={{ color: "white", fontSize: "clamp(2rem,4vw,2.8rem)", fontWeight: 800, lineHeight: 1.1, letterSpacing: "-1px", marginBottom: 24 }}>
+              India's packaging industry was ripe for a reset.
             </h2>
             <p style={{ color: "rgba(255,255,255,0.48)", fontSize: 15, lineHeight: 1.8, marginBottom: 16 }}>
-              We started in 2025 with a simple idea: connect India's best packaging factories directly to brands, cut out 3 distributor layers, and use technology to manage everything from quote to delivery.
+              For decades, brands sourced packaging through layers of middlemen — each taking a cut, each adding opacity. MOQs were impossibly high for new brands, lead times were unpredictable, and quality control was verbal. The result? Brands overpaid, understocked, and firefought constantly.
             </p>
             <p style={{ color: "rgba(255,255,255,0.48)", fontSize: 15, lineHeight: 1.8, marginBottom: 32 }}>
-              Today, Packworkz serves 220+ brands across FMCG, D2C, pharma, and e-commerce — delivering consistent quality at 18–35% lower cost than traditional procurement routes.
+              Packworkz collapses those layers. We connect brands directly to a curated network of 500+ verified factories — backed by our own 30-year manufacturing lens — and manage the entire journey: quoting, procurement, QC, logistics, and reorders. One platform. Zero guesswork.
             </p>
             <span className="animated-border animated-border-white" style={{ display: "inline-block" }}>
               <Link href="/quote"><button className="btn-fill btn-amber px-8 py-3 text-sm pw-btn-transition">Get a Quote →</button></Link>
@@ -104,7 +161,7 @@ export default function About() {
         <div style={{ maxWidth: 800, margin: "0 auto" }}>
           <div className="pw-reveal" style={{ textAlign: "center", marginBottom: 64 }}>
             <p style={{ color: "#60a5fa", fontSize: 11, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", marginBottom: 14 }}>THE JOURNEY</p>
-            <h2 style={{ color: "white", fontSize: "clamp(2rem,4vw,3rem)", fontWeight: 800, lineHeight: 1.1, letterSpacing: "-1px" }}>How we got here.</h2>
+            <h2 style={{ color: "white", fontSize: "clamp(2rem,4vw,3rem)", fontWeight: 800, lineHeight: 1.1, letterSpacing: "-1px" }}>Three decades in the making.</h2>
           </div>
           <div style={{ position: "relative" }}>
             <div style={{ position: "absolute", left: 52, top: 0, bottom: 0, width: 1, background: "rgba(59,130,246,0.10)" }} />
@@ -143,32 +200,24 @@ export default function About() {
         </div>
       </section>
 
-      {/* ── WHY WE BUILT THIS ── */}
-      <section style={{ background: "#04080f", padding: "100px 40px", borderTop: "1px solid rgba(255,255,255,0.04)" }}>
-        <div style={{ maxWidth: 860, margin: "0 auto" }}>
-          <div className="pw-reveal" style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 24 }}>
-            <div style={{ width: 6, height: 6, background: "#E8A838", borderRadius: "50%", boxShadow: "0 0 8px rgba(232,168,56,0.7)", flexShrink: 0 }} />
-            <p style={{ color: "#E8A838", fontSize: 11, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase" }}>THE ORIGIN STORY</p>
-          </div>
-          <h2 className="pw-reveal pw-d1" style={{ color: "white", fontSize: "clamp(1.8rem,3.5vw,2.6rem)", fontWeight: 800, lineHeight: 1.15, letterSpacing: "-0.5px", marginBottom: 32 }}>
-            Why We Built Packworkz
-          </h2>
-          <div className="pw-reveal pw-d2" style={{ background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.06)", borderLeft: "3px solid #E8A838", padding: "36px 40px", borderRadius: 4 }}>
-            <p style={{ color: "rgba(255,255,255,0.72)", fontSize: 17, lineHeight: 1.85, margin: 0 }}>
-              We watched D2C brands spend 30% of their operational energy on a problem that shouldn't exist — chasing vendors, firefighting delays, and absorbing hidden costs they couldn't see. Packaging touches every product that ships, yet it was managed like it was 1995. We built Packworkz to change that — using AI and managed operations to give brands the supply chain certainty that used to be reserved for large enterprises.
+      {/* ── GLOBAL NETWORK ── */}
+      <section style={{ background: "#04080f", padding: "80px 40px", borderTop: "1px solid rgba(255,255,255,0.04)" }}>
+        <div style={{ maxWidth: 860, margin: "0 auto", textAlign: "center" }}>
+          <div className="pw-reveal">
+            <p style={{ color: "#E8A838", fontSize: 11, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", marginBottom: 14 }}>OUR NETWORK</p>
+            <h2 style={{ color: "white", fontSize: "clamp(1.8rem,3.5vw,2.6rem)", fontWeight: 800, lineHeight: 1.15, letterSpacing: "-0.5px", marginBottom: 20 }}>
+              Sourced Globally. Delivered Locally.
+            </h2>
+            <p style={{ color: "rgba(255,255,255,0.48)", fontSize: 15, lineHeight: 1.8, maxWidth: 640, margin: "0 auto 48px" }}>
+              Our supplier relationships span India, Japan, South Korea, Germany, and Southeast Asia — built over 30 years, stress-tested across thousands of production runs. When you order through Packworkz, you get the same supplier access that took us three decades to build.
             </p>
-          </div>
-          <div className="pw-reveal pw-d3" style={{ display: "flex", gap: 48, marginTop: 48, paddingTop: 40, borderTop: "1px solid rgba(255,255,255,0.05)", flexWrap: "wrap" }}>
-            {[
-              { val: "30%", label: "of brand ops energy lost to packaging vendor problems" },
-              { val: "₹6L+", label: "average annual saving for brands spending ₹5L/month" },
-              { val: "2025", label: "when we decided enough was enough" },
-            ].map((s, i) => (
-              <div key={i}>
-                <p style={{ color: "#E8A838", fontSize: "clamp(1.8rem,3vw,2.5rem)", fontWeight: 900, lineHeight: 1, letterSpacing: "-1px", marginBottom: 8 }}>{s.val}</p>
-                <p style={{ color: "rgba(255,255,255,0.36)", fontSize: 12, fontWeight: 600, textTransform: "uppercase", letterSpacing: "1px", maxWidth: 180, lineHeight: 1.5 }}>{s.label}</p>
-              </div>
-            ))}
+            <div style={{ display: "flex", gap: 32, justifyContent: "center", flexWrap: "wrap" }}>
+              {["India", "Japan", "South Korea", "Germany", "Southeast Asia"].map((country, i) => (
+                <div key={i} className="pw-reveal" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 6, padding: "12px 24px" }}>
+                  <span style={{ color: "rgba(255,255,255,0.60)", fontSize: 13, fontWeight: 600 }}>{country}</span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>

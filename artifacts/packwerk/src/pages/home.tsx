@@ -720,11 +720,8 @@ export default function Home() {
 
           {/* Left: text */}
           <div>
-            <p className="scroll-animate" style={{ color: "#1B6CA8", fontSize: 11, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", marginBottom: 16 }}>
-              OUR CUSTOMERS
-            </p>
             <h2 className="scroll-animate scroll-animate-delay-1" style={{ color: "#0D1B2A", fontSize: 34, fontWeight: 800, lineHeight: 1.15, marginBottom: 18 }}>
-              Trusted by India's fastest-growing brands.
+              Brands We Are Building For
             </h2>
             <p className="scroll-animate scroll-animate-delay-2" style={{ color: "#475569", fontSize: 15, lineHeight: 1.75, marginBottom: 32 }}>
               From D2C beauty &amp; wellness to FMCG and pharma — India's leading brands rely on Packworkz for consistent, compliant, beautiful packaging.
@@ -785,6 +782,26 @@ export default function Home() {
             </div>
           </div>
 
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════════════════ */}
+      {/*  SECTION 3C — HERITAGE STRIP                              */}
+      {/* ══════════════════════════════════════════════════════════ */}
+      <section style={{ background: "#0D1B2A", padding: "52px 40px" }}>
+        <div style={{ maxWidth: 1100, margin: "0 auto", display: "flex", alignItems: "center", gap: 48, flexWrap: "wrap", justifyContent: "space-between" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
+            <div style={{ width: 4, height: 52, background: "#E8A838", borderRadius: 2, flexShrink: 0 }} />
+            <div>
+              <p className="scroll-animate" style={{ color: "#E8A838", fontSize: 10, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", marginBottom: 6 }}>Our Manufacturing Heritage</p>
+              <p className="scroll-animate" style={{ color: "white", fontSize: 18, fontWeight: 800, lineHeight: 1.3, margin: 0 }}>
+                Backed by 30 years of packaging manufacturing — <span style={{ color: "rgba(255,255,255,0.55)", fontWeight: 500 }}>Kalyani Rotopack Pvt Ltd, est. 1993.</span>
+              </p>
+            </div>
+          </div>
+          <a href="/about" style={{ textDecoration: "none", flexShrink: 0 }}>
+            <button className="btn-fill btn-outline-white px-6 py-2.5 text-sm pw-btn-transition" style={{ whiteSpace: "nowrap" }}>Read Our Story →</button>
+          </a>
         </div>
       </section>
 

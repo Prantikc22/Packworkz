@@ -34,17 +34,27 @@ function clearDraft() {
 const PROJECT_ID = `PX-${Math.floor(1000 + Math.random() * 9000)}-${["ALPHA","BETA","DELTA","GAMMA"][Math.floor(Math.random()*4)]}`;
 
 // ── Price helpers ──────────────────────────────────────────────────────────
+// Realistic market rates: at MOQ = price_max/piece, scales down toward price_min at high volume
 function calcPrice(sku: Sku | undefined, qty: number, delivery: DeliveryOption, artworkOption: ArtworkOption) {
-  if (!sku) return { low: 0, high: 0, mat: 0, setup: 0, logistics: 0, artAdd: 0 };
-  const scale = Math.max(0.5, Math.min(qty / 500, 8));
-  const mat = parseFloat(String(sku.price_min)) * qty * scale * 0.001;
-  const setup = parseFloat(String(sku.price_min)) * 30;
-  const deliverySurcharge = delivery === "blitz" ? 240 : delivery === "warehouse" ? 15 : 0;
-  const logistics = parseFloat(String(sku.price_min)) * 7 + deliverySurcharge;
+  if (!sku) return { low: 0, high: 0, mat: 0, setup: 0, logistics: 0, artAdd: 0, perPiece: 0 };
+  const moq = (sku as any).moq || 500;
+  const priceMin = parseFloat(String(sku.price_min));
+  const priceMax = parseFloat(String(sku.price_max));
+  // Logarithmic volume discount: at MOQ = priceMax, at 20× MOQ ≈ priceMin
+  const qtyRatio = Math.max(1, qty / moq);
+  const t = Math.min(Math.log(qtyRatio) / Math.log(20), 1);
+  const perPiece = priceMax - (priceMax - priceMin) * t;
+  const mat = perPiece * qty;
+  // Fixed plate / setup cost (realistic: ₹2,500 – ₹8,000)
+  const setup = Math.max(2500, priceMax * moq * 0.15);
+  // Logistics: qty-based slab + delivery surcharge
+  const baseLogistics = Math.min(qty * 0.9, 3500) + 800;
+  const deliverySurcharge = delivery === "blitz" ? 1200 : delivery === "warehouse" ? 300 : 0;
+  const logistics = baseLogistics + deliverySurcharge;
   const artAdd = artworkOption === "design" ? 1999 : 0;
   const low = mat + setup + logistics + artAdd;
-  const high = low * 1.1;
-  return { low, high, mat, setup, logistics, artAdd };
+  const high = low * 1.12;
+  return { low, high, mat, setup, logistics, artAdd, perPiece };
 }
 
 function fmt(n: number) {
@@ -112,7 +122,15 @@ function OrderSummary({
               <div className="font-black text-white leading-none" style={{ fontFamily: "'Manrope', sans-serif", fontSize: "clamp(1.2rem,2.2vw,1.6rem)" }}>
                 ₹{fmt(low)} <span className="text-slate-400 font-bold text-base">–</span> ₹{fmt(high)}
               </div>
-              <div className="text-xs text-slate-500 mt-1.5">Prices include GST. Final quote after artwork review.</div>
+              <div className="flex items-center gap-1.5 mt-2 px-2 py-1.5 rounded" style={{ background: "rgba(27,108,168,0.12)" }}>
+                <span className="text-xs font-bold" style={{ color: "#60a5fa" }}>≈ ₹{fmt((low / qty))} – ₹{fmt((high / qty))} per piece</span>
+              </div>
+              {qty >= ((sku as any).moq || 500) * 3 && (
+                <div className="text-xs mt-1.5 px-2 py-1" style={{ color: "#4ade80", background: "rgba(74,222,128,0.07)", borderRadius: 4 }}>
+                  ✓ Volume discount applied — order more, pay less per piece
+                </div>
+              )}
+              <div className="text-xs text-slate-500 mt-1.5">Includes GST est. Final quote after artwork review.</div>
             </>
           ) : (
             <div className="text-slate-500 text-sm">Select a product to see estimate</div>

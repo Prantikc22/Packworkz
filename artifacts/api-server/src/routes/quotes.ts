@@ -42,6 +42,7 @@ router.post("/quotes", async (req, res): Promise<void> => {
   const quoteId = await generateId("PKG", "quote_requests", "quote_id");
 
   const firstItem = Array.isArray(items) ? items[0] : null;
+  console.log("[quotes/post] firstItem artwork_file_url:", firstItem?.artwork_file_url, "| items count:", Array.isArray(items) ? items.length : 0);
   const itemSummary = Array.isArray(items)
     ? items.map((i: { product_name?: string; quantity?: number }) => `${i.product_name} x${i.quantity}`).join(", ")
     : "items";
