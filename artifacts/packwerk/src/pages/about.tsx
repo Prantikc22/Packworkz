@@ -3,7 +3,7 @@ import { Link } from "wouter";
 const kalyanFactory = "/kalyani-factory.png";
 
 const TIMELINE = [
-  { year: "1993", title: "Kalyani Packaging Founded", desc: "Our family established Kalyani Packaging in West Bengal — a flexographic printing and lamination plant serving regional FMCG brands. Built on precision, not promises." },
+  { year: "1993", title: "Kalyani Packaging Founded", desc: "Kalyani Packaging is established in West Bengal — a flexographic printing and lamination plant serving regional FMCG brands. Built on precision, not promises." },
   { year: "2008", title: "Expansion & Modernisation", desc: "Kalyani Rotopack Pvt Ltd is formally incorporated. We invest in rotogravure printing lines, barrier laminates, and food-grade film processing — serving national brands across India." },
   { year: "2018", title: "Global Supply Network", desc: "A decade of supplier relationships evolves into a curated global network — raw material sourcing from Japan, South Korea, Germany, and domestic mills — giving us cost and quality leverage." },
   { year: "2024", title: "Packworkz is Born", desc: "Armed with 30 years of manufacturing know-how and a network of 500+ vetted factories, we launch Packworkz — India's first managed packaging platform — to give every brand the supply chain we always wished we had." },
@@ -48,7 +48,7 @@ export default function About() {
             <span style={{ color: "#60a5fa", fontStyle: "italic" }}>One Platform. Every Brand.</span>
           </h1>
           <p className="pw-reveal pw-d2" style={{ color: "rgba(255,255,255,0.50)", fontSize: "clamp(15px,2vw,18px)", lineHeight: 1.75, maxWidth: 600, margin: "0 auto 48px" }}>
-            Packworkz is built on the backbone of Kalyani Rotopack Pvt Ltd — our family's 30-year-old packaging manufacturing legacy — now reimagined as India's first managed packaging platform.
+            Packworkz is built on the backbone of Kalyani Rotopack Pvt Ltd — a 30-year-old packaging manufacturing operation — now reimagined as India's first managed packaging platform.
           </p>
           <div className="pw-reveal pw-d3" style={{ display: "flex", gap: 14, justifyContent: "center", flexWrap: "wrap" }}>
             <span className="animated-border animated-border-white">
@@ -86,7 +86,7 @@ export default function About() {
               </h2>
               <div className="pw-reveal pw-d2" style={{ color: "rgba(255,255,255,0.65)", fontSize: 16, lineHeight: 1.85 }}>
                 <p style={{ marginBottom: 18 }}>
-                  In 1993, our family founded <strong style={{ color: "white" }}>Kalyani Packaging</strong> in West Bengal — a flexographic printing and lamination unit serving India's growing FMCG sector. What started as a regional operation grew into <strong style={{ color: "white" }}>Kalyani Rotopack Pvt Ltd</strong>, one of India's trusted flexible packaging manufacturers, running rotogravure presses, multi-layer barrier laminates, and food-grade film lines.
+                  In 1993, <strong style={{ color: "white" }}>Kalyani Packaging</strong> was founded in West Bengal — a flexographic printing and lamination unit serving India's growing FMCG sector. What started as a regional operation grew into <strong style={{ color: "white" }}>Kalyani Rotopack Pvt Ltd</strong>, one of India's trusted flexible packaging manufacturers, running rotogravure presses, multi-layer barrier laminates, and food-grade film lines.
                 </p>
                 <p style={{ marginBottom: 18 }}>
                   Over 30 years, we built something most packaging platforms cannot buy: <strong style={{ color: "white" }}>manufacturer-grade relationships</strong>. We know which factories never miss a colour register. We know which mills in South Korea supply the best barrier films. We know what "real quality" looks like on a press — because we ran one.
