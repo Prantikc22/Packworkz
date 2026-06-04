@@ -584,6 +584,8 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
     try {
       const formData = new FormData();
       formData.append("file", file);
+      formData.append("company", company);
+      formData.append("originalName", file.name);
       const res = await fetch("/api/upload/artwork", { method: "POST", body: formData });
       if (res.ok) {
         const { url } = await res.json();
@@ -600,10 +602,13 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
     } finally {
       setArtworkUploading(false);
     }
-  }, []);
+  }, [company]);
 
   // ── Delivery ─────────────────────────────────────────────────────────────
   const [deliveryOption, setDeliveryOption] = useState<DeliveryOption>(() => loadDraft().deliveryOption || "standard");
+  const [addressLine, setAddressLine] = useState<string>(() => loadDraft().addressLine || "");
+  const [city, setCity] = useState<string>(() => loadDraft().city || "");
+  const [deliveryState, setDeliveryState] = useState<string>(() => loadDraft().deliveryState || "");
   const [pincode, setPincode] = useState<string>(() => loadDraft().pincode || "");
 
   // ── Sample ───────────────────────────────────────────────────────────────
@@ -642,7 +647,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
     contactName, company, email, phone,
     selectedCategory, selectedSkuId, qty, qtyUnit, variantSelections, customFieldValues, ecoFilter,
     artworkOption, designPaid, artworkFileUrl,
-    deliveryOption, pincode,
+    deliveryOption, addressLine, city, deliveryState, pincode,
     sampleOption, samplePaid, notes,
   });
 
@@ -656,6 +661,9 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
     }
     if (stepNum === 3 && !pincode.trim()) {
       toast({ variant: "destructive", title: "Required field missing", description: "Please enter your delivery pincode." }); return;
+    }
+    if (stepNum === 3 && !/^\d{6}$/.test(pincode.trim())) {
+      toast({ variant: "destructive", title: "Invalid pincode", description: "Please enter a valid 6-digit Indian pincode." }); return;
     }
     saveDraft(getAllState());
     setLocation(`/quote/step/${stepNum + 1}`);
@@ -695,7 +703,8 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
     submitMutation.mutate({
       data: {
         contact_name: contactName, company_name: company, email, phone,
-        delivery_country: "India", delivery_pincode: pincode,
+        delivery_country: "India",
+        delivery_pincode: [addressLine, city, deliveryState, pincode].filter(Boolean).join(", "),
         preferred_timeline: (deliveryOption as any),
         notes: [notes, artworkFile ? `Artwork file: ${artworkFile.name}` : ""].filter(Boolean).join("\n"),
         total_estimated_min: low,
@@ -956,6 +965,8 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                             ) : (
                               <input
                                 type="number"
+                                step="any"
+                                min="0"
                                 value={dispVal}
                                 onChange={e => setCustomFieldValues(prev => ({ ...prev, [field.key]: fromDisplay(e.target.value, field.unit, dimUnit, weightUnit) }))}
                                 placeholder={field.placeholder || ""}
@@ -1145,11 +1156,25 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">
-                      Delivery Pincode<span style={{ color: "#E04B4B" }}> *</span>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
+                      Delivery Address<span style={{ color: "#E04B4B" }}> *</span>
                     </label>
-                    <input type="text" value={pincode} onChange={e => setPincode(e.target.value)}
-                      className="w-full max-w-xs border border-slate-200 rounded-lg px-4 py-2.5 text-sm bg-slate-50 focus:outline-none focus:border-blue-400" placeholder="e.g. 400001" />
+                    <div className="space-y-2">
+                      <input type="text" value={addressLine} onChange={e => setAddressLine(e.target.value)}
+                        className="w-full border border-slate-200 rounded-lg px-4 py-2.5 text-sm bg-slate-50 focus:outline-none focus:border-blue-400"
+                        placeholder="Street / Building / Area" />
+                      <div className="grid grid-cols-2 gap-2">
+                        <input type="text" value={city} onChange={e => setCity(e.target.value)}
+                          className="w-full border border-slate-200 rounded-lg px-4 py-2.5 text-sm bg-slate-50 focus:outline-none focus:border-blue-400"
+                          placeholder="City" />
+                        <input type="text" value={deliveryState} onChange={e => setDeliveryState(e.target.value)}
+                          className="w-full border border-slate-200 rounded-lg px-4 py-2.5 text-sm bg-slate-50 focus:outline-none focus:border-blue-400"
+                          placeholder="State" />
+                      </div>
+                      <input type="text" value={pincode} onChange={e => setPincode(e.target.value)}
+                        className="w-full max-w-xs border border-slate-200 rounded-lg px-4 py-2.5 text-sm bg-slate-50 focus:outline-none focus:border-blue-400"
+                        placeholder="Pincode (6 digits)" maxLength={6} />
+                    </div>
                   </div>
                 </div>
               </>
@@ -1274,7 +1299,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                           ? (artworkUploading ? "⏳ Uploading…" : artworkFileUrl && !artworkFileUrl.startsWith("local:") ? `✓ ${artworkFileUrl.split("/").pop()?.substring(0, 28) || "File uploaded"}` : artworkFile ? `⚠ ${artworkFile.name} (not uploaded)` : "Upload ready-to-print file")
                           : artworkOption === "design" ? `Design Service — ₹1,999 ${designPaid ? "✓ Paid" : "(pending payment)"}` : "Plain / unprinted"],
                         ["Delivery", deliveryOption === "standard" ? "Standard Pro (Free)" : deliveryOption === "blitz" ? "Blitz Logistics (+₹240)" : "Warehouse Hold (₹15/mo)"],
-                        ["Pincode", pincode || "—"],
+                        ["Delivery Address", [addressLine, city, deliveryState, pincode].filter(Boolean).join(", ") || "—"],
                         ["Sample", sampleOption === "express" ? `Express Kit — ₹4,999 ${samplePaid ? "✓ Paid" : "(pending payment)"}` : sampleOption === "standard" ? "Standard — ₹2,999" : "Skipped"],
                       ].map(([k, v]) => (
                         <div key={String(k)} className="flex justify-between text-sm">

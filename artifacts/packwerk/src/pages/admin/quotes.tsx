@@ -197,7 +197,7 @@ function QuoteRow({ q, onRefetch }: { q: any; onRefetch: () => void }) {
                     <div className="flex justify-between"><dt className="text-[#64748B]">Company</dt><dd className="font-medium text-[#0D1B2A]">{q.company_name || "—"}</dd></div>
                     <div className="flex justify-between"><dt className="text-[#64748B]">Email</dt><dd className="font-medium text-[#1B6CA8]"><a href={`mailto:${q.email}`}>{q.email}</a></dd></div>
                     <div className="flex justify-between"><dt className="text-[#64748B]">Phone</dt><dd className="font-medium text-[#0D1B2A]">{q.phone || "—"}</dd></div>
-                    <div className="flex justify-between"><dt className="text-[#64748B]">Pincode</dt><dd className="font-medium text-[#0D1B2A]">{q.delivery_pincode || "—"}</dd></div>
+                    <div className="flex justify-between"><dt className="text-[#64748B]">Delivery Address</dt><dd className="font-medium text-[#0D1B2A] text-right max-w-[60%]">{q.delivery_pincode || "—"}</dd></div>
                   </dl>
                 </div>
 

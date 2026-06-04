@@ -7,6 +7,10 @@ const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 20 
 
 const BUCKET = "artwork";
 
+function sanitize(s: string): string {
+  return s.replace(/[^a-zA-Z0-9_-]/g, "_").replace(/_+/g, "_").substring(0, 40);
+}
+
 router.post("/upload/artwork", upload.single("file"), async (req, res): Promise<void> => {
   if (!req.file) {
     res.status(400).json({ error: "No file provided" });
@@ -14,7 +18,11 @@ router.post("/upload/artwork", upload.single("file"), async (req, res): Promise<
   }
 
   const ext = req.file.originalname.split(".").pop()?.toLowerCase() || "bin";
-  const filename = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+  const company = sanitize((req.body.company as string) || "unknown");
+  const originalBase = sanitize(
+    ((req.body.originalName as string) || req.file.originalname).replace(/\.[^.]+$/, "")
+  );
+  const filename = `${company}_${originalBase}_${Date.now()}.${ext}`;
 
   // Ensure bucket exists (idempotent)
   const { data: buckets } = await sb.storage.listBuckets();
