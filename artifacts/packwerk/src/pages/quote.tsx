@@ -641,7 +641,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
   const getAllState = () => ({
     contactName, company, email, phone,
     selectedCategory, selectedSkuId, qty, qtyUnit, variantSelections, customFieldValues, ecoFilter,
-    artworkOption, designPaid,
+    artworkOption, designPaid, artworkFileUrl,
     deliveryOption, pincode,
     sampleOption, samplePaid, notes,
   });
