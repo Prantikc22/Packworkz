@@ -56,7 +56,7 @@ export default function DashboardDesigns() {
                 {design.status === "approved" && (
                   <Button
                     className="w-full bg-[#1B6CA8] text-white"
-                    onClick={() => navigate(`/quote?product_id=${design.product_id}`)}
+                    onClick={() => navigate(`/configure?product_id=${design.product_id}`)}
                   >
                     Order Production <ArrowRight className="w-4 h-4 ml-1" />
                   </Button>

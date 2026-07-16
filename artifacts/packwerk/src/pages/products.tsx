@@ -1,266 +1,274 @@
-import { useState, useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useSearch } from "wouter";
-import { useListProducts, useGetCategorySummary } from "@workspace/api-client-react";
 import { formatINR } from "@/lib/format";
-import { Loader2 } from "lucide-react";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
-import { SKU_IMAGES } from "@/lib/skus";
+import { CATEGORIES } from "@/lib/skus";
+import {
+  CATALOG_SKUS,
+  getCatalogImage,
+  getCategoryLabel,
+  getConfigureHref,
+  type BuyingMode,
+} from "@/lib/catalog";
 
 const MS = ({ icon, className = "", style }: { icon: string; className?: string; style?: React.CSSProperties }) => (
   <span className={`material-symbols-outlined ${className}`} style={style}>{icon}</span>
 );
 
-const CATEGORIES = [
-  { slug: "flexible",   label: "Flexible Packaging",    icon: "package_2" },
-  { slug: "bottles",    label: "Bottles & Containers",  icon: "local_drink" },
-  { slug: "tubes",      label: "Tubes & Small Packs",   icon: "medication" },
-  { slug: "boxes",      label: "Boxes & Cartons",       icon: "inventory_2" },
-  { slug: "ecommerce",  label: "E-commerce Packaging",  icon: "local_shipping" },
-  { slug: "protective", label: "Protective Packaging",  icon: "shield" },
-  { slug: "rolls",      label: "Packaging Rolls",       icon: "settings_input_component" },
-  { slug: "labels",     label: "Labels & Closures",     icon: "label" },
-  { slug: "sustainable",label: "Sustainable",           icon: "eco" },
-  { slug: "liquid",     label: "Liquid Cartons",        icon: "water_drop" },
+const FILTERS: Array<{ key: BuyingMode | "all"; label: string; hint: string; icon: string }> = [
+  { key: "all", label: "All packaging", hint: "33 ready SKU bases", icon: "inventory_2" },
+  { key: "self_serve", label: "Self-serve", hint: "Configure online", icon: "tune" },
+  { key: "assisted", label: "Managed pricing", hint: "For rolls & technical runs", icon: "support_agent" },
 ];
-
-const CATEGORY_IMAGES: Record<string, string> = {
-  flexible:   "/categories/flexiblepacks.webp",
-  bottles:    "/categories/rigidpacks.webp",
-  tubes:      "/categories/tubes.webp",
-  boxes:      "https://images.unsplash.com/photo-1557821552-17105176677c?w=600&h=400&fit=crop&q=75",
-  ecommerce:  "/categories/ecom.webp",
-  protective: "/categories/protectivepacks.webp",
-  rolls:      "/categories/printedrolls.webp",
-  labels:     "/categories/closures.webp",
-  sustainable:"/categories/sustainable.webp",
-  liquid:     "/categories/liquid.webp",
-};
-
-function getCatImage(cat: string) {
-  return CATEGORY_IMAGES[cat] || CATEGORY_IMAGES.flexible;
-}
 
 export default function Products() {
   const searchStr = useSearch();
   const params = new URLSearchParams(searchStr);
   const initialCat = params.get("category") || undefined;
+  const initialIndustry = params.get("industry") || undefined;
 
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState<string | undefined>(initialCat);
-  const [isSmartStock, setIsSmartStock] = useState(false);
-  const [isEco, setIsEco] = useState(false);
+  const [industry, setIndustry] = useState<string | undefined>(initialIndustry);
+  const [mode, setMode] = useState<BuyingMode | "all">("all");
+  const [ecoOnly, setEcoOnly] = useState(false);
 
   useEffect(() => {
     if (initialCat) setCategory(initialCat);
+    if (initialIndustry) setIndustry(initialIndustry);
   }, []);
 
-  const { data, isLoading } = useListProducts(
-    { search: search || undefined, category: category || undefined, is_smartstock: isSmartStock ? true : undefined, is_eco: isEco ? true : undefined },
-    { query: { queryKey: ["/api/products", search, category, isSmartStock, isEco] } }
-  );
-  const { data: summary } = useGetCategorySummary();
+  const filteredSkus = useMemo(() => {
+    const term = search.trim().toLowerCase();
 
-  const getCategoryCount = (cat: string) => summary?.find(s => s.category === cat)?.count || 0;
-  const totalCount = summary?.reduce((acc, s) => acc + Number(s.count), 0) || 0;
+    return CATALOG_SKUS.filter((sku) => {
+      if (category && sku.category !== category) return false;
+      if (industry && !sku.industrySlugs.includes(industry)) return false;
+      if (mode !== "all" && sku.buyingMode !== mode) return false;
+      if (ecoOnly && !sku.is_eco && sku.category !== "sustainable") return false;
+      if (!term) return true;
+
+      return [sku.name, sku.use_case, sku.description, sku.code, sku.category]
+        .some((value) => value.toLowerCase().includes(term));
+    });
+  }, [category, ecoOnly, industry, mode, search]);
+
+  const totalSelfServe = CATALOG_SKUS.filter((sku) => sku.buyingMode === "self_serve").length;
+  const totalAssisted = CATALOG_SKUS.length - totalSelfServe;
 
   return (
-    <div className="min-h-screen" style={{ background: "#F8F9FC", fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-
-      {/* ── Header ── */}
-      <div className="py-14 px-8 md:px-16 border-b border-slate-200 bg-white">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
-          <div>
-            <p className="text-xs font-bold uppercase tracking-[0.2em] mb-3" style={{ color: "#1B6CA8" }}>
-              33 SKUs, 110+ CUSTOMIZATION ACROSS 10 CATEGORIES
-            </p>
-            <h1 className="text-4xl font-black" style={{ fontFamily: "'Space Grotesk', sans-serif", color: "#0D1B2A" }}>
-              Packaging Manufacturer India — 110+ SKUs
-            </h1>
-            <p className="text-slate-500 mt-2 max-w-xl text-sm">
-              Every SKU is configurable — variants, dimensions, and print spec — and generates a live price range.
-            </p>
+    <div className="products-page min-h-screen" style={{ background: "#F8F9FC", fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+      <section className="relative overflow-hidden bg-white border-b border-slate-200">
+        <div className="absolute inset-0 pointer-events-none opacity-70" style={{
+          background: "linear-gradient(120deg, rgba(27,108,168,0.08), transparent 38%), radial-gradient(circle at 80% 10%, rgba(232,168,56,0.18), transparent 28%)",
+        }} />
+        <div className="relative max-w-7xl mx-auto px-6 md:px-8 py-12 md:py-16">
+          <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-8 items-end">
+            <div>
+              <p className="text-xs font-black uppercase tracking-[0.22em] mb-3" style={{ color: "#1B6CA8" }}>
+                Self-serve packaging catalog
+              </p>
+              <h1 className="text-4xl md:text-5xl font-black leading-tight" style={{ fontFamily: "'Space Grotesk', sans-serif", color: "#0D1B2A" }}>
+                Configure standard SKUs online. Get expert pricing where specs need it.
+              </h1>
+              <p className="text-slate-600 mt-4 max-w-2xl text-base leading-relaxed">
+                Start with smart defaults, see MOQ and price bands upfront, then choose a sample, artwork, or managed procurement path.
+              </p>
+              <div className="mt-6 flex flex-wrap gap-3">
+                {[
+                  `${totalSelfServe} self-serve SKUs`,
+                  `${totalAssisted} managed SKUs`,
+                  "Samples from Rs 2,999",
+                  "EPR docs on sustainable packs",
+                ].map((item) => (
+                  <span key={item} className="px-3 py-2 rounded-full bg-slate-100 text-xs font-bold" style={{ color: "#334155" }}>{item}</span>
+                ))}
+              </div>
+            </div>
+            <div className="bg-slate-950 text-white rounded-lg p-5 shadow-xl">
+              <div className="flex items-center gap-2 mb-4">
+                <MS icon="checklist" style={{ color: "#E8A838" }} />
+                <p className="font-black text-sm">Your buying path</p>
+              </div>
+              {[
+                ["1", "Pick SKU", "Choose product, industry, or sustainable catalog."],
+                ["2", "Configure", "Size, material, finish, artwork, and sample defaults."],
+                ["3", "Approve", "Self-serve SKUs move faster. Technical SKUs get guided pricing."],
+              ].map(([num, title, body]) => (
+                <div key={num} className="flex gap-3 pb-4 last:pb-0">
+                  <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-black shrink-0" style={{ background: "#E8A838", color: "#0D1B2A" }}>{num}</div>
+                  <div>
+                    <p className="font-bold text-sm">{title}</p>
+                    <p className="text-xs text-slate-400 leading-relaxed">{body}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
-          <div className="relative w-full md:w-80">
+        </div>
+      </section>
+
+      <section className="bg-white border-b border-slate-200 sticky top-[68px] z-30">
+        <div className="max-w-7xl mx-auto px-4 md:px-8 py-3 flex flex-col lg:flex-row gap-3 lg:items-center">
+          <div className="relative flex-1">
             <MS icon="search" className="absolute left-3 top-1/2 -translate-y-1/2 text-xl" style={{ color: "#74777d" }} />
             <input
-              placeholder="Search SKUs..."
+              placeholder="Search pouches, boxes, bottles, labels..."
               value={search}
-              onChange={e => setSearch(e.target.value)}
+              onChange={(event) => setSearch(event.target.value)}
               className="w-full h-11 pl-10 pr-4 rounded border border-slate-200 bg-white text-sm focus:outline-none focus:border-blue-400"
               style={{ color: "#0D1B2A" }}
             />
           </div>
-        </div>
-      </div>
-
-      {/* ── Category strip ── */}
-      {!search && (
-        <div className="bg-white border-b border-slate-100 overflow-x-auto">
-          <div className="max-w-7xl mx-auto px-8 flex gap-1 py-2">
-            <button
-              onClick={() => setCategory(undefined)}
-              className="px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all flex items-center gap-1.5"
-              style={{ background: !category ? "#0D1B2A" : "transparent", color: !category ? "white" : "#64748B" }}
-            >
-              All ({totalCount})
-            </button>
-            {CATEGORIES.map(cat => (
+          <div className="flex gap-2 overflow-x-auto">
+            {FILTERS.map((filter) => (
               <button
-                key={cat.slug}
-                onClick={() => setCategory(cat.slug)}
-                className="px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all flex items-center gap-1.5"
-                style={{ background: category === cat.slug ? "#0D1B2A" : "transparent", color: category === cat.slug ? "white" : "#64748B" }}
+                key={filter.key}
+                onClick={() => setMode(filter.key)}
+                className="px-4 py-2 rounded border text-left whitespace-nowrap transition-all"
+                style={{
+                  borderColor: mode === filter.key ? "#1B6CA8" : "#E2E8F0",
+                  background: mode === filter.key ? "rgba(27,108,168,0.08)" : "white",
+                  color: "#0D1B2A",
+                }}
               >
-                <MS icon={cat.icon} className="text-base" />
-                {cat.label}
-                <span className="opacity-60">({getCategoryCount(cat.slug)})</span>
+                <span className="flex items-center gap-2 text-xs font-black"><MS icon={filter.icon} className="text-base" />{filter.label}</span>
+                <span className="block text-[11px] text-slate-500 mt-0.5">{filter.hint}</span>
               </button>
             ))}
+            <button
+              onClick={() => setEcoOnly((value) => !value)}
+              className="px-4 py-2 rounded border text-left whitespace-nowrap transition-all"
+              style={{
+                borderColor: ecoOnly ? "#16A34A" : "#E2E8F0",
+                background: ecoOnly ? "rgba(22,163,74,0.08)" : "white",
+                color: "#0D1B2A",
+              }}
+            >
+              <span className="flex items-center gap-2 text-xs font-black"><MS icon="eco" className="text-base" />Sustainable</span>
+              <span className="block text-[11px] text-slate-500 mt-0.5">Certified & recyclable</span>
+            </button>
           </div>
         </div>
-      )}
+      </section>
 
       <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 flex flex-col lg:flex-row gap-8">
-
-        {/* ── Sidebar ── */}
-        <aside className="w-full lg:w-56 shrink-0">
-          <div className="bg-white rounded-lg border border-slate-200 p-5 sticky top-24">
-            <h3 className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: "#74777d" }}>CATEGORIES</h3>
-            <div className="space-y-0.5">
-              <button onClick={() => setCategory(undefined)}
-                className="w-full flex justify-between items-center text-sm py-2 px-3 rounded-lg transition-all text-left"
-                style={!category ? { background: "#0D1B2A", color: "white" } : { color: "#44474c" }}>
-                <span className="font-medium">All Products</span>
-                <span className="text-xs opacity-60">{totalCount}</span>
-              </button>
-              {CATEGORIES.map(cat => (
-                <button key={cat.slug} onClick={() => setCategory(cat.slug)}
-                  className="w-full flex justify-between items-center text-sm py-2 px-3 rounded-lg transition-all text-left gap-2"
-                  style={category === cat.slug ? { background: "#0D1B2A", color: "white" } : { color: "#44474c" }}>
-                  <div className="flex items-center gap-2 min-w-0">
-                    <MS icon={cat.icon} className="text-base shrink-0" />
-                    <span className="font-medium truncate text-xs">{cat.label}</span>
-                  </div>
-                  <span className="text-xs opacity-60 shrink-0">{getCategoryCount(cat.slug)}</span>
+        <aside className="w-full lg:w-60 shrink-0">
+          <div className="bg-white rounded-lg border border-slate-200 p-4 sticky top-40">
+            <p className="text-xs font-black uppercase tracking-widest mb-3" style={{ color: "#74777d" }}>Categories</p>
+            <button
+              onClick={() => setCategory(undefined)}
+              className="w-full flex justify-between items-center text-sm py-2 px-3 rounded transition-all text-left"
+              style={!category ? { background: "#0D1B2A", color: "white" } : { color: "#44474c" }}
+            >
+              <span className="font-bold">All products</span>
+              <span className="text-xs opacity-60">{CATALOG_SKUS.length}</span>
+            </button>
+            <div className="mt-1 space-y-0.5">
+              {CATEGORIES.map((cat) => (
+                <button
+                  key={cat.slug}
+                  onClick={() => setCategory(cat.slug)}
+                  className="w-full flex justify-between items-center text-sm py-2 px-3 rounded transition-all text-left gap-2"
+                  style={category === cat.slug ? { background: "#0D1B2A", color: "white" } : { color: "#44474c" }}
+                >
+                  <span className="font-medium truncate text-xs">{cat.label}</span>
+                  <span className="text-xs opacity-60 shrink-0">{CATALOG_SKUS.filter((sku) => sku.category === cat.slug).length}</span>
                 </button>
               ))}
             </div>
-
-            <div className="mt-6 pt-5 border-t border-slate-200 space-y-5">
-              <h3 className="text-xs font-bold uppercase tracking-widest" style={{ color: "#74777d" }}>FILTER</h3>
-              <div className="flex items-center justify-between gap-2">
-                <Label htmlFor="smartstock" className="cursor-pointer">
-                  <p className="text-sm font-bold" style={{ color: "#0D1B2A" }}>SmartStock</p>
-                  <p className="text-xs" style={{ color: "#74777d" }}>48-hr dispatch</p>
-                </Label>
-                <Switch id="smartstock" checked={isSmartStock} onCheckedChange={setIsSmartStock} />
-              </div>
-              <div className="flex items-center justify-between gap-2">
-                <Label htmlFor="eco" className="cursor-pointer">
-                  <p className="text-sm font-bold" style={{ color: "#0D1B2A" }}>Eco-Friendly</p>
-                  <p className="text-xs" style={{ color: "#74777d" }}>Sustainable materials</p>
-                </Label>
-                <Switch id="eco" checked={isEco} onCheckedChange={setIsEco} />
+            <div className="mt-5 pt-4 border-t border-slate-200">
+              <p className="text-xs font-black uppercase tracking-widest mb-3" style={{ color: "#74777d" }}>Shortcut catalogs</p>
+              <div className="grid gap-2">
+                <Link href="/sustainable">
+                  <button className="w-full flex items-center justify-between rounded border border-green-200 bg-green-50 px-3 py-2 text-xs font-bold text-green-800">
+                    Sustainable catalog <MS icon="arrow_forward" className="text-sm" />
+                  </button>
+                </Link>
+                <Link href="/industries">
+                  <button className="w-full flex items-center justify-between rounded border border-blue-100 bg-blue-50 px-3 py-2 text-xs font-bold" style={{ color: "#1B6CA8" }}>
+                    Industry catalog <MS icon="arrow_forward" className="text-sm" />
+                  </button>
+                </Link>
               </div>
             </div>
           </div>
         </aside>
 
-        {/* ── Product Grid ── */}
         <main className="flex-1">
-          {/* Active category heading */}
-          {category && (
-            <div className="flex items-center justify-between mb-5">
-              <div>
-                <h2 className="text-lg font-black" style={{ fontFamily: "'Space Grotesk', sans-serif", color: "#0D1B2A" }}>
-                  {CATEGORIES.find(c => c.slug === category)?.label}
-                </h2>
-                <p className="text-xs text-slate-400 mt-0.5">{getCategoryCount(category)} SKU{getCategoryCount(category) !== 1 ? "s" : ""}</p>
-              </div>
-              <button onClick={() => setCategory(undefined)} className="text-xs font-bold text-slate-400 hover:text-slate-700 transition-colors">
-                ← All Categories
+          <div className="flex items-center justify-between gap-4 mb-5">
+            <div>
+              <h2 className="text-lg font-black" style={{ fontFamily: "'Space Grotesk', sans-serif", color: "#0D1B2A" }}>
+                {category ? getCategoryLabel(category) : "All packaging SKUs"}
+              </h2>
+              <p className="text-xs text-slate-500 mt-1">{filteredSkus.length} matching SKUs. Recommended path is pre-selected.</p>
+            </div>
+            {(category || search || mode !== "all" || ecoOnly || industry) && (
+              <button
+                onClick={() => { setSearch(""); setCategory(undefined); setIndustry(undefined); setMode("all"); setEcoOnly(false); }}
+                className="text-xs font-black text-slate-500 hover:text-slate-900"
+              >
+                Clear filters
               </button>
-            </div>
-          )}
+            )}
+          </div>
 
-          {isLoading ? (
-            <div className="flex justify-center items-center h-64">
-              <Loader2 className="w-8 h-8 animate-spin" style={{ color: "#1B6CA8" }} />
-            </div>
-          ) : data?.data?.length === 0 ? (
+          {filteredSkus.length === 0 ? (
             <div className="text-center py-24 bg-white rounded-lg border border-slate-200">
               <MS icon="search_off" className="text-5xl mb-3" style={{ color: "#C4C6CC" }} />
-              <p className="font-bold mb-3" style={{ color: "#44474c" }}>No products found.</p>
-              <button onClick={() => { setSearch(""); setCategory(undefined); setIsSmartStock(false); setIsEco(false); }}
-                className="px-6 py-2 rounded border border-slate-200 text-sm font-bold hover:bg-slate-50 transition-all" style={{ color: "#44474c" }}>
-                Clear Filters
-              </button>
+              <p className="font-bold mb-2" style={{ color: "#44474c" }}>No matching packaging found.</p>
+              <p className="text-sm text-slate-500">Try clearing filters or browse by industry.</p>
             </div>
           ) : (
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-              {data?.data?.map(product => {
-                const code = (product.specs as any)?.code || "";
-                const imgUrl = SKU_IMAGES[code] || product.image_url || getCatImage(product.category);
-                return (
-                  <Link key={product.id} href={`/products/${product.slug}`}>
-                    <div className="group bg-white border border-slate-200 rounded-lg overflow-hidden hover:border-blue-300 hover:shadow-lg transition-all cursor-pointer h-full flex flex-col">
-                      {/* Image */}
-                      <div className="h-44 overflow-hidden relative bg-slate-100">
-                        <img
-                          src={imgUrl}
-                          alt={product.name}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-all duration-500"
-                          onError={e => {
-                            const fallback = getCatImage(product.category);
-                            if ((e.target as HTMLImageElement).src !== fallback) {
-                              (e.target as HTMLImageElement).src = fallback;
-                            }
-                          }}
-                        />
-                        <div className="absolute top-3 left-3 flex flex-col gap-1.5">
-                          {product.is_smartstock && (
-                            <span className="px-2 py-0.5 rounded text-xs font-bold" style={{ background: "#E8A838", color: "#0F1C2C" }}>SmartStock</span>
-                          )}
-                          {product.is_eco && (
-                            <span className="px-2 py-0.5 rounded text-xs font-bold bg-green-500 text-white">Eco</span>
-                          )}
-                        </div>
-                        {code && (
-                          <div className="absolute top-3 right-3">
-                            <span className="px-2 py-0.5 rounded text-xs font-mono font-bold" style={{ background: "rgba(13,27,42,0.7)", color: "white" }}>{code}</span>
-                          </div>
-                        )}
+            <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-5">
+              {filteredSkus.map((sku, index) => (
+                <Link key={sku.id} href={`/products/${sku.slug}`}>
+                  <div
+                    className="pw-sku-card group bg-white border border-slate-200 rounded-lg overflow-hidden transition-all cursor-pointer h-full flex flex-col pw-reveal"
+                    style={{ animationDelay: `${Math.min(index, 8) * 40}ms` }}
+                  >
+                    <div className="pw-sku-image h-44 overflow-hidden relative bg-slate-100">
+                      <img src={getCatalogImage(sku)} alt={sku.name} className="w-full h-full object-cover group-hover:scale-105 transition-all duration-500" />
+                      <div className="absolute top-3 left-3 flex flex-col gap-1.5">
+                        <span className="px-2 py-0.5 rounded text-xs font-black" style={{ background: sku.buyingMode === "self_serve" ? "#E8A838" : "#1B6CA8", color: sku.buyingMode === "self_serve" ? "#0F1C2C" : "white" }}>
+                          {sku.buyingMode === "self_serve" ? "Self-serve" : "Managed"}
+                        </span>
+                        {sku.is_eco && <span className="px-2 py-0.5 rounded text-xs font-black bg-green-500 text-white">Eco</span>}
                       </div>
-
-                      {/* Info */}
-                      <div className="p-5 flex flex-col flex-1">
-                        <p className="text-xs font-bold uppercase tracking-wider mb-1.5" style={{ color: "#1B6CA8" }}>
-                          {CATEGORIES.find(c => c.slug === product.category)?.label || product.category}
-                        </p>
-                        <h3 className="font-bold text-base mb-1.5 line-clamp-2" style={{ color: "#0D1B2A", fontFamily: "'Space Grotesk', sans-serif" }}>
-                          {product.name}
-                        </h3>
-                        <p className="text-xs line-clamp-2 mb-4" style={{ color: "#74777d" }}>{product.use_case}</p>
-                        <div className="mt-auto flex items-center justify-between pt-4 border-t border-slate-100">
-                          <div>
-                            <p className="text-xs" style={{ color: "#74777d" }}>Est. per {product.moq_unit}</p>
-                            <p className="font-black text-sm" style={{ fontFamily: "'Manrope', sans-serif", color: "#0D1B2A" }}>
-                              {formatINR(product.price_min)} – {formatINR(product.price_max)}
-                            </p>
-                          </div>
-                          <button
-                            onClick={e => { e.preventDefault(); window.location.href = code ? `/quote?sku=${code}` : "/quote"; }}
-                            className="px-4 py-2 rounded text-xs font-bold text-white hover:opacity-90 transition-all"
-                            style={{ background: "#1B6CA8" }}>
-                            Get Quote
-                          </button>
+                      <span className="absolute top-3 right-3 px-2 py-0.5 rounded text-xs font-mono font-bold" style={{ background: "rgba(13,27,42,0.7)", color: "white" }}>{sku.code}</span>
+                    </div>
+                    <div className="p-5 flex flex-col flex-1">
+                      <p className="text-xs font-bold uppercase tracking-wider mb-1.5" style={{ color: "#1B6CA8" }}>{getCategoryLabel(sku.category)}</p>
+                      <h3 className="font-bold text-base mb-1.5 line-clamp-2" style={{ color: "#0D1B2A", fontFamily: "'Space Grotesk', sans-serif" }}>{sku.name}</h3>
+                      <p className="text-xs line-clamp-2 mb-4" style={{ color: "#74777d" }}>{sku.use_case}</p>
+                      <div className="grid grid-cols-2 gap-2 text-xs mb-4">
+                        <div className="pw-sku-metric rounded bg-slate-50 p-2">
+                          <p className="text-slate-400">MOQ</p>
+                          <p className="font-black text-slate-800">{sku.moq.toLocaleString("en-IN")} {sku.moq_unit}</p>
                         </div>
+                        <div className="pw-sku-metric rounded bg-slate-50 p-2">
+                          <p className="text-slate-400">Lead time</p>
+                          <p className="font-black text-slate-800">{sku.speedLabel}</p>
+                        </div>
+                      </div>
+                      <div className="mt-auto flex items-center justify-between pt-4 border-t border-slate-100">
+                        <div>
+                          <p className="text-xs" style={{ color: "#74777d" }}>Est. per {sku.moq_unit}</p>
+                          <p className="font-black text-sm" style={{ fontFamily: "'Manrope', sans-serif", color: "#0D1B2A" }}>
+                            {formatINR(sku.price_min)} - {formatINR(sku.price_max)}
+                          </p>
+                        </div>
+                        <button
+                          onClick={(event) => { event.preventDefault(); window.location.href = getConfigureHref(sku); }}
+                          className="px-4 py-2 rounded text-xs font-black text-white hover:opacity-90 transition-all"
+                          style={{ background: sku.buyingMode === "self_serve" ? "#0D1B2A" : "#1B6CA8" }}
+                        >
+                          {sku.buyingMode === "self_serve" ? "Configure" : "Plan pricing"}
+                        </button>
                       </div>
                     </div>
-                  </Link>
-                );
-              })}
+                  </div>
+                </Link>
+              ))}
             </div>
           )}
         </main>

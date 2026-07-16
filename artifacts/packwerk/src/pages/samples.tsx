@@ -106,7 +106,7 @@ export default function Samples() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
             {[
               { n: "01", nColor: "#0D1B2A", title: "Find", desc: "Choose from our catalog of structured boxes, mailers, or rigid packaging. Upload your artwork or specify dimensions.", cta: "→ SEARCH CATALOG", href: "/products" },
-              { n: "02", nColor: "#E8A838", title: "Order", desc: "Select your tier and checkout. Our engineers review your files for structural integrity before manufacturing the unit.", cta: "→ INSTANT CHECKOUT", href: "/quote" },
+              { n: "02", nColor: "#E8A838", title: "Order", desc: "Select your tier and checkout. Our engineers review your files for structural integrity before manufacturing the unit.", cta: "→ INSTANT CHECKOUT", href: "/configure" },
               { n: "03", nColor: "#0D1B2A", title: "Approve", desc: "Receive your physical sample. If you&rsquo;re happy, hit 'Produce' in your dashboard. The sample cost is deducted from the total.", cta: "→ FINAL PRODUCTION", href: "/dashboard" },
             ].map(step => (
               <div key={step.n}>

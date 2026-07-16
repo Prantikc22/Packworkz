@@ -1,5 +1,6 @@
 import { Link, useParams } from "wouter";
 import { INDUSTRY_IMAGES } from "@/lib/images";
+import { SKU_IMAGES } from "@/lib/skus";
 
 const MS = ({ icon, className = "", style }: { icon: string; className?: string; style?: React.CSSProperties }) => (
   <span className={`material-symbols-outlined ${className}`} style={style}>{icon}</span>
@@ -24,7 +25,7 @@ const INDUSTRY_DATA: Record<string, {
     headline: string;
     highlight: string;
     body: string;
-    quote: string;
+    testimonial: string;
     author: string;
     stat1: { val: string; label: string };
     stat2: { val: string; label: string };
@@ -48,16 +49,16 @@ const INDUSTRY_DATA: Record<string, {
       { name: "HACCP READY", icon: "fact_check", desc: "Hazard Analysis Critical Control Point implementation ensures zero contamination during the fabrication process." },
     ],
     skus: [
-      { id: "PKG-FD-01", name: "NEXUS STAND-UP POUCH", tag: "Oxygen & Moisture Shield", img: "https://images.unsplash.com/photo-1606166187734-a4cb74079037?w=400&h=320&fit=crop&q=80", badge: "BIODEGRADABLE" },
-      { id: "PKG-FD-14", name: "BIO-WINDOW BOX", tag: "Fresh Peel Window", img: "https://images.unsplash.com/photo-1589782182703-2aaa69037b5b?w=400&h=320&fit=crop&q=80", badge: "ECO-CERTIFIED" },
-      { id: "PKG-FD-22", name: "VANGUARD RIGID", tag: "Luxury Confectionery", img: "https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=400&h=320&fit=crop&q=80" },
-      { id: "PKG-FD-88", name: "ARCTIC SHIPPER", tag: "Temperature Controlled", img: "https://images.unsplash.com/photo-1553413077-190dd305871c?w=400&h=320&fit=crop&q=80", badge: "COLD CHAIN" },
+      { id: "PKG-FD-01", name: "NEXUS STAND-UP POUCH", tag: "Oxygen & Moisture Shield", img: SKU_IMAGES["FP-101"], badge: "BIODEGRADABLE" },
+      { id: "PKG-FD-14", name: "BIO-WINDOW BOX", tag: "Fresh Peel Window", img: SKU_IMAGES["EC-503"], badge: "ECO-CERTIFIED" },
+      { id: "PKG-FD-22", name: "GLASS FOOD JAR", tag: "Premium Preserves", img: SKU_IMAGES["BC-203"] },
+      { id: "PKG-FD-88", name: "BAGASSE FOOD TRAY", tag: "Food Service Ready", img: SKU_IMAGES["SP-904"], badge: "FOOD SAFE" },
     ],
     caseStudy: {
       headline: "Revitalizing Organic Harvest: A 40% Extension in Shelf Life.",
       highlight: "A 40% Extension in Shelf Life.",
       body: "By implementing our proprietary tri-layer barrier technology, Organic Harvest reduced atmospheric degradation by 63% for their premium tea line, enabling global shipping without quality compromise.",
-      quote: "Packworkz didn't just give us a box; they gave us a logistical advantage that redefined our entire retail strategy.",
+      testimonial: "Packworkz didn't just give us a box; they gave us a logistical advantage that redefined our entire retail strategy.",
       author: "Marcus Thomas, Supply Chain Director",
       stat1: { val: "+40%", label: "FRESHNESS DURATION" },
       stat2: { val: "-22%", label: "CARBON FOOTPRINT" },
@@ -81,21 +82,21 @@ const INDUSTRY_DATA: Record<string, {
       { name: "WHO-GMP", icon: "fact_check", desc: "WHO Good Manufacturing Practice certification for pharmaceutical packaging." },
     ],
     skus: [
-      { id: "PKG-PH-01", name: "BLISTER TRAY", tag: "Child-Resistant", img: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&h=320&fit=crop&q=80" },
-      { id: "PKG-PH-02", name: "TAMPER FOIL", tag: "Induction Sealed", img: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=320&fit=crop&q=80" },
-      { id: "PKG-PH-03", name: "COLD CHAIN SHIPPER", tag: "2-8°C Validated", img: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=400&h=320&fit=crop&q=80", badge: "COLD CHAIN" },
-      { id: "PKG-PH-04", name: "UNIT DOSE POUCH", tag: "Serialization Ready", img: "https://images.unsplash.com/photo-1607344645866-009c320b63e0?w=400&h=320&fit=crop&q=80", badge: "TRACK & TRACE" },
+      { id: "PKG-PH-01", name: "BLISTER TRAY", tag: "Child-Resistant", img: SKU_IMAGES["TS-302"] },
+      { id: "PKG-PH-02", name: "TAMPER LABEL", tag: "Induction Sealed", img: SKU_IMAGES["LC-801"] },
+      { id: "PKG-PH-03", name: "PROTECTIVE INSERT", tag: "Transit Validated", img: SKU_IMAGES["PR-602"], badge: "PROTECTIVE" },
+      { id: "PKG-PH-04", name: "UNIT DOSE SACHET", tag: "Serialization Ready", img: SKU_IMAGES["FP-105"], badge: "TRACK & TRACE" },
     ],
     caseStudy: {
       headline: "Reducing Reject Rate 91% for Generic Drug Manufacturer.",
       highlight: "91% for Generic Drug Manufacturer",
       body: "By implementing our clean-room produced blister packaging, this mid-size pharma eliminated cross-contamination events and passed USFDA inspection without a single 483 observation.",
-      quote: "The quality system built around our packaging line is now our competitive moat.",
+      testimonial: "The quality system built around our packaging line is now our competitive moat.",
       author: "Quality Head, Leading Indian Pharma Co.",
       stat1: { val: "-91%", label: "REJECTION RATE" },
       stat2: { val: "0", label: "FDA 483 OBSERVATIONS" },
     },
-    nextSlug: "cosmetics",
+    nextSlug: "beauty",
     nextLabel: "Beauty & Cosmetics",
   },
   "cosmetics": {
@@ -114,21 +115,21 @@ const INDUSTRY_DATA: Record<string, {
       { name: "FSC CERTIFIED", icon: "park", desc: "All paper and cardboard materials from certified sustainable sources." },
     ],
     skus: [
-      { id: "PKG-CS-01", name: "LUXURY RIGID BOX", tag: "Magnetic Closure", img: "https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=400&h=320&fit=crop&q=80", badge: "PREMIUM" },
-      { id: "PKG-CS-02", name: "GLASS DROPPER", tag: "UV Protected", img: "https://images.unsplash.com/photo-1617897903246-719242758050?w=400&h=320&fit=crop&q=80" },
-      { id: "PKG-CS-03", name: "AIRLESS PUMP", tag: "Vacuum Dispensing", img: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=400&h=320&fit=crop&q=80" },
-      { id: "PKG-CS-04", name: "ECO MONO CARTON", tag: "Kraft + Foil", img: "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=400&h=320&fit=crop&q=80", badge: "ECO-CERTIFIED" },
+      { id: "PKG-CS-01", name: "LUXURY RIGID BOX", tag: "Magnetic Closure", img: SKU_IMAGES["BX-402"], badge: "PREMIUM" },
+      { id: "PKG-CS-02", name: "GLASS DROPPER", tag: "UV Protected", img: SKU_IMAGES["BC-205"] },
+      { id: "PKG-CS-03", name: "AIRLESS PUMP", tag: "Vacuum Dispensing", img: SKU_IMAGES["BC-206"] },
+      { id: "PKG-CS-04", name: "ECO MONO CARTON", tag: "Kraft + Foil", img: SKU_IMAGES["BX-401"], badge: "ECO-CERTIFIED" },
     ],
     caseStudy: {
       headline: "D2C Brand Cuts Packaging Cost 28% While Going Premium.",
       highlight: "28% While Going Premium",
       body: "By consolidating 12 cosmetics packaging vendors into Packwerk's single platform, this D2C brand reduced per-unit cost, improved consistency across their SKU line, and launched a new luxury tier.",
-      quote: "We went from 12 vendors to 1. Our per-unit cost dropped 28% and our packaging is now the #1 customer compliment.",
+      testimonial: "We went from 12 vendors to 1. Our per-unit cost dropped 28% and our packaging is now the #1 customer compliment.",
       author: "Founder, Leading Indian Skincare Brand",
       stat1: { val: "-28%", label: "UNIT COST" },
       stat2: { val: "+41%", label: "INSTAGRAM SHARES" },
     },
-    nextSlug: "ecommerce",
+    nextSlug: "d2c",
     nextLabel: "E-commerce Solutions",
   },
   "ecommerce": {
@@ -147,16 +148,16 @@ const INDUSTRY_DATA: Record<string, {
       { name: "CPCB COMPLIANT", icon: "nature_people", desc: "Central Pollution Control Board EPR compliance for e-waste." },
     ],
     skus: [
-      { id: "PKG-EC-01", name: "BRANDED MAILER BOX", tag: "Custom Printed", img: "https://images.unsplash.com/photo-1592756558430-53d8d4a50a96?w=400&h=320&fit=crop&q=80", badge: "MOST POPULAR" },
-      { id: "PKG-EC-02", name: "POLY MAILER", tag: "LDPE Security", img: "https://images.unsplash.com/photo-1531973576160-7125cd663d86?w=400&h=320&fit=crop&q=80" },
-      { id: "PKG-EC-03", name: "BUBBLE MAILER", tag: "Self-seal Bubble", img: "https://images.unsplash.com/photo-1565814329452-e1efa11c5b89?w=400&h=320&fit=crop&q=80" },
-      { id: "PKG-EC-04", name: "PROTECTIVE INSERT", tag: "EPE Foam Cut", img: "https://images.unsplash.com/photo-1607344645866-009c320b63e0?w=400&h=320&fit=crop&q=80" },
+      { id: "PKG-EC-01", name: "BRANDED MAILER BOX", tag: "Custom Printed", img: SKU_IMAGES["EC-501"], badge: "MOST POPULAR" },
+      { id: "PKG-EC-02", name: "POLY MAILER", tag: "LDPE Security", img: SKU_IMAGES["EC-504"] },
+      { id: "PKG-EC-03", name: "CORRUGATED SHIPPER", tag: "Transit-ready Box", img: SKU_IMAGES["EC-502"] },
+      { id: "PKG-EC-04", name: "PROTECTIVE INSERT", tag: "EPE Foam Cut", img: SKU_IMAGES["PR-602"] },
     ],
     caseStudy: {
       headline: "Reducing Returns 67% for Fast Fashion Brand.",
       highlight: "67% for Fast Fashion Brand",
       body: "Switched from generic poly bags to custom structural mailer boxes. Product damage in transit dropped from 4.2% to 0.3%.",
-      quote: "The unboxing experience became a viral moment. Our return rate halved in 2 months.",
+      testimonial: "The unboxing experience became a viral moment. Our return rate halved in 2 months.",
       author: "Head of Ops, D2C Fashion Brand",
       stat1: { val: "-67%", label: "RETURN RATE" },
       stat2: { val: "+88K", label: "UNBOXING VIEWS" },
@@ -180,16 +181,16 @@ const INDUSTRY_DATA: Record<string, {
       { name: "FSC CERTIFIED", icon: "nature_people", desc: "Sustainable paper and board sourcing certified by FSC." },
     ],
     skus: [
-      { id: "PKG-FMC-01", name: "SHELF-READY TRAY", tag: "SRP Display Ready", img: "https://images.unsplash.com/photo-1566576912321-d58ddd7a6088?w=400&h=320&fit=crop&q=80" },
-      { id: "PKG-FMC-02", name: "MONO CARTON", tag: "Offset Printed", img: "https://images.unsplash.com/photo-1607344645866-009c320b63e0?w=400&h=320&fit=crop&q=80", badge: "HIGH VOLUME" },
-      { id: "PKG-FMC-03", name: "SHRINK WRAP", tag: "Multi-pack Bundling", img: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=400&h=320&fit=crop&q=80" },
-      { id: "PKG-FMC-04", name: "LABELS ROLL", tag: "BOPP Self-adhesive", img: "https://images.unsplash.com/photo-1574634534894-89d7576c8259?w=400&h=320&fit=crop&q=80" },
+      { id: "PKG-FMC-01", name: "SHELF-READY CARTON", tag: "SRP Display Ready", img: SKU_IMAGES["BX-401"] },
+      { id: "PKG-FMC-02", name: "MONO CARTON", tag: "Offset Printed", img: SKU_IMAGES["BX-403"], badge: "HIGH VOLUME" },
+      { id: "PKG-FMC-03", name: "PRINTED ROLLSTOCK", tag: "Multi-pack Line Ready", img: SKU_IMAGES["RL-701"] },
+      { id: "PKG-FMC-04", name: "LABELS ROLL", tag: "BOPP Self-adhesive", img: SKU_IMAGES["LC-801"] },
     ],
     caseStudy: {
       headline: "National Brand Cuts Lead Time 55%.",
       highlight: "Lead Time 55%",
       body: "By using Packwerk's SmartStock AI, this national FMCG brand reduced packaging lead time from 21 days to 9 days across all SKUs, enabling faster product launches.",
-      quote: "We launched 3 new SKUs in Q4 that we couldn't before because of packaging delays. That's gone.",
+      testimonial: "We launched 3 new SKUs in Q4 that we couldn't before because of packaging delays. That's gone.",
       author: "Packaging Manager, National Beverage Brand",
       stat1: { val: "-55%", label: "LEAD TIME" },
       stat2: { val: "3", label: "NEW SKU LAUNCHES" },
@@ -213,16 +214,16 @@ const INDUSTRY_DATA: Record<string, {
       { name: "CE MARK", icon: "security", desc: "European conformity for industrial transport packaging." },
     ],
     skus: [
-      { id: "PKG-IND-01", name: "DOUBLE WALL RSC", tag: "Heavy Duty", img: "https://images.unsplash.com/photo-1553413077-190dd305871c?w=400&h=320&fit=crop&q=80", badge: "HIGH STRENGTH" },
-      { id: "PKG-IND-02", name: "PALLET STRETCH WRAP", tag: "Manual/Machine", img: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=400&h=320&fit=crop&q=80" },
-      { id: "PKG-IND-03", name: "EDGE PROTECTORS", tag: "Kraft Board", img: "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=400&h=320&fit=crop&q=80" },
-      { id: "PKG-IND-04", name: "HEAVY DUTY BAG", tag: "HDPE Woven", img: "https://images.unsplash.com/photo-1503602642458-232111445657?w=400&h=320&fit=crop&q=80" },
+      { id: "PKG-IND-01", name: "DOUBLE WALL RSC", tag: "Heavy Duty", img: SKU_IMAGES["EC-502"], badge: "HIGH STRENGTH" },
+      { id: "PKG-IND-02", name: "PALLET STRETCH WRAP", tag: "Manual/Machine", img: SKU_IMAGES["RL-702"] },
+      { id: "PKG-IND-03", name: "EDGE PROTECTORS", tag: "Kraft Board", img: SKU_IMAGES["SP-901"] },
+      { id: "PKG-IND-04", name: "HEAVY DUTY BAG", tag: "HDPE Woven", img: SKU_IMAGES["EC-504"] },
     ],
     caseStudy: {
       headline: "Machine Parts Manufacturer Cuts Damage Rate 78%.",
       highlight: "Damage Rate 78%",
       body: "By switching to Packwerk's double-wall corrugated solution with custom foam inserts, this auto parts manufacturer eliminated transit damage claims.",
-      quote: "We had ₹4L in damage claims per month. Now it's near zero.",
+      testimonial: "We had ₹4L in damage claims per month. Now it's near zero.",
       author: "Logistics Manager, Auto Parts OEM",
       stat1: { val: "-78%", label: "DAMAGE RATE" },
       stat2: { val: "₹4L", label: "CLAIMS SAVED/MONTH" },
@@ -246,16 +247,16 @@ const INDUSTRY_DATA: Record<string, {
       { name: "IS 8543", icon: "security", desc: "Indian Standards for flexible intermediate bulk containers (FIBC)." },
     ],
     skus: [
-      { id: "PKG-AG-01", name: "SEED POUCH", tag: "Moisture Barrier", img: "https://images.unsplash.com/photo-1606166187734-a4cb74079037?w=400&h=320&fit=crop&q=80" },
-      { id: "PKG-AG-02", name: "WOVEN PP BAG", tag: "50kg Capacity", img: "https://images.unsplash.com/photo-1500937386664-56d1dfef3854?w=400&h=320&fit=crop&q=80", badge: "BULK" },
-      { id: "PKG-AG-03", name: "PESTICIDE POUCH", tag: "UN Approved", img: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=320&fit=crop&q=80" },
-      { id: "PKG-AG-04", name: "FIBC BAG", tag: "1 Ton Jumbo", img: "https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=400&h=320&fit=crop&q=80", badge: "BULK" },
+      { id: "PKG-AG-01", name: "SEED POUCH", tag: "Moisture Barrier", img: SKU_IMAGES["FP-101"] },
+      { id: "PKG-AG-02", name: "WOVEN PP BAG", tag: "50kg Capacity", img: SKU_IMAGES["EC-504"], badge: "BULK" },
+      { id: "PKG-AG-03", name: "PESTICIDE POUCH", tag: "UN Approved", img: SKU_IMAGES["FP-104"] },
+      { id: "PKG-AG-04", name: "BULK CORRUGATED BOX", tag: "Export Ready", img: SKU_IMAGES["EC-502"], badge: "BULK" },
     ],
     caseStudy: {
       headline: "Seed Company Extends Germination Viability 18 Months.",
       highlight: "18 Months",
       body: "By switching to our nitrogen-flushed moisture barrier pouches, germination rate after 18 months storage improved from 62% to 94%.",
-      quote: "Our seed viability is now our product guarantee. Packwerk made that possible.",
+      testimonial: "Our seed viability is now our product guarantee. Packwerk made that possible.",
       author: "Production Head, Indian Seeds Company",
       stat1: { val: "+52%", label: "GERMINATION RATE" },
       stat2: { val: "18mo", label: "SHELF EXTENSION" },
@@ -279,16 +280,16 @@ const INDUSTRY_DATA: Record<string, {
       { name: "RoHS COMPLIANT", icon: "security", desc: "Restriction of Hazardous Substances directive compliance." },
     ],
     skus: [
-      { id: "PKG-EL-01", name: "ESD SHIELD BAG", tag: "Anti-static Metalized", img: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&h=320&fit=crop&q=80", badge: "ESD SAFE" },
-      { id: "PKG-EL-02", name: "PINK POLY BAG", tag: "Anti-static PE", img: "https://images.unsplash.com/photo-1606166187734-a4cb74079037?w=400&h=320&fit=crop&q=80" },
-      { id: "PKG-EL-03", name: "ESD FOAM INSERT", tag: "Conductive Foam", img: "https://images.unsplash.com/photo-1607344645866-009c320b63e0?w=400&h=320&fit=crop&q=80" },
-      { id: "PKG-EL-04", name: "HIC CARD", tag: "Humidity Indicator", img: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&h=320&fit=crop&q=80", badge: "MSL READY" },
+      { id: "PKG-EL-01", name: "ESD SHIELD BAG", tag: "Anti-static Metalized", img: SKU_IMAGES["FP-103"], badge: "ESD SAFE" },
+      { id: "PKG-EL-02", name: "PINK POLY BAG", tag: "Anti-static PE", img: SKU_IMAGES["EC-504"] },
+      { id: "PKG-EL-03", name: "ESD FOAM INSERT", tag: "Conductive Foam", img: SKU_IMAGES["PR-602"] },
+      { id: "PKG-EL-04", name: "HIC CARD", tag: "Humidity Indicator", img: SKU_IMAGES["LC-801"], badge: "MSL READY" },
     ],
     caseStudy: {
       headline: "PCB Manufacturer Cuts ESD Failure Rate to Zero.",
       highlight: "ESD Failure Rate to Zero",
       body: "By implementing our certified ESD packaging protocol, this electronics manufacturer eliminated electrostatic discharge failures in their export chain.",
-      quote: "Zero ESD-related returns since switching. Our overseas clients are impressed.",
+      testimonial: "Zero ESD-related returns since switching. Our overseas clients are impressed.",
       author: "Quality Manager, PCB Manufacturer",
       stat1: { val: "0", label: "ESD FAILURES" },
       stat2: { val: "+35%", label: "EXPORT ORDERS" },
@@ -300,7 +301,12 @@ const INDUSTRY_DATA: Record<string, {
 
 export default function IndustryDetail() {
   const { slug } = useParams<{ slug: string }>();
-  const industry = INDUSTRY_DATA[slug || "food-beverage"] || INDUSTRY_DATA["food-beverage"];
+  const detailSlug = ({
+    d2c: "ecommerce",
+    beauty: "cosmetics",
+    exports: "industrial",
+  } as Record<string, string>)[slug || ""] || slug || "food-beverage";
+  const industry = INDUSTRY_DATA[detailSlug] || INDUSTRY_DATA["food-beverage"];
 
   const mono: React.CSSProperties = { fontFamily: "'Manrope', sans-serif", fontWeight: 700 };
 
@@ -323,8 +329,8 @@ export default function IndustryDetail() {
             </h1>
             <p className="text-slate-400 text-lg mb-8 max-w-lg">{industry.description}</p>
             <div className="flex flex-wrap gap-4">
-              <Link href="/quote">
-                <button className="px-8 py-4 rounded font-bold hover:opacity-90" style={{ background: "#E8A838", color: "#0F1C2C" }}>GET A CUSTOM QUOTE</button>
+              <Link href="/configure">
+                <button className="px-8 py-4 rounded font-bold hover:opacity-90" style={{ background: "#E8A838", color: "#0F1C2C" }}>BUILD CUSTOM PLAN</button>
               </Link>
               <Link href="/samples">
                 <button className="px-8 py-4 rounded font-bold border border-white/30 text-white hover:bg-white/10 transition-all">VIEW CATALOG</button>
@@ -395,7 +401,7 @@ export default function IndustryDetail() {
                 <div className="p-4">
                   <h4 className="font-bold text-sm mb-1" style={{ color: "#0D1B2A" }}>{sku.name}</h4>
                   <p className="text-xs" style={{ color: "#74777d" }}>{sku.tag}</p>
-                  <Link href="/quote">
+                  <Link href="/configure">
                     <button className="w-full mt-3 py-2 rounded text-xs font-bold hover:opacity-90 text-white" style={{ background: "#1B6CA8" }}>Order</button>
                   </Link>
                 </div>
@@ -429,7 +435,7 @@ export default function IndustryDetail() {
           <div>
             <div className="p-8 rounded border" style={{ background: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.08)" }}>
               <MS icon="format_quote" className="text-5xl mb-4" style={{ color: "#E8A838" }} />
-              <p className="text-white text-lg italic leading-relaxed mb-6">&ldquo;{industry.caseStudy.quote}&rdquo;</p>
+              <p className="text-white text-lg italic leading-relaxed mb-6">&ldquo;{industry.caseStudy.testimonial}&rdquo;</p>
               <div className="flex items-center gap-4">
                 <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold" style={{ background: "#1B6CA8" }}>
                   {industry.caseStudy.author.charAt(0)}

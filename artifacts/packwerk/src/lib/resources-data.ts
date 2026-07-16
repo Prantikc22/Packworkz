@@ -34,7 +34,7 @@ export const ARTICLES: ResourceArticle[] = [
     content: [
       { type: "p", text: "If you're running a D2C brand in India and ordering packaging from 2–5 different vendors, there's a near certainty you're overpaying — by anywhere from 10% to 18% of your annual packaging spend. The worst part? Most founders never see it on a P&L line." },
       { type: "h2", text: "The Hidden Cost Stack" },
-      { type: "p", text: "Packaging cost isn't just the per-unit price your vendor quotes. The real cost includes four layers that most finance teams never model:" },
+      { type: "p", text: "Packaging cost isn't just the per-unit price your vendor pricing plans. The real cost includes four layers that most finance teams never model:" },
       { type: "ul", items: [
         "Vendor credit markup: Most small packaging vendors in India charge 10–14% implicit interest on Net-30/Net-60 terms. You're financing their working capital.",
         "Over-specification: When you don't have a packaging expert on staff, you default to asking for thicker material, more print colours, or heavier flaps than the product actually needs. That's 8–12% wasted.",
@@ -277,7 +277,7 @@ export const ARTICLES: ResourceArticle[] = [
       ]},
       { type: "h2", text: "The Typical Consolidation Timeline" },
       { type: "p", text: "For a brand with 8–12 packaging SKUs spread across 4–6 vendors, full consolidation typically takes 14–18 weeks from first sample to last vendor winddown. The savings materialise immediately after the first 3–4 SKUs migrate — you'll see improved pricing, reduced admin time, and a significantly more resilient supply chain." },
-      { type: "cta", ctaText: "Start Your Free Packaging Audit →", ctaHref: "/quote" },
+      { type: "cta", ctaText: "Start Your Free Packaging Audit →", ctaHref: "/configure" },
     ],
   },
   {
@@ -329,7 +329,7 @@ export const ARTICLES: ResourceArticle[] = [
       { type: "h2", text: "Building Compliance In From the Start" },
       { type: "p", text: "The cheapest compliance is the compliance you build into your original spec. Retrofitting packaging for an export market typically costs 2–4× more than getting it right initially — you need new artwork, new samples, new approvals, and potentially new materials." },
       { type: "p", text: "Packworkz works with 20+ countries and can spec your packaging for multi-market compliance from day one. Our export packaging range includes BRC-certified factories for UK retail requirements, FDA-registered facilities for US food and supplement brands, and FSC-certified paper options for European sustainable packaging requirements." },
-      { type: "cta", ctaText: "Get Export-Ready Packaging Quote →", ctaHref: "/quote" },
+      { type: "cta", ctaText: "Build Export-Ready Packaging Plan →", ctaHref: "/configure" },
     ],
   },
 ];

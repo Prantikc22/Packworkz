@@ -3,6 +3,7 @@ import { Link } from "wouter";
 import { INDUSTRY_IMAGES } from "@/lib/images";
 import BrandAdvantageSection from "@/components/home/BrandAdvantageSection";
 import ComparisonSection from "@/components/home/ComparisonSection";
+import { SmartStockDemo } from "@/pages/smartstock";
 import {
   Search, GitBranch, ShieldCheck, Truck,
   Leaf, Droplets, FileCheck, ArrowRight,
@@ -23,7 +24,7 @@ const MS = ({ icon, className = "", style }: IconProps) => (
 );
 
 const MARQUEE_PHRASES = [
-  "One platform.", "110+ SKUs.", "3 backup vendors per order.", "98.7% on-time delivery.", "Zero vendor chaos.",
+  "One platform.", "32 configured SKU families.", "Backup sourcing routes.", "Documented QC checkpoints.", "One order record.",
 ];
 const MARQUEE_1 = Array(6).fill(MARQUEE_PHRASES).flat();
 
@@ -92,7 +93,6 @@ const CATEGORIES = [
   { title: "Packaging Rolls",       sub: "Printed, Laminated & Barrier Films",     cat: "rolls",       skus: 3  },
   { title: "Labels & Closures",     sub: "Labels, Caps, Pumps & Spout Fitments",   cat: "labels",      skus: 3  },
   { title: "Sustainable Packaging", sub: "Kraft, Compostable, Recycled & Bagasse", cat: "sustainable", skus: 4  },
-  { title: "Liquid Cartons",        sub: "Aseptic Brick & Gable Top Cartons",      cat: "liquid",      skus: 1  },
 ];
 
 const CAT_IMAGES: Record<string, string> = {
@@ -105,7 +105,6 @@ const CAT_IMAGES: Record<string, string> = {
   rolls:       "/categories/printedrolls.jpg",
   labels:      "/categories/closures.jpg",
   sustainable: "/categories/sustainable.jpg",
-  liquid:      "/categories/liquid.jpg",
   premium:     "https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=600&h=400&fit=crop&q=75",
 };
 
@@ -119,6 +118,112 @@ const INDUSTRIES = [
   { slug: "agriculture",   label: "Agriculture & Seeds", icon: "grass",                     img: INDUSTRY_IMAGES.agriculture },
   { slug: "electronics",   label: "Electronics & Tech",  icon: "devices",                   img: INDUSTRY_IMAGES.electronics },
 ];
+
+const INDUSTRY_SOLUTIONS: Record<string, {
+  title: string;
+  subtitle: string;
+  image: string;
+  proof: string;
+  best: string[];
+  stack: Array<{ label: string; desc: string }>;
+}> = {
+  "food-beverage": {
+    title: "Food brands, cloud kitchens, beverage launches",
+    subtitle: "Barrier pouches, glass jars, spout packs, and food-safe cartons selected for shelf life, leakage control, and repeat purchase.",
+    image: INDUSTRY_IMAGES.food,
+    proof: "Best for shelf life, freshness, and FSSAI-ready launches",
+    best: ["Stand-up pouches", "Spout pouches", "Glass jars", "Bagasse trays"],
+    stack: [
+      { label: "High-barrier pouches", desc: "For snacks, coffee, dry fruits, spices, protein, and pet food." },
+      { label: "Jars and bottles", desc: "For sauces, honey, kombucha, oils, and premium preserves." },
+      { label: "Food-service eco packs", desc: "Bagasse, kraft, and compostable formats for delivery brands." },
+    ],
+  },
+  pharma: {
+    title: "Pharma, wellness, diagnostics, supplements",
+    subtitle: "Tamper-aware cartons, labels, blister packs, bottles, and protective inserts with documentation discipline.",
+    image: INDUSTRY_IMAGES.pharma,
+    proof: "Best for traceability, tamper evidence, and clean approval cycles",
+    best: ["Blister packs", "Mono cartons", "Tamper labels", "PET/HDPE bottles"],
+    stack: [
+      { label: "Blister and strip support", desc: "For tablets, capsules, trial kits, and controlled dosage packs." },
+      { label: "Cartons and labels", desc: "Readable, batch-ready, QR-ready, and built for compliance workflows." },
+      { label: "Transit protection", desc: "Foam inserts, corrugated shippers, and secondary packaging for fragile SKUs." },
+    ],
+  },
+  cosmetics: {
+    title: "Beauty, skincare, salons, personal care",
+    subtitle: "Premium tubes, airless pumps, droppers, jars, rigid boxes, and labels that make the formula feel worth more.",
+    image: INDUSTRY_IMAGES.cosmetics,
+    proof: "Best for shelf presence, launch drops, and premium unboxing",
+    best: ["Airless pumps", "Cosmetic tubes", "Rigid boxes", "Glass droppers"],
+    stack: [
+      { label: "Primary packs", desc: "Tubes, jars, pumps, droppers, and bottles matched to viscosity and usage." },
+      { label: "Retail cartons", desc: "Mono cartons, textured boards, foils, embossing, and batch-ready labels." },
+      { label: "Gift and launch kits", desc: "Rigid boxes, magnetic closures, inserts, and influencer-ready packs." },
+    ],
+  },
+  ecommerce: {
+    title: "D2C, marketplaces, apparel, subscription boxes",
+    subtitle: "Courier bags, mailer boxes, corrugated shippers, return-friendly packs, and branded unboxing kits.",
+    image: INDUSTRY_IMAGES.ecommerce,
+    proof: "Best for lower damage, faster dispatch, and branded delivery moments",
+    best: ["Mailer boxes", "Poly mailers", "Corrugated shippers", "Paper mailers"],
+    stack: [
+      { label: "Self-serve mailers", desc: "Pick size, print, quantity, and delivery window without a vendor call." },
+      { label: "Return-ready packaging", desc: "Tamper-safe, POD-compatible, and practical for reverse logistics." },
+      { label: "Launch bundles", desc: "Boxes, tissue, stickers, sleeves, and inserts in one managed order." },
+    ],
+  },
+  fmcg: {
+    title: "FMCG, retail, household, high-volume brands",
+    subtitle: "Cost-optimised cartons, pouches, labels, rollstock, and backup factory allocation for repeat runs.",
+    image: INDUSTRY_IMAGES.fmcg,
+    proof: "Best for high-volume repeatability and per-unit cost control",
+    best: ["Pillow pouches", "Mono cartons", "Rollstock", "Pressure labels"],
+    stack: [
+      { label: "Repeat SKU playbooks", desc: "Standardised material, print, MOQ, and reorder windows per product." },
+      { label: "Managed rollstock", desc: "Assisted pricing for films, laminates, and machine-specific roll formats." },
+      { label: "SmartStock fit", desc: "Consumption-aware reorder prompts for SKUs you cannot afford to miss." },
+    ],
+  },
+  industrial: {
+    title: "Industrial, B2B, automotive, tools, chemicals",
+    subtitle: "Heavy-duty corrugation, drums, HDPE containers, protective inserts, labels, and export-grade transit packs.",
+    image: INDUSTRY_IMAGES.industrial,
+    proof: "Best for durability, bulk movement, and procurement discipline",
+    best: ["5-ply shippers", "HDPE containers", "Foam inserts", "Industrial labels"],
+    stack: [
+      { label: "Transit engineering", desc: "Corrugated specs, board grade, burst strength, and padding matched to load." },
+      { label: "Bulk containers", desc: "Jars, bottles, canisters, and closure combinations for industrial use." },
+      { label: "Procurement controls", desc: "Vendor backup, QC checkpoints, and clean documentation for repeat buying." },
+    ],
+  },
+  agriculture: {
+    title: "Seeds, fertilisers, agri-inputs, fresh produce",
+    subtitle: "Moisture-resistant pouches, sacks, labels, cartons, and durable packaging for rural and distributor handling.",
+    image: INDUSTRY_IMAGES.agriculture,
+    proof: "Best for moisture protection and rugged channel movement",
+    best: ["Laminated pouches", "Sachets", "Woven sacks", "Corrugated cartons"],
+    stack: [
+      { label: "Seed and input packs", desc: "Barrier pouches, sachets, and printed rolls for high-volume filling lines." },
+      { label: "Distributor cartons", desc: "Secondary packaging that survives stacking, humidity, and long routes." },
+      { label: "Label and compliance", desc: "Batch, MRP, QR, instruction, and regulatory label workflows." },
+    ],
+  },
+  electronics: {
+    title: "Electronics, devices, accessories, repair kits",
+    subtitle: "ESD-safe protection, precision inserts, mailer boxes, labels, and premium boxes for fragile, high-value SKUs.",
+    image: INDUSTRY_IMAGES.electronics,
+    proof: "Best for damage reduction and high-value unboxing",
+    best: ["ESD pouches", "Foam inserts", "Mailer boxes", "Rigid boxes"],
+    stack: [
+      { label: "Damage control", desc: "Foam, corrugated, and cushioning choices tuned to fragile components." },
+      { label: "Premium kits", desc: "Rigid boxes, sleeves, inserts, and labels for device bundles and accessories." },
+      { label: "Marketplace ready", desc: "Barcode labels, tamper seals, and shippers suited for fulfilment centres." },
+    ],
+  },
+};
 
 const PAIN_POINTS = [
   {
@@ -147,15 +252,15 @@ const HOW_IT_WORKS_STEPS = [
   {
     num: "Step 01",
     Icon: Search,
-    title: "Configure and Quote",
-    desc: "Browse 110+ SKUs, configure your spec, and submit a quote request. We respond in 48 hours.",
+    title: "Configure and Pricing Plan",
+    desc: "Browse 32 configured SKU families, choose the specification, and see whether the format is self-serve or engineering-assisted.",
     bg: "#0D1B2A",
   },
   {
     num: "Step 02",
     Icon: GitBranch,
     title: "We Source and Manufacture",
-    desc: "PackOS matches your SKU to the best available factory from our verified network. 3 backup vendors assigned.",
+    desc: "PackOS matches the specification to available factory capability and prepares backup sourcing routes where the format allows it.",
     bg: "#0D1B2A",
   },
   {
@@ -177,60 +282,60 @@ const HOW_IT_WORKS_STEPS = [
 const CASE_STUDIES = [
   {
     initials: "HP",
-    logo: "/images/logos/happilo.png",
+    logo: "",
     logoBg: "#1a4a2e",
-    company: "Happilo",
-    industry: "Premium Foods · Bangalore",
-    metric: "7 vendors → 1 platform",
-    challenge: "We were managing 7 different packaging vendors for our snack range. Every month was a coordination nightmare — delays from one vendor cascaded across our entire production schedule.",
-    whatWeDid: "Consolidated all 7 SKUs onto the Packworkz platform. Assigned backup vendors for each. Integrated their reorder into the dashboard with SmartStock pre-positioning.",
-    result: "Single point of contact for all packaging. Zero production delays in the first 6 months. Quality consistent across every batch.",
+    company: "Scaling snack brand",
+    industry: "Illustrative food scenario",
+    metric: "7 vendors → 1 workflow",
+    challenge: "Seven packaging vendors create fragmented approvals, inconsistent status updates, and avoidable production planning work.",
+    whatWeDid: "Model the portfolio as one managed workflow, with approved specifications, backup sourcing routes and reorder signals held against each SKU.",
+    result: "A single operating record for sourcing, quality checkpoints and delivery decisions across the packaging portfolio.",
     metrics: [
       { val: "7 → 1", label: "Vendors managed" },
-      { val: "₹0", label: "Production delays" },
-      { val: "6 mo", label: "Zero quality issues" },
+      { val: "1", label: "Order workflow" },
+      { val: "3", label: "Control points" },
     ],
-    quote: "We cut vendor coordination time by 80% in the first quarter. Packworkz handles everything — sourcing, QC, dispatch tracking. Our team finally has time to focus on growth.",
-    quoteName: "Rohan Mehta",
-    quoteTitle: "Supply Chain Head, Happilo",
+    testimonial: "Use this model when coordination work is spread across suppliers and the team needs one source of truth for every repeat SKU.",
+    testimonialName: "Planning model",
+    testimonialTitle: "Illustrative workflow, not a customer claim",
   },
   {
     initials: "BC",
-    logo: "/images/logos/bodycraft.png",
+    logo: "",
     logoBg: "#8b1a2e",
-    company: "Bodycraft",
-    industry: "Cosmetics & Salon · Bangalore",
-    metric: "₹3.8L saved in Year 1",
-    challenge: "Our previous vendor's QC was self-certified. We received two batches with print registration errors that our retail partners rejected. The cost of returns was significant.",
-    whatWeDid: "Moved cosmetic jar and carton orders to Packworkz. Pre-dispatch inspection with photo evidence on every batch. Design also migrated — artwork now stored on platform.",
-    result: "Zero QC rejections in 14 months. Artwork errors eliminated because print-ready files are standardised. Net saving vs previous vendor.",
+    company: "Multi-location beauty brand",
+    industry: "Illustrative beauty scenario",
+    metric: "Artwork → QC → dispatch",
+    challenge: "Jar, closure, label and carton specifications can drift when artwork files and quality approvals live in separate conversations.",
+    whatWeDid: "Model a controlled workflow with a locked artwork version, pre-production checks, photo evidence and a dispatch approval gate.",
+    result: "A traceable route from approved design to the inspected production batch, with fewer opportunities for version error.",
     metrics: [
-      { val: "0", label: "QC rejections" },
-      { val: "₹3.8L", label: "Annual saving" },
-      { val: "14 mo", label: "Perfect record" },
+      { val: "1", label: "Artwork record" },
+      { val: "3", label: "QC gates" },
+      { val: "2", label: "Pack components" },
     ],
-    quote: "Switched all 12 of our packaging SKUs to Packworkz after our previous vendor failed us three times. Six months in — zero delays, costs down 19%, and I sleep better on launch days.",
-    quoteName: "Prashant Kumar",
-    quoteTitle: "Procurement Manager, Bodycraft",
+    testimonial: "Use this model when print consistency and artwork version control matter as much as the unit price.",
+    testimonialName: "Planning model",
+    testimonialTitle: "Illustrative workflow, not a customer claim",
   },
   {
     initials: "OC",
-    logo: "/images/logos/oliva.png",
+    logo: "",
     logoBg: "#1a2a3a",
-    company: "Oliva Clinics",
-    industry: "Dermatology · Pan-India",
-    metric: "14 days · Fully certified",
-    challenge: "We needed FSC certified kraft pouches with compostability certification for a UK export order. Our local vendor couldn't provide the documentation and we nearly lost the contract.",
-    whatWeDid: "Sourced FSC certified kraft stand-up pouches from our verified sustainable packaging network. Provided full export documentation including FSC chain of custody certificate.",
-    result: "UK export order fulfilled on time with full certification. Buyer has since placed 3 repeat orders. Sustainable packaging now standard across their range.",
+    company: "Export-ready wellness brand",
+    industry: "Illustrative export scenario",
+    metric: "Material claim → proof file",
+    challenge: "An export buyer requests a specific material claim, but the finished construction and supporting evidence have not yet been aligned.",
+    whatWeDid: "Model a specification-first sourcing route: define the claim, shortlist eligible structures, and verify applicable supplier evidence before approval.",
+    result: "The buyer-facing material claim is tied to the actual order specification and its supporting document set.",
     metrics: [
-      { val: "14d", label: "Sourced and shipped" },
-      { val: "3x", label: "Repeat orders won" },
-      { val: "100%", label: "Certs provided" },
+      { val: "1", label: "Approved claim" },
+      { val: "1", label: "Material spec" },
+      { val: "1", label: "Evidence file" },
     ],
-    quote: "Our export buyer needed FSC certified packaging with full chain-of-custody documentation. Packworkz had it sourced, certified, and shipped in 14 days. No other vendor even understood the brief.",
-    quoteName: "Dr. Shalini Bhat",
-    quoteTitle: "Operations Director, Oliva Clinics",
+    testimonial: "Use this model when a sustainability or export claim must survive procurement, production and buyer review.",
+    testimonialName: "Planning model",
+    testimonialTitle: "Illustrative workflow, not a customer claim",
   },
 ];
 
@@ -279,7 +384,7 @@ function CaseDetail({ cs }: { cs: typeof CASE_STUDIES[0] }) {
         {/* Top row */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 20 }}>
           <span style={{ color: "#0D1B2A", fontSize: 24, fontWeight: 700 }}>{cs.company}</span>
-          <span style={{ color: "#E8A838", fontSize: 18, letterSpacing: 2 }}>★★★★★</span>
+          <span style={{ color: "#1B6CA8", fontSize: 10, fontWeight: 800, letterSpacing: 1.5 }}>MODELLED WORKFLOW</span>
         </div>
 
         {/* Industry tag */}
@@ -318,7 +423,7 @@ function CaseDetail({ cs }: { cs: typeof CASE_STUDIES[0] }) {
           ))}
         </div>
 
-        {/* Customer quote */}
+        {/* Scenario note */}
         <div style={{
           marginTop: 28,
           borderLeft: "3px solid #E8A838",
@@ -326,7 +431,7 @@ function CaseDetail({ cs }: { cs: typeof CASE_STUDIES[0] }) {
           padding: "20px 20px 20px 20px",
         }}>
           <p style={{ color: "#374151", fontSize: 14, lineHeight: 1.75, fontStyle: "italic", marginBottom: 12 }}>
-            "{cs.quote}"
+            "{cs.testimonial}"
           </p>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <div style={{
@@ -334,11 +439,11 @@ function CaseDetail({ cs }: { cs: typeof CASE_STUDIES[0] }) {
               background: "#1B6CA8", display: "flex", alignItems: "center", justifyContent: "center",
               fontSize: 12, fontWeight: 700, color: "white", flexShrink: 0,
             }}>
-              {cs.quoteName.split(" ").map(w => w[0]).slice(0,2).join("")}
+              {cs.testimonialName.split(" ").map(w => w[0]).slice(0,2).join("")}
             </div>
             <div>
-              <p style={{ color: "#0D1B2A", fontSize: 13, fontWeight: 700, lineHeight: 1.2 }}>{cs.quoteName}</p>
-              <p style={{ color: "#94A3B8", fontSize: 11, marginTop: 2 }}>{cs.quoteTitle}</p>
+              <p style={{ color: "#0D1B2A", fontSize: 13, fontWeight: 700, lineHeight: 1.2 }}>{cs.testimonialName}</p>
+              <p style={{ color: "#94A3B8", fontSize: 11, marginTop: 2 }}>{cs.testimonialTitle}</p>
             </div>
           </div>
         </div>
@@ -352,14 +457,13 @@ type VendorBucket = "Just 1" | "2 to 4" | "5+";
 type CreditOption = "Yes" | "No";
 
 function calcNewSavings(monthly: number, vendors: VendorBucket, credit: CreditOption) {
-  const savingPct = vendors === "Just 1" ? 0.08 : vendors === "2 to 4" ? 0.10 : 0.12;
+  const savingPct = vendors === "Just 1" ? 0.04 : vendors === "2 to 4" ? 0.06 : 0.08;
   const annual = monthly * 12;
   const annualSaving = annual * savingPct;
-  const creditMarkup = credit === "Yes" ? annual * 0.12 : 0;
-  const upfrontSaving = annual * 0.03;
-  const totalValue = annualSaving + creditMarkup;
+  const emergencyLeakage = credit === "Yes" ? annual * 0.025 : 0;
+  const totalValue = annualSaving + emergencyLeakage;
   const timeSaved = vendors === "Just 1" ? 4 : vendors === "2 to 4" ? 8 : 14;
-  return { annual, annualSaving, creditMarkup, upfrontSaving, totalValue, timeSaved };
+  return { annual, annualSaving, emergencyLeakage, totalValue, timeSaved, savingPct };
 }
 
 function StatCount({ target, suffix = "", color = "#60a5fa" }: { target: number; suffix?: string; color?: string }) {
@@ -405,10 +509,13 @@ export default function Home() {
   const [activeStep, setActiveStep] = useState(-1);
   const [heroParallax, setHeroParallax] = useState(0);
   const [showAllComparisons, setShowAllComparisons] = useState(false);
+  const [activeIndustrySlug, setActiveIndustrySlug] = useState(INDUSTRIES[0].slug);
 
   const caseIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const processRef = useRef<HTMLDivElement>(null);
   const stepEls = useRef<(HTMLDivElement | null)[]>([]);
+  const activeIndustry = INDUSTRIES.find((industry) => industry.slug === activeIndustrySlug) || INDUSTRIES[0];
+  const activeIndustrySolution = INDUSTRY_SOLUTIONS[activeIndustry.slug];
 
   const startCaseRotation = () => {
     if (caseIntervalRef.current) clearInterval(caseIntervalRef.current);
@@ -506,7 +613,7 @@ export default function Home() {
   const sliderPct = Math.round(((monthlySpend - 50000) / (5000000 - 50000)) * 100);
 
   return (
-    <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+    <div className="pw-home" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
 
       {/* ══════════════════════════════════════════════════════════ */}
       {/*  SECTION 1 — HERO                                         */}
@@ -516,7 +623,6 @@ export default function Home() {
         style={{
           background: "linear-gradient(135deg, #020817 0%, #071a45 40%, #153e9f 100%)",
           minHeight: 620,
-          marginTop: -68,
         }}
       >
         {/* Subtle geometric lines */}
@@ -655,21 +761,21 @@ export default function Home() {
               }}>
                 <span className="material-symbols-outlined" style={{ fontSize: 11, color: "#E8A838", fontVariationSettings: "'FILL' 1, 'wght' 700" }}>verified</span>
               </span>
-              Trusted by{" "}
+              Packaging operations for{" "}
               <span style={{ color: "rgba(255,255,255,0.78)", fontWeight: 600 }}>Plum, Happilo, Bodycraft</span>
-              {" "}and 220+ brands across India
+              {" "}and growing teams across India
             </p>
             <div className="flex flex-col sm:flex-row gap-4 mb-3" style={{ alignItems: "stretch" }}>
               <span className="animated-border animated-border-white" style={{ display: "flex" }}>
-                <Link href="/quote" style={{ flex: 1, display: "flex" }}>
+                <Link href="/configure" style={{ flex: 1, display: "flex" }}>
                   <button className="btn-fill btn-amber px-9 py-4 text-base whitespace-nowrap" style={{ flex: 1 }}>
-                    <span>Get a Quote</span><MS icon="arrow_forward" />
+                    <span>Get Pricing Plan</span><MS icon="arrow_forward" />
                   </button>
                 </Link>
               </span>
               <Link href="/products" style={{ display: "flex" }}>
                 <button className="btn-fill btn-outline-white px-9 py-4 text-base whitespace-nowrap" style={{ flex: 1 }}>
-                  <span>Browse 110+ SKUs</span>
+                  <span>Browse the catalog</span>
                 </button>
               </Link>
             </div>
@@ -680,10 +786,10 @@ export default function Home() {
             {/* Stats badges — locked inside left column */}
             <div className="flex flex-wrap gap-x-7 gap-y-3 pt-7 border-t border-white/15">
               {[
-                { icon: "inventory_2",       value: "110+", label: "Packaging SKUs" },
-                { icon: "workspace_premium", value: "220+", label: "Brands Served" },
-                { icon: "public",            value: "20+",  label: "Countries" },
-                { icon: "verified",          value: "Zero", label: "Quality Compromise" },
+                { icon: "inventory_2",       value: "32", label: "Configured SKU Families" },
+                { icon: "workspace_premium", value: "Multi", label: "Category Coverage" },
+                { icon: "public",            value: "India", label: "Delivery Network" },
+                { icon: "verified",          value: "QC", label: "Documented Checkpoints" },
               ].map((s) => (
                 <div key={s.label} className="flex items-center gap-2">
                   <span className="material-symbols-outlined text-amber-400" style={{ fontSize: 17 }}>{s.icon}</span>
@@ -715,26 +821,26 @@ export default function Home() {
       {/* ══════════════════════════════════════════════════════════ */}
       {/*  SECTION 3B — OUR CUSTOMERS (2-col: text + marquee)      */}
       {/* ══════════════════════════════════════════════════════════ */}
-      <section style={{ background: "#FFFFFF", borderBottom: "1px solid #E2EAF4", padding: "72px 0", overflow: "hidden" }}>
+      <section className="pw-theme-surface" style={{ background: "#FFFFFF", borderBottom: "1px solid #E2EAF4", padding: "72px 0", overflow: "hidden" }}>
         <div className="po-customers-grid" style={{ maxWidth: 1200, margin: "0 auto", padding: "0 40px", display: "grid", gridTemplateColumns: "1fr 1.5fr", gap: 72, alignItems: "center" }}>
 
           {/* Left: text */}
           <div>
             <h2 className="scroll-animate scroll-animate-delay-1" style={{ color: "#0D1B2A", fontSize: 34, fontWeight: 800, lineHeight: 1.15, marginBottom: 18 }}>
-              Brands We Are Building For
+              Trusted by growing brands
             </h2>
             <p className="scroll-animate scroll-animate-delay-2" style={{ color: "#475569", fontSize: 15, lineHeight: 1.75, marginBottom: 32 }}>
-              From D2C beauty &amp; wellness to FMCG and pharma — India's leading brands rely on Packworkz for consistent, compliant, beautiful packaging.
+              From D2C beauty and wellness to FMCG and pharma, teams use Packworkz for consistent, compliant, beautifully produced packaging.
             </p>
             <div style={{ display: "flex", gap: 36, alignItems: "center" }}>
               <div>
-                <p style={{ color: "#0D1B2A", fontSize: 30, fontWeight: 800, lineHeight: 1, marginBottom: 4 }}>220+</p>
-                <p style={{ color: "#94A3B8", fontSize: 12, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.5px" }}>Brands served</p>
+                <p style={{ color: "#0D1B2A", fontSize: 30, fontWeight: 800, lineHeight: 1, marginBottom: 4 }}>Multi-category</p>
+                <p style={{ color: "#94A3B8", fontSize: 12, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.5px" }}>Packaging coverage</p>
               </div>
               <div style={{ width: 1, height: 44, background: "#E2EAF4" }} />
               <div>
-                <p style={{ color: "#0D1B2A", fontSize: 30, fontWeight: 800, lineHeight: 1, marginBottom: 4 }}>98.7%</p>
-                <p style={{ color: "#94A3B8", fontSize: 12, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.5px" }}>On-time delivery</p>
+                <p style={{ color: "#0D1B2A", fontSize: 30, fontWeight: 800, lineHeight: 1, marginBottom: 4 }}>One record</p>
+                <p style={{ color: "#94A3B8", fontSize: 12, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.5px" }}>Quote to delivery</p>
               </div>
             </div>
           </div>
@@ -808,7 +914,7 @@ export default function Home() {
       {/* ══════════════════════════════════════════════════════════ */}
       {/*  SECTION 4 — PAIN POINTS                                   */}
       {/* ══════════════════════════════════════════════════════════ */}
-      <section style={{ background: "#FFFFFF", padding: "100px 0" }}>
+      <section className="pw-theme-surface" style={{ background: "#FFFFFF", padding: "100px 0" }}>
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 40px" }}>
           <span className="scroll-animate" style={{ color: "#1B6CA8", fontSize: 11, fontWeight: 600, letterSpacing: "2px", textTransform: "uppercase", display: "block", marginBottom: 14 }}>
             THE PROBLEM
@@ -818,7 +924,7 @@ export default function Home() {
           </h2>
 
           <div
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5"
+            className="pw-pain-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5"
             style={{
               gap: 1, background: "#E2EAF4",
               border: "1px solid #E2EAF4", borderRadius: 0, overflow: "hidden",
@@ -827,13 +933,11 @@ export default function Home() {
             {PAIN_POINTS.map((p, i) => (
               <div
                 key={i}
-                className={`group scroll-animate scroll-animate-delay-${Math.min(i + 1, 4)}`}
+                className={`pw-pain-card group scroll-animate scroll-animate-delay-${Math.min(i + 1, 4)}`}
                 style={{
                   background: "#FFFFFF", padding: "32px 24px",
                   transition: "background 0.2s", cursor: "default",
                 }}
-                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "#F8F9FC"; }}
-                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "#FFFFFF"; }}
               >
                 <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#EF4444", display: "block", marginBottom: 24 }} />
                 <h3 style={{ color: "#0D1B2A", fontSize: 15, fontWeight: 700, marginBottom: 10 }}>{p.title}</h3>
@@ -869,7 +973,7 @@ export default function Home() {
                 <span style={{ color: "#E8A838", fontStyle: "italic" }}>Then you're sorted.</span>
               </h2>
               <p style={{ color: "rgba(255,255,255,0.45)", fontSize: 17, lineHeight: 1.75, marginBottom: 40, maxWidth: 380 }}>
-                From quote to delivery, one team owns every step. No finger-pointing. No vendor follow-ups.
+                From pricing plan to delivery, one team owns every step. No finger-pointing. No vendor follow-ups.
               </p>
               <Link href="/how-it-works">
                 <span style={{
@@ -950,15 +1054,15 @@ export default function Home() {
       {/* ══════════════════════════════════════════════════════════ */}
       {/*  SECTION 8 — PRODUCT CATEGORIES                           */}
       {/* ══════════════════════════════════════════════════════════ */}
-      <section style={{ background: "white", padding: "100px 0" }}>
+      <section id="products" className="pw-product-section pw-theme-surface" style={{ background: "white", padding: "100px 0" }}>
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 40px" }}>
           <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 gap-4">
             <div>
               <span className="scroll-animate" style={{ color: "#1B6CA8", fontSize: 11, fontWeight: 600, letterSpacing: "2px", textTransform: "uppercase", display: "block", marginBottom: 14 }}>
                 PRODUCTS
               </span>
-              <h2 className="clash-display text-4xl scroll-animate scroll-animate-delay-1" style={{ color: "#0D1B2A" }}>Core Product Categories</h2>
-              <p className="mt-2 text-lg scroll-animate scroll-animate-delay-2" style={{ color: "#64748B" }}>110+ curated SKUs across 10 managed categories.</p>
+              <h2 className="clash-display text-4xl scroll-animate scroll-animate-delay-1" style={{ color: "#0D1B2A" }}>Packaging, organized around the job.</h2>
+              <p className="mt-2 text-lg scroll-animate scroll-animate-delay-2" style={{ color: "#64748B" }}>Start with a format, then configure the details that affect performance and cost.</p>
             </div>
             <Link href="/products">
               <button className="font-bold flex items-center gap-2 hover:underline" style={{ color: "#1B6CA8" }}>
@@ -967,170 +1071,136 @@ export default function Home() {
             </Link>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5" style={{ alignItems: "stretch" }}>
+          <div className="pw-category-grid" style={{ alignItems: "stretch" }}>
             {CATEGORIES.map((cat, ci) => (
               <Link href={`/products?category=${cat.cat}`} key={cat.title} style={{ display: "flex", flexDirection: "column" }}>
-                <div className={`group bg-white shadow-sm hover:-translate-y-2 transition-all cursor-pointer border overflow-hidden scroll-animate scroll-animate-delay-${Math.min(ci % 4 + 1, 4)}`} style={{ borderColor: "#E2EAF4", display: "flex", flexDirection: "column", height: "100%" }}>
-                  <div className="w-full overflow-hidden" style={{ height: 160 }}>
+                <article className={`pw-category-card group scroll-animate scroll-animate-delay-${Math.min(ci % 4 + 1, 4)}`}>
+                  <div className="pw-category-image">
                     <img
                       src={CAT_IMAGES[cat.cat]}
                       alt={cat.title}
-                      className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
+                      className="w-full h-full object-cover transition-all duration-500"
                     />
+                    <span className="pw-category-index">{String(ci + 1).padStart(2, "0")}</span>
                   </div>
-                  <div className="p-4" style={{ flex: 1, display: "flex", flexDirection: "column" }}>
-                    <h4 className="font-bold text-sm leading-tight mb-1" style={{ color: "#0D1B2A" }}>{cat.title}</h4>
-                    <p className="text-xs leading-snug" style={{ color: "#64748B", flex: 1 }}>{cat.sub}</p>
-                    <p className="text-xs font-bold mt-2" style={{ color: "#1B6CA8" }}>{cat.skus} SKU{cat.skus !== 1 ? "s" : ""}</p>
+                  <div className="pw-category-body">
+                    <h4>{cat.title}</h4>
+                    <p>{cat.sub}</p>
+                    <div className="pw-category-footer">
+                      <strong>{cat.skus} SKU{cat.skus !== 1 ? "s" : ""}</strong>
+                      <MS icon="arrow_forward" className="text-base" />
+                    </div>
                   </div>
-                </div>
+                </article>
               </Link>
             ))}
           </div>
 
-          <p style={{ marginTop: 32, textAlign: "center", color: "#64748B", fontSize: 15 }}>
-            Need packaging design before ordering?{" "}
-            <Link href="/design">
-              <span style={{ color: "#1B6CA8", textDecoration: "underline", fontWeight: 600, cursor: "pointer" }}>
-                Get print-ready artwork from ₹1,999 →
-              </span>
-            </Link>
-          </p>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════════════════════ */}
-      {/*  SECTORS (kept per user)                                   */}
-      {/* ══════════════════════════════════════════════════════════ */}
-      <section style={{ background: "linear-gradient(150deg, #020617 0%, #0a1840 100%)", padding: "100px 0" }}>
-        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 40px" }}>
-          <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-4">
+          <div className="pw-ai-entry">
+            <div className="pw-ai-entry-icon"><MS icon="auto_awesome" /></div>
             <div>
-              <p className="font-bold tracking-[0.2em] text-sm uppercase mb-3 scroll-animate" style={{ color: "#1B6CA8" }}>SECTORS WE SERVE</p>
-              <h2 className="clash-display text-white text-4xl scroll-animate scroll-animate-delay-1">Built for every industry.</h2>
+              <strong>Not sure which packaging fits?</strong>
+              <span>Describe your product and Packworkz AI will build a practical SKU, MOQ, and sampling plan.</span>
             </div>
-            <Link href="/industries">
-              <button className="font-bold flex items-center gap-2 hover:underline" style={{ color: "#E8A838" }}>
-                All Industries <MS icon="chevron_right" />
+            <Link href="/pack-ai">
+              <button className="btn-fill btn-amber px-6 py-3 text-sm pw-btn-transition">
+                <span>Plan with Packworkz AI</span><MS icon="arrow_forward" className="text-base" />
               </button>
             </Link>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {INDUSTRIES.map((ind) => (
-              <Link href={`/industries/${ind.slug}`} key={ind.slug}>
-                <div className="group relative overflow-hidden cursor-pointer h-52">
-                  <img src={ind.img} alt={ind.label} className="w-full h-full object-cover brightness-50 group-hover:brightness-75 group-hover:scale-105 transition-all duration-500" />
-                  <div className="absolute inset-0 flex flex-col justify-end p-5">
-                    <MS icon={ind.icon} className="text-2xl mb-2" style={{ color: "#E8A838" }} />
-                    <h3 className="text-white font-bold text-lg leading-tight">{ind.label}</h3>
-                    <p className="text-slate-400 text-xs mt-1 group-hover:text-white transition-colors">View solutions →</p>
-                  </div>
-                </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════════════════ */}
+      {/*  SECTORS WE SERVE — light/dark aware solution showcase     */}
+      {/* ══════════════════════════════════════════════════════════ */}
+      <section className="pw-sector-section" style={{ padding: "104px 0" }}>
+        <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 40px" }}>
+          <div className="pw-sector-layout">
+            <aside className="pw-sector-copy">
+              <p className="font-bold tracking-[0.22em] text-sm uppercase mb-5 scroll-animate" style={{ color: "#1B6CA8" }}>SECTORS WE SERVE</p>
+              <h2 className="clash-display scroll-animate scroll-animate-delay-1">
+                Packaging engineered for your industry.
+              </h2>
+              <p className="scroll-animate scroll-animate-delay-2">
+                Explore practical packaging stacks selected for your product, supply chain, compliance needs, and route to market.
+              </p>
+              <div className="pw-sector-note scroll-animate scroll-animate-delay-3">
+                <span>Self-serve for standard SKUs.</span>
+                <span>Assisted quotes for rolls, films, and technical packs.</span>
+              </div>
+              <Link href="/industries">
+                <button className="btn-fill btn-navy px-6 py-3 text-sm pw-btn-transition">
+                  <span>View all industry pages</span>
+                  <MS icon="arrow_forward" className="text-base" />
+                </button>
               </Link>
-            ))}
-          </div>
-        </div>
-      </section>
+            </aside>
 
-      {/* ══════════════════════════════════════════════════════════ */}
-      {/*  SMARTSTOCK — responsive: image visible on all screens     */}
-      {/* ══════════════════════════════════════════════════════════ */}
-      <section className="relative overflow-hidden" style={{ background: "#020817", minHeight: 640 }}>
-        {/* Radial glow */}
-        <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse 65% 55% at 75% 50%, rgba(27,108,168,0.18) 0%, transparent 65%)" }} />
+            <div className="pw-sector-showcase">
+              <div className="pw-sector-tab-header">
+                <strong>Explore all 8 industries</strong>
+                <span>Select an industry to update the playbook</span>
+              </div>
+              <div className="pw-sector-tabs" role="tablist" aria-label="Industries served by Packworkz">
+                {INDUSTRIES.map((industry) => (
+                  <button
+                    key={industry.slug}
+                    type="button"
+                    role="tab"
+                    aria-selected={activeIndustrySlug === industry.slug}
+                    onClick={() => setActiveIndustrySlug(industry.slug)}
+                    className={activeIndustrySlug === industry.slug ? "active" : ""}
+                  >
+                    <MS icon={industry.icon} className="text-base" />
+                    <span>{industry.label}</span>
+                  </button>
+                ))}
+              </div>
 
-        {/* Mobile bg — subtle image hint */}
-        <div className="absolute inset-0 lg:hidden">
-          <img src="/smartstock.jpg" alt="" className="w-full h-full object-cover" style={{ opacity: 0.45 }} />
-          <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, rgba(2,8,23,0.78) 0%, rgba(2,8,23,0.65) 50%, rgba(2,8,23,0.82) 100%)" }} />
-        </div>
-
-        {/* Desktop image — right 50%, seamlessly blended */}
-        <div className="absolute top-0 right-0 bottom-0 hidden lg:block" style={{ width: "55%" }}>
-          <img src="/smartstock.jpg" alt="SmartStock AI" className="w-full h-full object-cover" style={{ opacity: 0.6 }} />
-          {/* Multi-stop gradient: strong dark on left, feathers out smoothly */}
-          <div className="absolute inset-0" style={{
-            background: "linear-gradient(to right, #020817 0%, rgba(2,8,23,0.97) 15%, rgba(2,8,23,0.82) 32%, rgba(2,8,23,0.48) 58%, rgba(2,8,23,0.12) 80%, rgba(2,8,23,0) 100%)"
-          }} />
-        </div>
-
-        {/* Content */}
-        <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 min-h-[640px]">
-          <div className="px-8 md:px-16 lg:px-20 py-24 flex flex-col justify-center">
-
-            {/* Eyebrow */}
-            <div className="scroll-animate" style={{ display: "inline-flex", alignItems: "center", gap: 10, marginBottom: 28 }}>
-              <div style={{ width: 7, height: 7, background: "#3b82f6", borderRadius: "50%", boxShadow: "0 0 10px rgba(59,130,246,0.7)" }} />
-              <span style={{ color: "#60a5fa", fontSize: 11, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase" }}>SMARTSTOCK™ AI INVENTORY</span>
-            </div>
-
-            <h2 className="clash-display scroll-animate scroll-animate-delay-1" style={{ color: "white", fontSize: "clamp(2rem,4vw,3.2rem)", fontWeight: 700, lineHeight: 1.1, marginBottom: 16 }}>
-              Never run out<br />of boxes again.
-            </h2>
-            <p className="scroll-animate scroll-animate-delay-2" style={{ color: "rgba(255,255,255,0.65)", fontSize: 16, lineHeight: 1.8, marginBottom: 28 }}>
-              Most companies use AI to write emails or run ads. We use it to solve a problem that costs brands billions — packaging that delays production, bleeds cash, and burns your team's time.
-            </p>
-
-            {/* AI feature bullets */}
-            <div className="scroll-animate scroll-animate-delay-3" style={{
-              background: "linear-gradient(135deg, rgba(15,25,65,0.95) 0%, rgba(5,10,35,0.98) 100%)",
-              border: "1px solid rgba(59,130,246,0.18)",
-              borderLeft: "3px solid #3b82f6",
-              padding: "24px 28px",
-              marginBottom: 28,
-              boxShadow: "0 0 40px rgba(27,108,168,0.12), inset 0 0 20px rgba(59,130,246,0.04)",
-            }}>
-              {[
-                { label: "AI demand forecasting", desc: "predicts your reorder window before you run out" },
-                { label: "AI vendor matching", desc: "routes each SKU to the best-fit factory in real time" },
-                { label: "AI quality flags", desc: "pre-dispatch anomaly detection before it leaves the floor" },
-                { label: "AI stockout alerts", desc: "pushes notifications 4 weeks before you'd discover the gap yourself" },
-              ].map((item, i) => (
-                <div key={i} style={{ display: "flex", gap: 14, alignItems: "flex-start", marginBottom: i < 3 ? 16 : 0 }}>
-                  <span style={{ color: "#60a5fa", fontSize: 17, fontWeight: 700, lineHeight: 1.4, flexShrink: 0 }}>→</span>
-                  <p style={{ margin: 0, fontSize: 14, lineHeight: 1.55 }}>
-                    <span style={{ color: "white", fontWeight: 700 }}>{item.label}</span>
-                    <span style={{ color: "rgba(255,255,255,0.52)" }}> — {item.desc}</span>
-                  </p>
-                </div>
-              ))}
-            </div>
-
-            {/* Metrics grid */}
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", marginBottom: 36, border: "1px solid rgba(255,255,255,0.07)", background: "rgba(255,255,255,0.03)" }}>
-              {[
-                { val: "500+", label: "Factory Partners" },
-                { val: "12",   label: "City Nodes" },
-                { val: "4 wk", label: "Buffer Stock" },
-              ].map((m, i) => (
-                <div key={i} style={{ padding: "20px 14px", textAlign: "center", borderRight: i < 2 ? "1px solid rgba(255,255,255,0.10)" : "none" }}>
-                  <p style={{ color: "white", fontSize: 24, fontWeight: 800, lineHeight: 1, marginBottom: 6 }}>{m.val}</p>
-                  <p style={{ color: "rgba(255,255,255,0.65)", fontSize: 11, textTransform: "uppercase", letterSpacing: "1.5px", fontWeight: 600 }}>{m.label}</p>
-                </div>
-              ))}
-            </div>
-
-            {/* Features */}
-            <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 36 }}>
-              {["Automated JIT Replenishment", "Regional Warehousing in 12 Cities", "SKU Consolidation Reporting"].map(item => (
-                <div key={item} style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                  <div style={{ width: 20, height: 20, background: "rgba(27,108,168,0.2)", border: "1px solid rgba(59,130,246,0.35)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                    <span style={{ color: "#60a5fa", fontSize: 10, fontWeight: 800, lineHeight: 1 }}>✓</span>
+              <Link href={`/industries/${activeIndustry.slug}`} style={{ textDecoration: "none" }}>
+                <article className="pw-sector-card">
+                  <img src={activeIndustrySolution.image} alt={activeIndustry.label} />
+                  <div className="pw-sector-card-overlay" />
+                  <div className="pw-sector-card-content">
+                    <div className="pw-sector-pill">
+                      <MS icon={activeIndustry.icon} className="text-base" />
+                      {activeIndustry.label}
+                    </div>
+                    <h3>{activeIndustrySolution.title}</h3>
+                    <p>{activeIndustrySolution.subtitle}</p>
                   </div>
-                  <span style={{ color: "rgba(255,255,255,0.65)", fontSize: 14 }}>{item}</span>
-                </div>
-              ))}
-            </div>
+                  <div className="pw-sector-proof">
+                    <span>{activeIndustrySolution.proof}</span>
+                    <strong>View solution <MS icon="arrow_forward" className="text-base" /></strong>
+                  </div>
+                </article>
+              </Link>
 
-            <Link href="/quote">
-              <button className="btn-fill btn-blue w-fit px-8 py-4">
-                <span>See SmartStock in Action</span>
-              </button>
-            </Link>
+              <div className="pw-sector-solution-strip">
+                {activeIndustrySolution.stack.map((item, index) => (
+                  <div key={item.label} className="pw-sector-solution">
+                    <span>{String(index + 1).padStart(2, "0")}</span>
+                    <h4>{item.label}</h4>
+                    <p>{item.desc}</p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="pw-sector-best-row" aria-label="Recommended packaging formats">
+                {activeIndustrySolution.best.map((item) => (
+                  <span key={item}>{item}</span>
+                ))}
+              </div>
+            </div>
           </div>
-          <div className="hidden lg:block" />
         </div>
       </section>
+
+      {/* SmartStock uses the same live simulator as the dedicated demo page. */}
+      <div id="smartstock" className="pw-home-smartstock-demo">
+        <SmartStockDemo />
+      </div>
 
       {/* ══════════════════════════════════════════════════════════ */}
       {/*  SECTION 9 — ADVANTAGE DIAGRAM                            */}
@@ -1140,83 +1210,28 @@ export default function Home() {
       {/* ══════════════════════════════════════════════════════════ */}
       {/*  SECTION 10 — SUSTAINABLE PACKAGING BAND                  */}
       {/* ══════════════════════════════════════════════════════════ */}
-      <section style={{ background: "#051A12", padding: "96px 0", position: "relative", overflow: "hidden" }}>
-
-        {/* Photo background */}
-        <picture style={{ position: "absolute", inset: 0, width: "100%", height: "100%", zIndex: 0 }}>
-          <source srcSet="/images/sustainable-bg.webp" type="image/webp" />
-          <img src="/images/sustainable-bg.jpg" alt="" loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" }} />
-        </picture>
-
-        {/* Gradient overlay — dark green tint */}
-        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg, rgba(5,26,18,0.94) 0%, rgba(5,26,18,0.82) 60%, rgba(5,26,18,0.6) 100%)", zIndex: 1 }} />
-
-        {/* Radial green glow */}
-        <div style={{ position: "absolute", inset: 0, pointerEvents: "none", zIndex: 2, background: "radial-gradient(ellipse 55% 60% at 80% 20%, rgba(34,197,94,0.12) 0%, transparent 55%)" }} />
-
-        {/* Subtle grid lines */}
-        <div style={{ position: "absolute", inset: 0, pointerEvents: "none", zIndex: 2, opacity: 0.04, backgroundImage: "linear-gradient(rgba(134,239,172,1) 1px, transparent 1px), linear-gradient(90deg, rgba(134,239,172,1) 1px, transparent 1px)", backgroundSize: "60px 60px" }} />
-
-        {/* Content */}
-        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 40px", position: "relative", zIndex: 3 }}>
-
-          {/* Top eyebrow */}
-          <div className="scroll-animate" style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 64 }}>
-            <div style={{ width: 6, height: 6, background: "#4ade80", borderRadius: "50%", boxShadow: "0 0 8px rgba(74,222,128,0.7)" }} />
-            <span style={{ color: "#86EFAC", fontSize: 11, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase" }}>SUSTAINABLE PACKAGING</span>
+      <section id="sustainability" className="pw-sustainable-editorial">
+        <div className="pw-sustainable-inner">
+          <div className="pw-sustainable-media scroll-animate">
+            <img src="/categories/sustainable.jpg" alt="Kraft pouches, cartons and jars from the Packworkz sustainable packaging range" loading="lazy" />
+            <div className="pw-sustainable-media-label"><span>Material library</span><strong>Kraft · recycled · compostable</strong></div>
           </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
-
-            {/* Left */}
-            <div>
-              <h2 className="scroll-animate scroll-animate-delay-1" style={{ color: "white", fontSize: "clamp(2rem,4vw,3.25rem)", fontWeight: 700, lineHeight: 1.1, marginBottom: 20, letterSpacing: "-0.5px" }}>
-                Sustainable Packaging.<br />
-                <span style={{ color: "#4ade80" }}>No Premium Required.</span>
-              </h2>
-              <p className="scroll-animate scroll-animate-delay-2" style={{ color: "rgba(255,255,255,0.6)", fontSize: 16, lineHeight: 1.8, marginBottom: 36 }}>
-                12 certified sustainable SKUs. All customisable with your brand design. Food-safe, leak-proof, and built for Indian brands that take sustainability seriously. Full EPR compliance included.
-              </p>
-              <Link href="/products?category=sustainable">
-                <button className="btn-fill btn-amber px-8 py-4 text-sm">
-                  <span>See all sustainable SKUs →</span>
-                </button>
-              </Link>
-
-              {/* Stats row */}
-              <div style={{ display: "flex", gap: 32, marginTop: 40, paddingTop: 40, borderTop: "1px solid rgba(255,255,255,0.08)" }}>
-                {[{ val: "12", label: "Certified SKUs" }, { val: "100%", label: "EPR Compliant" }, { val: "0", label: "Plastic Waste" }].map((s, i) => (
-                  <div key={i}>
-                    <p style={{ color: "#4ade80", fontSize: 26, fontWeight: 700, lineHeight: 1 }}>{s.val}</p>
-                    <p style={{ color: "rgba(255,255,255,0.4)", fontSize: 12, marginTop: 4, textTransform: "uppercase", letterSpacing: "1px" }}>{s.label}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Right — premium feature cards */}
-            <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+          <div className="pw-sustainable-copy">
+            <p className="pw-sustainable-eyebrow scroll-animate"><Leaf size={16} /> RESPONSIBLE MATERIALS</p>
+            <h2 className="clash-display scroll-animate scroll-animate-delay-1">Sustainability that still looks premium.</h2>
+            <p className="scroll-animate scroll-animate-delay-2">Choose the right material story without compromising shelf presence, food safety, or production practicality.</p>
+            <div className="pw-sustainable-specs scroll-animate scroll-animate-delay-3">
               {[
-                { Icon: Leaf,      num: "01", title: "12 Certified Sustainable SKUs",   desc: "Kraft, compostable, recycled, and mono-material options. All verified by third-party certifiers." },
-                { Icon: Droplets,  num: "02", title: "Food-safe and Leak-proof",        desc: "Rigorously tested for spices, gravies, oils, and Indian food products. No compromise." },
-                { Icon: FileCheck, num: "03", title: "EPR Compliance Included",         desc: "Full Extended Producer Responsibility documentation for your annual regulatory filing. Zero extra cost." },
-              ].map((row, i) => {
-                const Icon = row.Icon;
-                return (
-                  <div key={i} style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(134,239,172,0.1)", padding: "24px 28px", display: "flex", gap: 20, alignItems: "flex-start" }}>
-                    <div style={{ flexShrink: 0 }}>
-                      <p style={{ color: "rgba(134,239,172,0.4)", fontSize: 11, fontWeight: 700, letterSpacing: "1px", marginBottom: 10 }}>{row.num}</p>
-                      <div style={{ width: 44, height: 44, background: "rgba(74,222,128,0.1)", border: "1px solid rgba(74,222,128,0.2)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                        <Icon size={20} color="#4ade80" />
-                      </div>
-                    </div>
-                    <div>
-                      <p style={{ color: "white", fontSize: 15, fontWeight: 700, marginBottom: 8 }}>{row.title}</p>
-                      <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 13, lineHeight: 1.7 }}>{row.desc}</p>
-                    </div>
-                  </div>
-                );
-              })}
+                { Icon: Leaf, title: "Material options", text: "FSC kraft, recycled content, mono-material and compostable formats." },
+                { Icon: Droplets, title: "Performance matched", text: "Barrier, seal and food-contact requirements reviewed before production." },
+                { Icon: FileCheck, title: "Documentation ready", text: "Relevant certificates and EPR information supplied for eligible formats." },
+              ].map(({ Icon, title, text }) => (
+                <div key={title}><Icon size={18} /><span><strong>{title}</strong><small>{text}</small></span></div>
+              ))}
+            </div>
+            <div className="pw-sustainable-actions">
+              <Link href="/products?category=sustainable"><button className="btn-fill btn-navy px-7 py-3 text-sm"><span>Explore sustainable formats</span><MS icon="arrow_forward" className="text-base" /></button></Link>
+              <Link href="/sustainable">How we verify materials →</Link>
             </div>
           </div>
         </div>
@@ -1453,9 +1468,9 @@ export default function Home() {
             </p>
             <div style={{ display: "flex", gap: 12, flexWrap: "wrap" as const, justifyContent: "center" }}>
               <span className="animated-border animated-border-white">
-                <Link href="/quote">
+                <Link href="/configure">
                   <button className="btn-fill btn-amber px-8 py-3 text-sm">
-                    Get a Quote →
+                    Get Pricing Plan →
                   </button>
                 </Link>
               </span>
@@ -1473,13 +1488,13 @@ export default function Home() {
       {/* ══════════════════════════════════════════════════════════ */}
       {/*  SECTION 12 — CASE STUDIES                                */}
       {/* ══════════════════════════════════════════════════════════ */}
-      <section style={{ background: "#FFFFFF", padding: "100px 0" }}>
+      <section className="pw-theme-surface" style={{ background: "#FFFFFF", padding: "100px 0" }}>
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 40px" }}>
           <span className="scroll-animate" style={{ color: "#1B6CA8", fontSize: 11, fontWeight: 600, letterSpacing: "2px", textTransform: "uppercase", display: "block", marginBottom: 14 }}>
-            CLIENT RESULTS
+            ILLUSTRATIVE OPERATING SCENARIOS
           </span>
           <h2 className="scroll-animate scroll-animate-delay-1" style={{ color: "#0D1B2A", fontSize: "clamp(2rem,4vw,3.25rem)", fontWeight: 700, lineHeight: 1.1, marginBottom: 0 }}>
-            Brands that switched.<br />Numbers that speak.
+            What a managed packaging<br />workflow can change.
           </h2>
 
           <div className="po-case-grid" style={{ display: "grid", gridTemplateColumns: "300px 1fr", gap: 28, maxWidth: 1100, margin: "56px auto 0", alignItems: "stretch" }}>
@@ -1543,10 +1558,10 @@ export default function Home() {
               <div style={{ background: "#0D1B2A", border: "1px solid rgba(27,108,168,0.2)", padding: "22px 24px", display: "flex", flexDirection: "column", justifyContent: "center", flex: 1 }}>
                 <p style={{ color: "#60a5fa", fontSize: 10, fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", marginBottom: 12 }}>YOUR BRAND</p>
                 <p style={{ color: "white", fontSize: 15, fontWeight: 700, marginBottom: 8, lineHeight: 1.3 }}>Could your story be next?</p>
-                <p style={{ color: "rgba(255,255,255,0.45)", fontSize: 12, lineHeight: 1.55, marginBottom: 18 }}>Join 220+ brands that simplified their packaging with Packworkz.</p>
-                <Link href="/quote">
+                <p style={{ color: "rgba(255,255,255,0.45)", fontSize: 12, lineHeight: 1.55, marginBottom: 18 }}>Turn the next packaging brief into a managed order record.</p>
+                <Link href="/configure">
                   <button style={{ background: "#1B6CA8", color: "white", padding: "10px 20px", fontSize: 13, fontWeight: 700, border: "none", cursor: "pointer" }}>
-                    Get a quote →
+                    Get a pricing plan →
                   </button>
                 </Link>
               </div>
@@ -1562,239 +1577,39 @@ export default function Home() {
       {/* ══════════════════════════════════════════════════════════ */}
       {/*  SECTION 11 — SAVINGS CALCULATOR                          */}
       {/* ══════════════════════════════════════════════════════════ */}
-      <section style={{ background: "#F8F9FC", padding: "100px 0" }}>
-        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 40px" }}>
-
-          {/* Eyebrow */}
-          <span className="scroll-animate" style={{
-            color: "#1B6CA8", fontSize: 11, fontWeight: 600,
-            letterSpacing: "2px", textTransform: "uppercase",
-            display: "block", marginBottom: 14,
-          }}>
-            THE NUMBERS
-          </span>
-
-          {/* Headline */}
-          <h2 className="scroll-animate scroll-animate-delay-1" style={{
-            color: "#0D1B2A", fontSize: "clamp(2rem, 5vw, 3.25rem)", fontWeight: 700,
-            lineHeight: 1.15, marginBottom: 16,
-          }}>
-            How much is vendor<br />chaos costing you?
-          </h2>
-
-          {/* Subheadline */}
-          <p className="scroll-animate scroll-animate-delay-2" style={{ color: "#64748B", fontSize: 18, marginBottom: 56 }}>
-            Most brands overpay by 8–15% without realising it.
-          </p>
-
-          {/* ── Calculator Card ── */}
-          <div style={{
-            maxWidth: 880, margin: "0 auto",
-            background: "#FFFFFF",
-            border: "1px solid #E2EAF4",
-            overflow: "hidden",
-            boxShadow: "0 8px 40px rgba(13,27,42,0.08)",
-          }}>
-            <div
-              className="calc-grid"
-              style={{ display: "grid", gridTemplateColumns: "1fr 1fr" }}
-            >
-
-              {/* ══ LEFT PANEL ══ */}
-              <div
-                className="calc-left"
-                style={{
-                  background: "#FFFFFF",
-                  padding: "36px 44px",
-                  borderRight: "1px solid #E2EAF4",
-                }}
-              >
-                {/* Input 1: Spend slider */}
-                <label htmlFor="spend-slider" style={{
-                  display: "block", color: "#0D1B2A", fontSize: 13,
-                  fontWeight: 600, letterSpacing: "0.3px", marginBottom: 20,
-                }}>
-                  Monthly packaging spend
-                </label>
-
-                <input
-                  id="spend-slider"
-                  type="range"
-                  className="calc-slider"
-                  min={50000} max={5000000} step={10000}
-                  value={monthlySpend}
-                  onChange={e => setMonthlySpend(Number(e.target.value))}
-                  style={{
-                    background: `linear-gradient(to right, #E8A838 0%, #E8A838 ${sliderPct}%, #E2EAF4 ${sliderPct}%, #E2EAF4 100%)`,
-                  }}
-                />
-
-                <div style={{ marginTop: 12, textAlign: "center" }}>
-                  <span style={{ color: "#0D1B2A", fontSize: 26, fontWeight: 700 }}>
-                    {inr(monthlySpend)}
-                  </span>
-                  <span style={{ color: "#94A3B8", fontSize: 13, fontWeight: 400, marginLeft: 4 }}>
-                    /month
-                  </span>
-                </div>
-
-                {/* Divider */}
-                <div style={{ height: 1, background: "#F1F5F9", margin: "24px 0" }} />
-
-                {/* Input 2: Vendors */}
-                <label style={{
-                  display: "block", color: "#0D1B2A", fontSize: 13,
-                  fontWeight: 600, marginBottom: 12,
-                }}>
-                  Vendors you currently manage
-                </label>
-                <div style={{ display: "flex", gap: 8 }}>
-                  {(["Just 1", "2 to 4", "5+"] as VendorBucket[]).map(opt => {
-                    const sel = vendorBucket === opt;
-                    return (
-                      <button
-                        key={opt}
-                        onClick={() => setVendorBucket(opt)}
-                        style={{
-                          padding: "9px 0", flex: 1, textAlign: "center",
-                          borderRadius: 8,
-                          border: `1px solid ${sel ? "#0D1B2A" : "#E2EAF4"}`,
-                          fontSize: 14, fontWeight: 500, cursor: "pointer",
-                          background: sel ? "#0D1B2A" : "#F8F9FC",
-                          color: sel ? "#FFFFFF" : "#64748B",
-                          transition: "all 0.15s ease",
-                        }}
-                      >
-                        {opt}
-                      </button>
-                    );
-                  })}
-                </div>
-
-                {/* Divider */}
-                <div style={{ height: 1, background: "#F1F5F9", margin: "20px 0" }} />
-
-                {/* Input 3: Credit */}
-                <label style={{
-                  display: "block", color: "#0D1B2A", fontSize: 13,
-                  fontWeight: 600, marginBottom: 12,
-                }}>
-                  Do you use vendor credit?
-                </label>
-                <div style={{ display: "flex", gap: 8 }}>
-                  {(["Yes", "No"] as CreditOption[]).map(opt => {
-                    const sel = useCredit === opt;
-                    return (
-                      <button
-                        key={opt}
-                        onClick={() => setUseCredit(opt)}
-                        style={{
-                          padding: "9px 0", flex: 1, textAlign: "center",
-                          borderRadius: 8,
-                          border: `1px solid ${sel ? "#0D1B2A" : "#E2EAF4"}`,
-                          fontSize: 14, fontWeight: 500, cursor: "pointer",
-                          background: sel ? "#0D1B2A" : "#F8F9FC",
-                          color: sel ? "#FFFFFF" : "#64748B",
-                          transition: "all 0.15s ease",
-                        }}
-                      >
-                        {opt}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* ══ RIGHT PANEL ══ */}
-              <div
-                className="calc-right"
-                style={{ background: "#0D1B2A", padding: "48px 44px" }}
-              >
-                {/* Top label */}
-                <p style={{
-                  color: "rgba(255,255,255,0.4)", fontSize: 10, fontWeight: 600,
-                  letterSpacing: "2px", textTransform: "uppercase", marginBottom: 8,
-                }}>
-                  YOUR ESTIMATED SAVINGS
-                </p>
-
-                {/* Hero number — animated */}
-                <p
-                  className="calc-hero-num"
-                  style={{
-                    color: "#E8A838", fontSize: 52, fontWeight: 700,
-                    lineHeight: 1, letterSpacing: "-1px", marginBottom: 6,
-                  }}
-                >
-                  {inr(displayedSaving)}
-                </p>
-
-                <p style={{ color: "rgba(255,255,255,0.45)", fontSize: 13, marginBottom: 36 }}>
-                  estimated annual saving
-                </p>
-
-                {/* Divider */}
-                <div style={{ height: 1, background: "rgba(255,255,255,0.08)", marginBottom: 28 }} />
-
-                {/* Secondary metrics */}
-                {[
-                  {
-                    label: "Hidden credit markup",
-                    value: useCredit === "Yes" ? inr(calc.creditMarkup) : "Not applicable",
-                  },
-                  {
-                    label: "Extra saving if upfront",
-                    value: inr(calc.upfrontSaving),
-                  },
-                  {
-                    label: "Time saved per month",
-                    value: `${calc.timeSaved} hours`,
-                  },
-                ].map(row => (
-                  <div
-                    key={row.label}
-                    style={{
-                      display: "flex", justifyContent: "space-between",
-                      alignItems: "center", marginBottom: 18,
-                    }}
-                  >
-                    <span style={{ color: "rgba(255,255,255,0.55)", fontSize: 13 }}>
-                      {row.label}
-                    </span>
-                    <span style={{ color: "rgba(255,255,255,0.9)", fontSize: 15, fontWeight: 600 }}>
-                      {row.value}
-                    </span>
-                  </div>
-                ))}
-
-                {/* Divider */}
-                <div style={{ height: 1, background: "rgba(255,255,255,0.08)", margin: "24px 0" }} />
-
-                {/* Total row */}
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
-                  <span style={{ color: "white", fontSize: 15, fontWeight: 700 }}>Total annual value</span>
-                  <span style={{ color: "white", fontSize: 28, fontWeight: 700 }}>{inr(calc.totalValue)}</span>
-                </div>
-
-                {/* CTA button */}
-                <Link href="/quote" style={{ display: "block", marginTop: 28 }}>
-                  <button className="btn-fill btn-amber w-full py-4 text-sm">
-                    <span>Get My Free Packaging Audit →</span>
-                  </button>
-                </Link>
-
-                {/* Disclaimer */}
-                <p style={{
-                  color: "rgba(255,255,255,0.45)", fontSize: 12,
-                  textAlign: "center", marginTop: 12, lineHeight: 1.6,
-                }}>
-                  We'll show you exactly where you're overpaying. No commitment.
-                </p>
-              </div>
-
-            </div>
+      <section className="pw-calculator-section">
+        <div className="pw-calculator-shell">
+          <div className="pw-calculator-heading">
+            <span>PACKWORKZ VALUE SCENARIO</span>
+            <h2>Put a number on packaging friction.</h2>
+            <p>Adjust three operating inputs. We will show a conservative scenario, the assumptions behind it, and where a sourcing audit should look first.</p>
+            <div className="pw-calculator-assumption"><MS icon="info" /><span>Scenario only: uses a {Math.round(calc.savingPct * 100)}% sourcing-efficiency assumption and {useCredit === "Yes" ? "2.5%" : "0%"} rush-buying leakage. It is not a guaranteed saving.</span></div>
           </div>
 
+          <div className="pw-calculator-workbench">
+            <div className="pw-calculator-controls">
+              <label htmlFor="spend-slider"><span>Monthly packaging spend</span><strong>{inr(monthlySpend)}<small>/ month</small></strong></label>
+              <input id="spend-slider" type="range" className="calc-slider" min={50000} max={5000000} step={10000} value={monthlySpend} onChange={event => setMonthlySpend(Number(event.target.value))} style={{ background: `linear-gradient(to right,#E8A838 0%,#E8A838 ${sliderPct}%,#CBD6DE ${sliderPct}%,#CBD6DE 100%)` }} />
+
+              <div className="pw-calculator-control-row">
+                <fieldset><legend>Vendors managed</legend><div>{(["Just 1", "2 to 4", "5+"] as VendorBucket[]).map(option => <button type="button" key={option} className={vendorBucket === option ? "active" : ""} onClick={() => setVendorBucket(option)}>{option}</button>)}</div></fieldset>
+                <fieldset><legend>Rush buys or credit leakage?</legend><div>{(["Yes", "No"] as CreditOption[]).map(option => <button type="button" key={option} className={useCredit === option ? "active" : ""} onClick={() => setUseCredit(option)}>{option}</button>)}</div></fieldset>
+              </div>
+            </div>
+
+            <div className="pw-calculator-result">
+              <div className="pw-calculator-result-top"><span>CONSERVATIVE ANNUAL OPPORTUNITY</span><b>LIVE SCENARIO</b></div>
+              <strong className="calc-hero-num">{inr(displayedSaving)}</strong>
+              <p>potential sourcing efficiency</p>
+              <div className="pw-calculator-bar"><i style={{ width: `${Math.min(92, 34 + calc.savingPct * 500)}%` }} /></div>
+              <div className="pw-calculator-metrics">
+                <div><span>Rush leakage identified</span><strong>{inr(calc.emergencyLeakage)}</strong></div>
+                <div><span>Operational time returned</span><strong>{calc.timeSaved} hrs / month</strong></div>
+                <div><span>Total scenario value</span><strong>{inr(calc.totalValue)}</strong></div>
+              </div>
+              <Link href="/configure"><button className="btn-fill btn-amber"><span>Build my packaging plan</span><MS icon="arrow_forward" /></button></Link>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -1853,7 +1668,7 @@ export default function Home() {
             color: "rgba(255,255,255,0.45)", fontSize: 17,
             maxWidth: 420, marginBottom: 44, lineHeight: 1.7,
           }}>
-            Join brands across India and 40+ countries who have simplified their packaging supply chain.
+            Build a clear packaging specification, sourcing path, and order record in one place.
           </p>
 
           {/* CTAs — sharp animated-border (our design) */}
@@ -1861,7 +1676,7 @@ export default function Home() {
             <span className="animated-border animated-border-white" style={{ display: "flex" }}>
               <Link href="/products" style={{ flex: 1, display: "flex" }}>
                 <button className="btn-fill btn-amber px-10 py-4 text-base whitespace-nowrap" style={{ flex: 1 }}>
-                  Browse 110+ SKUs →
+                  Browse packaging formats →
                 </button>
               </Link>
             </span>
@@ -1886,7 +1701,7 @@ export default function Home() {
             display: "flex", justifyContent: "center", alignItems: "center",
             gap: 12, flexWrap: "wrap", marginTop: 40,
           }}>
-            {["Quote in 48 hours", "No commitment until you approve", "Sample from ₹2,999", "Design from ₹1,999"].map((item, i) => (
+            {["Pricing plan in 48 hours", "No commitment until you approve", "Sample from ₹2,999", "Design from ₹1,999"].map((item, i) => (
               <div key={item} style={{ display: "flex", alignItems: "center", gap: 16 }}>
                 {i > 0 && (
                   <span style={{ color: "rgba(255,255,255,0.2)", fontSize: 16, lineHeight: 1 }}>·</span>

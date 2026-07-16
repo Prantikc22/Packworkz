@@ -469,7 +469,7 @@ export default function DashboardOrders() {
                   <CheckCircle className="w-5 h-5 flex-shrink-0" style={{ color: "#16A34A" }} />
                   <div>
                     <p className="text-[13px] font-black" style={{ color: "#16A34A" }}>Reorder submitted!</p>
-                    <p className="text-[12px]" style={{ color: "#64748B" }}>Quote ID: <span style={{ fontFamily: "monospace", fontWeight: 700 }}>{reorderQuoteId}</span></p>
+                    <p className="text-[12px]" style={{ color: "#64748B" }}>Pricing ID: <span style={{ fontFamily: "monospace", fontWeight: 700 }}>{reorderQuoteId}</span></p>
                   </div>
                   <button onClick={() => navigate("/dashboard/quotes")} className="ml-auto text-[11px] font-black hover:underline" style={{ color: "#1B6CA8" }}>View →</button>
                 </div>

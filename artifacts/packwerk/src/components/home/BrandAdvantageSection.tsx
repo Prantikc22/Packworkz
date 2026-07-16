@@ -6,47 +6,47 @@ const NODES = [
   {
     icon: GitBranch,
     label: "Multi-Vendor Backup",
-    stat: "Zero delays due to vendor failure",
-    title: "3 backup vendors. Always.",
-    body: "Every order has 3 qualified vendors assigned simultaneously. If your primary vendor misses a deadline — a backup ships without delay. Your production line never waits.",
-    bigStat: "3×",
-    bigStatLabel: "backup vendors per order",
+    stat: "Backup routes planned before production",
+    title: "Redundancy by design.",
+    body: "Eligible repeat orders can be mapped to qualified alternate suppliers before production begins. Capacity and compatibility are checked for the selected specification.",
+    bigStat: "Backup",
+    bigStatLabel: "sourcing routes where eligible",
   },
   {
     icon: ShieldCheck,
     label: "End-to-End QC",
-    stat: "98.7% QC first-pass rate",
+    stat: "Approval checkpoints attached to the order",
     title: "We inspect. You approve.",
-    body: "Pre-production sample approval. Mid-production check on orders above ₹2L. Pre-dispatch inspection on every order. We own the quality outcome — not your vendor.",
-    bigStat: "98.7%",
-    bigStatLabel: "QC first-pass rate",
+    body: "Pre-production approval, order-appropriate production checks, and pre-dispatch evidence stay attached to the same order record.",
+    bigStat: "3-stage",
+    bigStatLabel: "approval and inspection workflow",
   },
   {
     icon: Globe,
     label: "Global Compliance",
-    stat: "5 global certifications on every order",
-    title: "Your buyer never rejects us.",
-    body: "ISO 9001, FSSC 22000, BRC, FDA, FSC — all factory partners certified. Export documentation included with every order. International buyers cleared.",
-    bigStat: "5",
-    bigStatLabel: "global certifications",
+    stat: "Documents matched to format and factory",
+    title: "Compliance with context.",
+    body: "Available factory, material, food-contact, and sustainability documents are matched to the selected format instead of shown as blanket platform claims.",
+    bigStat: "Matched",
+    bigStatLabel: "documentation by specification",
   },
   {
     icon: CreditCard,
-    label: "Net-30 Credit",
-    stat: "3% saved = ₹30,000/yr on ₹10L spend",
-    title: "Credit you earn. Not beg for.",
-    body: "New clients start on advance terms. After 3 completed orders apply for Net-30 credit up to ₹5L. Or pay upfront and save 3% on every order.",
-    bigStat: "3%",
-    bigStatLabel: "saved on upfront orders",
+    label: "Clear Commercials",
+    stat: "Payment terms shown before approval",
+    title: "Commercials without surprises.",
+    body: "Payment milestones, tooling, samples, taxes, and delivery charges are kept visible in the order record before anything enters production.",
+    bigStat: "Clear",
+    bigStatLabel: "commercial terms and approvals",
   },
   {
     icon: Truck,
     label: "Logistics Owned",
-    stat: "40+ countries delivered to",
+    stat: "Dispatch milestones in one record",
     title: "Door to door. Tracked.",
-    body: "We manage factory pickup, interstate freight, customs documentation, and last-mile delivery. Real-time tracking in your dashboard at every stage.",
-    bigStat: "40+",
-    bigStatLabel: "countries delivered to",
+    body: "Factory pickup, freight, documents, and delivery milestones can be tracked against the same order instead of chased across vendor conversations.",
+    bigStat: "Tracked",
+    bigStatLabel: "factory to delivery milestones",
   },
 ];
 
@@ -100,7 +100,7 @@ export default function BrandAdvantageSection() {
   const node = NODES[active];
 
   return (
-    <section style={{ background: "white", padding: "100px 0", overflow: "hidden" }}>
+    <section id="packworkz-advantage" style={{ background: "white", padding: "100px 0", overflow: "hidden", scrollMarginTop: 92 }}>
       <style>{`
         @keyframes adv-fade {
           from { opacity: 0; transform: translateX(-12px); }
@@ -122,13 +122,13 @@ export default function BrandAdvantageSection() {
               letterSpacing: "2px", textTransform: "uppercase",
               display: "block", marginBottom: 14,
             }}>
-              THE PACKOPS ADVANTAGE
+              THE PACKWORKZ ADVANTAGE
             </span>
             <h2 style={{
               color: "#0D1B2A", fontSize: "clamp(1.9rem, 3vw, 2.75rem)",
               fontWeight: 700, lineHeight: 1.15, marginBottom: 20, maxWidth: 420,
             }}>
-              Why the best packaging brands choose a platform over a vendor.
+              Why growing brands choose Packworkz over a single vendor.
             </h2>
             <p style={{ color: "#64748B", fontSize: 15, lineHeight: 1.7, marginBottom: 48, maxWidth: 400 }}>
               Packworkz is not another vendor. It is a managed platform with backup coverage, owned QC, global compliance, and real-time visibility.
@@ -266,16 +266,16 @@ export default function BrandAdvantageSection() {
                   Ready to switch from vendor to platform?
                 </p>
                 <p style={{ color: "rgba(255,255,255,0.45)", fontSize: 12 }}>
-                  Get your quote in 48 hours. No commitment.
+                  Get your pricing plan in 48 hours. No commitment.
                 </p>
               </div>
-              <Link href="/quote">
+              <Link href="/configure">
                 <button style={{
                   background: "#E8A838", color: "#0D1B2A",
                   padding: "11px 22px", fontSize: 13, fontWeight: 800,
                   border: "none", cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0,
                 }}>
-                  Get Quote →
+                  Start Configuration →
                 </button>
               </Link>
             </div>

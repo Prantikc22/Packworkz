@@ -1,26 +1,33 @@
 import { useState } from "react";
 import { Link } from "wouter";
-import { useGetProduct } from "@workspace/api-client-react";
+import { calculateOrderEstimate } from "@/lib/pricing";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { formatINR } from "@/lib/format";
-import { Loader2, ArrowLeft } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { getCategoryBySlug, SKUS, SKU_IMAGES } from "@/lib/skus";
+import { CATALOG_SKUS, getConfigureHref } from "@/lib/catalog";
+
+const LEGACY_SLUG_ALIASES: Record<string, string> = {
+  "pet-jar": "plastic-bottle",
+  "hdpe-bottle": "plastic-bottle",
+  "mono-carton": "folding-carton",
+  "corrugated-box": "corrugated-shipping-box",
+  "poly-mailer": "courier-bag",
+  "kraft-mailer": "mailer-box",
+  "compostable-mailer": "compostable-packaging",
+  "shrink-sleeve": "labels",
+};
 
 export default function ProductDetail({ params }: { params: { slug: string } }) {
   const { slug } = params;
-  const { data: product, isLoading } = useGetProduct(slug, { query: { enabled: !!slug, queryKey: ['/api/products', slug] }});
+  const canonicalSlug = LEGACY_SLUG_ALIASES[slug] || slug;
+  const product = SKUS.find((sku) => sku.slug === canonicalSlug);
+  const catalogProduct = CATALOG_SKUS.find((sku) => sku.slug === canonicalSlug);
   const [quantity, setQuantity] = useState<number>(0);
-
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center h-[50vh]">
-        <Loader2 className="w-8 h-8 animate-spin text-blue" />
-      </div>
-    );
-  }
 
   if (!product) {
     return (
@@ -32,9 +39,14 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
   }
 
   const currentQty = quantity || product.moq;
-  const estimatedMin = product.price_min * currentQty;
-  const estimatedMax = product.price_max * currentQty;
-  const upfrontSaving = estimatedMin * 0.03;
+  const estimate = calculateOrderEstimate(product, currentQty);
+  const estimatedMin = estimate.low;
+  const estimatedMax = estimate.high;
+  const productImage = SKU_IMAGES[product.code];
+  const category = getCategoryBySlug(product.category);
+  const complianceCerts = product.is_eco ? ["FSC", "EPR-ready"] : ["ISO", "BRC-ready"];
+  const buyingMode = catalogProduct?.buyingMode ?? "self_serve";
+  const configureHref = catalogProduct ? `${getConfigureHref(catalogProduct)}&qty=${currentQty}` : `/configure?sku=${product.code}&qty=${currentQty}`;
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
@@ -47,21 +59,37 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
       <div className="grid lg:grid-cols-3 gap-12">
         <div className="lg:col-span-2 space-y-8">
           <div className="aspect-[4/3] bg-surface rounded-3xl overflow-hidden border border-border relative">
-            {product.image_url ? (
-              <img src={product.image_url} alt={product.name} className="w-full h-full object-cover" />
+            {productImage ? (
+              <img src={productImage} alt={product.name} className="w-full h-full object-cover" />
             ) : (
               <div className="w-full h-full flex items-center justify-center text-muted">No Image Available</div>
             )}
             <div className="absolute top-4 left-4 flex flex-col gap-2">
+              <Badge className={buyingMode === "self_serve" ? "bg-amber text-navy font-bold" : "bg-blue text-white font-bold"}>
+                {buyingMode === "self_serve" ? "Self-serve" : "Managed pricing"}
+              </Badge>
               {product.is_smartstock && <Badge className="bg-amber text-navy font-bold">SmartStock</Badge>}
               {product.is_eco && <Badge className="bg-success text-white font-bold">Eco Friendly</Badge>}
             </div>
           </div>
 
           <div>
-            <div className="text-sm font-semibold text-blue uppercase tracking-wider mb-2">{product.category}</div>
+            <div className="text-sm font-semibold text-blue uppercase tracking-wider mb-2">{category?.label || product.category}</div>
             <h1 className="text-3xl md:text-4xl font-bold text-navy mb-4">{product.name}</h1>
             <p className="text-lg text-muted">{product.use_case}</p>
+            <div className="mt-5 grid sm:grid-cols-3 gap-3">
+              {[
+                ["01", "SKU selected", product.code],
+                ["02", "Configure specs", "Size, finish, artwork"],
+                ["03", buyingMode === "self_serve" ? "Place sample" : "Get pricing plan", buyingMode === "self_serve" ? "Fast checkout path" : "Technical run support"],
+              ].map(([step, title, body]) => (
+                <div key={step} className="rounded border border-slate-200 bg-white p-3">
+                  <p className="text-[11px] font-black text-blue">{step}</p>
+                  <p className="text-sm font-bold text-navy">{title}</p>
+                  <p className="text-xs text-muted">{body}</p>
+                </div>
+              ))}
+            </div>
           </div>
 
           <Tabs defaultValue="overview" className="w-full">
@@ -76,10 +104,26 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
             <TabsContent value="specs" className="py-6">
               <div className="bg-surface rounded-xl p-6 border border-border">
                 <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-6">
-                  {Object.entries(product.specs || {}).map(([k, v]) => (
-                    <div key={k}>
-                      <dt className="text-sm font-medium text-muted capitalize">{k.replace(/_/g, ' ')}</dt>
-                      <dd className="mt-1 font-semibold text-navy">{String(v)}</dd>
+                  <div>
+                    <dt className="text-sm font-medium text-muted">SKU Code</dt>
+                    <dd className="mt-1 font-semibold text-navy">{product.code}</dd>
+                  </div>
+                  <div>
+                    <dt className="text-sm font-medium text-muted">MOQ</dt>
+                    <dd className="mt-1 font-semibold text-navy">{product.moq.toLocaleString("en-IN")} {product.moq_unit}</dd>
+                  </div>
+                  <div>
+                    <dt className="text-sm font-medium text-muted">Sample Tier</dt>
+                    <dd className="mt-1 font-semibold text-navy capitalize">{product.sample_tier}</dd>
+                  </div>
+                  <div>
+                    <dt className="text-sm font-medium text-muted">Delivery India</dt>
+                    <dd className="mt-1 font-semibold text-navy">{product.delivery_days_india} Days</dd>
+                  </div>
+                  {product.variants.map((variant) => (
+                    <div key={variant.key}>
+                      <dt className="text-sm font-medium text-muted">{variant.label}</dt>
+                      <dd className="mt-1 font-semibold text-navy">{variant.options.join(", ")}</dd>
                     </div>
                   ))}
                 </dl>
@@ -87,7 +131,7 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
             </TabsContent>
             <TabsContent value="compliance" className="py-6">
               <div className="flex flex-wrap gap-3">
-                {product.compliance_certs?.map(cert => (
+                {complianceCerts.map(cert => (
                   <Badge key={cert} variant="outline" className="text-sm px-4 py-2 bg-white">{cert}</Badge>
                 ))}
               </div>
@@ -123,8 +167,8 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
                   <span className="font-bold text-navy">{formatINR(estimatedMin)} - {formatINR(estimatedMax)}</span>
                 </div>
                 <div className="flex justify-between items-center text-sm">
-                  <span className="text-muted">Upfront Payment Saving (3%)</span>
-                  <span className="font-bold text-success">~{formatINR(upfrontSaving)}</span>
+                  <span className="text-muted">Estimated unit rate</span>
+                  <span className="font-bold text-success">~{formatINR(estimate.unit)} / unit</span>
                 </div>
               </div>
 
@@ -135,23 +179,21 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
                 </div>
                 <div className="flex justify-between items-center text-sm">
                   <span className="text-muted">Delivery (Global)</span>
-                  <span className="font-semibold text-navy">{product.delivery_days_global} Days</span>
+                  <span className="font-semibold text-navy">{product.delivery_days_india + 14} Days</span>
                 </div>
               </div>
 
               <div className="pt-6 space-y-3 border-t border-border">
-                <Link href={`/quote?sku=${(product.specs as any)?.code || product.slug}&qty=${currentQty}`}>
+                <Link href={configureHref}>
                   <Button className="w-full h-12 bg-amber text-navy hover:bg-amber/90 font-bold text-lg">
-                    Add to Quote
+                    {buyingMode === "self_serve" ? "Start Configuration" : "Plan Managed Pricing"}
                   </Button>
                 </Link>
-                {product.sample_tier !== 'not_required' && (
-                  <Link href={`/samples?product=${product.id}`}>
-                    <Button variant="outline" className="w-full h-12">
-                      Get Sample ({formatINR(product.sample_price)})
-                    </Button>
-                  </Link>
-                )}
+                <Link href={`/samples?product=${product.id}`}>
+                  <Button variant="outline" className="w-full h-12">
+                    Get Sample ({formatINR(product.sample_price)})
+                  </Button>
+                </Link>
               </div>
             </div>
           </div>

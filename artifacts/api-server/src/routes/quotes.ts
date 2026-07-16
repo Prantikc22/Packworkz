@@ -5,6 +5,7 @@ import { sendWhatsApp } from "../lib/whatsapp";
 import { sendQuoteConfirmation, sendAdminQuoteNotification } from "../lib/email";
 import { getSessionUserId } from "../lib/auth";
 import { pushToSheetDB } from "../lib/sheetdb";
+import { notifySlack } from "../lib/slack";
 
 const router: IRouter = Router();
 
@@ -25,10 +26,15 @@ router.post("/quotes", async (req, res): Promise<void> => {
     sample_option,
     design_paid,
     sample_paid,
+    buying_mode,
   } = req.body;
 
-  if (!contact_name || !company_name || !email || !phone || !items || !delivery_country) {
+  if (!contact_name || !company_name || !email || !phone || !Array.isArray(items) || !items.length || !delivery_country) {
     res.status(400).json({ error: "Missing required fields" });
+    return;
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email).trim())) {
+    res.status(400).json({ error: "Invalid email address" });
     return;
   }
 
@@ -82,6 +88,24 @@ router.post("/quotes", async (req, res): Promise<void> => {
 
   // Await all side-effects before responding — in Vercel serverless the function
   // is terminated as soon as res.json() is called, so fire-and-forget tasks never complete.
+  const slackPromise = notifySlack({
+    source: "Configurator",
+    title: buying_mode === "assisted" ? "New assisted packaging request" : "New self-serve packaging plan",
+    referenceId: quoteId,
+    summary: itemSummary,
+    fields: [
+      { label: "Company", value: company_name },
+      { label: "Contact", value: contact_name },
+      { label: "Email", value: email },
+      { label: "Phone", value: phone },
+      { label: "Indicative value", value: total_estimated_min && total_estimated_max ? `₹${total_estimated_min} – ₹${total_estimated_max}` : undefined },
+      { label: "Delivery", value: delivery_pincode || delivery_country },
+      { label: "Timeline", value: preferred_timeline || "standard" },
+      { label: "Artwork", value: resolvedArtwork },
+      { label: "Sample", value: resolvedSample },
+    ],
+  });
+
   await Promise.allSettled([
     sendQuoteConfirmation({
       to: email,
@@ -145,9 +169,23 @@ router.post("/quotes", async (req, res): Promise<void> => {
       process.env.TEAM_WHATSAPP_PHONE || "+919999999999",
       `New quote: ${quoteId}\nCompany: ${company_name}\nProducts: ${itemSummary}\nValue: ₹${total_estimated_min}\nPhone: ${phone}`
     ).catch(() => {}),
+
+    slackPromise,
   ]);
 
-  res.status(201).json({ quote_id: quote.quote_id, id: quote.id });
+  const slackResult = await slackPromise;
+  if (!slackResult.delivered) {
+    await sb.from("quote_requests")
+      .update({ admin_notes: `Slack pending: ${slackResult.reason}` })
+      .eq("id", quote.id);
+  }
+
+  res.status(201).json({
+    quote_id: quote.quote_id,
+    id: quote.id,
+    saved: true,
+    slack_delivered: slackResult.delivered,
+  });
 });
 
 router.get("/quotes/:quoteId", async (req, res): Promise<void> => {

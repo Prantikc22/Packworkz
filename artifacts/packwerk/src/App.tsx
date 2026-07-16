@@ -29,6 +29,8 @@ import LpD2c from "@/pages/lp-d2c";
 import Careers from "@/pages/careers";
 import Contact from "@/pages/contact";
 import SmartStock from "@/pages/smartstock";
+import SmartStockDemoPage from "@/pages/smartstock-demo";
+import PackAIPlanner from "@/pages/pack-ai";
 import Network from "@/pages/network";
 import Privacy from "@/pages/privacy";
 import Terms from "@/pages/terms";
@@ -98,9 +100,13 @@ function Router() {
       <PublicRoute path="/" component={Home} layout={PublicLayout} />
       <PublicRoute path="/products" component={Products} layout={PublicLayout} />
       <PublicRoute path="/products/:slug" component={ProductDetail} layout={PublicLayout} />
-      <PublicRoute path="/quote" component={Quote} layout={PublicLayout} />
-      <PublicRoute path="/quote/step/:step" component={Quote} layout={PublicLayout} />
-      <PublicRoute path="/quote/confirmed/:id" component={Quote} layout={PublicLayout} />
+      <Route path="/quote"><Redirect to="/configure" /></Route>
+      <PublicRoute path="/configure" component={Quote} layout={PublicLayout} />
+      <PublicRoute path="/procurement-plan" component={Quote} layout={PublicLayout} />
+      <PublicRoute path="/configure/step/:step" component={Quote} layout={PublicLayout} />
+      <PublicRoute path="/configure/confirmed/:id" component={Quote} layout={PublicLayout} />
+      <Route path="/quote/step/:step">{(params: { step?: string }) => <Redirect to={`/configure/step/${params.step ?? "sku"}`} />}</Route>
+      <Route path="/quote/confirmed/:id">{(params: { id?: string }) => <Redirect to={`/configure/confirmed/${params.id ?? ""}`} />}</Route>
       <PublicRoute path="/design" component={Design} layout={PublicLayout} />
       <PublicRoute path="/samples" component={Samples} layout={PublicLayout} />
       <PublicRoute path="/login" component={Login} layout={PublicLayout} />
@@ -109,13 +115,16 @@ function Router() {
       <PublicRoute path="/industries/:slug" component={IndustryDetail} layout={PublicLayout} />
       <PublicRoute path="/how-it-works" component={HowItWorks} layout={PublicLayout} />
       <PublicRoute path="/sustainable" component={Sustainable} layout={PublicLayout} />
+      <PublicRoute path="/sustainable-catalog" component={Sustainable} layout={PublicLayout} />
       <PublicRoute path="/about" component={About} layout={PublicLayout} />
       <PublicRoute path="/resources" component={Resources} layout={PublicLayout} />
       <PublicRoute path="/resources/:slug" component={ResourceDetail} layout={PublicLayout} />
 
       <PublicRoute path="/careers" component={Careers} layout={PublicLayout} />
       <PublicRoute path="/contact" component={Contact} layout={PublicLayout} />
+      <Route path="/smartstock/demo" component={SmartStockDemoPage} />
       <PublicRoute path="/smartstock" component={SmartStock} layout={PublicLayout} />
+      <Route path="/pack-ai" component={PackAIPlanner} />
       <PublicRoute path="/network" component={Network} layout={PublicLayout} />
       <PublicRoute path="/privacy" component={Privacy} layout={PublicLayout} />
       <PublicRoute path="/terms" component={Terms} layout={PublicLayout} />

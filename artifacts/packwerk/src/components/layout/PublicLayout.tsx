@@ -4,19 +4,19 @@ import {
   Package, Box, ShoppingBag, Layers, RotateCcw, Tag, Leaf, Gift,
   Zap, Factory, Pill, Sparkles, Cpu, UtensilsCrossed, Gem, Globe,
   ChevronDown, BookOpen, Info, Network, Paintbrush, FlaskConical,
-  Users, Mail,
+  Users, Mail, Calculator, FileText, Lightbulb,
 } from "lucide-react";
 
 // ── Per-page SEO metadata ────────────────────────────────────────────────────
 const PAGE_SEO: Record<string, { title: string; description: string; keywords: string }> = {
   "/": {
     title: "Packworkz — Packaging Manufacturer & Managed Platform India | D2C, FMCG, Pharma",
-    description: "India's first managed packaging manufacturer platform. 110+ SKUs, 3 backup vendors per order, 98.7% on-time delivery. Custom packaging for D2C, FMCG & pharma brands. Quote in 48 hours.",
+    description: "Managed packaging procurement for D2C, FMCG and pharma teams. Configure 32 packaging families, review indicative pricing, plan quality checkpoints and manage repeat orders in one workflow.",
     keywords: "packaging manufacturer India, managed packaging platform, custom packaging India, D2C packaging manufacturer, FMCG packaging supplier India, packaging vendor India",
   },
   "/products": {
-    title: "Packaging Manufacturer India | 110+ SKUs — Pouches, Boxes, Bottles | Packworkz",
-    description: "Browse 110+ packaging SKUs from India's verified manufacturer network. Stand-up pouches, corrugated boxes, PET jars, poly mailers & more. MOQ from 200 units. Get a quote online.",
+    title: "Packaging Products India | Pouches, Boxes, Bottles | Packworkz",
+    description: "Browse 32 configured packaging families including pouches, corrugated boxes, PET jars, mailers, labels and technical rollstock. See starting quantities and indicative price bands online.",
     keywords: "packaging manufacturer India, custom packaging manufacturer, stand-up pouch manufacturer India, corrugated box manufacturer, flexible packaging manufacturer India",
   },
   "/industries": {
@@ -26,28 +26,38 @@ const PAGE_SEO: Record<string, { title: string; description: string; keywords: s
   },
   "/how-it-works": {
     title: "How to Source Custom Packaging in India | 4-Step Process | Packworkz",
-    description: "Source custom packaging in 4 simple steps. Submit specs, get competitive quotes in 48 hours, approve samples, track production. India's simplest managed packaging sourcing process.",
+    description: "Source custom packaging in 4 simple steps. Submit specs, get competitive pricing plans in 48 hours, approve samples, track production. India's simplest managed packaging sourcing process.",
     keywords: "source packaging India, custom packaging process, packaging supplier India, managed packaging procurement, B2B packaging platform",
   },
   "/about": {
     title: "About Packworkz | India's First Managed Packaging Manufacturer Platform",
-    description: "Founded to solve India's packaging vendor chaos. Packworkz connects D2C, FMCG & pharma brands with verified packaging manufacturers — owned QC, real-time tracking, Net-30 credit.",
+    description: "Packworkz brings packaging specifications, manufacturer matching, quality checkpoints, order tracking and repeat-order planning into one managed workflow.",
     keywords: "Packworkz about, packaging manufacturer platform India, managed packaging company India",
   },
-  "/quote": {
-    title: "Get a Custom Packaging Quote in 48 Hours | India | Packworkz",
-    description: "Submit packaging specs and receive a detailed, competitive quote within 48 hours. Pouches, boxes, bottles, mailers and more. No vendor calls needed. 220+ brands trust Packworkz.",
-    keywords: "custom packaging quote India, packaging manufacturer quote, get packaging quote online, bulk packaging price India",
+  "/configure": {
+    title: "Configure Custom Packaging Online | India | Packworkz",
+    description: "Build a packaging specification, compare quantity-based indicative pricing and submit a self-serve order plan or assisted technical quote for pouches, boxes, bottles, mailers and more.",
+    keywords: "custom packaging pricing plan India, packaging manufacturer pricing plan, get packaging pricing plan online, bulk packaging price India",
+  },
+  "/procurement-plan": {
+    title: "Managed Packaging Pricing Plan for Technical SKUs | Packworkz",
+    description: "Plan packaging rolls, technical films, high-barrier rollstock, and high-volume custom packaging with material guidance, samples, and manufacturer matching.",
+    keywords: "packaging procurement plan India, packaging roll pricing, technical packaging supplier India, managed packaging sourcing",
   },
   "/samples": {
-    title: "Order Packaging Samples India | From ₹2,999 | 3–5 Day Delivery | Packworkz",
-    description: "Order physical packaging samples before bulk production. 500+ combinations from ₹2,999. 3–5 day delivery pan-India. Custom printed samples for all SKUs.",
+    title: "Order Packaging Samples India | From ₹2,999 | Packworkz",
+    description: "Order physical packaging samples before bulk production. Choose a standard or express sample route; dispatch timing and format availability are confirmed before fulfilment.",
     keywords: "packaging samples India, order packaging samples, custom packaging sample, packaging manufacturer sample India",
   },
   "/sustainable": {
-    title: "Sustainable Packaging Manufacturer India | EPR Compliant, FSC Certified | Packworkz",
-    description: "FSC-certified kraft, compostable mailers, recycled PE and EPR-compliant packaging from India's verified sustainable packaging manufacturers. Serving D2C and export brands.",
+    title: "Sustainable Packaging Materials India | Packworkz",
+    description: "Compare kraft, recycled board, mono-material, bagasse and compostable packaging by product protection, tradeoffs and the evidence required for the finished specification.",
     keywords: "sustainable packaging manufacturer India, eco-friendly packaging India, compostable packaging, EPR compliant packaging India, FSC certified packaging",
+  },
+  "/sustainable-catalog": {
+    title: "Sustainable Packaging Catalog India | FSC, Compostable, Recycled | Packworkz",
+    description: "Browse sustainable packaging SKUs with EPR documentation, FSC options, compostable mailers, recycled boxes, and food-safe eco packaging.",
+    keywords: "sustainable packaging catalog India, eco packaging catalog, FSC packaging India, compostable packaging India",
   },
   "/design": {
     title: "Custom Packaging Design Service India | From ₹1,999 | Packworkz",
@@ -56,12 +66,12 @@ const PAGE_SEO: Record<string, { title: string; description: string; keywords: s
   },
   "/contact": {
     title: "Contact Packworkz | Custom Packaging India | +91 82089 90366",
-    description: "Contact Packworkz for custom packaging quotes, sample orders, or design enquiries. Call +91 82089 90366 or send an enquiry online. 48-hour response guaranteed.",
+    description: "Contact Packworkz for custom packaging pricing, sample orders, technical specifications, design enquiries or order support. Call +91 82089 90366 or submit an enquiry online.",
     keywords: "contact Packworkz, packaging manufacturer contact India, packaging enquiry India",
   },
   "/network": {
-    title: "Packworkz Manufacturer Network | 220+ Verified Packaging Factories India",
-    description: "220+ verified packaging manufacturers across India. 3 backup vendors assigned per order. Full traceability, QC certificates, and compliance documentation for every factory.",
+    title: "Packworkz Packaging Manufacturer Network India",
+    description: "See how Packworkz matches packaging specifications to eligible production routes, quality checkpoints and applicable supplier documentation across India.",
     keywords: "packaging manufacturer network India, verified packaging factories, packaging supplier network India, B2B packaging manufacturers",
   },
   "/industries/d2c": {
@@ -71,7 +81,7 @@ const PAGE_SEO: Record<string, { title: string; description: string; keywords: s
   },
   "/industries/fmcg": {
     title: "FMCG Packaging Manufacturer India | Bulk Supplier | Packworkz",
-    description: "High-volume FMCG packaging from India's verified manufacturer network. Flexible pouches, glass jars, cartons, labels and more. Net-30 credit available for qualifying brands.",
+    description: "High-volume FMCG packaging across flexible pouches, glass jars, cartons, labels and rollstock, with self-serve catalog routes and assisted technical quoting.",
     keywords: "FMCG packaging manufacturer India, bulk packaging supplier India, FMCG packaging platform, packaging supplier FMCG",
   },
   "/industries/pharma": {
@@ -160,6 +170,13 @@ const ABOUT_ITEMS = [
   { icon: Network,  label: "Factory Network", href: "/network" },
   { icon: Users,    label: "Careers",         href: "/careers" },
   { icon: Mail,     label: "Contact Us",      href: "/contact" },
+];
+
+const RESOURCE_ITEMS = [
+  { icon: BookOpen, label: "Packaging Guides", desc: "Materials, print and format decisions", href: "/resources" },
+  { icon: FileText, label: "Case Studies", desc: "How brands improved cost and reliability", href: "/resources?type=case-study" },
+  { icon: Calculator, label: "Savings Calculator", desc: "Estimate the value of managed sourcing", href: "/#savings-calculator" },
+  { icon: Lightbulb, label: "Packaging Insights", desc: "Practical procurement and compliance advice", href: "/resources?type=insight" },
 ];
 
 // ── Styles injected once ──────────────────────────────────────────────────────
@@ -272,11 +289,11 @@ const GLOBAL_STYLES = `
     content: '';
     position: absolute;
     inset: 0;
-    background: #0D1B2A;
+    background: #F6C65B;
     transform: translateX(-101%);
     transition: transform 0.3s ease;
   }
-  .po-cta-btn:hover { color: white; }
+  .po-cta-btn:hover { color: #0D1B2A; }
   .po-cta-btn:hover::before { transform: translateX(0); }
   .po-cta-btn span { position: relative; z-index: 1; }
 `;
@@ -333,7 +350,7 @@ function ProductsMenu() {
             <div style={{ color: "#E8A838", fontSize: 10, fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", marginBottom: 10 }}>FEATURED</div>
             <div style={{ color: "white", fontSize: 16, fontWeight: 700, lineHeight: 1.3, marginBottom: 8 }}>SmartStock™<br />AI Inventory</div>
             <div style={{ color: "rgba(255,255,255,0.55)", fontSize: 12, lineHeight: 1.5 }}>
-              Predict reorder points before you run out. Zero stockouts.
+              Model reorder timing before packaging stock becomes urgent.
             </div>
           </div>
           <Link href="/smartstock" style={{
@@ -401,7 +418,7 @@ function IndustriesMenu() {
           display: "flex", flexDirection: "column", justifyContent: "space-between",
         }}>
           <div>
-            <div style={{ color: "#1B6CA8", fontSize: 10, fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", marginBottom: 10 }}>NEW TO PACKOPS?</div>
+            <div style={{ color: "#1B6CA8", fontSize: 10, fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", marginBottom: 10 }}>NEW TO PACKWORKZ?</div>
             <div style={{ color: "#0D1B2A", fontSize: 14, fontWeight: 700, lineHeight: 1.4, marginBottom: 8 }}>See how it works in 3 minutes</div>
             <div style={{ color: "#64748B", fontSize: 12, lineHeight: 1.5 }}>
               Platform walkthrough for brand owners and procurement teams.
@@ -422,6 +439,33 @@ function IndustriesMenu() {
   );
 }
 
+function ResourcesMenu() {
+  return (
+    <div style={{
+      position: "absolute", top: "100%", left: "50%", transform: "translateX(-50%)",
+      background: "white", border: "1px solid #E2EAF4", borderRadius: "0 0 12px 12px",
+      boxShadow: "0 18px 52px rgba(13,27,42,0.15)", padding: "24px", width: 590,
+      animation: "dropIn 0.2s ease forwards", zIndex: 100,
+    }}>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
+        {RESOURCE_ITEMS.map(item => (
+          <Link key={item.label} href={item.href} className="po-menu-item">
+            <IconBox Icon={item.icon} />
+            <div>
+              <div style={{ color: "#0D1B2A", fontSize: 14, fontWeight: 700 }}>{item.label}</div>
+              <div style={{ color: "#64748B", fontSize: 11, lineHeight: 1.45, marginTop: 3 }}>{item.desc}</div>
+            </div>
+          </Link>
+        ))}
+      </div>
+      <div style={{ marginTop: 14, paddingTop: 14, borderTop: "1px solid #E2EAF4", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 18 }}>
+        <span style={{ color: "#64748B", fontSize: 12 }}>Need a specific packaging answer?</span>
+        <Link href="/pack-ai" style={{ color: "#0D1B2A", fontSize: 12, fontWeight: 800, textDecoration: "none" }}>Ask Packworkz AI →</Link>
+      </div>
+    </div>
+  );
+}
+
 // ── About mini-menu ───────────────────────────────────────────────────────────
 function AboutMenu() {
   return (
@@ -429,19 +473,25 @@ function AboutMenu() {
       position: "absolute", top: "100%", right: 0,
       background: "white",
       border: "1px solid #E2EAF4",
-      borderRadius: "0 0 16px 16px",
+      borderRadius: "0 0 12px 12px",
       boxShadow: "0 16px 48px rgba(13,27,42,0.12)",
-      padding: "16px 20px",
-      width: 220,
+      padding: "24px",
+      width: 480,
       animation: "dropIn 0.2s ease forwards",
       zIndex: 100,
     }}>
-      {ABOUT_ITEMS.map(item => (
-        <Link key={item.href} href={item.href} className="po-menu-item" style={{ alignItems: "center" }}>
-          <IconBox Icon={item.icon} />
-          <div style={{ color: "#0D1B2A", fontSize: 14, fontWeight: 600 }}>{item.label}</div>
-        </Link>
-      ))}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
+        {ABOUT_ITEMS.map(item => (
+          <Link key={item.href} href={item.href} className="po-menu-item" style={{ alignItems: "center" }}>
+            <IconBox Icon={item.icon} />
+            <div style={{ color: "#0D1B2A", fontSize: 14, fontWeight: 700 }}>{item.label}</div>
+          </Link>
+        ))}
+      </div>
+      <Link href="/contact" style={{ marginTop: 14, padding: "15px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", background: "#0D1B2A", color: "white", textDecoration: "none" }}>
+        <span><strong style={{ display: "block", fontSize: 13 }}>Talk to a packaging specialist</strong><small style={{ color: "#9FB0C2", fontSize: 10 }}>Usually answered within one business day</small></span>
+        <span aria-hidden="true">→</span>
+      </Link>
     </div>
   );
 }
@@ -588,10 +638,27 @@ function PackAIWidget() {
       const phone = text;
       setLead(l => ({ ...l, phone }));
       addMsg("user", text);
-      setTimeout(() => {
-        addMsg("assistant", `Perfect, thanks ${lead.name}! 🎉\n\nNow tell me — what product are you looking to package? (e.g. "spice powder", "skincare serum", "protein supplement", "electronic gadget")`);
+      setLoading(true);
+      try {
+        await fetch("/api/leads", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            source: "support",
+            name: lead.name,
+            email: lead.email,
+            phone,
+            subject: "Packworkz AI support handoff",
+            message: "Visitor completed the Packworkz AI contact handoff and is ready to discuss packaging.",
+          }),
+        });
+        addMsg("assistant", `Perfect, thanks ${lead.name}. Your details are saved.\n\nNow tell me what product you are packaging, the quantity, and the deadline.`);
+      } catch {
+        addMsg("assistant", `Thanks, ${lead.name}. We can continue planning here. Tell me what product you are packaging, the quantity, and the deadline.`);
+      } finally {
         setStage("chat");
-      }, 400);
+        setLoading(false);
+      }
       return;
     }
 
@@ -799,7 +866,14 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
   const [isLoggedIn, setIsLoggedIn] = useState(() => !!localStorage.getItem("packwerk_access_token"));
 
   const isHome = location === "/";
+  const navFloating = scrolled;
   const navSolid = scrolled || !isHome;
+
+  useEffect(() => {
+    document.documentElement.classList.remove("dark");
+    document.documentElement.style.colorScheme = "light";
+    localStorage.removeItem("packworkz_theme");
+  }, []);
 
   useEffect(() => {
     setIsLoggedIn(!!localStorage.getItem("packwerk_access_token"));
@@ -853,21 +927,27 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="min-h-screen flex flex-col" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+      <style>{GLOBAL_STYLES}</style>
 
       {/* ── NAV ── */}
       <header
-        className="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-6 md:px-10 h-[68px]"
+        className={`fixed z-50 flex items-center justify-between px-6 md:px-10 h-[68px] ${navSolid ? "pw-nav-floating" : "pw-nav-top"}`}
         style={{
-          background: navSolid ? "#162d6b" : "transparent",
-          backdropFilter: "none",
-          WebkitBackdropFilter: "none",
-          borderBottom: navSolid ? "1px solid rgba(255,255,255,0.08)" : "1px solid transparent",
-          transition: "background 0.3s ease, border-color 0.3s ease",
+          top: navFloating ? 12 : 0,
+          left: "50%",
+          width: navFloating ? "min(1180px, calc(100% - 32px))" : "100%",
+          transform: "translateX(-50%)",
+          borderRadius: navFloating ? 14 : 0,
+          background: navSolid ? "#0D1B2A" : "transparent",
+          border: navSolid ? "1px solid #20364B" : "1px solid transparent",
+          boxShadow: navSolid ? "0 18px 50px rgba(2, 8, 23, 0.24)" : "none",
+          transition: "top 0.24s ease, width 0.24s ease, border-radius 0.24s ease, background-color 0.24s ease, border-color 0.24s ease, box-shadow 0.24s ease",
+          willChange: "top, width, background-color, box-shadow",
         }}
       >
         {/* Logo */}
         <Link href="/" style={{ textDecoration: "none" }}>
-          <span style={{
+          <span className="pw-logo-reveal" style={{
             fontSize: 32, fontWeight: 900, letterSpacing: "-0.03em",
             color: "white", fontFamily: "'Space Grotesk', sans-serif",
             cursor: "pointer", userSelect: "none",
@@ -877,7 +957,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
         </Link>
 
         {/* Centre navigation */}
-        <nav className="hidden md:flex items-center gap-1">
+        <nav className="hidden lg:flex items-center gap-2">
           <NavItem label="Products" active={location.startsWith("/products")}>
             <ProductsMenu />
           </NavItem>
@@ -885,7 +965,9 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
             <IndustriesMenu />
           </NavItem>
           <NavItem label="Sustainability" href="/sustainable" active={location.startsWith("/sustainable")} />
-          <NavItem label="Resources" href="/resources" active={location.startsWith("/resources")} />
+          <NavItem label="Resources" active={location.startsWith("/resources")}>
+            <ResourcesMenu />
+          </NavItem>
           <NavItem label="About" active={location.startsWith("/about") || location.startsWith("/how-it-works") || location.startsWith("/network") || location.startsWith("/careers") || location.startsWith("/contact")}>
             <AboutMenu />
           </NavItem>
@@ -894,7 +976,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
         {/* Right side */}
         <div className="flex items-center gap-1">
           {/* Desktop-only buttons */}
-          <div className="hidden md:flex items-center gap-1">
+          <div className="hidden lg:flex items-center gap-1">
             {isLoggedIn ? (
               <Link href="/dashboard" className="po-nav-link" style={{ color: "#E8A838" }}>
                 Dashboard
@@ -904,21 +986,15 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
                 Login
               </Link>
             )}
-            {navSolid ? (
-              <span className="animated-border animated-border-white" style={{ marginLeft: 8 }}>
-                <Link href="/quote" className="po-cta-btn">
-                  <span>GET QUOTE</span>
-                </Link>
-              </span>
-            ) : (
-              <Link href="/quote" className="po-cta-btn" style={{ marginLeft: 8 }}>
-                <span>GET QUOTE</span>
+            <span style={{ marginLeft: 8 }}>
+              <Link href="/configure" className="po-cta-btn">
+                <span>START CONFIGURATION</span>
               </Link>
-            )}
+            </span>
           </div>
 
           {/* Mobile hamburger only */}
-          <button className="md:hidden p-2 ml-1" style={{ color: "white", background: "none", border: "none", cursor: "pointer", lineHeight: 1 }} onClick={() => setMobileOpen(!mobileOpen)}>
+          <button className="lg:hidden p-2 ml-1" style={{ color: "white", background: "none", border: "none", cursor: "pointer", lineHeight: 1 }} onClick={() => setMobileOpen(!mobileOpen)}>
             <span className="material-symbols-outlined" style={{ fontSize: 28 }}>{mobileOpen ? "close" : "menu"}</span>
           </button>
         </div>
@@ -985,20 +1061,18 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
                   Login
                 </Link>
               )}
-              <Link href="/quote" onClick={() => setMobileOpen(false)}
+              <Link href="/configure" onClick={() => setMobileOpen(false)}
                 style={{ display: "inline-block", marginTop: 8, padding: "14px 28px", background: "#E8A838", color: "#0D1B2A", fontWeight: 800, fontSize: 14, textDecoration: "none", borderRadius: 8, textTransform: "uppercase", letterSpacing: "0.05em", textAlign: "center" }}>
-                Get Quote →
+                Start Configuration →
               </Link>
             </div>
           </nav>
         </div>
       )}
 
-      <main className="flex-1 pt-[68px]">
+      <main className="flex-1">
         {children}
       </main>
-
-      <PackAIWidget />
 
       {/* ── FOOTER ── */}
       <footer style={{ background: "#020617", fontFamily: "'Space Grotesk', sans-serif" }}>
@@ -1020,8 +1094,8 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d={s.path}/></svg>
               </a>
             ))}
-            <Link href="/quote" className="po-cta-btn">
-              <span>GET QUOTE NOW →</span>
+            <Link href="/configure" className="po-cta-btn">
+              <span>START CONFIGURATION →</span>
             </Link>
           </div>
         </div>
@@ -1093,7 +1167,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
             {[
               { label: "Order a Sample", href: "/samples" },
               { label: "Design Service", href: "/design" },
-              { label: "Get a Quote", href: "/quote" },
+              { label: "Get Pricing Plan", href: "/configure" },
               { label: "WhatsApp Us", href: "https://wa.me/918208990366" },
               { label: "Dashboard Login", href: "/login" },
             ].map(l => (

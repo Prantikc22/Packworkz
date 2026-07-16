@@ -15,13 +15,85 @@ const ROOT = join(__dirname, "..");
 const DIST = join(ROOT, "dist/public");
 const SERVER_BUNDLE = join(ROOT, "dist/server/entry-server.js");
 
+function buildJsonLd(route) {
+  const canonicalUrl = `https://packworkz.com${route.path === "/" ? "" : route.path}`;
+  const baseOrg = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: "Packworkz",
+    url: "https://packworkz.com",
+    logo: "https://packworkz.com/opengraph.jpg",
+    contactPoint: {
+      "@type": "ContactPoint",
+      telephone: "+91-82089-90366",
+      contactType: "sales",
+      areaServed: "IN",
+      availableLanguage: ["en", "hi"],
+    },
+  };
+
+  if (route.path === "/products") {
+    return {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      name: route.title,
+      description: route.description,
+      url: canonicalUrl,
+      isPartOf: baseOrg,
+      mainEntity: {
+        "@type": "ItemList",
+        name: "Packworkz packaging SKU catalog",
+        numberOfItems: 33,
+        itemListOrder: "https://schema.org/ItemListOrderAscending",
+      },
+    };
+  }
+
+  if (route.path.startsWith("/products/") && route.path.split("/").length === 3) {
+    return {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      name: route.title.replace(" | Packworkz", ""),
+      description: route.description,
+      url: canonicalUrl,
+      brand: baseOrg,
+      offers: {
+        "@type": "AggregateOffer",
+        priceCurrency: "INR",
+        availability: "https://schema.org/InStock",
+        seller: baseOrg,
+      },
+    };
+  }
+
+  if (route.path === "/industries" || route.path.startsWith("/industries/")) {
+    return {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      name: route.title,
+      description: route.description,
+      url: canonicalUrl,
+      provider: baseOrg,
+    };
+  }
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: route.title,
+    description: route.description,
+    url: canonicalUrl,
+    publisher: baseOrg,
+  };
+}
+
 // Keep in sync with PAGE_SEO in PublicLayout.tsx
 const ROUTES = [
   // ── Core pages ──────────────────────────────────────────────────────────────
   {
     path: "/",
     title: "Packworkz — Packaging Manufacturer & Managed Platform India | D2C, FMCG, Pharma",
-    description: "India's first managed packaging manufacturer platform. 110+ SKUs, 3 backup vendors per order, 98.7% on-time delivery. Custom packaging for D2C, FMCG & pharma brands. Quote in 48 hours.",
+    description: "India's first managed packaging manufacturer platform. 110+ SKUs, 3 backup vendors per order, 98.7% on-time delivery. Custom packaging for D2C, FMCG & pharma brands. Pricing plan in 48 hours.",
     keywords: "packaging manufacturer India, managed packaging platform, custom packaging India, D2C packaging manufacturer, FMCG packaging supplier India, packaging vendor India",
   },
   {
@@ -33,7 +105,7 @@ const ROUTES = [
   {
     path: "/how-it-works",
     title: "How to Source Custom Packaging in India | 4-Step Process | Packworkz",
-    description: "Source custom packaging in 4 simple steps. Submit specs, get competitive quotes in 48 hours, approve samples, track production. India's simplest managed packaging sourcing process.",
+    description: "Source custom packaging in 4 simple steps. Submit specs, get competitive pricing plans in 48 hours, approve samples, track production. India's simplest managed packaging sourcing process.",
     keywords: "source packaging India, custom packaging process, packaging supplier India, managed packaging procurement, B2B packaging platform",
   },
   {
@@ -41,6 +113,12 @@ const ROUTES = [
     title: "Sustainable Packaging Manufacturer India | EPR Compliant, FSC Certified | Packworkz",
     description: "FSC-certified kraft, compostable mailers, recycled PE and EPR-compliant packaging from India's verified sustainable packaging manufacturers. Serving D2C and export brands.",
     keywords: "sustainable packaging manufacturer India, eco-friendly packaging India, compostable packaging, EPR compliant packaging India, FSC certified packaging",
+  },
+  {
+    path: "/sustainable-catalog",
+    title: "Sustainable Packaging Catalog India | FSC, Compostable, Recycled | Packworkz",
+    description: "Browse sustainable packaging SKUs with EPR documentation, FSC options, compostable mailers, recycled boxes, and food-safe eco packaging.",
+    keywords: "sustainable packaging catalog India, eco packaging catalog, FSC packaging India, compostable packaging India",
   },
   {
     path: "/careers",
@@ -51,7 +129,7 @@ const ROUTES = [
   {
     path: "/contact",
     title: "Contact Packworkz | Custom Packaging India | +91 82089 90366",
-    description: "Contact Packworkz for custom packaging quotes, sample orders, or design enquiries. Call +91 82089 90366 or send an enquiry online. 48-hour response guaranteed.",
+    description: "Contact Packworkz for custom packaging pricing, sample orders, or design enquiries. Call +91 82089 90366 or send an enquiry online. 48-hour response guaranteed.",
     keywords: "contact Packworkz, packaging manufacturer contact India, packaging enquiry India",
   },
   {
@@ -69,10 +147,16 @@ const ROUTES = [
 
   // ── Service / conversion pages ───────────────────────────────────────────────
   {
-    path: "/quote",
-    title: "Get a Custom Packaging Quote in 48 Hours | India | Packworkz",
-    description: "Submit packaging specs and receive a detailed, competitive quote within 48 hours. Pouches, boxes, bottles, mailers and more. No vendor calls needed. 220+ brands trust Packworkz.",
-    keywords: "custom packaging quote India, packaging manufacturer quote, get packaging quote online, bulk packaging price India",
+    path: "/configure",
+    title: "Get a Custom Packaging Pricing Plan in 48 Hours | India | Packworkz",
+    description: "Submit packaging specs and receive a detailed, competitive pricing plan within 48 hours. Pouches, boxes, bottles, mailers and more. No vendor calls needed. 220+ brands trust Packworkz.",
+    keywords: "custom packaging pricing plan India, packaging manufacturer pricing plan, get packaging pricing plan online, bulk packaging price India",
+  },
+  {
+    path: "/procurement-plan",
+    title: "Managed Packaging Pricing Plan for Technical SKUs | Packworkz",
+    description: "Plan packaging rolls, technical films, high-barrier rollstock, and high-volume custom packaging with material guidance, samples, and manufacturer matching.",
+    keywords: "packaging procurement plan India, packaging roll pricing, technical packaging supplier India, managed packaging sourcing",
   },
   {
     path: "/samples",
@@ -91,7 +175,7 @@ const ROUTES = [
   {
     path: "/products",
     title: "Packaging Manufacturer India | 110+ SKUs — Pouches, Boxes, Bottles | Packworkz",
-    description: "Browse 110+ packaging SKUs from India's verified manufacturer network. Stand-up pouches, corrugated boxes, PET jars, poly mailers & more. MOQ from 200 units. Get a quote online.",
+    description: "Browse 110+ packaging SKUs from India's verified manufacturer network. Stand-up pouches, corrugated boxes, PET jars, poly mailers & more. MOQ from 200 units. Get a pricing plan online.",
     keywords: "packaging manufacturer India, custom packaging manufacturer, stand-up pouch manufacturer India, corrugated box manufacturer, flexible packaging manufacturer India",
   },
 
@@ -150,13 +234,6 @@ const ROUTES = [
     description: "Shop eco-friendly packaging — compostable mailers, kraft bags, recycled PE pouches and FSC-certified boxes. EPR compliance documentation included with every order.",
     keywords: "sustainable packaging products India, compostable packaging manufacturer, eco packaging India",
   },
-  {
-    path: "/products/liquid",
-    title: "Liquid Packaging Manufacturer India | Tetra-style & Gable Top | Packworkz",
-    description: "Liquid cartons, gable-top boxes and aseptic packaging for beverages, dairy and liquid FMCG products. Custom print, bulk orders.",
-    keywords: "liquid packaging manufacturer India, gable top carton supplier, beverage packaging India",
-  },
-
   // ── Product SKU detail pages ─────────────────────────────────────────────────
   {
     path: "/products/stand-up-pouch",
@@ -387,6 +464,10 @@ async function prerender() {
     } else {
       html = html.replace("</head>", `${canonicalTag}\n</head>`);
     }
+
+    const jsonLd = JSON.stringify(buildJsonLd(route)).replace(/</g, "\\u003c");
+    const jsonLdTag = `<script type="application/ld+json">${jsonLd}</script>`;
+    html = html.replace("</head>", `${jsonLdTag}\n</head>`);
 
     // Write output
     if (routePath === "/") {

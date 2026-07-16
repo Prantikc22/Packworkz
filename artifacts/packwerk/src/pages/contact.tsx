@@ -1,4 +1,5 @@
-import { Mail, MessageSquare, Newspaper, Phone, MapPin, Clock } from "lucide-react";
+import { useState } from "react";
+import { Mail, MessageSquare, Newspaper, Phone, Clock, Send, CheckCircle2, Loader2 } from "lucide-react";
 import { Link } from "wouter";
 
 const CHANNELS = [
@@ -6,7 +7,7 @@ const CHANNELS = [
     icon: Mail,
     label: "General Support",
     email: "contact@packworkz.com",
-    desc: "Questions about orders, quotes, or the platform? We respond within 24 hours on business days.",
+    desc: "Questions about orders, pricing plans, or the platform? We respond within 24 hours on business days.",
     color: "#1B6CA8",
     bg: "#F0F7FF",
     border: "#BFDBFE",
@@ -51,6 +52,32 @@ const FAQS = [
 ];
 
 export default function Contact() {
+  const [form, setForm] = useState({ name: "", company: "", email: "", phone: "", subject: "Sales & packaging", message: "" });
+  const [state, setState] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const [reference, setReference] = useState("");
+  const [error, setError] = useState("");
+
+  const update = (key: keyof typeof form, value: string) => setForm(current => ({ ...current, [key]: value }));
+  const submit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    setState("sending");
+    setError("");
+    try {
+      const response = await fetch("/api/leads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ source: "contact", ...form }),
+      });
+      const payload = await response.json() as { inquiry_id?: string; error?: string };
+      if (!response.ok) throw new Error(payload.error || "We could not save your message.");
+      setReference(payload.inquiry_id || "INQ-SAVED");
+      setState("sent");
+    } catch (submitError) {
+      setError(submitError instanceof Error ? submitError.message : "Please try again.");
+      setState("error");
+    }
+  };
+
   return (
     <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
 
@@ -75,6 +102,50 @@ export default function Contact() {
           <p style={{ color: "rgba(255,255,255,0.6)", fontSize: 18, lineHeight: 1.7, maxWidth: 560, margin: "0 auto" }}>
             Whether you're a brand owner, journalist, or just curious — reach us at the right inbox and we'll get back to you fast.
           </p>
+        </div>
+      </section>
+
+      <section className="contact-intake-section">
+        <div className="contact-intake-shell">
+          <div className="contact-intake-copy">
+            <span>ONE MESSAGE. THE RIGHT TEAM.</span>
+            <h2>Tell us what needs to move.</h2>
+            <p>Packaging brief, active order issue, partnership, or press request. Your message is saved with a reference ID and routed to the right Packworkz workflow.</p>
+            <div className="contact-intake-points">
+              <div><strong>01</strong><span>Saved immediately</span></div>
+              <div><strong>02</strong><span>Routed with context</span></div>
+              <div><strong>03</strong><span>Human follow-up</span></div>
+            </div>
+          </div>
+
+          <div className="contact-intake-panel">
+            {state === "sent" ? (
+              <div className="contact-success" role="status">
+                <div className="contact-success-mark"><CheckCircle2 size={34} /></div>
+                <span>MESSAGE SECURED</span>
+                <h3>It is with Packworkz.</h3>
+                <p>Your request has been saved and routed. Keep this reference for follow-up.</p>
+                <strong>{reference}</strong>
+                <button type="button" onClick={() => { setState("idle"); setForm({ name: "", company: "", email: "", phone: "", subject: "Sales & packaging", message: "" }); }}>Send another message</button>
+              </div>
+            ) : (
+              <form onSubmit={submit} className="contact-intake-form">
+                <div className="contact-form-grid">
+                  <label><span>Name *</span><input required value={form.name} onChange={event => update("name", event.target.value)} placeholder="Your name" /></label>
+                  <label><span>Company</span><input value={form.company} onChange={event => update("company", event.target.value)} placeholder="Brand or company" /></label>
+                  <label><span>Email *</span><input required type="email" value={form.email} onChange={event => update("email", event.target.value)} placeholder="you@company.com" /></label>
+                  <label><span>Phone / WhatsApp</span><input value={form.phone} onChange={event => update("phone", event.target.value)} placeholder="+91 98765 43210" /></label>
+                </div>
+                <label><span>Route this to</span><select value={form.subject} onChange={event => update("subject", event.target.value)}><option>Sales & packaging</option><option>Order support</option><option>Partnership</option><option>Media & press</option></select></label>
+                <label><span>What can we solve? *</span><textarea required minLength={10} rows={5} value={form.message} onChange={event => update("message", event.target.value)} placeholder="Include the product, quantity, deadline, or order reference so the first response is useful." /></label>
+                {state === "error" && <p className="contact-form-error">{error}</p>}
+                <button className="contact-submit" disabled={state === "sending"} type="submit">
+                  {state === "sending" ? <><Loader2 size={17} className="animate-spin" /> Saving securely</> : <><Send size={17} /> Send to Packworkz</>}
+                </button>
+                <small>By submitting, you agree that Packworkz may contact you about this request.</small>
+              </form>
+            )}
+          </div>
         </div>
       </section>
 
@@ -132,7 +203,7 @@ export default function Contact() {
             </div>
             <h3 style={{ color: "white", fontSize: 22, fontWeight: 800, marginBottom: 12 }}>Prefer WhatsApp?</h3>
             <p style={{ color: "rgba(255,255,255,0.55)", fontSize: 14, lineHeight: 1.7, marginBottom: 24 }}>
-              Our team is available on WhatsApp from 9 AM to 7 PM IST, Monday to Saturday. Fastest way to get a quote or check an order.
+              Our team is available on WhatsApp from 9 AM to 7 PM IST, Monday to Saturday. Fastest way to get a pricing plan or check an order.
             </p>
             <a
               href="https://wa.me/918208990366"

@@ -14,7 +14,7 @@ export async function generateId(prefix: string, tableName: string, column: stri
 
   let sequence = 10001;
   if (data) {
-    const lastId = (data as Record<string, string>)[column];
+    const lastId = (data as unknown as Record<string, string>)[column];
     if (lastId) {
       const parts = lastId.split("-");
       const lastSeq = parseInt(parts[parts.length - 1], 10);

@@ -8,7 +8,7 @@ const STEPS = [
   {
     num: "STEP 01",
     Icon: Search,
-    title: "Configure and Quote",
+    title: "Configure and Price",
     intro:
       "Start by browsing our catalogue of 110+ SKUs or describing what you need. No sales call required. No commitment until you approve.",
     substeps: [
@@ -23,12 +23,12 @@ const STEPS = [
           "Select material, dimensions, print type, and quantity. Live price estimate updates as you configure.",
       },
       {
-        title: "Submit your quote request",
+        title: "Submit your configuration request",
         detail:
-          "Takes under 5 minutes. We review every quote manually and respond within 48 hours.",
+          "Takes under 5 minutes. We review every request manually and respond within 48 hours.",
       },
       {
-        title: "Receive itemised quote",
+        title: "Receive itemised pricing plan",
         detail:
           "Detailed breakdown of pricing, timeline, and payment terms. You approve before anything starts.",
       },
@@ -39,7 +39,7 @@ const STEPS = [
     Icon: GitBranch,
     title: "We Source and Match",
     intro:
-      "Once you approve the quote, PackOS gets to work. We don't just assign one vendor — we assign the best one with backups in place.",
+      "Once you approve the plan, PackOS gets to work. We don't just assign one vendor — we assign the best one with backups in place.",
     substeps: [
       {
         title: "SmartMatch factory selection",
@@ -126,19 +126,19 @@ const STEPS = [
 const FAQS = [
   {
     q: "What is the minimum order quantity?",
-    a: "MOQ varies by SKU — from 200 units for premium rigid boxes to 10,000 units for standard flexible pouches. Every product page shows the exact MOQ. If you need a smaller quantity, order a sample first.",
+    a: "MOQ varies by production method. Standard rigid boxes can start at 100 units, many bottles and jars at 200, pouches at 500–1,000, and rollstock at 100kg. Every product page shows its current starting quantity; samples remain available for pre-production evaluation.",
   },
   {
-    q: "How does the 48-hour quote work?",
-    a: "After you submit a quote request, our team reviews your spec manually, sources competing quotes from our vendor network, and sends you an itemised quote within 48 business hours. No automated responses. A real person handles every quote.",
+    q: "How does the 48-hour pricing plan work?",
+    a: "After you submit a configuration request, our team reviews your spec manually, sources competing pricing plans from our vendor network, and sends you an itemised pricing plan within 48 business hours. No automated responses. A real person handles every request.",
   },
   {
-    q: "Can I get credit terms?",
-    a: "Yes — after 3 completed orders you can apply for net-30 credit up to ₹5L. New clients start on 50% advance, 50% before dispatch. If you pay 100% upfront, you get a 3% discount on every order.",
+    q: "What payment terms apply?",
+    a: "Payment milestones are set out in the commercial proposal before approval. They can vary with tooling, samples, production method, account history, and order value. No credit term or discount applies unless it is written into the approved proposal.",
   },
   {
     q: "Do you handle export orders?",
-    a: "Yes. We deliver to 40+ countries. All factory partners are internationally certified — ISO 9001, FSSC 22000, BRC, FDA, and FSC. We handle all export documentation including shipping bill, certificate of origin, and customs paperwork.",
+    a: "Export suitability is reviewed against the destination, packaging format, material and required document set. Packworkz can coordinate the applicable shipping and supplier documents confirmed in the approved order scope; certifications are verified for the selected factory and specification.",
   },
   {
     q: "What happens if my order has a quality issue?",
@@ -146,7 +146,7 @@ const FAQS = [
   },
   {
     q: "Can I order packaging design separately?",
-    a: "Yes. Packaging design starts at ₹1,999 and is completely independent of a production order. You get a structural dieline, print-ready artwork, and all source files. The fee is fully adjusted against your first production order above ₹50,000.",
+    a: "Yes. Packaging design can be ordered separately from production. The selected package, deliverables, revision scope, and any production credit are shown before payment so there is no assumption about what is included.",
   },
 ];
 
@@ -335,9 +335,9 @@ export default function HowItWorks() {
           </p>
 
           <div style={{ display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap" }}>
-            <Link href="/quote">
+            <Link href="/configure">
               <button className="btn-fill btn-amber px-10 py-4 text-base">
-                <span>Get a quote →</span>
+                <span>Get a pricing plan →</span>
               </button>
             </Link>
             <a

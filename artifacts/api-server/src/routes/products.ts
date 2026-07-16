@@ -4,6 +4,7 @@ import { sb } from "../lib/supabase";
 const router: IRouter = Router();
 
 router.get("/products", async (req, res): Promise<void> => {
+  res.set("Cache-Control", "public, s-maxage=3600, stale-while-revalidate=86400");
   const { category, is_eco, is_smartstock, search, limit = "50", offset = "0" } = req.query as Record<string, string>;
 
   let query = sb
@@ -33,6 +34,7 @@ router.get("/products", async (req, res): Promise<void> => {
 });
 
 router.get("/products/categories/summary", async (_req, res): Promise<void> => {
+  res.set("Cache-Control", "public, s-maxage=3600, stale-while-revalidate=86400");
   const { data, error } = await sb
     .from("products")
     .select("category")
@@ -52,6 +54,7 @@ router.get("/products/categories/summary", async (_req, res): Promise<void> => {
 });
 
 router.get("/products/:slug", async (req, res): Promise<void> => {
+  res.set("Cache-Control", "public, s-maxage=3600, stale-while-revalidate=86400");
   const slug = Array.isArray(req.params.slug) ? req.params.slug[0] : req.params.slug;
 
   const { data: product } = await sb

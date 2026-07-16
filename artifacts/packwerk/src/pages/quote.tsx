@@ -5,6 +5,7 @@ import { useToast } from "@/hooks/use-toast";
 import { SKUS, CATEGORIES, SKU_IMAGES, getSkusByCategory } from "@/lib/skus";
 import type { Sku, VariantGroup } from "@/lib/skus";
 import { openRazorpay } from "@/lib/razorpay";
+import { calculateOrderEstimate } from "@/lib/pricing";
 import {
   Loader2, CheckCircle2, ChevronDown, ChevronUp,
   Upload, Palette, X, Truck, Zap, Warehouse, ArrowRight, Shield, Package,
@@ -15,11 +16,13 @@ type ArtworkOption = "upload" | "design" | "none";
 type DeliveryOption = "standard" | "blitz" | "warehouse";
 
 // ── Step labels — now 5 steps (removed redundant artwork step) ─────────────
-const STEP_LABELS = ["Contact", "Product & Qty", "Design & Delivery", "Sample", "Review"];
+const STEP_LABELS = ["Product & Qty", "Design & Delivery", "Sample", "Contact", "Review"];
 const TOTAL_STEPS = 5;
+const ASSISTED_SKU_CODES = new Set(["TS-302", "BX-402", "BX-403", "PR-602", "RL-701", "RL-702", "RL-703", "LC-802", "LC-803", "SP-902"]);
+const isAssistedSku = (sku: Sku | undefined) => !!sku && ASSISTED_SKU_CODES.has(sku.code);
 
 // ── Draft persistence helpers ──────────────────────────────────────────────
-const DRAFT_KEY = "packwerk_quote_draft";
+const DRAFT_KEY = "packwerk_configure_draft";
 function loadDraft(): Record<string, any> {
   try { return JSON.parse(sessionStorage.getItem(DRAFT_KEY) || "{}") ?? {}; } catch { return {}; }
 }
@@ -36,25 +39,8 @@ const PROJECT_ID = `PX-${Math.floor(1000 + Math.random() * 9000)}-${["ALPHA","BE
 // ── Price helpers ──────────────────────────────────────────────────────────
 // Realistic market rates: at MOQ = price_max/piece, scales down toward price_min at high volume
 function calcPrice(sku: Sku | undefined, qty: number, delivery: DeliveryOption, artworkOption: ArtworkOption) {
-  if (!sku) return { low: 0, high: 0, mat: 0, setup: 0, logistics: 0, artAdd: 0, perPiece: 0 };
-  const moq = (sku as any).moq || 500;
-  const priceMin = parseFloat(String(sku.price_min));
-  const priceMax = parseFloat(String(sku.price_max));
-  // Logarithmic volume discount: at MOQ = priceMax, at 20× MOQ ≈ priceMin
-  const qtyRatio = Math.max(1, qty / moq);
-  const t = Math.min(Math.log(qtyRatio) / Math.log(20), 1);
-  const perPiece = priceMax - (priceMax - priceMin) * t;
-  const mat = perPiece * qty;
-  // Fixed plate / setup cost (realistic: ₹2,500 – ₹8,000)
-  const setup = Math.max(2500, priceMax * moq * 0.15);
-  // Logistics: qty-based slab + delivery surcharge
-  const baseLogistics = Math.min(qty * 0.9, 3500) + 800;
-  const deliverySurcharge = delivery === "blitz" ? 1200 : delivery === "warehouse" ? 300 : 0;
-  const logistics = baseLogistics + deliverySurcharge;
-  const artAdd = artworkOption === "design" ? 1999 : 0;
-  const low = mat + setup + logistics + artAdd;
-  const high = low * 1.12;
-  return { low, high, mat, setup, logistics, artAdd, perPiece };
+  const result = calculateOrderEstimate(sku, qty, delivery, artworkOption);
+  return { low: result.low, high: result.high, mat: result.material, setup: result.setup, logistics: result.logistics, artAdd: result.artwork, perPiece: result.unit };
 }
 
 // ── Spec unit helpers ───────────────────────────────────────────────────────
@@ -84,21 +70,21 @@ function fmt(n: number) {
   return new Intl.NumberFormat("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
 }
 
-const MS = ({ icon, className = "" }: { icon: string; className?: string }) => (
-  <span className={`material-symbols-outlined ${className}`}>{icon}</span>
+const MS = ({ icon, className = "", style }: { icon: string; className?: string; style?: React.CSSProperties }) => (
+  <span className={`material-symbols-outlined ${className}`} style={style}>{icon}</span>
 );
 
 // ── Order Summary Sidebar ──────────────────────────────────────────────────
 function OrderSummary({
-  sku, qty, delivery, artworkOption, onSubmit, submitting
+  sku, qty, delivery, artworkOption, buyingMode, onSubmit, submitting
 }: {
   sku: Sku | undefined; qty: number; delivery: DeliveryOption;
-  artworkOption: ArtworkOption; onSubmit?: () => void; submitting?: boolean;
+  artworkOption: ArtworkOption; buyingMode: "self" | "assisted"; onSubmit?: () => void; submitting?: boolean;
 }) {
   const { low, high, mat, setup, logistics, artAdd } = calcPrice(sku, qty, delivery, artworkOption);
 
   return (
-    <div className="rounded-lg overflow-hidden sticky top-24" style={{ background: "#0F1C2C", border: "1px solid rgba(255,255,255,0.08)" }}>
+    <div className="rounded-lg overflow-y-auto pw-order-summary" style={{ background: "#0F1C2C", border: "1px solid rgba(255,255,255,0.08)" }}>
       <div className="px-6 py-5 border-b" style={{ borderColor: "rgba(255,255,255,0.08)" }}>
         <div className="text-xs font-bold uppercase tracking-[0.18em] text-white">Order Summary</div>
       </div>
@@ -153,7 +139,7 @@ function OrderSummary({
                   ✓ Volume discount applied — order more, pay less per piece
                 </div>
               )}
-              <div className="text-xs text-slate-500 mt-1.5">Includes GST est. Final quote after artwork review.</div>
+              <div className="text-xs text-slate-500 mt-1.5">Excludes GST. Indicative estimate; final pricing follows artwork and specification review.</div>
             </>
           ) : (
             <div className="text-slate-500 text-sm">Select a product to see estimate</div>
@@ -168,17 +154,21 @@ function OrderSummary({
               className="w-full py-3 rounded font-black uppercase tracking-widest text-sm transition-all hover:opacity-90 active:scale-95 flex items-center justify-center gap-2 mt-2"
               style={{ background: "#E8A838", color: "#0F1C2C" }}
             >
-              {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <>SUBMIT REQUEST <ArrowRight className="w-4 h-4" /></>}
+              {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <>{buyingMode === "assisted" ? "REQUEST TECHNICAL QUOTE" : "CONFIRM ORDER PLAN"} <ArrowRight className="w-4 h-4" /></>}
             </button>
 
             <div className="mt-4 pt-4 border-t" style={{ borderColor: "rgba(255,255,255,0.08)" }}>
               <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: "#94A3B8" }}>What happens next</p>
               <div className="flex flex-col gap-2.5">
-                {[
-                  { n: "1", text: "We review your specs & call within 24 hours" },
-                  { n: "2", text: "You receive a detailed quote on WhatsApp & email" },
-                  { n: "3", text: "Accept & we source from 3 backup-verified factories" },
-                ].map(({ n, text }) => (
+                {(buyingMode === "assisted" ? [
+                  { n: "1", text: "A packaging engineer checks compatibility and tooling" },
+                  { n: "2", text: "You receive a production-ready technical quote" },
+                  { n: "3", text: "Approve the specification before production starts" },
+                ] : [
+                  { n: "1", text: "Your configured SKU and quantity are locked" },
+                  { n: "2", text: "Packworkz confirms artwork, tax, and dispatch details" },
+                  { n: "3", text: "Approve the final order summary before production" },
+                ]).map(({ n, text }) => (
                   <div key={n} className="flex items-start gap-2.5">
                     <span className="w-5 h-5 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-black mt-0.5"
                       style={{ background: "rgba(27,108,168,0.18)", color: "#1B6CA8" }}>
@@ -194,7 +184,7 @@ function OrderSummary({
 
         <div className="flex items-start gap-2 pt-2">
           <Shield className="w-4 h-4 text-slate-500 mt-0.5 shrink-0" />
-          <p className="text-xs text-slate-500">Verified by Packworkz Quality Assurance. 100% Recyclable materials guaranteed.</p>
+          <p className="text-xs text-slate-500">Reviewed by Packworkz Quality Assurance. Material certifications are provided where applicable.</p>
         </div>
       </div>
     </div>
@@ -204,18 +194,18 @@ function OrderSummary({
 // ── Step Header ────────────────────────────────────────────────────────────
 function StepHeader({ step, total, title, subtitle }: { step: number; total: number; title: string; subtitle?: string }) {
   return (
-    <div className="flex items-start justify-between mb-8">
-      <div>
+    <div className="flex items-start justify-between gap-4 mb-8">
+      <div className="min-w-0">
         <div className="text-xs font-bold tracking-[0.2em] uppercase mb-2" style={{ color: "#1B6CA8" }}>
           STEP {String(step).padStart(2, "0")} OF {String(total).padStart(2, "0")}
         </div>
-        <h1 className="text-4xl font-black text-slate-900" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+        <h1 className="text-3xl sm:text-4xl font-black text-slate-900 break-words" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
           {title}
         </h1>
         {subtitle && <p className="text-slate-400 text-sm mt-2">{subtitle}</p>}
         <div className="h-1 w-16 mt-3 rounded" style={{ background: "#1B6CA8" }} />
       </div>
-      <div className="text-right">
+      <div className="hidden sm:block text-right shrink-0">
         <div className="text-xs text-slate-400 uppercase tracking-wider">Project ID</div>
         <div className="font-mono font-bold text-slate-700 text-sm mt-1">{PROJECT_ID}</div>
       </div>
@@ -290,12 +280,13 @@ function Particles() {
 }
 
 // ── Animated Confirmation Screen ───────────────────────────────────────────
-function ConfirmationScreen({ quoteId, email, designPaid, sampleOption, samplePaid }: {
+function ConfirmationScreen({ quoteId, email, designPaid, sampleOption, samplePaid, buyingMode }: {
   quoteId: string;
   email: string;
   designPaid: boolean;
   sampleOption: string;
   samplePaid: boolean;
+  buyingMode: "self" | "assisted";
 }) {
   const [show, setShow] = useState(false);
   const [showSteps, setShowSteps] = useState(false);
@@ -308,25 +299,29 @@ function ConfirmationScreen({ quoteId, email, designPaid, sampleOption, samplePa
     return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
   }, []);
 
-  const samplePaidFinal = sampleOption === "express" && samplePaid;
-  const waMsg = encodeURIComponent(`Hi, my quote ID is ${quoteId}. Can you share an update?`);
+  const samplePaidFinal = sampleOption !== "none" && samplePaid;
+  const waMsg = encodeURIComponent(`Hi, my request ID is ${quoteId}. Can you share an update?`);
 
-  const STEPS = [
+  const STEPS = buyingMode === "assisted" ? [
     {
       num: "STEP 01",
       title: "We review your specs",
-      body: "Our team manually reviews every quote and sources competing prices from our factory network.",
+      body: "Our team manually reviews every request and sources competing prices from our factory network.",
     },
     {
       num: "STEP 02",
-      title: "You receive your quote",
+      title: "You receive your pricing plan",
       body: "Itemised pricing, timeline, and payment terms sent to your email and WhatsApp within 48 hours.",
     },
     {
       num: "STEP 03",
       title: "You approve, we produce",
-      body: "Accept your quote and your dashboard is activated. Track every stage from production to delivery.",
+      body: "Approve your pricing plan and your dashboard is activated. Track every stage from production to delivery.",
     },
+  ] : [
+    { num: "STEP 01", title: "Your plan is locked", body: "The selected SKU, quantity, artwork path, delivery choice, and indicative value are saved." },
+    { num: "STEP 02", title: "Final order checks", body: "Packworkz confirms tax, artwork readiness, dispatch details, and production capacity." },
+    { num: "STEP 03", title: "Approve and track", body: "Approve the final order summary and track production and delivery from your dashboard." },
   ];
 
   return (
@@ -377,7 +372,7 @@ function ConfirmationScreen({ quoteId, email, designPaid, sampleOption, samplePa
           transition: "all 0.5s ease 0.2s",
           opacity: show ? 1 : 0, transform: show ? "translateY(0)" : "translateY(10px)",
         }}>
-          YOUR QUOTE IS CONFIRMED
+          {buyingMode === "assisted" ? "TECHNICAL REQUEST SECURED" : "ORDER PLAN SECURED"}
         </div>
 
         {/* ── Headline ── */}
@@ -390,10 +385,10 @@ function ConfirmationScreen({ quoteId, email, designPaid, sampleOption, samplePa
           transition: "all 0.5s ease 0.3s",
           opacity: show ? 1 : 0, transform: show ? "translateY(0)" : "translateY(10px)",
         }}>
-          We're on it.
+          {buyingMode === "assisted" ? "Engineering review started." : "Your packaging plan is locked."}
         </h1>
 
-        {/* ── Quote ID ── */}
+        {/* ── Request ID ── */}
         <div style={{
           fontFamily: "'JetBrains Mono', 'Courier New', monospace",
           fontSize: 22, fontWeight: 600, letterSpacing: "2px",
@@ -412,7 +407,9 @@ function ConfirmationScreen({ quoteId, email, designPaid, sampleOption, samplePa
           transition: "all 0.5s ease 0.5s",
           opacity: show ? 1 : 0, transform: show ? "translateY(0)" : "translateY(10px)",
         }}>
-          Our team is reviewing your specs. You'll receive a detailed quote within 48 hours on WhatsApp and email.
+          {buyingMode === "assisted"
+            ? "Your technical brief is safely stored. A Packworkz specialist will validate compatibility, tooling, and the final production rate."
+            : "Your configured specification is safely stored. We will confirm artwork, GST, dispatch, and the final order summary before production."}
         </p>
 
         {/* ── What Happens Next ── */}
@@ -545,7 +542,7 @@ function ConfirmationScreen({ quoteId, email, designPaid, sampleOption, samplePa
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
-// Main Quote Component
+// Main configure component
 // ══════════════════════════════════════════════════════════════════════════════
 export default function Quote({ params }: { params?: { step?: string; id?: string } }) {
   const stepNum = params?.step ? parseInt(params.step) : params?.id ? 99 : 1;
@@ -562,7 +559,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
   const [selectedCategory, setSelectedCategory] = useState<string>(() => loadDraft().selectedCategory || CATEGORIES[0].slug);
   const [ecoFilter, setEcoFilter] = useState<boolean>(() => loadDraft().ecoFilter ?? false);
   const [selectedSkuId, setSelectedSkuId] = useState<string>(() => loadDraft().selectedSkuId || SKUS[0].id);
-  const [qty, setQty] = useState<number>(() => loadDraft().qty || 500);
+  const [qty, setQty] = useState<number>(() => loadDraft().qty || SKUS[0].moq);
   const [qtyUnit, setQtyUnit] = useState<'pieces' | 'kg'>(() => loadDraft().qtyUnit || 'pieces');
   const [variantSelections, setVariantSelections] = useState<Record<string, string>>(() => loadDraft().variantSelections || {});
   const [customFieldValues, setCustomFieldValues] = useState<Record<string, string>>(() => loadDraft().customFieldValues || {});
@@ -653,24 +650,27 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
 
   // ── Navigation with save ──────────────────────────────────────────────────
   const handleNext = () => {
-    if (stepNum === 1) {
+    if (stepNum === 1 && !selectedSku) {
+      toast({ variant: "destructive", title: "Choose a format", description: "Select a packaging SKU before continuing." }); return;
+    }
+    if (stepNum === 4) {
       if (!contactName.trim()) { toast({ variant: "destructive", title: "Required field missing", description: "Please enter your contact name." }); return; }
       if (!company.trim()) { toast({ variant: "destructive", title: "Required field missing", description: "Please enter your company name." }); return; }
       if (!email.trim() || !email.includes("@")) { toast({ variant: "destructive", title: "Required field missing", description: "Please enter a valid business email." }); return; }
       if (!phone.trim()) { toast({ variant: "destructive", title: "Required field missing", description: "Please enter your phone / WhatsApp number." }); return; }
     }
-    if (stepNum === 3 && !pincode.trim()) {
+    if (stepNum === 2 && !pincode.trim()) {
       toast({ variant: "destructive", title: "Required field missing", description: "Please enter your delivery pincode." }); return;
     }
-    if (stepNum === 3 && !/^\d{6}$/.test(pincode.trim())) {
+    if (stepNum === 2 && !/^\d{6}$/.test(pincode.trim())) {
       toast({ variant: "destructive", title: "Invalid pincode", description: "Please enter a valid 6-digit Indian pincode." }); return;
     }
     saveDraft(getAllState());
-    setLocation(`/quote/step/${stepNum + 1}`);
+    setLocation(`/configure/step/${stepNum + 1}`);
   };
   const handleBack = () => {
     saveDraft(getAllState());
-    stepNum > 1 ? setLocation(`/quote/step/${stepNum - 1}`) : setLocation("/");
+    stepNum > 1 ? setLocation(`/configure/step/${stepNum - 1}`) : setLocation("/");
   };
 
   const currentCatSkus = useMemo(() =>
@@ -679,6 +679,12 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
   );
 
   const selectedSku = useMemo(() => SKUS.find(s => s.id === selectedSkuId), [selectedSkuId]);
+  const selectedSkuMoq = selectedSku?.moq || 500;
+  const selectedSkuBuyingMode = isAssistedSku(selectedSku) ? "assisted" : "self";
+
+  useEffect(() => {
+    if (qtyUnit === "pieces" && selectedSku && qty < selectedSku.moq) setQty(selectedSku.moq);
+  }, [qty, qtyUnit, selectedSku]);
 
   const initVariants = (sku: Sku) => {
     const defaults: Record<string, string> = {};
@@ -689,13 +695,20 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
   const handleSelectSku = (skuId: string) => {
     setSelectedSkuId(skuId);
     const sku = SKUS.find(s => s.id === skuId);
-    if (sku) initVariants(sku);
+    if (sku) {
+      initVariants(sku);
+      if (qtyUnit === "pieces") setQty(prev => Math.max(prev, sku.moq));
+    }
   };
 
   const handleSelectCategory = (slug: string) => {
     setSelectedCategory(slug);
     const first = getSkusByCategory(slug)[0];
-    if (first) { setSelectedSkuId(first.id); initVariants(first); }
+    if (first) {
+      setSelectedSkuId(first.id);
+      initVariants(first);
+      if (qtyUnit === "pieces") setQty(first.moq);
+    }
   };
 
   const handleSubmit = () => {
@@ -727,11 +740,12 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
         sample_option: sampleOption,
         design_paid: designPaid,
         sample_paid: samplePaid,
+        buying_mode: selectedSkuBuyingMode,
       } as any
     }, {
       onSuccess: (res) => {
         clearDraft();
-        setLocation(`/quote/confirmed/${res.quote_id}`);
+        setLocation(`/configure/confirmed/${res.quote_id}?mode=${selectedSkuBuyingMode}`);
       },
       onError: () => toast({ variant: "destructive", title: "Submission Failed", description: "Please try again." })
     });
@@ -746,6 +760,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
         designPaid={designPaid}
         sampleOption={sampleOption}
         samplePaid={samplePaid}
+        buyingMode={new URLSearchParams(window.location.search).get("mode") === "assisted" ? "assisted" : "self"}
       />
     );
   }
@@ -755,7 +770,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
   return (
     <div className="min-h-screen" style={{ background: "#F8F9FC", fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
       {/* ── Progress strip ── */}
-      <div className="bg-white border-b border-slate-100 px-8 py-3">
+      <div className="bg-white border-b border-slate-100 px-4 md:px-8 py-3">
         <div className="max-w-6xl mx-auto flex items-center gap-0">
           {STEP_LABELS.map((label, i) => {
             const s = i + 1;
@@ -778,16 +793,16 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
       </div>
 
       {/* ── Content ── */}
-      <div className="max-w-6xl mx-auto px-4 md:px-8 py-10">
+      <div className="max-w-6xl mx-auto px-4 md:px-8 py-7 md:py-10">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
 
           {/* ── Left panel ── */}
           <div className="lg:col-span-2 space-y-6">
 
-            {/* ── STEP 1: Contact Info ── */}
-            {stepNum === 1 && (
+            {/* ── STEP 4: Contact Info ── */}
+            {stepNum === 4 && (
               <>
-                <StepHeader step={1} total={TOTAL_STEPS} title="Contact Info" subtitle="Tell us who you are — takes 30 seconds." />
+                <StepHeader step={4} total={TOTAL_STEPS} title="Where should we send the plan?" subtitle="Your specification is ready. Add the contact details for this project." />
                 <div className="bg-white rounded-lg border border-slate-200 p-6">
                   <div className="grid md:grid-cols-2 gap-5">
                     {[
@@ -809,10 +824,10 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
               </>
             )}
 
-            {/* ── STEP 2: Product & Quantity ── */}
-            {stepNum === 2 && (
+            {/* ── STEP 1: Product & Quantity ── */}
+            {stepNum === 1 && (
               <>
-                <StepHeader step={2} total={TOTAL_STEPS} title="Product & Quantity" subtitle="Choose your packaging format and how many you need." />
+                <StepHeader step={1} total={TOTAL_STEPS} title="Build your packaging plan" subtitle="Start with the format and quantity. No contact details required yet." />
 
                 {/* Category grid */}
                 <div className="bg-white rounded-lg border border-slate-200 p-5">
@@ -849,6 +864,14 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                   <div className="font-bold text-slate-800 text-sm mb-4" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
                     Select Template — <span className="font-normal text-slate-400">{CATEGORIES.find(c => c.slug === selectedCategory)?.label}</span>
                   </div>
+                  <div className="mb-4 rounded-lg border px-4 py-3" style={{ background: selectedSkuBuyingMode === "assisted" ? "#FFF7E6" : "#F1F8FF", borderColor: selectedSkuBuyingMode === "assisted" ? "#F2D89C" : "#CFE4F5" }}>
+                    <p className="text-xs leading-relaxed" style={{ color: selectedSkuBuyingMode === "assisted" ? "#8A5A00" : "#1B5F94" }}>
+                      <strong>{selectedSkuBuyingMode === "assisted" ? "Engineering-assisted format:" : "Self-serve format:"}</strong>{" "}
+                      {selectedSkuBuyingMode === "assisted"
+                        ? "This structure needs compatibility, tooling, or barrier review. Complete the technical brief for a production-ready quote."
+                        : "Configure the standard format and quantity now. You will see an indicative order value before sharing contact details."}
+                    </p>
+                  </div>
                   {currentCatSkus.length === 0 ? (
                     <p className="text-sm text-slate-400 py-4 text-center">No eco-friendly SKUs in this category.</p>
                   ) : (
@@ -872,9 +895,15 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                               <span className="font-black text-xs text-slate-400">{sku.code}</span>
                               {sku.is_eco && <span className="text-xs px-1.5 py-0.5 rounded font-bold" style={{ background: "rgba(22,163,74,0.1)", color: "#16A34A" }}>ECO</span>}
                               {sku.is_smartstock && <span className="text-xs px-1.5 py-0.5 rounded font-bold" style={{ background: "rgba(232,168,56,0.12)", color: "#E8A838" }}>SmartStock</span>}
+                              <span className="text-xs px-1.5 py-0.5 rounded font-bold" style={{ background: isAssistedSku(sku) ? "rgba(232,168,56,0.14)" : "rgba(27,108,168,0.10)", color: isAssistedSku(sku) ? "#92600A" : "#1B6CA8" }}>
+                                {isAssistedSku(sku) ? "Assisted" : "Self-serve"}
+                              </span>
                             </div>
                             <div className="font-bold text-slate-800 text-sm mb-0.5">{sku.name}</div>
                             <div className="text-xs text-slate-400 leading-snug line-clamp-2">{sku.description}</div>
+                            <div className="text-xs font-bold mt-2" style={{ color: "#64748B" }}>
+                              MOQ {sku.moq.toLocaleString()} {sku.moq_unit} · ₹{sku.price_min.toFixed(2)}-₹{sku.price_max.toFixed(2)}/unit
+                            </div>
                           </div>
                           {selectedSkuId === sku.id && (
                             <div className="w-5 h-5 rounded-full flex items-center justify-center shrink-0" style={{ background: "#1B6CA8" }}>
@@ -977,7 +1006,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                         );
                       })}
                     </div>
-                    <p className="text-xs text-slate-400 mt-3">Leave blank if flexible — we'll confirm at quote stage.</p>
+                    <p className="text-xs text-slate-400 mt-3">Leave blank if flexible — we'll confirm at pricing stage.</p>
                   </div>
                 )}
 
@@ -990,7 +1019,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                     {/* Unit toggle */}
                     <div className="flex gap-0 rounded-lg border border-slate-200 overflow-hidden w-fit">
                       {(["pieces", "kg"] as const).map(u => (
-                        <button key={u} onClick={() => { setQtyUnit(u); setQty(u === "pieces" ? 500 : 50); }}
+                        <button key={u} onClick={() => { setQtyUnit(u); setQty(u === "pieces" ? selectedSkuMoq : 50); }}
                           className="px-4 py-1.5 text-sm font-semibold transition-all"
                           style={{ background: qtyUnit === u ? "#1B6CA8" : "white", color: qtyUnit === u ? "white" : "#64748B" }}>
                           {u === "pieces" ? "Pieces" : "Kg (film)"}
@@ -998,7 +1027,9 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                       ))}
                     </div>
                     <div className="flex gap-2 flex-wrap">
-                      {(qtyUnit === "pieces" ? [500, 1000, 2500, 5000, 10000] : [50, 100, 250, 500, 1000]).map(q => (
+                      {(qtyUnit === "pieces"
+                        ? [selectedSkuMoq, selectedSkuMoq * 2, selectedSkuMoq * 5, selectedSkuMoq * 10, selectedSkuMoq * 20]
+                        : [50, 100, 250, 500, 1000]).map(q => (
                         <button key={q} onClick={() => setQty(q)}
                           className="px-4 py-2 rounded-lg border text-sm font-bold transition-all"
                           style={{ borderColor: qty === q ? "#1B6CA8" : "#E2E8F0", background: qty === q ? "rgba(27,108,168,0.08)" : "white", color: qty === q ? "#1B6CA8" : "#64748B" }}>
@@ -1006,17 +1037,25 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                         </button>
                       ))}
                       <input type="number" value={qty}
-                        onChange={e => setQty(Math.max(qtyUnit === "pieces" ? 500 : 50, parseInt(e.target.value) || (qtyUnit === "pieces" ? 500 : 50)))}
+                        onChange={e => setQty(Math.max(qtyUnit === "pieces" ? selectedSkuMoq : 50, parseInt(e.target.value) || (qtyUnit === "pieces" ? selectedSkuMoq : 50)))}
                         className="w-28 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-400 bg-slate-50" placeholder="Custom" />
                     </div>
                     <p className="text-xs text-slate-400">
-                      {qtyUnit === "pieces" ? "Minimum: 500 pieces" : "Minimum: 50 kg of packaging film"}
+                      {qtyUnit === "pieces" ? `Minimum: ${selectedSkuMoq.toLocaleString()} pieces for ${selectedSku?.name || "this SKU"}` : "Minimum: 50 kg of packaging film"}
                     </p>
+                    {selectedSkuBuyingMode === "assisted" && (
+                      <div className="flex items-start gap-2 p-3 rounded-lg" style={{ background: "#FFF7E6", border: "1px solid #F2D89C" }}>
+                        <span className="text-amber-500 text-base leading-none mt-0.5">ⓘ</span>
+                        <p className="text-xs leading-snug" style={{ color: "#8A5A00" }}>
+                          <strong>Assisted quote needed.</strong> Roll and laminate costs depend on material structure, roll width, GSM, printing method, and packing-line constraints. Submit the spec and we will price it manually.
+                        </p>
+                      </div>
+                    )}
                     {qtyUnit === "pieces" && qty <= 1000 && (
                       <div className="flex items-start gap-2 p-3 rounded-lg bg-amber-50 border border-amber-200">
                         <span className="text-amber-500 text-base leading-none mt-0.5">⚠️</span>
                         <p className="text-xs text-amber-800 leading-snug">
-                          <strong>Prices are higher at low quantities.</strong> Ordering 2,500+ pieces can reduce your unit cost by 30–50%. The estimate shown reflects your current quantity — your actual savings will be shown in the full quote.
+                          <strong>Prices are higher at low quantities.</strong> Increasing quantity generally lowers the unit rate by spreading setup and print costs. Compare quantities in this step; the final rate is confirmed after specification and artwork review.
                         </p>
                       </div>
                     )}
@@ -1025,10 +1064,10 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
               </>
             )}
 
-            {/* ── STEP 3: Design & Delivery (consolidated) ── */}
-            {stepNum === 3 && (
+            {/* ── STEP 2: Design & Delivery (consolidated) ── */}
+            {stepNum === 2 && (
               <>
-                <StepHeader step={3} total={TOTAL_STEPS} title="Design & Delivery" subtitle="How should we print it, and how fast do you need it?" />
+                <StepHeader step={2} total={TOTAL_STEPS} title="Design & Delivery" subtitle="How should we print it, and where should the finished packaging go?" />
 
                 {/* Artwork section */}
                 <div className="bg-white rounded-lg border border-slate-200 p-6">
@@ -1138,8 +1177,8 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                   <div className="grid grid-cols-3 gap-4 mb-5">
                     {([
                       { id: "standard" as DeliveryOption, icon: <Truck className="w-7 h-7" />, label: "Standard Pro", time: `${selectedSku?.delivery_days_india || 12}–${(selectedSku?.delivery_days_india || 12) + 2} Days`, price: "Free", recommended: true },
-                      { id: "blitz" as DeliveryOption, icon: <Zap className="w-7 h-7" />, label: "Blitz Logistics", time: "5–7 Days", price: "+₹240" },
-                      { id: "warehouse" as DeliveryOption, icon: <Warehouse className="w-7 h-7" />, label: "Warehouse Hold", time: "Up to 30 days", price: "₹15/mo" },
+                      { id: "blitz" as DeliveryOption, icon: <Zap className="w-7 h-7" />, label: "Blitz Logistics", time: "5–7 Days", price: "+₹1,200" },
+                      { id: "warehouse" as DeliveryOption, icon: <Warehouse className="w-7 h-7" />, label: "Warehouse Hold", time: "Up to 30 days", price: "+₹300 handling" },
                     ]).map(opt => (
                       <button key={opt.id} onClick={() => setDeliveryOption(opt.id)}
                         className="relative flex flex-col items-start gap-2 p-4 rounded-lg border-2 text-left transition-all"
@@ -1180,10 +1219,10 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
               </>
             )}
 
-            {/* ── STEP 4: Sample ── */}
-            {stepNum === 4 && (
+            {/* ── STEP 3: Sample ── */}
+            {stepNum === 3 && (
               <>
-                <StepHeader step={4} total={TOTAL_STEPS} title="Sample Request" subtitle="Get a physical sample before bulk production." />
+                <StepHeader step={3} total={TOTAL_STEPS} title="Sample Request" subtitle="Validate structure and print before bulk production." />
                 <div className="bg-white rounded-lg border border-slate-200 p-6">
                   <p className="text-sm text-slate-500 mb-6">Sampling fee is fully adjusted against your production order. No extra charge.</p>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -1191,7 +1230,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                     <div
                       className="p-5 rounded-xl border-2 cursor-pointer transition-all"
                       style={{ borderColor: sampleOption === "express" ? "#E8A838" : "#E2E8F0", background: sampleOption === "express" ? "rgba(232,168,56,0.04)" : "white" }}
-                      onClick={() => setSampleOption("express")}
+                      onClick={() => { setSampleOption("express"); setSamplePaid(false); }}
                     >
                       <div className="flex items-start justify-between mb-3">
                         <span className="text-xs font-black uppercase tracking-wider px-2 py-1 rounded" style={{ background: "#E8A838", color: "#0D1B2A" }}>EXPRESS</span>
@@ -1229,7 +1268,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                     <div
                       className="p-5 rounded-xl border-2 cursor-pointer transition-all"
                       style={{ borderColor: sampleOption === "standard" ? "#1B6CA8" : "#E2E8F0", background: sampleOption === "standard" ? "rgba(27,108,168,0.04)" : "white" }}
-                      onClick={() => setSampleOption("standard")}
+                      onClick={() => { setSampleOption("standard"); setSamplePaid(false); }}
                     >
                       <div className="flex items-start justify-between mb-3">
                         <span className="text-xs font-black uppercase tracking-wider px-2 py-1 rounded" style={{ background: "rgba(27,108,168,0.12)", color: "#1B6CA8" }}>STANDARD</span>
@@ -1242,14 +1281,28 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                           <li key={f} className="text-xs text-slate-500 flex items-center gap-1.5"><span style={{ color: "#1B6CA8" }}>✓</span> {f}</li>
                         ))}
                       </ul>
-                      <p className="text-xs text-slate-400">Fee adjusted against production order.</p>
+                      {sampleOption === "standard" && (
+                        samplePaid ? (
+                          <div className="flex items-center gap-2 text-xs font-bold" style={{ color: "#16a34a" }}><CheckCircle2 className="w-4 h-4" /> Standard sample confirmed</div>
+                        ) : (
+                          <button
+                            onClick={async (event) => {
+                              event.stopPropagation();
+                              try { await openRazorpay({ amount: 299900, description: "Standard Sample", notes: { service: "sample_standard" }, onSuccess: () => setSamplePaid(true), onDismiss: () => {} }); } catch {}
+                            }}
+                            className="w-full py-2.5 rounded-lg text-sm font-bold transition-all hover:brightness-110"
+                            style={{ background: "#1B6CA8", color: "white" }}>
+                            Pay ₹2,999 — Order Sample
+                          </button>
+                        )
+                      )}
                     </div>
 
                     {/* Card C: Skip */}
                     <div
                       className="p-5 rounded-xl border-2 cursor-pointer transition-all"
                       style={{ borderColor: sampleOption === "none" ? "#94A3B8" : "#E2E8F0", background: sampleOption === "none" ? "rgba(148,163,184,0.06)" : "white" }}
-                      onClick={() => setSampleOption("none")}
+                      onClick={() => { setSampleOption("none"); setSamplePaid(false); }}
                     >
                       <div className="flex items-start justify-between mb-3">
                         <span className="text-xs font-black uppercase tracking-wider px-2 py-1 rounded" style={{ background: "rgba(148,163,184,0.15)", color: "#64748B" }}>SKIP</span>
@@ -1267,7 +1320,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
             {/* ── STEP 5: Review ── */}
             {stepNum === 5 && (
               <>
-                <StepHeader step={5} total={TOTAL_STEPS} title="Review & Submit" subtitle="Double-check everything before we get started." />
+                <StepHeader step={5} total={TOTAL_STEPS} title={selectedSkuBuyingMode === "assisted" ? "Review technical request" : "Review order plan"} subtitle="Double-check the specification before it is saved." />
                 <div className="bg-white rounded-lg border border-slate-200 p-6 space-y-5">
                   <div>
                     <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Additional Notes / Special Requirements</label>
@@ -1298,9 +1351,9 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                         ["Artwork", artworkOption === "upload"
                           ? (artworkUploading ? "⏳ Uploading…" : artworkFileUrl && !artworkFileUrl.startsWith("local:") ? `✓ ${artworkFileUrl.split("/").pop()?.substring(0, 28) || "File uploaded"}` : artworkFile ? `⚠ ${artworkFile.name} (not uploaded)` : "Upload ready-to-print file")
                           : artworkOption === "design" ? `Design Service — ₹1,999 ${designPaid ? "✓ Paid" : "(pending payment)"}` : "Plain / unprinted"],
-                        ["Delivery", deliveryOption === "standard" ? "Standard Pro (Free)" : deliveryOption === "blitz" ? "Blitz Logistics (+₹240)" : "Warehouse Hold (₹15/mo)"],
+                        ["Delivery", deliveryOption === "standard" ? "Standard Pro (Free)" : deliveryOption === "blitz" ? "Blitz Logistics (+₹1,200)" : "Warehouse Hold (+₹300 handling)"],
                         ["Delivery Address", [addressLine, city, deliveryState, pincode].filter(Boolean).join(", ") || "—"],
-                        ["Sample", sampleOption === "express" ? `Express Kit — ₹4,999 ${samplePaid ? "✓ Paid" : "(pending payment)"}` : sampleOption === "standard" ? "Standard — ₹2,999" : "Skipped"],
+                        ["Sample", sampleOption === "express" ? `Express Kit — ₹4,999 ${samplePaid ? "✓ Paid" : "(pending payment)"}` : sampleOption === "standard" ? `Standard — ₹2,999 ${samplePaid ? "✓ Paid" : "(pending payment)"}` : "Skipped"],
                       ].map(([k, v]) => (
                         <div key={String(k)} className="flex justify-between text-sm">
                           <span className="text-slate-400">{k}</span>
@@ -1330,7 +1383,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                     <div style={{ display: "flex", gap: 0, flexDirection: "column" as const }}>
                       {[
                         { n: "1", title: "We review your spec", body: "Same day — our team checks SKU, quantity, and delivery requirements.", color: "#1B6CA8" },
-                        { n: "2", title: "You receive an itemised quote", body: "Within 48 hours via WhatsApp and email — line-item breakdown, no surprises.", color: "#E8A838" },
+                        { n: "2", title: "You receive an itemised pricing plan", body: "Within 48 hours via WhatsApp and email — line-item breakdown, no surprises.", color: "#E8A838" },
                         { n: "3", title: "You approve before anything starts", body: "Nothing is ordered or produced until you give the green light.", color: "#22C55E" },
                       ].map((step, i) => (
                         <div key={i} style={{ display: "flex", gap: 12, padding: "10px 0", borderBottom: i < 2 ? "1px solid #E8ECF4" : "none", alignItems: "flex-start" }}>
@@ -1350,35 +1403,36 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
             )}
 
             {/* ── Navigation ── */}
-            <div className="flex justify-between pt-4">
-              <button onClick={handleBack} className="px-6 py-2.5 rounded-lg border border-slate-200 text-sm font-bold text-slate-600 hover:border-slate-400 transition-colors">
+            <div className="flex items-center justify-between gap-3 pt-4">
+              <button onClick={handleBack} className="px-4 sm:px-6 py-2.5 rounded-lg border border-slate-200 text-sm font-bold text-slate-600 hover:border-slate-400 transition-colors shrink-0">
                 ← Back
               </button>
               {!isLastStep ? (
-                <button onClick={handleNext} className="px-8 py-2.5 rounded-lg text-sm font-black uppercase tracking-wider text-white transition-all hover:opacity-90" style={{ background: "#0D1B2A" }}>
+                <button onClick={handleNext} className="px-5 sm:px-8 py-2.5 rounded-lg text-sm font-black uppercase tracking-wider text-white transition-all hover:opacity-90 min-w-0" style={{ background: "#0D1B2A" }}>
                   Continue →
                 </button>
               ) : (
                 <button onClick={handleSubmit} disabled={submitMutation.isPending || artworkUploading}
-                  className="px-8 py-2.5 rounded-lg text-sm font-black uppercase tracking-wider transition-all hover:opacity-90 flex items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+                  className="px-5 sm:px-8 py-2.5 rounded-lg text-sm font-black uppercase tracking-wider transition-all hover:opacity-90 flex items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed min-w-0"
                   style={{ background: "#E8A838", color: "#0F1C2C" }}>
-                  {artworkUploading ? <><Loader2 className="w-4 h-4 animate-spin" /> Uploading artwork…</> : submitMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <>Submit Request <ArrowRight className="w-4 h-4" /></>}
+                  {artworkUploading ? <><Loader2 className="w-4 h-4 animate-spin" /> Uploading artwork…</> : submitMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <>{selectedSkuBuyingMode === "assisted" ? "Request technical quote" : "Confirm order plan"} <ArrowRight className="w-4 h-4" /></>}
                 </button>
               )}
             </div>
           </div>
 
           {/* ── Right: Order Summary ── */}
-          <div className="lg:col-span-1">
+          <aside className="lg:col-span-1 lg:self-start lg:sticky lg:top-24 pw-order-summary-rail" aria-label="Live order summary">
             <OrderSummary
               sku={selectedSku}
               qty={qty}
               delivery={deliveryOption}
               artworkOption={artworkOption}
+              buyingMode={selectedSkuBuyingMode}
               onSubmit={isLastStep ? handleSubmit : undefined}
               submitting={submitMutation.isPending}
             />
-          </div>
+          </aside>
         </div>
       </div>
     </div>

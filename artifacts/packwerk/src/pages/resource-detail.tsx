@@ -206,14 +206,14 @@ function ArticleBody({ sections }: { sections: ResourceSection[] }) {
         if (section.type === "cta") {
           return (
             <div key={i} style={{ margin: "32px 0", textAlign: "center" }}>
-              <Link href={section.ctaHref ?? "/quote"} style={{
+              <Link href={section.ctaHref ?? "/configure"} style={{
                 display: "inline-block",
                 background: "#E8A838", color: "#0D1B2A",
                 padding: "14px 32px", fontWeight: 800, fontSize: 15,
                 textDecoration: "none", borderRadius: 4,
                 letterSpacing: "0.02em",
               }}>
-                {section.ctaText ?? "Get a Quote →"}
+                {section.ctaText ?? "Get Pricing Plan →"}
               </Link>
             </div>
           );

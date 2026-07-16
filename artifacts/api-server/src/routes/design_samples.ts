@@ -2,6 +2,7 @@ import { Router, type IRouter } from "express";
 import { sb } from "../lib/supabase";
 import { generateId } from "../lib/generateId";
 import { sendDesignConfirmation, sendSampleConfirmation } from "../lib/email";
+import { notifySlack } from "../lib/slack";
 
 const router: IRouter = Router();
 
@@ -57,14 +58,30 @@ router.post("/design-requests", async (req, res): Promise<void> => {
     return;
   }
 
-  sendDesignConfirmation({
-    to: email,
-    name: contact_name,
-    designId,
-    productType: product_type,
-    isRush: is_rush ?? false,
-    amountPaid: amount_paid,
-  }).catch(err => console.error("[email] design confirmation failed:", err));
+  await Promise.allSettled([
+    sendDesignConfirmation({
+      to: email,
+      name: contact_name,
+      designId,
+      productType: product_type,
+      isRush: is_rush ?? false,
+      amountPaid: amount_paid,
+    }),
+    notifySlack({
+      source: "Design",
+      title: "New paid design request",
+      referenceId: designId,
+      summary: brand_description || notes || product_type,
+      fields: [
+        { label: "Contact", value: contact_name },
+        { label: "Email", value: email },
+        { label: "Phone", value: phone },
+        { label: "Product", value: product_type },
+        { label: "Paid", value: `₹${amount_paid}` },
+        { label: "Rush", value: is_rush ? "Yes" : "No" },
+      ],
+    }),
+  ]);
 
   res.status(201).json({ design_id: design.design_id, id: design.id });
 });
@@ -111,13 +128,28 @@ router.post("/sample-requests", async (req, res): Promise<void> => {
     return;
   }
 
-  sendSampleConfirmation({
-    to: email,
-    name: contact_name,
-    sampleId,
-    sampleTier: sample_tier,
-    amountPaid: amount_paid,
-  }).catch(err => console.error("[email] sample confirmation failed:", err));
+  await Promise.allSettled([
+    sendSampleConfirmation({
+      to: email,
+      name: contact_name,
+      sampleId,
+      sampleTier: sample_tier,
+      amountPaid: amount_paid,
+    }),
+    notifySlack({
+      source: "Sample",
+      title: "New paid sample request",
+      referenceId: sampleId,
+      summary: `${sample_tier} sample requested`,
+      fields: [
+        { label: "Contact", value: contact_name },
+        { label: "Email", value: email },
+        { label: "Phone", value: phone },
+        { label: "Product ID", value: product_id },
+        { label: "Paid", value: `₹${amount_paid}` },
+      ],
+    }),
+  ]);
 
   res.status(201).json({ sample_id: sample.sample_id, id: sample.id });
 });

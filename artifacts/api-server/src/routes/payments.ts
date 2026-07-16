@@ -11,15 +11,17 @@ function getRazorpay(): Razorpay | null {
 
 const router = Router();
 
-router.post("/payments/create-order", async (req, res) => {
+router.post("/payments/create-order", async (req, res): Promise<void> => {
   const razorpay = getRazorpay();
   if (!razorpay) {
-    return res.status(503).json({ error: "Payment gateway not configured" });
+    res.status(503).json({ error: "Payment gateway not configured" });
+    return;
   }
   try {
     const { amount, currency = "INR", notes = {} } = req.body;
     if (!amount || typeof amount !== "number" || amount < 100) {
-      return res.status(400).json({ error: "Invalid amount" });
+      res.status(400).json({ error: "Invalid amount" });
+      return;
     }
     const order = await razorpay.orders.create({ amount, currency, notes });
     res.json({
@@ -34,17 +36,19 @@ router.post("/payments/create-order", async (req, res) => {
   }
 });
 
-router.post("/payments/verify", (req, res) => {
+router.post("/payments/verify", (req, res): void => {
   try {
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
     const secret = process.env.RAZORPAY_KEY_SECRET;
     if (!secret) {
-      return res.status(503).json({ error: "Payment verification unavailable — RAZORPAY_KEY_SECRET not configured" });
+      res.status(503).json({ error: "Payment verification unavailable — RAZORPAY_KEY_SECRET not configured" });
+      return;
     }
     const body = `${razorpay_order_id}|${razorpay_payment_id}`;
     const expected = crypto.createHmac("sha256", secret).update(body).digest("hex");
     if (expected !== razorpay_signature) {
-      return res.status(400).json({ success: false, error: "Signature mismatch" });
+      res.status(400).json({ success: false, error: "Signature mismatch" });
+      return;
     }
     res.json({ success: true });
   } catch (err: any) {

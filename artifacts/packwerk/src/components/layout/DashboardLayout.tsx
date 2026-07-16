@@ -10,7 +10,7 @@ const MS = ({ icon, className = "", style }: { icon: string; className?: string;
 const NAV_ITEMS = [
   { href: "/dashboard", label: "Overview", icon: "dashboard" },
   { href: "/dashboard/orders", label: "Orders", icon: "deployed_code" },
-  { href: "/dashboard/quotes", label: "Quotes", icon: "request_quote" },
+  { href: "/dashboard/quotes", label: "Pricing Plans", icon: "request_quote" },
   { href: "/dashboard/payments", label: "Payments", icon: "payments" },
   { href: "/dashboard/profile", label: "Profile", icon: "person" },
 ];
@@ -138,7 +138,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
           <span className="font-black text-sm" style={{ fontFamily: "'Space Grotesk', sans-serif", color: "#0D1B2A" }}>Packworkz</span>
 
           {/* Dashboard top nav (desktop) */}
-          <Link href="/quote">
+          <Link href="/configure">
             <button className="flex items-center gap-1 text-xs font-bold px-4 py-2 rounded hover:opacity-90" style={{ background: "#E8A838", color: "#0D1B2A" }}>
               <MS icon="add" className="text-sm" /> New Order
             </button>
@@ -162,9 +162,9 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
             </Link>
           ))}
           <div className="ml-auto flex items-center gap-3">
-            <Link href="/quote">
+            <Link href="/configure">
               <button className="flex items-center gap-1 text-xs font-bold px-5 py-2 rounded border-2 hover:opacity-90 transition-all" style={{ borderColor: "#1B6CA8", color: "#1B6CA8" }}>
-                GET QUOTE
+                START CONFIGURATION
               </button>
             </Link>
           </div>

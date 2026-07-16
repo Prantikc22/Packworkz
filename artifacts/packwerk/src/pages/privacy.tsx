@@ -9,11 +9,11 @@ export default function Privacy() {
         {[
           {
             title: "1. Information We Collect",
-            body: "We collect information you provide directly to us when you request a quote, order samples, register for an account, or contact us. This includes your name, email address, phone number, company name, billing address, and packaging requirements. We also automatically collect certain technical data including IP address, browser type, and usage data through cookies and similar technologies.",
+            body: "We collect information you provide directly to us when you request pricing, order samples, register for an account, or contact us. This includes your name, email address, phone number, company name, billing address, and packaging requirements. We also automatically collect certain technical data including IP address, browser type, and usage data through cookies and similar technologies.",
           },
           {
             title: "2. How We Use Your Information",
-            body: "We use your information to process quote requests and orders, communicate with you about your orders and our services, send you transactional and promotional communications (where permitted), improve our platform and services, comply with legal obligations, and prevent fraud and ensure security.",
+            body: "We use your information to process configuration requests and orders, communicate with you about your orders and our services, send you transactional and promotional communications (where permitted), improve our platform and services, comply with legal obligations, and prevent fraud and ensure security.",
           },
           {
             title: "3. Sharing of Information",

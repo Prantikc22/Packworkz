@@ -10,6 +10,7 @@ import adminRouter from "./admin";
 import paymentsRouter from "./payments";
 import packAiRouter from "./pack_ai";
 import uploadRouter from "./upload";
+import leadsRouter from "./leads";
 
 const router: IRouter = Router();
 
@@ -24,5 +25,6 @@ router.use(adminRouter);
 router.use(paymentsRouter);
 router.use(packAiRouter);
 router.use(uploadRouter);
+router.use(leadsRouter);
 
 export default router;

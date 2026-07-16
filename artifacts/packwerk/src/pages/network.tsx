@@ -55,7 +55,7 @@ export default function Network() {
           </p>
           <div className="pw-reveal pw-d3" style={{ display: "flex", gap: 14, justifyContent: "center", flexWrap: "wrap" }}>
             <span className="animated-border animated-border-white">
-              <Link href="/quote"><button className="btn-fill btn-amber px-8 py-3 text-sm pw-btn-transition">Get a Quote →</button></Link>
+              <Link href="/configure"><button className="btn-fill btn-amber px-8 py-3 text-sm pw-btn-transition">Get Pricing Plan →</button></Link>
             </span>
             <Link href="/products"><button className="btn-fill btn-outline-white px-8 py-3 text-sm pw-btn-transition">Browse Products</button></Link>
           </div>
@@ -152,7 +152,7 @@ export default function Network() {
           </p>
           <div style={{ display: "flex", gap: 14, justifyContent: "center", flexWrap: "wrap" }}>
             <span className="animated-border animated-border-white">
-              <Link href="/quote"><button className="btn-fill btn-amber px-8 py-3 text-sm pw-btn-transition">Get a Quote →</button></Link>
+              <Link href="/configure"><button className="btn-fill btn-amber px-8 py-3 text-sm pw-btn-transition">Get Pricing Plan →</button></Link>
             </span>
             <Link href="/products"><button className="btn-fill btn-outline-white px-8 py-3 text-sm pw-btn-transition">Browse 110+ SKUs</button></Link>
           </div>

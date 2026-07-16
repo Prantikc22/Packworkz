@@ -250,7 +250,7 @@ export default function DashboardOverview() {
                     </p>
                   )}
                   <Link href="/dashboard/quotes">
-                    <button className="btn-fill btn-amber px-4 py-2 text-[12px] w-full"><span>Review Quote →</span></button>
+                    <button className="btn-fill btn-amber px-4 py-2 text-[12px] w-full"><span>Review Pricing →</span></button>
                   </Link>
                 </div>
               );
@@ -278,7 +278,7 @@ export default function DashboardOverview() {
               {recentOrders.slice(0, 3).map((o: any) => {
                 const name = Array.isArray(o.items) && o.items[0]?.product_name ? o.items[0].product_name : o.order_id;
                 return (
-                  <Link key={o.id} href={`/quote?reorder=${o.id}`}>
+                  <Link key={o.id} href={`/configure?reorder=${o.id}`}>
                     <button className="px-3 py-1.5 text-[11px] font-bold border border-[#E7E8EB] hover:border-[#E8A838] hover:text-[#E8A838] transition-all" style={{ color: "#64748B" }}>
                       {name.length > 18 ? name.slice(0, 18) + "…" : name}
                     </button>
@@ -291,19 +291,19 @@ export default function DashboardOverview() {
           )}
         </div>
 
-        {/* New Quote */}
+        {/* New Configuration */}
         <div className="bg-white border border-[#E7E8EB] p-6 flex flex-col">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-10 h-10 flex items-center justify-center" style={{ background: "rgba(232,168,56,0.1)" }}>
               <Plus className="w-5 h-5" style={{ color: "#E8A838" }} />
             </div>
             <div>
-              <p className="font-black text-[13px]" style={{ color: "#0D1B2A" }}>New Quote</p>
-              <p className="text-[12px]" style={{ color: "#94A3B8" }}>Start a new quote</p>
+              <p className="font-black text-[13px]" style={{ color: "#0D1B2A" }}>New Configuration</p>
+              <p className="text-[12px]" style={{ color: "#94A3B8" }}>Start a new packaging plan</p>
             </div>
           </div>
-          <Link href="/quote" className="mt-auto">
-            <button className="btn-fill btn-amber w-full py-2.5 text-[13px]"><span>Get a Quote →</span></button>
+          <Link href="/configure" className="mt-auto">
+            <button className="btn-fill btn-amber w-full py-2.5 text-[13px]"><span>Start Configuration →</span></button>
           </Link>
         </div>
 

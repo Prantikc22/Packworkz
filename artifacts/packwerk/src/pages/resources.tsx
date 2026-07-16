@@ -81,7 +81,7 @@ export default function Resources() {
             Ready to optimise your packaging?
           </h2>
           <p style={{ color: "rgba(255,255,255,0.55)", fontSize: 16, lineHeight: 1.7, marginBottom: 32 }}>
-            Browse 110+ packaging SKUs, get a quote in 48 hours, or order a sample from ₹2,999.
+            Browse 110+ packaging SKUs, get a pricing plan in 48 hours, or order a sample from ₹2,999.
           </p>
           <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
             <Link href="/products" style={{
@@ -91,13 +91,13 @@ export default function Resources() {
             }}>
               Browse Products →
             </Link>
-            <Link href="/quote" style={{
+            <Link href="/configure" style={{
               background: "transparent", color: "white",
               border: "1px solid rgba(255,255,255,0.3)",
               padding: "14px 28px", fontWeight: 600, fontSize: 14,
               textDecoration: "none",
             }}>
-              Get a Quote
+              Get Pricing Plan
             </Link>
           </div>
         </div>

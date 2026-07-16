@@ -1,4 +1,4 @@
-// ── Packworkz SKU Catalog — 33 SKUs across 10 categories ──────────────────────
+// ── Packworkz SKU Catalog — 32 SKUs across 9 categories ───────────────────────
 // Each SKU has variants (decision-oriented options) and customization fields
 
 export type VariantGroup = {
@@ -55,7 +55,6 @@ export const CATEGORIES: Category[] = [
   { slug: "rolls",      label: "Packaging Rolls",       icon: "density_medium",            count: 3 },
   { slug: "labels",     label: "Labels & Closures",     icon: "label",                     count: 3 },
   { slug: "sustainable",label: "Sustainable Packaging", icon: "eco",                       count: 4 },
-  { slug: "liquid",     label: "Liquid Cartons",        icon: "water_drop",                count: 1 },
 ];
 
 // ── Full SKU catalog ────────────────────────────────────────────────────────
@@ -721,28 +720,6 @@ export const SKUS: Sku[] = [
       { key: "coating", label: "Coating", type: "select", options: ["None", "PLA-coated (grease-resistant)", "Wax-coated"] },
     ],
   },
-
-  // ── 10. LIQUID CARTONS (1) ─────────────────────────────────────────────────
-  {
-    id: "liq-aseptic",
-    code: "LC-1001",
-    name: "Aseptic Carton (Tetra Pak Type)",
-    category: "liquid",
-    slug: "aseptic-carton",
-    description: "Multi-layer aseptic liquid carton for shelf-stable dairy, juice, and liquid food. UHT processing compatible.",
-    use_case: "Dairy (milk, lassi), juices, soups, plant-based milks, coconut water",
-    price_min: 12.00, price_max: 60.00, moq: 5000, moq_unit: "units",
-    is_smartstock: false, is_eco: false, sample_tier: "complex", sample_price: 7999, delivery_days_india: 28,
-    variants: [
-      { key: "shape", label: "Carton Shape", options: ["Brick / Prisma (standard)", "Square (Cube)", "Slimline"] },
-      { key: "opening", label: "Opening Type", options: ["Straw Hole", "Screw Cap", "Pull-tab"] },
-    ],
-    customization_fields: [
-      { key: "volume_ml", label: "Volume (ml)", type: "select", options: ["65", "125", "200", "250", "500", "1000"] },
-      { key: "layers", label: "Barrier Layers", type: "select", options: ["6-layer (standard)", "7-layer (ultra-barrier)"] },
-      { key: "print_colors", label: "Print Colors", type: "select", options: ["4", "6", "8+"] },
-    ],
-  },
 ];
 
 // ── SKU image map (code → local asset) ──────────────────────────────────────
@@ -788,8 +765,6 @@ export const SKU_IMAGES: Record<string, string> = {
   "SP-902": "/skus/compostablepacks.jpg",
   "SP-903": "/skus/recycledfoodbox.jpg",
   "SP-904": "/skus/recycledbox.jpg",
-  // Liquid Cartons
-  "LC-1001": "/skus/asepticpacks.jpg",
 };
 
 // ── Lookup helpers ──────────────────────────────────────────────────────────

@@ -1,35 +1,5 @@
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import { Link } from "wouter";
-
-function CountUp({ target, suffix = "", duration = 1500 }: {
-  target: number; suffix?: string; duration?: number;
-}) {
-  const [count, setCount] = useState(0);
-  const [started, setStarted] = useState(false);
-  const ref = useRef<HTMLSpanElement>(null);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el || started) return;
-    const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) {
-        setStarted(true);
-        let t0: number | null = null;
-        const step = (ts: number) => {
-          if (!t0) t0 = ts;
-          const p = Math.min((ts - t0) / duration, 1);
-          const ease = 1 - Math.pow(1 - p, 3);
-          setCount(Math.floor(ease * target));
-          if (p < 1) requestAnimationFrame(step);
-        };
-        requestAnimationFrame(step);
-        observer.disconnect();
-      }
-    }, { threshold: 0.5 });
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [target, duration, started]);
-  return <span ref={ref}>{count}{suffix}</span>;
-}
 
 export default function ComparisonSection() {
   const [showAllComparisons, setShowAllComparisons] = useState(false);
@@ -49,38 +19,19 @@ export default function ComparisonSection() {
             borderRadius: 9999, padding: "6px 18px",
             color: "rgba(255,255,255,0.45)", fontSize: 11, fontWeight: 600, letterSpacing: "2.5px", textTransform: "uppercase",
           }}>
-            WHY BRANDS CHOOSE PACKWORKZ
+            PACKWORKZ VS. TRADITIONAL SOURCING
           </span>
         </div>
 
         <div style={{ textAlign: "center", marginBottom: 14 }}>
           <h2 className="scroll-animate scroll-animate-delay-1" style={{ color: "white", fontSize: "clamp(2.2rem,4.5vw,3.4rem)", fontWeight: 800, lineHeight: 1.05, letterSpacing: "-1.5px" }}>
-            Built for modern<br />
-            <span style={{ color: "white", fontStyle: "italic", opacity: 0.75 }}>procurement teams.</span>
+            What changes when<br />
+            <span style={{ color: "white", fontStyle: "italic", opacity: 0.75 }}>packaging becomes managed.</span>
           </h2>
         </div>
         <p className="scroll-animate scroll-animate-delay-2" style={{ color: "rgba(255,255,255,0.40)", fontSize: 16, textAlign: "center", maxWidth: 420, margin: "0 auto 72px", lineHeight: 1.7 }}>
           Operational resilience designed into every order.
         </p>
-
-        <div className="scroll-animate cmp-stats-grid" style={{ maxWidth: 860, margin: "0 auto 88px" }}>
-          {[
-            { target: 500, suffix: "+",   label: "Manufacturing Partners" },
-            { target: 99,  suffix: ".2%", label: "Dispatch Reliability" },
-            { target: 3,   suffix: "×",   label: "Backup Vendors / Order" },
-            { target: 48,  suffix: " hr", label: "Resolution SLA" },
-          ].map((s, i) => (
-            <div key={i} className="cmp-stat-item" style={{ padding: "0 28px", borderRight: i < 3 ? "1px solid rgba(255,255,255,0.07)" : "none" }}>
-              <p style={{ color: "white", fontSize: "clamp(2.6rem,3.8vw,3.8rem)", fontWeight: 800, lineHeight: 1, letterSpacing: "-2px" }}>
-                <CountUp target={s.target} suffix={s.suffix} duration={1800} />
-              </p>
-              <div style={{ width: 28, height: 2, background: "#C8952A", margin: "10px 0 14px", flexShrink: 0 }} />
-              <p style={{ color: "rgba(255,255,255,0.55)", fontSize: 12, fontWeight: 600, textTransform: "uppercase", letterSpacing: "1.5px", lineHeight: 1.4 }}>
-                {s.label}
-              </p>
-            </div>
-          ))}
-        </div>
 
         <div className="scroll-animate cmp-col-headers" style={{ maxWidth: 860, margin: "0 auto 10px" }}>
           <div style={{ background: "rgba(13,27,42,0.70)", border: "1px solid rgba(59,130,246,0.25)", borderBottom: "2px solid rgba(59,130,246,0.65)", padding: "16px 22px", display: "flex", alignItems: "center", gap: 10 }}>
@@ -101,14 +52,14 @@ export default function ComparisonSection() {
 
         <div style={{ maxWidth: 860, margin: "0 auto", display: "flex", flexDirection: "column", gap: 6 }}>
           {([
-            { feature: "Vendor redundancy",   good: "3 vetted backup vendors per order — production never stalls.",  bad: "One vendor. Their delay is your delay." },
-            { feature: "Quality control",      good: "Our team inspects every dispatch. Photo evidence in dashboard.", bad: "Vendor self-certifies. Rejection risk is yours." },
-            { feature: "Pricing transparency", good: "Transparent pricing + 3% discount for upfront payment.",        bad: "Credit terms hide 10–15% markup per unit." },
-            { feature: "SKU coverage",         good: "110+ SKUs across all categories. One invoice.",                 bad: "Specialised in one category. Source the rest yourself." },
-            { feature: "Compliance & certs",   good: "ISO, BRC, FDA, FSC on file. Export-ready documentation.",       bad: "Certification varies by vendor. Risk sits with you." },
+            { feature: "Vendor redundancy",   good: "Backup sourcing routes can be assigned before production begins.",  bad: "One vendor. Their delay is your delay." },
+            { feature: "Quality control",      good: "Inspection checkpoints and approvals stay attached to the order.", bad: "Vendor self-certifies. Rejection risk is yours." },
+            { feature: "Pricing transparency", good: "Itemised estimates, approved changes, and one order record.",        bad: "Changes are scattered across calls and messages." },
+            { feature: "SKU coverage",         good: "32 configured standard SKU families plus assisted technical formats.", bad: "Specialised in one category. Source the rest yourself." },
+            { feature: "Compliance & certs",   good: "Documents are matched to the selected material, format, and factory.", bad: "Certification varies by vendor. Risk sits with you." },
             { feature: "Design service",       good: "Print-ready artwork from ₹1,999. Files yours forever.",         bad: "Mostly unavailable. Third-party dependency." },
             { feature: "Order visibility",     good: "Real-time dashboard — status, dispatch, ETA in one place.",     bad: "WhatsApp updates. No audit trail." },
-            { feature: "Problem resolution",   good: "48-hour resolution SLA. Dedicated account manager.",            bad: "Call them. Hope they answer." },
+            { feature: "Problem resolution",   good: "One shared issue record with a clear owner and next action.",       bad: "Call them. Hope they answer." },
           ] as { feature: string; good: string; bad: string }[]).map((row, i) => (
             <div key={i} className="cmp-card-row" style={{
               display: (i < 3 || showAllComparisons) ? undefined : "none",
@@ -183,8 +134,8 @@ export default function ComparisonSection() {
           </p>
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "center" }}>
             <span className="animated-border animated-border-white">
-              <Link href="/quote">
-                <button className="btn-fill btn-amber px-8 py-3 text-sm">Get a Quote →</button>
+              <Link href="/configure">
+                <button className="btn-fill btn-amber px-8 py-3 text-sm">Start Configuration →</button>
               </Link>
             </span>
             <a href="https://wa.me/918208990366?text=Hi%20Packworkz%2C%20I%27d%20like%20to%20talk%20to%20an%20expert." target="_blank" rel="noopener noreferrer">

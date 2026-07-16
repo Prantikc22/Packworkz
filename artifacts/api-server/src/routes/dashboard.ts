@@ -11,7 +11,7 @@ const router: IRouter = Router();
 router.use("/dashboard", requireAuth as never);
 
 router.get("/dashboard/overview", async (req, res): Promise<void> => {
-  const userId = (req as AuthRequest).userId;
+  const userId = (req as unknown as AuthRequest).userId;
 
   const { data: user } = await sb.from("users_profile").select("*").eq("id", userId).maybeSingle();
   if (!user) {
@@ -91,7 +91,7 @@ router.get("/dashboard/overview", async (req, res): Promise<void> => {
 });
 
 router.get("/dashboard/orders", async (req, res): Promise<void> => {
-  const userId = (req as AuthRequest).userId;
+  const userId = (req as unknown as AuthRequest).userId;
   const { status } = req.query as { status?: string };
 
   let query = sb.from("orders").select("*").eq("user_id", userId).order("created_at", { ascending: false });
@@ -109,7 +109,7 @@ router.get("/dashboard/orders", async (req, res): Promise<void> => {
 });
 
 router.get("/dashboard/quotes", async (req, res): Promise<void> => {
-  const userId = (req as AuthRequest).userId;
+  const userId = (req as unknown as AuthRequest).userId;
   const { tab } = req.query as { tab?: string };
 
   const statusFilter = tab === "history"
@@ -153,7 +153,7 @@ router.get("/dashboard/quotes", async (req, res): Promise<void> => {
 });
 
 router.post("/dashboard/quotes/:id/accept", async (req, res): Promise<void> => {
-  const userId = (req as AuthRequest).userId;
+  const userId = (req as unknown as AuthRequest).userId;
   const quoteUuid = req.params.id;
 
   // Get user email for fallback matching
@@ -242,7 +242,7 @@ router.post("/dashboard/quotes/:id/accept", async (req, res): Promise<void> => {
 });
 
 router.post("/dashboard/reorder/:orderId", async (req, res): Promise<void> => {
-  const userId = (req as AuthRequest).userId;
+  const userId = (req as unknown as AuthRequest).userId;
   const orderId = req.params.orderId;
 
   const { data: order } = await sb
@@ -292,7 +292,7 @@ router.post("/dashboard/reorder/:orderId", async (req, res): Promise<void> => {
 });
 
 router.get("/dashboard/designs", async (req, res): Promise<void> => {
-  const userId = (req as AuthRequest).userId;
+  const userId = (req as unknown as AuthRequest).userId;
   const { data: designs } = await sb
     .from("design_requests")
     .select("*")
@@ -302,7 +302,7 @@ router.get("/dashboard/designs", async (req, res): Promise<void> => {
 });
 
 router.get("/dashboard/invoices", async (req, res): Promise<void> => {
-  const userId = (req as AuthRequest).userId;
+  const userId = (req as unknown as AuthRequest).userId;
   const { data: invoices } = await sb
     .from("invoices")
     .select("*")
@@ -318,7 +318,7 @@ router.get("/dashboard/invoices", async (req, res): Promise<void> => {
 });
 
 router.get("/dashboard/profile", async (req, res): Promise<void> => {
-  const userId = (req as AuthRequest).userId;
+  const userId = (req as unknown as AuthRequest).userId;
   const { data: user } = await sb.from("users_profile").select("*").eq("id", userId).maybeSingle();
   if (!user) {
     res.status(404).json({ error: "User not found" });
@@ -329,7 +329,7 @@ router.get("/dashboard/profile", async (req, res): Promise<void> => {
 });
 
 router.put("/dashboard/profile", async (req, res): Promise<void> => {
-  const userId = (req as AuthRequest).userId;
+  const userId = (req as unknown as AuthRequest).userId;
   const { company_name, contact_name, phone, gstin, default_address } = req.body;
 
   const { data: updated } = await sb

@@ -38,7 +38,7 @@ function ConfirmModal({ quote, onConfirm, onCancel, loading }: {
 
         <div className="border border-[#E7E8EB] p-4 mb-6 space-y-2">
           <div className="flex justify-between text-[13px]">
-            <span style={{ color: "#64748B" }}>Quote ID</span>
+            <span style={{ color: "#64748B" }}>Pricing ID</span>
             <span className="font-black" style={{ color: "#E8A838", fontFamily: "monospace" }}>{quote.quote_id}</span>
           </div>
           {firstItem && (
@@ -135,15 +135,15 @@ export default function DashboardQuotes() {
       {isLoading ? (
         <div className="flex justify-center py-20"><Loader2 className="w-8 h-8 animate-spin" style={{ color: "#1B6CA8" }} /></div>
       ) : activeTab === "pending" ? (
-        /* ── Pending Quotes ── */
+        /* ── Pending Pricing Plans ── */
         <div className="space-y-4">
           {(!quotes || (quotes as any[]).length === 0) ? (
             <div className="flex flex-col items-center justify-center py-20 bg-white border border-[#E7E8EB]">
               <MS icon="format_quote" className="text-5xl mb-4" style={{ color: "#CBD5E1" }} />
-              <p className="font-bold text-[15px] mb-1" style={{ color: "#94A3B8" }}>No pending quotes</p>
-              <p className="text-[13px] mb-5" style={{ color: "#CBD5E1" }}>Start a new quote to get pricing from our team</p>
-              <Link href="/quote">
-                <button className="btn-fill btn-amber px-6 py-2.5 text-[13px]"><span>Get a Quote →</span></button>
+              <p className="font-bold text-[15px] mb-1" style={{ color: "#94A3B8" }}>No pending pricing plans</p>
+              <p className="text-[13px] mb-5" style={{ color: "#CBD5E1" }}>Start a new configuration to get pricing from our team</p>
+              <Link href="/configure">
+                <button className="btn-fill btn-amber px-6 py-2.5 text-[13px]"><span>Start Configuration →</span></button>
               </Link>
             </div>
           ) : (
@@ -202,7 +202,7 @@ export default function DashboardQuotes() {
                   )}
 
                   {isQuoted ? (
-                    /* Quote sent by team */
+                    /* Pricing sent by team */
                     <div>
                       <div className="flex justify-between items-end mb-4">
                         <div>
@@ -232,7 +232,7 @@ export default function DashboardQuotes() {
                         <button className="btn-fill btn-amber px-6 py-3 text-[13px] flex-1" onClick={() => setAcceptingQuote(quote)}>
                           <span><CheckCircle className="w-4 h-4 inline mr-2" />Confirm Order</span>
                         </button>
-                        <a href={`https://wa.me/${WHATSAPP_NUM}?text=Hi+Packworkz%2C+I+have+a+question+about+quote+${quote.quote_id}`}
+                        <a href={`https://wa.me/${WHATSAPP_NUM}?text=Hi+Packworkz%2C+I+have+a+question+about+pricing+plan+${quote.quote_id}`}
                           target="_blank" rel="noopener noreferrer">
                           <button className="btn-fill btn-outline-dark px-5 py-3 text-[13px]">
                             <span><MessageCircle className="w-4 h-4 inline mr-2" />Ask a Question</span>
@@ -241,12 +241,12 @@ export default function DashboardQuotes() {
                       </div>
                     </div>
                   ) : (
-                    /* Waiting for quote */
+                    /* Waiting for pricing */
                     <div className="flex flex-col sm:flex-row gap-4 items-start mt-2">
                       <div className="flex-1">
                         <div className="flex items-center gap-3 mb-2">
                           <div className="w-2.5 h-2.5 rounded-full animate-pulse flex-shrink-0" style={{ background: "#E8A838" }} />
-                          <p className="text-[13px] font-bold" style={{ color: "#0D1B2A" }}>Our team is preparing your quote.</p>
+                          <p className="text-[13px] font-bold" style={{ color: "#0D1B2A" }}>Our team is preparing your pricing plan.</p>
                         </div>
                         <p className="text-[12px] ml-[22px]" style={{ color: "#64748B" }}>Expected within 48 hours.</p>
                         <div className="mt-3 ml-[22px]">
@@ -255,7 +255,7 @@ export default function DashboardQuotes() {
                           </div>
                         </div>
                       </div>
-                      <a href={`https://wa.me/${WHATSAPP_NUM}?text=Hi+Packworkz%2C+I%27m+following+up+on+quote+${quote.quote_id}`}
+                      <a href={`https://wa.me/${WHATSAPP_NUM}?text=Hi+Packworkz%2C+I%27m+following+up+on+pricing+plan+${quote.quote_id}`}
                         target="_blank" rel="noopener noreferrer">
                         <button className="flex items-center gap-2 px-4 py-2.5 border border-[#E7E8EB] text-[12px] font-black hover:border-[#25D366] hover:text-[#25D366] transition-all" style={{ color: "#64748B" }}>
                           <MS icon="chat" className="text-base" /> WhatsApp Follow Up
@@ -273,7 +273,7 @@ export default function DashboardQuotes() {
         <div className="bg-white border border-[#E7E8EB] overflow-hidden">
           {(!quotes || (quotes as any[]).length === 0) ? (
             <div className="text-center py-16">
-              <p className="font-bold text-[15px] mb-1" style={{ color: "#94A3B8" }}>No quote history yet</p>
+              <p className="font-bold text-[15px] mb-1" style={{ color: "#94A3B8" }}>No pricing history yet</p>
             </div>
           ) : (
             <div className="overflow-x-auto">

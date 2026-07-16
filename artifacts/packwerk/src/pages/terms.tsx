@@ -13,15 +13,15 @@ export default function Terms() {
           },
           {
             title: "2. Services",
-            body: "Packworkz provides a managed B2B packaging procurement platform that connects brands with verified manufacturing partners. Our services include quote generation, sample ordering, bulk procurement, quality control management, logistics coordination, and the SmartStock™ inventory intelligence layer.",
+            body: "Packworkz provides a managed B2B packaging procurement platform that connects brands with verified manufacturing partners. Our services include pricing-plan generation, sample ordering, bulk procurement, quality control management, logistics coordination, and the SmartStock™ inventory intelligence layer.",
           },
           {
-            title: "3. Quotes and Orders",
-            body: "All quotes provided by Packworkz are valid for 14 days from the date of issue unless otherwise stated. Orders are confirmed only upon receipt of a signed purchase order or written approval. Packworkz reserves the right to adjust pricing in the event of significant material cost fluctuations or changes to order specifications.",
+            title: "3. Pricing Plans and Orders",
+            body: "All pricing plans provided by Packworkz are valid for 14 days from the date of issue unless otherwise stated. Orders are confirmed only upon receipt of a signed purchase order or written approval. Packworkz reserves the right to adjust pricing in the event of significant material cost fluctuations or changes to order specifications.",
           },
           {
             title: "4. Payment Terms",
-            body: "New accounts require 100% advance payment. Clients with 3+ completed orders may apply for Net-30 credit terms up to ₹5,00,000. Upfront payment receives a 3% discount. Late payments are subject to 1.5% per month interest on the outstanding balance. Packworkz accepts bank transfer, UPI, and credit card via Razorpay.",
+            body: "Payment milestones, taxes, tooling, samples, delivery charges, and any approved credit terms are stated in the commercial proposal for each order. Production begins only after the applicable milestone has been received. Supported payment methods are shown at checkout or on the approved invoice.",
           },
           {
             title: "5. Quality and Returns",

@@ -2,7 +2,7 @@ import "./ssr-polyfills";
 import { renderToString } from "react-dom/server";
 import React from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Router, Switch, Route } from "wouter";
+import { Router, Switch, Route, Redirect } from "wouter";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { PublicLayout } from "@/components/layout/PublicLayout";
 
@@ -52,6 +52,9 @@ function SSRApp({ url }: { url: string }) {
             <Route path="/sustainable">
               <PublicLayout><Sustainable /></PublicLayout>
             </Route>
+            <Route path="/sustainable-catalog">
+              <PublicLayout><Sustainable /></PublicLayout>
+            </Route>
             <Route path="/products">
               <PublicLayout><Products /></PublicLayout>
             </Route>
@@ -74,7 +77,23 @@ function SSRApp({ url }: { url: string }) {
               <PublicLayout><Resources /></PublicLayout>
             </Route>
             <Route path="/quote">
+              <Redirect to="/configure" />
+            </Route>
+            <Route path="/configure">
               <PublicLayout><Quote /></PublicLayout>
+            </Route>
+            <Route path="/procurement-plan">
+              <PublicLayout><Quote /></PublicLayout>
+            </Route>
+            <Route path="/configure/step/:step">
+              {(params: { step?: string }) => (
+                <PublicLayout><Quote params={{ step: params.step }} /></PublicLayout>
+              )}
+            </Route>
+            <Route path="/configure/confirmed/:id">
+              {(params: { id?: string }) => (
+                <PublicLayout><Quote params={{ id: params.id }} /></PublicLayout>
+              )}
             </Route>
             <Route path="/samples">
               <PublicLayout><Samples /></PublicLayout>

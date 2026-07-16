@@ -1,37 +1,236 @@
+import { useMemo, useState } from "react";
 import { Link } from "wouter";
 
 const PROBLEM_CARDS = [
   { title: "Production halted",   desc: "One missing pouch stops 10,000 units from shipping. The real cost is lost sales, not the pouch." },
-  { title: "Emergency orders",    desc: "Rush reorders cost 40–60% more per unit. Brands absorb this silently, every quarter." },
+  { title: "Emergency orders",    desc: "Rush reorders compress supplier choice, freight options and quality-review time when the stock signal arrives late." },
   { title: "Forecast blindness",  desc: "Most brands order reactively — only after stock hits zero. By then, it's already too late." },
 ];
 
 const HOW_STEPS = [
   { step: "01", title: "Consumption Pattern Analysis",    desc: "SmartStock monitors your order velocity across seasons, campaigns, and market cycles — building a brand-specific demand model that improves with every order.", color: "#60a5fa" },
   { step: "02", title: "Predictive Reorder Triggers",     desc: "Before your stock hits the danger zone, SmartStock raises a reorder flag — with the exact quantities, timing, and variant breakdown your production schedule needs.", color: "#a78bfa" },
-  { step: "03", title: "Buffer Inventory Pre-positioning",desc: "For high-velocity SKUs, Packworkz pre-positions buffer stock at our fulfilment layer — enabling 5–7 day delivery vs. the industry standard 14–21 days.", color: "#34d399" },
-  { step: "04", title: "Automatic SLA Protection",        desc: "Every SmartStock order comes with 3 backup vendor assignments and a dispatch SLA guarantee. Your production line never waits.", color: "#f59e0b" },
+  { step: "03", title: "Buffer Inventory Planning",desc: "For eligible repeat SKUs, the reorder plan can include a reviewed safety buffer based on consumption and supplier lead time.", color: "#34d399" },
+  { step: "04", title: "Supply Route Review",        desc: "The order record can hold compatible supplier routes and dispatch milestones so an exception has a prepared response.", color: "#f59e0b" },
 ];
 
 const VALUE_CARDS = [
-  { index: "01", title: "5–7 Day Delivery",        desc: "Pre-positioned buffer inventory means SmartStock SKUs ship in days, not weeks. Your launches never get delayed by packaging.", accent: "#60a5fa" },
-  { index: "02", title: "Zero-Stockout Guarantee", desc: "If a SmartStock SKU goes out of stock due to a fulfilment failure on our end, Packworkz covers the emergency sourcing cost.", accent: "#34d399" },
+  { index: "01", title: "Earlier decisions",        desc: "A reorder signal arrives while standard production and freight options are still available for review.", accent: "#60a5fa" },
+  { index: "02", title: "Risk made visible", desc: "Stock coverage, daily consumption and supplier lead time are shown together instead of split across spreadsheets.", accent: "#34d399" },
   { index: "03", title: "No Manual Forecasting",   desc: "Your team stops tracking spreadsheets and starts scaling. The system raises the flag — all you do is approve.", accent: "#a78bfa" },
   { index: "04", title: "Always Getting Smarter",  desc: "Every order cycle refines the model. The longer you're on Packworkz, the more accurate your SmartStock predictions become.", accent: "#f59e0b" },
 ];
 
 const PROOF_STATS = [
-  { val: "5–7", unit: "days", label: "SmartStock delivery" },
-  { val: "0",   unit: "",     label: "Stockouts on record" },
-  { val: "48",  unit: "hrs",  label: "Reorder prediction lead" },
-  { val: "99",  unit: "%",    label: "Fulfilment accuracy" },
+  { val: "30", unit: "days", label: "Forecast window shown" },
+  { val: "3",   unit: "",     label: "Live demo SKUs" },
+  { val: "45",  unit: "days",  label: "Coverage model" },
+  { val: "1",  unit: "",    label: "Decision workspace" },
 ];
 
 const ELIGIBILITY = [
   { label: "Repeat orders across", val: "2+ cycles" },
-  { label: "Minimum order size",   val: "Any tier" },
-  { label: "Setup required",       val: "Zero" },
+  { label: "Minimum order size",   val: "By SKU" },
+  { label: "Setup",       val: "Order history review" },
 ];
+
+const DEMO_SKUS = [
+  { name: "Mailer Box 9x6x3", stock: 18400, daily: 920, lead: 10, buffer: 5500, vendor: "Bengaluru Node", risk: "Medium", unitCost: 24, revenueRisk: 460000 },
+  { name: "Stand-up Pouch 250g", stock: 32600, daily: 740, lead: 14, buffer: 9000, vendor: "Ahmedabad Flex", risk: "Low", unitCost: 10, revenueRisk: 610000 },
+  { name: "Poly Mailer M", stock: 7200, daily: 680, lead: 7, buffer: 4200, vendor: "Delhi E-com", risk: "High", unitCost: 6, revenueRisk: 380000 },
+];
+
+export function SmartStockDemo({ standalone = false }: { standalone?: boolean }) {
+  const [campaignLift, setCampaignLift] = useState(18);
+  const [selected, setSelected] = useState(2);
+  const [hoveredBar, setHoveredBar] = useState<number | null>(null);
+  const sku = DEMO_SKUS[selected];
+  const adjustedDaily = Math.round(sku.daily * (1 + campaignLift / 100));
+  const daysLeft = Math.max(1, Math.floor(sku.stock / adjustedDaily));
+  const reorderIn = Math.max(0, daysLeft - sku.lead - 4);
+  const suggestedQty = Math.ceil((adjustedDaily * 45 + sku.buffer) / 100) * 100;
+  const annualEmergencySavings = Math.round(suggestedQty * sku.unitCost * 0.28 * 4);
+  const revenueProtected = Math.round(sku.revenueRisk * (1 + campaignLift / 100));
+  const workingCapitalReleased = Math.round(suggestedQty * sku.unitCost * 0.14);
+  const annualImpact = annualEmergencySavings + revenueProtected + workingCapitalReleased;
+
+  const alertColor = reorderIn <= 2 ? "#ef4444" : reorderIn <= 10 ? "#f59e0b" : "#22c55e";
+
+  const forecast = useMemo(() => {
+    return Array.from({ length: 10 }, (_, i) => {
+      const projected = Math.max(0, sku.stock - adjustedDaily * (i + 1) * 3);
+      return {
+        day: (i + 1) * 3,
+        units: projected,
+        height: Math.max(8, Math.round((projected / sku.stock) * 100)),
+      };
+    });
+  }, [adjustedDaily, sku]);
+
+  return (
+    <section className={`smartstock-demo-section${standalone ? " smartstock-demo-standalone" : ""}`}>
+      <div className="smartstock-demo-shell">
+        <div style={{ display: "grid", gridTemplateColumns: "0.78fr 1.22fr", gap: 40, alignItems: "center" }} className="smartstock-demo-grid">
+          <div>
+            {standalone && (
+              <Link href="/smartstock" className="smartstock-demo-back">
+                <span className="material-symbols-outlined">arrow_back</span>
+                About SmartStock
+              </Link>
+            )}
+            <p style={{ color: "#1B6CA8", fontSize: 11, fontWeight: 800, letterSpacing: "2.4px", textTransform: "uppercase", marginBottom: 14 }}>
+              {standalone ? "INTERACTIVE DEMO / SAMPLE DATA" : "SMARTSTOCK™ / AI INVENTORY"}
+            </p>
+            <h2 style={{ color: "#0D1B2A", fontSize: "clamp(2.2rem,4vw,4rem)", lineHeight: 1.05, fontWeight: 900, letterSpacing: "-0.04em", marginBottom: 16 }}>
+              {standalone ? "Change the forecast. See the decision." : "Your next packaging order, already anticipated."}
+            </h2>
+            <p style={{ color: "#64748B", fontSize: 16, lineHeight: 1.8, marginBottom: 26 }}>
+              {standalone
+                ? "Adjust the expected increase in orders or switch SKUs. SmartStock instantly recalculates when to reorder, how much to buy, and the cost of waiting."
+                : "SmartStock learns from repeat orders, signals risk early, and prepares the quantity and supplier path before a packaging shortage becomes urgent."}
+            </p>
+            <div className="smartstock-try-hint">
+              <span className="material-symbols-outlined">touch_app</span>
+              Try it: move the slider or select a different SKU
+            </div>
+            <div className="smartstock-control-card">
+              <div style={{ display: "flex", justifyContent: "space-between", gap: 12, marginBottom: 12 }}>
+                <span className="smartstock-control-label">
+                  Expected demand increase
+                  <button type="button" className="smartstock-help" aria-label="What does expected demand increase mean?">
+                    <span className="material-symbols-outlined">help</span>
+                    <span className="smartstock-tooltip" role="tooltip">The extra orders you expect from a sale, product launch, festive period, or marketing campaign.</span>
+                  </button>
+                </span>
+                <strong style={{ color: "#1B6CA8" }}>+{campaignLift}%</strong>
+              </div>
+              <input
+                type="range"
+                min="0"
+                max="60"
+                value={campaignLift}
+                onChange={(event) => setCampaignLift(Number(event.target.value))}
+                style={{ width: "100%", accentColor: "#1B6CA8" }}
+              />
+            </div>
+            <Link href="/smartstock" className="smartstock-learn-more">
+              Learn how SmartStock works <span className="material-symbols-outlined">arrow_forward</span>
+            </Link>
+          </div>
+
+          <div className="smartstock-demo-stage">
+          <div className="smartstock-dashboard">
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+              <div>
+                <p style={{ color: "rgba(255,255,255,0.45)", fontSize: 11, letterSpacing: "0.16em", textTransform: "uppercase", fontWeight: 800 }}>SmartStock AI Dashboard</p>
+                <h3 style={{ color: "white", fontSize: 20, fontWeight: 900, marginTop: 4 }}>Packaging command center</h3>
+              </div>
+              <span style={{ background: "rgba(34,197,94,0.14)", color: "#86efac", border: "1px solid rgba(134,239,172,0.22)", borderRadius: 999, padding: "7px 10px", fontSize: 11, fontWeight: 800 }}>LIVE SIMULATION</span>
+            </div>
+
+            <div className="smartstock-impact-strip">
+              <span>Simulated 12-month impact</span>
+              <strong>₹{annualImpact.toLocaleString("en-IN")}</strong>
+              <small>cost avoided + revenue protected + cash released</small>
+            </div>
+
+            <p className="smartstock-dashboard-hint"><span className="material-symbols-outlined">ads_click</span> Select a SKU to update the forecast</p>
+            <div className="smartstock-sku-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 10, marginBottom: 14 }}>
+              {DEMO_SKUS.map((item, i) => (
+                <button
+                  key={item.name}
+                  onClick={() => setSelected(i)}
+                  style={{
+                    textAlign: "left",
+                    border: selected === i ? "1px solid #E8A838" : "1px solid rgba(255,255,255,0.10)",
+                    background: selected === i ? "rgba(232,168,56,0.12)" : "rgba(255,255,255,0.05)",
+                    color: "white",
+                    borderRadius: 12,
+                    padding: 12,
+                    cursor: "pointer",
+                  }}
+                >
+                  <strong style={{ display: "block", fontSize: 12, lineHeight: 1.35 }}>{item.name}</strong>
+                  <span style={{ color: "rgba(255,255,255,0.48)", fontSize: 11 }}>{item.stock.toLocaleString()} units</span>
+                </button>
+              ))}
+            </div>
+
+            <div style={{ display: "grid", gridTemplateColumns: "1.05fr 0.95fr", gap: 12 }} className="smartstock-panel-grid">
+              <div style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.09)", borderRadius: 16, padding: 18 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", gap: 12, marginBottom: 18 }}>
+                  <div>
+                    <p style={{ color: "rgba(255,255,255,0.48)", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.14em", fontWeight: 800 }}>Selected SKU</p>
+                    <h4 style={{ color: "white", fontWeight: 900, fontSize: 18, marginTop: 4 }}>{sku.name}</h4>
+                  </div>
+                  <span style={{ color: alertColor, fontWeight: 900 }}>{sku.risk} risk</span>
+                </div>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 10 }}>
+                  {[
+                    { label: "Days left", value: daysLeft },
+                    { label: "Reorder in", value: `${reorderIn}d` },
+                    { label: "Daily burn", value: adjustedDaily },
+                  ].map((stat) => (
+                    <div key={stat.label} style={{ background: "rgba(255,255,255,0.06)", borderRadius: 12, padding: 12 }}>
+                      <p style={{ color: "white", fontSize: 24, fontWeight: 900, lineHeight: 1 }}>{stat.value}</p>
+                      <span style={{ color: "rgba(255,255,255,0.45)", fontSize: 10, textTransform: "uppercase", letterSpacing: "0.1em" }}>{stat.label}</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="smartstock-forecast-chart">
+                  {forecast.map((point, i) => (
+                    <button
+                      type="button"
+                      key={point.day}
+                      className="smartstock-forecast-bar"
+                      aria-label={`Day ${point.day}: ${point.units.toLocaleString("en-IN")} units projected`}
+                      onMouseEnter={() => setHoveredBar(i)}
+                      onMouseLeave={() => setHoveredBar(null)}
+                      onFocus={() => setHoveredBar(i)}
+                      onBlur={() => setHoveredBar(null)}
+                      style={{
+                        height: `${point.height}%`,
+                        background: point.height < 25 ? "#ef4444" : point.height < 45 ? "#f59e0b" : "#3b82f6",
+                      }}
+                    >
+                      <span className={`smartstock-chart-tooltip${hoveredBar === i ? " visible" : ""}`}>
+                        <strong>Day {point.day}</strong>
+                        {point.units.toLocaleString("en-IN")} units left
+                      </span>
+                    </button>
+                  ))}
+                </div>
+                <div className="smartstock-chart-caption"><span>Today</span><span>Projected stock over 30 days</span><span>Day 30</span></div>
+              </div>
+
+              <div style={{ display: "grid", gap: 12 }}>
+                <div style={{ background: "#ffffff", borderRadius: 16, padding: 18 }}>
+                  <p style={{ color: "#64748B", fontSize: 11, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.14em" }}>AI recommendation</p>
+                  <h4 style={{ color: "#0D1B2A", fontSize: 26, fontWeight: 900, margin: "8px 0 4px" }}>{suggestedQty.toLocaleString()} units</h4>
+                  <p style={{ color: "#64748B", fontSize: 13, lineHeight: 1.55 }}>Place reorder through {sku.vendor}. Holds 45 days of expected demand plus safety buffer.</p>
+                </div>
+                <div className="smartstock-value-stack">
+                  <div><span>Emergency cost avoided</span><strong>₹{annualEmergencySavings.toLocaleString("en-IN")}</strong></div>
+                  <div><span>Revenue protected</span><strong>₹{revenueProtected.toLocaleString("en-IN")}</strong></div>
+                  <div><span>Working capital released</span><strong>₹{workingCapitalReleased.toLocaleString("en-IN")}</strong></div>
+                </div>
+                <Link href="/configure">
+                  <button className="btn-fill btn-amber w-full py-3 text-sm">
+                    <span>Build this reorder plan</span>
+                  </button>
+                </Link>
+              </div>
+            </div>
+          </div>
+          {!standalone && (
+            <p className="smartstock-demo-note"><strong>Feel the value before signing in.</strong> This sample dashboard recalculates the reorder decision as you change demand or switch SKUs.</p>
+          )}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
 
 export default function SmartStock() {
   return (
@@ -54,11 +253,9 @@ export default function SmartStock() {
           </p>
           <div className="pw-reveal pw-d3" style={{ display: "flex", gap: 14, justifyContent: "center", flexWrap: "wrap" }}>
             <span className="animated-border animated-border-white">
-              <Link href="/quote"><button className="btn-fill btn-amber px-8 py-3 text-sm pw-btn-transition">Get a Quote →</button></Link>
+              <Link href="/smartstock/demo"><button className="btn-fill btn-amber px-8 py-3 text-sm pw-btn-transition">Open Interactive Demo →</button></Link>
             </span>
-            <a href="https://wa.me/918208990366?text=Hi%2C%20I%27d%20like%20to%20know%20more%20about%20SmartStock" target="_blank" rel="noopener noreferrer">
-              <button className="btn-fill btn-outline-white px-8 py-3 text-sm pw-btn-transition">Talk to an Expert</button>
-            </a>
+            <Link href="/configure"><button className="btn-fill btn-outline-white px-8 py-3 text-sm pw-btn-transition">Get Pricing Plan</button></Link>
           </div>
         </div>
       </section>
@@ -75,6 +272,8 @@ export default function SmartStock() {
           ))}
         </div>
       </section>
+
+      <SmartStockDemo />
 
       {/* ── THE PROBLEM ── */}
       <section style={{ background: "#08080f", padding: "100px 40px" }}>
@@ -182,7 +381,7 @@ export default function SmartStock() {
           </p>
           <div style={{ display: "flex", gap: 14, justifyContent: "center", flexWrap: "wrap" }}>
             <span className="animated-border animated-border-white">
-              <Link href="/quote"><button className="btn-fill btn-amber px-8 py-3 text-sm pw-btn-transition">Get a Quote →</button></Link>
+              <Link href="/configure"><button className="btn-fill btn-amber px-8 py-3 text-sm pw-btn-transition">Get Pricing Plan →</button></Link>
             </span>
             <a href="https://wa.me/918208990366?text=Hi%2C%20I%27d%20like%20to%20know%20about%20SmartStock" target="_blank" rel="noopener noreferrer">
               <button className="btn-fill btn-outline-white px-8 py-3 text-sm pw-btn-transition">Talk to an Expert</button>
