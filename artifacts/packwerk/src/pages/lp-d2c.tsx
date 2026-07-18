@@ -47,8 +47,8 @@ const INDUSTRIES = [
     accent: "#F59E0B",
     img: "/industries/fmcg.jpg",
     headline: "Speed-to-shelf for high-velocity SKUs",
-    desc: "Printed rolls, labels, blister packs, and folding cartons. Fast turnarounds, multi-factory back-up, and consistent colour matching at scale.",
-    skus: ["Printed Laminated Rolls", "Folding Cartons", "Blister Packs", "Shrink Sleeves", "Pressure-Sensitive Labels"],
+    desc: "Printed rolls, labels, pouches, and folding cartons. Fast turnarounds, multi-factory back-up, and consistent colour matching at scale.",
+    skus: ["Printed Laminated Rolls", "Folding Cartons", "Stand-up Pouches", "Shrink Sleeves", "Pressure-Sensitive Labels"],
     brands: ["NutriCore", "Harvest Organics", "PurePet Foods", "EcoWear India"],
   },
   {
@@ -100,7 +100,7 @@ const STEPS = [
 
 const STATS = [
   { value: "220+", label: "Brands served" },
-  { value: "110+", label: "Packaging SKUs" },
+  { value: "35", label: "Focused product families" },
   { value: "14",   label: "Days brief to door" },
   { value: "98.7%", label: "On-time delivery" },
 ];
@@ -537,7 +537,7 @@ export default function LpD2c() {
                 opacity: heroLoaded ? 1 : 0, transform: heroLoaded ? "translateY(0)" : "translateY(20px)",
                 transition: "opacity 0.7s ease 0.35s, transform 0.7s ease 0.35s",
               }}>
-                India's first managed packaging platform. Beauty, food, FMCG, e-commerce — 110+ SKUs, owned QC, 3 backup vendors per order. No chaos. No delays. No surprises.
+                One managed packaging platform for beauty, food, FMCG and e-commerce, with 74 curated product families and one production record.
               </p>
 
               {/* Price match badge */}

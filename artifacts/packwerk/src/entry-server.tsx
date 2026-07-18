@@ -20,6 +20,12 @@ import Resources from "@/pages/resources";
 import Quote from "@/pages/quote";
 import Samples from "@/pages/samples";
 import Design from "@/pages/design";
+import MockupStudio from "@/pages/mockup-studio";
+import SmartStock from "@/pages/smartstock";
+import Network from "@/pages/network";
+import Privacy from "@/pages/privacy";
+import Terms from "@/pages/terms";
+import Refund from "@/pages/refund";
 
 function makeStaticHook(path: string) {
   return () => [path, (_: string) => {}] as [string, (to: string) => void];
@@ -100,6 +106,24 @@ function SSRApp({ url }: { url: string }) {
             </Route>
             <Route path="/design">
               <PublicLayout><Design /></PublicLayout>
+            </Route>
+            <Route path="/mockup-studio">
+              <PublicLayout><MockupStudio /></PublicLayout>
+            </Route>
+            <Route path="/smartstock">
+              <PublicLayout><SmartStock /></PublicLayout>
+            </Route>
+            <Route path="/network">
+              <PublicLayout><Network /></PublicLayout>
+            </Route>
+            <Route path="/privacy">
+              <PublicLayout><Privacy /></PublicLayout>
+            </Route>
+            <Route path="/terms">
+              <PublicLayout><Terms /></PublicLayout>
+            </Route>
+            <Route path="/refund">
+              <PublicLayout><Refund /></PublicLayout>
             </Route>
           </Switch>
         </Router>

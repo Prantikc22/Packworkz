@@ -18,45 +18,23 @@ const SYSTEM_PROMPT = `You are Packworkz AI, a packaging planning assistant for 
 3. Ask about their current packaging situation (what they use now, what's the problem)
 4. Ask if they need design / branding support
 5. Give 2-3 specific SKU recommendations with reasons and an indicative price band
+Do not repeat a question the user has already answered. When both product and quantity are present, recommend immediately and place at most one useful follow-up question at the end.
 
-## Current catalog (price bands are indicative, per unit unless stated, before GST)
-- FP-101 Stand-up Pouch: MOQ 1,000, ₹4.50–18
-- FP-102 Pillow Pouch: MOQ 2,000, ₹2–8.50
-- FP-103 Flat Bottom Pouch: MOQ 500, ₹8–28
-- FP-104 Spout Pouch: MOQ 500, ₹9–32
-- FP-105 Sachet / Stick Pack: MOQ 5,000, ₹0.80–4
-- BC-201 Plastic Bottle (PET/HDPE): MOQ 500, ₹8–45
-- BC-202 Glass Bottle: MOQ 200, ₹22–120
-- BC-203 Glass Jar: MOQ 200, ₹18–90
-- BC-204 Cosmetic Jar: MOQ 200, ₹12–75
-- BC-205 Dropper Bottle: MOQ 200, ₹15–60
-- BC-206 Airless Pump Bottle: MOQ 200, ₹28–130
-- TS-301 Cosmetic Tube: MOQ 1,000, ₹5–22
-- TS-302 Blister Pack: MOQ 2,000, ₹1.50–12, assisted quote
-- BX-401 Folding Carton: MOQ 500, ₹3–18
-- BX-402 Rigid Box: MOQ 100, ₹65–350, assisted quote
-- BX-403 Magnetic Closure Box: MOQ 100, ₹80–400, assisted quote
-- EC-501 Mailer Box: MOQ 200, ₹18–75
-- EC-502 Corrugated Shipping Box: MOQ 500, ₹8–35
-- EC-503 Food Delivery Box: MOQ 200, ₹10–40
-- EC-504 Courier Bag: MOQ 1,000, ₹2.50–10
-- PR-601 Bubble Wrap / Air Pillows: MOQ 1 roll, ₹1,200–5,000/roll
-- PR-602 Foam / Thermocol Inserts: MOQ 100, ₹15–180, assisted quote
-- RL-701 Printed Packaging Roll: MOQ 100kg, ₹180–450/kg, assisted quote
-- RL-702 Laminated Barrier Roll: MOQ 100kg, ₹240–600/kg, assisted quote
-- RL-703 Eco-friendly Packaging Roll: MOQ 100kg, ₹220–550/kg, assisted quote
-- LC-801 Labels: MOQ 1,000, ₹0.50–8
-- LC-802 Caps & Pumps: MOQ 500, ₹2–35, assisted quote
-- LC-803 Zipper / Spout Fitments: MOQ 2,000, ₹0.80–6, assisted quote
-- SP-901 Kraft / Paper Packaging: MOQ 500, ₹3–22
-- SP-902 Compostable Packaging: MOQ 500, ₹8–45, assisted quote
-- SP-903 Recycled Packaging: MOQ 500, ₹6–38
-- SP-904 Bagasse / Pulp Packaging: MOQ 200, ₹4–30
+## Current launch catalog (price bands are indicative, before GST)
+Instant-buy families: FP-101 Stand-up Pouch (MOQ 250, ₹8.90–32/unit); FP-103 Flat-bottom & Gusseted Pouch (500, ₹8–28); FP-104 Spout & Refill Pouch (500, ₹9–32); FP-105 Sachet / Stick Pack (5,000, ₹0.80–4); BC-201 Plastic Bottles & Jars (500, ₹8–45); BC-202 Glass Bottles & Jars (200, ₹22–120); BC-204 Cosmetic Jar (200, ₹12–75); BC-205 Dropper Bottle (200, ₹15–60); BC-206 Airless Pump Bottle (200, ₹28–130); BC-213 Perfume and Attar Bottle (100, ₹46–88); TS-301 Cosmetic Tube (1,000, ₹5–22); BX-401 Folding Cartons (500, ₹3–18); BX-402 Rigid & Magnetic Boxes (100, ₹65–350); EC-501 Mailer Box (200, ₹18–75); EC-502 Corrugated Shipping Box (500, ₹8–35); EC-503 Food Delivery Box (200, ₹10–40); EC-504 Courier & Return Mailers (1,000, ₹2.50–10); EC-505 Paper & Padded Mailers (100, ₹10.80–24); EC-509 Frosted Zipper Garment Bag (100, ₹10–22); EC-510 Printed Paper Carrier Bag (50, ₹9.50–24); PR-601 Protective Wrap & Void Fill (1 roll, ₹1,200–5,000/roll); LC-801 Custom Labels & Stickers (1,000, ₹0.50–8); LC-808 Hang Tags & Insert Cards (50, ₹3.20–12); LC-810 Printed Tissue & Wrapping Paper (250, ₹6.40–14); LC-811 Custom Packaging Tape (72 rolls, ₹56–92/roll); SP-905 Bagasse Food Containers (500, ₹7–9.80); SP-907 Paper Cups, Bowls & Food Tubs (1,000, ₹3.60–5.80); SP-909 Greaseproof & Food Wrap Paper (1,000, ₹1.30–2.90).
+Managed-quote families: PR-602 Custom Inserts & Dividers; RL-701 Printed Flexible Rollstock; FP-110 Retort Pouch; FP-112 Flow-wrap & Pillow Pack; RL-704 Lidding & Sealing Film; RL-705 Shrink Film & Sleeve Rollstock; LC-806 Shrink Sleeve & Wrap-around Labels.
+Instant-buy families move to a managed quote at their published high-volume threshold. Do not invent or recommend SKU codes outside this list.
 
 ## Rules:
 - ALWAYS recommend current SKU codes with the indicative price range
 - Compare 2-3 options when possible (good/better/best)
 - Ask clarifying questions before recommending if info is insufficient
+- Respect format fit before price. Never suggest a mechanically incompatible pack just to provide more options.
+- Coffee and tea: use FP-103 or FP-101 with the barrier and degassing-valve question; never recommend a spout pouch.
+- Liquids and refills: FP-104 is suitable only after checking viscosity, hot-fill needs and closure compatibility.
+- Creams and balms: prefer BC-204; serums and oils: prefer BC-205 or BC-206 after compatibility review.
+- Apparel: prefer EC-509 for presentation or EC-504 for dispatch; electronics need EC-501 or EC-502 plus PR-602 when a fitted insert is required.
+- Food-service formats must be checked for grease, temperature, liquid hold and lid fit before recommendation.
 - Never promise a certification, exact saving, delivery date or final price. Explain what needs verification.
 - Unit pricing generally decreases with volume, but final pricing depends on dimensions, material, print, closure, artwork and delivery.
 - If the user asks about something outside packaging, gently redirect
@@ -73,6 +51,7 @@ const MODELS = isReplitProxy
       "meta-llama/llama-3.1-8b-instruct",
     ]
   : [
+      "openrouter/auto",
       "openrouter/free",
     ];
 
@@ -118,7 +97,17 @@ async function tryModel(
         "HTTP-Referer": "https://packworkz.com",
         "X-Title": "Packworkz PackAI",
       },
-      body: JSON.stringify({ model, messages: preparedMessages, max_tokens: 600, temperature: 0.7 }),
+      body: JSON.stringify({
+        model,
+        messages: preparedMessages,
+        max_tokens: 600,
+        temperature: 0.7,
+        provider: {
+          sort: "latency",
+          allow_fallbacks: true,
+          preferred_max_latency: 4,
+        },
+      }),
       signal: AbortSignal.timeout(15_000),
     });
 
@@ -130,10 +119,12 @@ async function tryModel(
       return { ok: false, rateLimited: isRateLimit };
     }
 
-    const data = await response.json() as { choices: Array<{ message: { content: string } }> };
+    const data = await response.json() as { choices: Array<{ finish_reason?: string; message: { content: string } }> };
     const reply = data.choices?.[0]?.message?.content?.trim() ?? "";
-    if (!reply) {
-      console.error(`[PackAI] model=${model} returned empty reply`);
+    const finishReason = data.choices?.[0]?.finish_reason;
+    const looksComplete = /[.!?)](?:[*_`])?$/.test(reply);
+    if (!reply || finishReason === "length" || !looksComplete) {
+      console.error(`[PackAI] model=${model} returned incomplete reply (finish=${finishReason ?? "unknown"})`);
       return { ok: false, rateLimited: false };
     }
 
@@ -148,7 +139,7 @@ async function tryModel(
 function smartFallback(messages: Array<{ role: string; content: string }>): string {
   const lastUser = [...messages].reverse().find(m => m.role === "user")?.content?.toLowerCase() ?? "";
   const userText = messages.filter(m => m.role === "user").map(m => m.content).join(" ").toLowerCase();
-  const quantityMatch = userText.match(/([\d,]+)\s*(?:units?|pcs?|pieces?|packs?)\b/i);
+  const quantityMatch = userText.match(/([\d,]+)\s+(?:[a-z-]+\s+){0,2}(?:units?|pcs?|pieces?|packs?)\b/i);
   const quantity = quantityMatch ? Number(quantityMatch[1].replace(/,/g, "")) : null;
 
   const formatRecommendation = (
@@ -173,19 +164,19 @@ function smartFallback(messages: Array<{ role: string; content: string }>): stri
 
   if (/coffee|tea/.test(userText)) {
     return formatRecommendation("coffee or tea", [
-      { sku: "FP-103", name: "Flat Bottom Pouch", fit: "best shelf presence with room for a strong barrier structure", moq: 500, low: 8, high: 28 },
-      { sku: "FP-101", name: "Stand-up Pouch", fit: "more economical with zipper and barrier options", moq: 1000, low: 4.5, high: 18 },
+      { sku: "FP-103", name: "Flat Bottom Pouch", fit: "best shelf presence with a strong barrier and optional degassing valve", moq: 500, low: 8, high: 28 },
+      { sku: "FP-101", name: "Stand-up Pouch", fit: "more economical with zipper, barrier and optional degassing valve", moq: 250, low: 8.9, high: 32 },
     ]);
   }
   if (/spice|powder|flour|dry food|snack|namkeen/.test(userText)) {
     return formatRecommendation("your dry food product", [
-      { sku: "FP-102", name: "Pillow Pouch", fit: "efficient for machine-filled powders, snacks and staple products", moq: 2000, low: 2, high: 8.5 },
-      { sku: "FP-101", name: "Stand-up Pouch", fit: "better for resealability and premium retail presentation", moq: 1000, low: 4.5, high: 18 },
+      { sku: "FP-105", name: "Sachet / Stick Pack", fit: "efficient for single-serve powders and controlled portions", moq: 5000, low: 0.8, high: 4 },
+      { sku: "FP-101", name: "Stand-up Pouch", fit: "better for resealability and premium retail presentation", moq: 250, low: 8.9, high: 32 },
     ]);
   }
   if (/serum|skincare|cosmetic|beauty|cream|lotion/.test(userText)) {
     return formatRecommendation("your skincare product", [
-      { sku: "BC-203", name: "Glass Jar", fit: "premium feel for creams and balms after compatibility review", moq: 200, low: 18, high: 90 },
+      { sku: "BC-204", name: "Cosmetic Jar", fit: "premium feel for creams and balms after compatibility review", moq: 200, low: 12, high: 75 },
       { sku: "BC-201", name: "Plastic Bottle (PET/HDPE)", fit: "lighter and more economical for scale", moq: 500, low: 8, high: 45 },
     ]);
   }
@@ -215,16 +206,23 @@ function smartFallback(messages: Array<{ role: string; content: string }>): stri
     return "MOQs vary by production method: standard rigid boxes can start at 100 units, bottles and jars at 200, many pouches at 500–1,000, and printed rollstock at 100kg. Tell me the product and quantity and I will flag whether it fits self-serve configuration or needs an assisted quote.";
   }
   if (lastUser.includes("sustainable") || lastUser.includes("eco") || lastUser.includes("compostable") || lastUser.includes("kraft")) {
-    return "The current sustainable range includes:\n- **SP-901 · Kraft / Paper Packaging** — MOQ 500 · ₹3–22/unit\n- **SP-903 · Recycled Packaging** — MOQ 500 · ₹6–38/unit\n- **SP-904 · Bagasse / Pulp Packaging** — MOQ 200 · ₹4–30/unit\n- **SP-902 · Compostable Packaging** — MOQ 500 · ₹8–45/unit · assisted quote\n\nThe right option depends on barrier, leak and transit requirements. Certification and end-of-life claims must be verified against the final construction.";
+    return "The current lower-impact range includes:\n- **SP-905 · Bagasse Food Containers** — MOQ 500 · ₹7–9.80/unit\n- **SP-907 · Paper Cups, Bowls & Food Tubs** — MOQ 1,000 · ₹3.60–5.80/unit\n- **SP-909 · Greaseproof & Food Wrap Paper** — MOQ 1,000 · ₹1.30–2.90/unit\n- **EC-505 · Paper & Padded Mailers** — MOQ 100 · ₹10.80–24/unit\n\nThe right option depends on barrier, leak and transit requirements. Certification and end-of-life claims must be verified against the final construction.";
   }
   if (lastUser.includes("pouch") || lastUser.includes("flexible") || lastUser.includes("packet")) {
-    return "For flexible packaging, start with:\n- **FP-101 · Stand-up Pouch** — ₹4.50–18/unit, MOQ 1,000\n- **FP-102 · Pillow Pouch** — ₹2–8.50/unit, MOQ 2,000\n- **FP-103 · Flat Bottom Pouch** — ₹8–28/unit, MOQ 500\n\nTell me the product, pack weight, shelf-life target and quantity so I can narrow the material and barrier route.";
+    return "For flexible packaging, start with:\n- **FP-101 · Stand-up Pouch** — ₹8.90–32/unit, MOQ 250\n- **FP-103 · Flat-bottom & Gusseted Pouch** — ₹8–28/unit, MOQ 500\n- **FP-104 · Spout & Refill Pouch** — ₹9–32/unit, MOQ 500\n\nFor machine-made pillow packs, use **FP-112 · Flow-wrap & Pillow Pack**, which follows the managed-quote route. Tell me the product, pack weight, shelf-life target and quantity so I can narrow the material and barrier route.";
   }
   if (lastUser.includes("box") || lastUser.includes("carton") || lastUser.includes("rigid")) {
-    return "For boxes and cartons:\n- **BX-401 · Folding Carton** — ₹3–18/unit, MOQ 500\n- **EC-501 · Mailer Box** — ₹18–75/unit, MOQ 200\n- **EC-502 · Corrugated Shipping Box** — ₹8–35/unit, MOQ 500\n- **BX-402 / BX-403 · Rigid or Magnetic Box** — assisted quote\n\nTell me the product dimensions, weight and whether this is a shelf pack or a shipper.";
+    return "For boxes and cartons:\n- **BX-401 · Folding Cartons** — ₹3–18/unit, MOQ 500\n- **EC-501 · Mailer Box** — ₹18–75/unit, MOQ 200\n- **EC-502 · Corrugated Shipping Box** — ₹8–35/unit, MOQ 500\n- **BX-402 · Rigid & Magnetic Boxes** — ₹65–350/unit, MOQ 100\n\nTell me the product dimensions, weight and whether this is a shelf pack or a shipper.";
   }
 
   return "Let's build this properly. **What product are you packaging, and how many units do you need per order?**\n\nYou can answer in one line, for example: `250g roasted coffee, 2,500 units, premium matte finish`. I will return a practical format shortlist, MOQ fit, indicative price band, and the next self-serve or assisted step.";
+}
+
+function hasCompletePlanningBrief(messages: Array<{ role: string; content: string }>): boolean {
+  const userText = messages.filter(message => message.role === "user").map(message => message.content).join(" ").toLowerCase();
+  const hasQuantity = /[\d,]+\s+(?:[a-z-]+\s+){0,2}(?:units?|pcs?|pieces?|packs?)\b/i.test(userText);
+  const hasKnownProduct = /coffee|tea|spice|powder|flour|dry food|snack|namkeen|serum|skincare|cosmetic|beauty|cream|lotion|protein|supplement|nutraceutical|capsule|tablet|apparel|clothing|garment|fashion|t-shirt|shirt|electronic|gadget|device|fragile/.test(userText);
+  return hasQuantity && hasKnownProduct;
 }
 
 router.post("/pack-ai/chat", async (req, res): Promise<void> => {
@@ -259,6 +257,11 @@ router.post("/pack-ai/chat", async (req, res): Promise<void> => {
     console.error("[PackAI] No API key found — returning fallback");
     const fallback = smartFallback(typedMessages);
     await respond(fallback, "catalog fallback");
+    return;
+  }
+
+  if (hasCompletePlanningBrief(typedMessages)) {
+    await respond(smartFallback(typedMessages), "verified catalog planner");
     return;
   }
 

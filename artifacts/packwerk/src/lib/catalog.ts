@@ -1,12 +1,15 @@
 import { SKUS, SKU_IMAGES, CATEGORIES, type Sku } from "./skus";
+import { EXPANDED_SKUS, type PurchaseMode } from "./catalog-expansion";
 
 export type BuyingMode = "self_serve" | "assisted";
 
 export type CatalogSku = Sku & {
   buyingMode: BuyingMode;
+  purchaseMode: PurchaseMode;
   industrySlugs: string[];
   sustainableTier?: "certified" | "recyclable" | "reusable";
   speedLabel: string;
+  publicBuyingPath: "instant" | "quote";
 };
 
 export type IndustryCatalog = {
@@ -22,6 +25,14 @@ export type IndustryCatalog = {
 
 export const ASSISTED_CATEGORIES = new Set(["rolls"]);
 
+const BRIEF_CODES = new Set([
+  "TS-302", "PR-602", "RL-701", "RL-702", "RL-703", "LC-802", "LC-803", "SP-902",
+]);
+
+const HYBRID_CODES = new Set([
+  "FP-103", "FP-104", "BC-202", "BC-203", "BC-204", "BC-205", "BC-206", "TS-301", "BX-401", "EC-502", "EC-503", "SP-901", "SP-903", "SP-904",
+]);
+
 export const INDUSTRY_CATALOGS: IndustryCatalog[] = [
   {
     slug: "d2c",
@@ -31,7 +42,7 @@ export const INDUSTRY_CATALOGS: IndustryCatalog[] = [
     outcome: "Launch with branded SKUs, predictable MOQs, and a sample-first flow.",
     categories: ["ecommerce", "boxes", "sustainable", "labels"],
     icon: "local_shipping",
-    featuredSkuCodes: ["EC-501", "EC-504", "EC-502", "SP-902", "LC-801"],
+    featuredSkuCodes: ["EC-501", "EC-504", "EC-505", "EC-509", "LC-801"],
   },
   {
     slug: "food-beverage",
@@ -41,7 +52,7 @@ export const INDUSTRY_CATALOGS: IndustryCatalog[] = [
     outcome: "Choose food-grade pouches, jars, cartons, and certified eco options.",
     categories: ["flexible", "bottles", "sustainable"],
     icon: "restaurant",
-    featuredSkuCodes: ["FP-101", "FP-104", "BC-203", "BC-202", "SP-904"],
+    featuredSkuCodes: ["FP-101", "FP-104", "BC-202", "SP-905", "SP-907"],
   },
   {
     slug: "fmcg",
@@ -51,17 +62,17 @@ export const INDUSTRY_CATALOGS: IndustryCatalog[] = [
     outcome: "Standardize pouches, cartons, labels, and managed rollstock.",
     categories: ["flexible", "boxes", "labels", "rolls"],
     icon: "shopping_cart",
-    featuredSkuCodes: ["BX-401", "RL-701", "LC-801", "FP-102", "BX-403"],
+    featuredSkuCodes: ["BX-401", "RL-701", "LC-801", "FP-103", "EC-502"],
   },
   {
     slug: "pharma",
     label: "Pharma & Healthcare",
     headline: "Tamper-aware packaging with documentation discipline.",
     pain: "Unclear specs and missing compliance paperwork slow approvals.",
-    outcome: "Configure bottles, cartons, blister packs, labels, and inserts.",
+    outcome: "Configure bottles, cartons, labels, and protective inserts.",
     categories: ["bottles", "tubes", "boxes", "labels", "protective"],
     icon: "medical_services",
-    featuredSkuCodes: ["TS-302", "BC-201", "BX-401", "LC-801", "PR-602"],
+    featuredSkuCodes: ["BC-201", "BX-401", "LC-801", "PR-602"],
   },
   {
     slug: "beauty",
@@ -81,7 +92,7 @@ export const INDUSTRY_CATALOGS: IndustryCatalog[] = [
     outcome: "Select FSC, recyclable, protective, and food-contact ready packaging.",
     categories: ["sustainable", "protective", "boxes", "flexible"],
     icon: "public",
-    featuredSkuCodes: ["SP-901", "SP-903", "EC-502", "PR-601", "FP-103"],
+    featuredSkuCodes: ["EC-502", "PR-601", "FP-103", "SP-909", "EC-505"],
   },
 ];
 
@@ -93,17 +104,257 @@ for (const industry of INDUSTRY_CATALOGS) {
   }
 }
 
-export const CATALOG_SKUS: CatalogSku[] = SKUS.map((sku) => ({
-  ...sku,
-  buyingMode: ASSISTED_CATEGORIES.has(sku.category) ? "assisted" : "self_serve",
-  industrySlugs: INDUSTRY_BY_CATEGORY.get(sku.category) || ["d2c"],
-  sustainableTier: sku.is_eco
-    ? sku.category === "sustainable"
-      ? "certified"
-      : "recyclable"
-    : undefined,
-  speedLabel: sku.is_smartstock ? "Fast dispatch" : `${sku.delivery_days_india} day lead time`,
-}));
+function resolveMode(sku: Sku): PurchaseMode {
+  if (sku.purchase_mode) return sku.purchase_mode;
+  if (BRIEF_CODES.has(sku.code) || ASSISTED_CATEGORIES.has(sku.category)) return "brief";
+  if (HYBRID_CODES.has(sku.code)) return "hybrid";
+  return "instant";
+}
+
+function defaultTiers(sku: Sku) {
+  if (sku.price_tiers?.length) return sku.price_tiers;
+  // Source ranges often mix stock, printed and enterprise production methods.
+  // Turning the raw minimum into the largest public tier can make a bigger
+  // order cheaper in total. Use a conservative sell-price curve until matched
+  // supplier rate cards replace these provisional defaults.
+  return [
+    { min_qty: sku.moq, unit_price: Number(sku.price_max.toFixed(2)), label: "Launch quantity" },
+    { min_qty: sku.moq * 2, unit_price: Number((sku.price_max * 0.78).toFixed(2)) },
+    { min_qty: sku.moq * 5, unit_price: Number((sku.price_max * 0.58).toFixed(2)) },
+    { min_qty: sku.moq * 10, unit_price: Number((sku.price_max * 0.45).toFixed(2)), label: "Best unit rate" },
+  ];
+}
+
+export const ALL_CATALOG_SKUS: Sku[] = [...SKUS, ...EXPANDED_SKUS];
+
+// The source library stays broad for sourcing work, while the storefront is a
+// deliberately operable launch range. Components and specialist industrial
+// consumables become configuration options or managed requests instead of
+// thin standalone product pages.
+const STOREFRONT_EXCLUSIONS = new Set([
+  // Flexible variants consolidated into the four self-serve pouch families
+  // and two enterprise flexible-film briefs below.
+  "FP-102", "FP-106", "FP-107", "FP-108", "FP-109", "FP-111", "FP-113",
+  // Container shapes that are options within plastic/glass families, or sit
+  // outside the focused D2C and enterprise launch range.
+  "BC-203", "BC-207", "BC-208", "BC-209", "BC-210", "BC-211", "BC-212",
+  // Keep cosmetic tubes public; specialist pharma and paper tubes enter via
+  // the general production brief when needed.
+  "TS-302", "TS-303", "TS-304", "TS-305",
+  // Carton structures are configuration choices, not separate storefront
+  // products. Rigid and magnetic structures share one buying family.
+  "BX-403", "BX-404", "BX-405", "BX-406", "BX-407", "BX-408", "BX-409", "BX-410", "BX-411",
+  // Mailer material and return-strip choices are merged into two mailer pages.
+  "EC-506", "EC-507", "EC-508", "EC-511", "EC-512", "EC-513",
+  // Protective consumables and inserts become options within two clear jobs.
+  "PR-603", "PR-604", "PR-605", "PR-606", "PR-607", "PR-608", "PR-609", "PR-610", "PR-611",
+  // Flexible rollstock is one enterprise brief with material choices.
+  "RL-702", "RL-703", "RL-706", "RL-707", "RL-708", "RL-709", "RL-710", "RL-711",
+  // Labels, stickers and tapes are grouped by production workflow.
+  "LC-802", "LC-803", "LC-804", "LC-805", "LC-807", "LC-809", "LC-812", "LC-813",
+  // Food-service variants are merged by material and converting process.
+  "SP-901", "SP-902", "SP-903", "SP-904", "SP-906", "SP-908", "SP-910", "SP-911",
+]);
+
+const STOREFRONT_OVERRIDES: Record<string, Partial<Sku>> = {
+  "FP-101": {
+    description: "The core D2C pouch family for dry foods, supplements and pet products, with stock-label and direct-print routes.",
+    variants: [
+      { key: "closure", label: "Closure", options: ["Open top", "Resealable zipper", "Zipper + coffee valve"] },
+      { key: "material", label: "Material", options: ["Clear barrier film", "Metallised barrier film", "Kraft laminate", "Mono-material PE"] },
+      { key: "finish", label: "Finish", options: ["Matte", "Gloss", "Soft touch"] },
+      { key: "branding", label: "Branding route", options: ["Premium applied label", "Direct digital print"] },
+    ],
+  },
+  "FP-103": {
+    name: "Flat-bottom & Gusseted Pouch",
+    description: "A premium high-capacity pouch family covering flat-bottom, side-gusset and quad-seal constructions.",
+    variants: [
+      { key: "structure", label: "Structure", options: ["Flat bottom", "Side gusset", "Quad seal"] },
+      { key: "closure", label: "Closure", options: ["Open top", "Resealable zipper", "Zipper + coffee valve"] },
+      { key: "material", label: "Material", options: ["Metallised barrier film", "Kraft laminate", "Mono-material PE"] },
+      { key: "finish", label: "Finish", options: ["Matte", "Gloss", "Soft touch"] },
+    ],
+  },
+  "FP-104": {
+    name: "Spout & Refill Pouch",
+    description: "Leak-resistant refill packaging for liquids and concentrates, with corner or centre spouts and mono-material options.",
+    use_case: "Home care, personal care, sauces, concentrates, oils and refill systems",
+    variants: [
+      { key: "spout", label: "Spout position", options: ["Corner spout", "Centre spout"] },
+      { key: "material", label: "Material", options: ["PET/PE barrier laminate", "Mono-material PE"] },
+      { key: "finish", label: "Finish", options: ["Matte", "Gloss"] },
+    ],
+  },
+  "FP-112": {
+    name: "Flow-wrap & Pillow Pack",
+    description: "Enterprise roll-fed packaging for biscuits, snacks, bars and soap, specified around the filling machine and barrier requirement.",
+  },
+  "BC-201": {
+    name: "Plastic Bottles & Jars",
+    description: "Stock PET and HDPE containers for food, personal care and home care, configured by shape, neck and closure.",
+    use_case: "Beverages, supplements, powders, sauces, personal care and home care",
+    variants: [
+      { key: "container", label: "Container", options: ["PET bottle", "HDPE bottle", "Wide-mouth PET jar"] },
+      { key: "closure", label: "Closure", options: ["Screw cap", "Flip-top cap", "Disc-top cap", "Lotion pump"] },
+      { key: "finish", label: "Finish", options: ["Clear", "Natural", "Amber", "Opaque white"] },
+    ],
+  },
+  "BC-202": {
+    name: "Glass Bottles & Jars",
+    description: "Stock glass containers with compatible closures for food, beverage, wellness and premium retail products.",
+    use_case: "Sauces, oils, beverages, preserves, candles and wellness products",
+    variants: [
+      { key: "container", label: "Container", options: ["Glass bottle", "Wide-mouth glass jar"] },
+      { key: "glass", label: "Glass colour", options: ["Clear", "Amber", "Frosted"] },
+      { key: "closure", label: "Closure", options: ["Metal lug cap", "Screw cap", "Cork"] },
+    ],
+  },
+  "BX-401": {
+    name: "Folding Cartons",
+    description: "One carton workflow covering the most useful retail structures, with dimensions, board, inserts and finishing configured together.",
+    use_case: "Beauty, supplements, food, electronics, pharma and retail products",
+    variants: [
+      { key: "structure", label: "Structure", options: ["Straight tuck end", "Reverse tuck end", "Auto-bottom", "Sleeve and tray", "Window carton"] },
+      { key: "board", label: "Board", options: ["SBS/FBB", "Natural kraft", "Recycled board"] },
+      { key: "finish", label: "Finish", options: ["Uncoated", "Matte lamination", "Gloss lamination", "Soft touch"] },
+    ],
+  },
+  "BX-402": {
+    name: "Rigid & Magnetic Boxes",
+    description: "Premium wrapped boxes configured as two-piece, magnetic book-style or collapsible structures with optional inserts.",
+    use_case: "Gifting, jewellery, beauty, fashion, electronics and premium D2C kits",
+    variants: [
+      { key: "structure", label: "Structure", options: ["Two-piece rigid box", "Magnetic book-style box", "Collapsible magnetic box"] },
+      { key: "insert", label: "Insert", options: ["None", "Paperboard", "EVA foam", "Moulded pulp"] },
+      { key: "finish", label: "Finish", options: ["Matte paper wrap", "Textured paper wrap", "Soft touch", "Foil accent"] },
+    ],
+  },
+  "EC-504": {
+    name: "Courier & Return Mailers",
+    description: "Tamper-evident shipping mailers covering standard, recycled-content, compostable and return-ready formats.",
+    variants: [
+      { key: "material", label: "Material", options: ["Recycled-content PE", "Compostable film", "Opaque co-extruded PE"] },
+      { key: "seal", label: "Seal", options: ["Single tamper seal", "Dual return-ready seal"] },
+      { key: "print", label: "Branding", options: ["Plain", "1-colour print", "Full-colour print"] },
+    ],
+  },
+  "EC-505": {
+    name: "Paper & Padded Mailers",
+    description: "Plastic-light paper shipping mailers configured as unpadded, paper-padded or bubble-lined formats.",
+    use_case: "Apparel, books, jewellery, beauty, accessories and small electronics",
+    variants: [
+      { key: "cushioning", label: "Cushioning", options: ["Unpadded paper", "All-paper padding", "Bubble lining"] },
+      { key: "paper", label: "Paper", options: ["Natural kraft", "White kraft", "Recycled kraft"] },
+      { key: "print", label: "Branding", options: ["Plain", "1-colour print", "Full-colour print"] },
+    ],
+  },
+  "PR-601": {
+    name: "Protective Wrap & Void Fill",
+    description: "A single fulfilment family for cushioning and void fill, selected by fragility, presentation and plastic-reduction target.",
+    use_case: "E-commerce fulfilment, fragile goods, gifting, cosmetics and electronics",
+    variants: [
+      { key: "format", label: "Protection format", options: ["Bubble wrap", "Air pillows", "Honeycomb paper wrap", "Crinkle paper filler"] },
+    ],
+  },
+  "PR-602": {
+    name: "Custom Inserts & Dividers",
+    description: "Engineered product retention and impact protection using foam, corrugated board or moulded fibre.",
+    use_case: "Electronics, bottles, cosmetics, diagnostics, gifting and multi-product kits",
+    variants: [
+      { key: "material", label: "Insert material", options: ["EPE/EVA foam", "Corrugated board", "Moulded pulp"] },
+      { key: "validation", label: "Validation", options: ["Fit check", "Drop-test target", "Cold-chain validation"] },
+    ],
+  },
+  "RL-701": {
+    name: "Printed Flexible Rollstock",
+    description: "Enterprise printed film supplied to machine specification, including standard, high-barrier and mono-material structures.",
+    variants: [
+      { key: "structure", label: "Film structure", options: ["Standard laminate", "High-barrier laminate", "Recyclable mono-material"] },
+      { key: "print", label: "Print process", options: ["Flexographic", "Rotogravure", "Digital"] },
+    ],
+  },
+  "LC-801": {
+    name: "Custom Labels & Stickers",
+    description: "One self-serve label family covering sheets, rolls, custom shapes and tamper-evident materials.",
+    use_case: "Jars, bottles, pouches, boxes, seals and short-run product launches",
+    variants: [
+      { key: "supply", label: "Supply format", options: ["Labels on sheets", "Labels on rolls", "Individual die-cut stickers"] },
+      { key: "material", label: "Material", options: ["Paper", "Water-resistant film", "Clear film", "Kraft paper", "Tamper-evident VOID"] },
+      { key: "finish", label: "Finish", options: ["Matte", "Gloss", "Soft touch", "Foil accent"] },
+    ],
+  },
+  "LC-806": {
+    name: "Shrink Sleeve & Wrap-around Labels",
+    description: "Machine-applied bottle and container decoration specified around the substrate, shrink curve and line speed.",
+  },
+  "LC-808": {
+    name: "Hang Tags & Insert Cards",
+    description: "Short-run printed brand touchpoints covering hang tags, thank-you cards, care cards and header cards.",
+    use_case: "Fashion, jewellery, beauty, gifting, product instructions and D2C unboxing",
+    variants: [
+      { key: "format", label: "Format", options: ["Hang tag", "Header card", "Thank-you card", "Care / instruction card"] },
+      { key: "finish", label: "Finish", options: ["Uncoated", "Matte", "Gloss", "Foil accent"] },
+    ],
+  },
+  "LC-811": {
+    name: "Custom Packaging Tape",
+    description: "Branded carton-sealing tape in BOPP or paper, configured by adhesive, colour and print coverage.",
+    variants: [
+      { key: "material", label: "Tape material", options: ["BOPP", "Self-adhesive kraft paper", "Water-activated paper"] },
+      { key: "print", label: "Branding", options: ["Plain", "1-colour repeat", "2-colour repeat"] },
+    ],
+  },
+  "SP-905": {
+    name: "Bagasse Food Containers",
+    description: "Plant-fibre takeaway packaging configured as clamshells or lidded meal trays for hot and cold food.",
+    variants: [
+      { key: "format", label: "Format", options: ["Clamshell", "Meal tray with lid", "Compartment tray"] },
+    ],
+  },
+  "SP-907": {
+    name: "Paper Cups, Bowls & Food Tubs",
+    description: "Food-contact paper containers configured by shape, lining, lid and print coverage.",
+    use_case: "Beverages, salads, noodles, desserts, curries and takeaway",
+    variants: [
+      { key: "format", label: "Format", options: ["Paper cup", "Paper bowl", "Food tub"] },
+      { key: "lining", label: "Lining", options: ["Aqueous barrier", "PE lining", "PLA lining"] },
+    ],
+  },
+};
+
+function defaultQuoteThreshold(sku: Sku): number | undefined {
+  if (sku.quote_threshold) return sku.quote_threshold;
+  if (sku.purchase_mode === "brief" || ASSISTED_CATEGORIES.has(sku.category)) return undefined;
+  if (sku.category === "labels") return 100000;
+  if (sku.category === "protective") return 10000;
+  if (sku.category === "bottles") return 25000;
+  return 20000;
+}
+
+export const CATALOG_SKUS: CatalogSku[] = ALL_CATALOG_SKUS.filter((sku) => !STOREFRONT_EXCLUSIONS.has(sku.code)).map((sourceSku) => {
+  const sku: Sku = { ...sourceSku, ...STOREFRONT_OVERRIDES[sourceSku.code] };
+  const purchaseMode = resolveMode(sku);
+  return {
+    ...sku,
+    purchase_mode: purchaseMode,
+    purchaseMode,
+    price_tiers: purchaseMode === "brief" ? sku.price_tiers : defaultTiers(sku),
+    estimate_band: sku.estimate_band ?? (purchaseMode !== "instant"
+      ? { unit_min: sku.price_min, unit_max: sku.price_max, setup_min: 5000, setup_max: 50000 }
+      : undefined),
+    buyingMode: purchaseMode === "brief" ? "assisted" : "self_serve",
+    industrySlugs: INDUSTRY_BY_CATEGORY.get(sku.category) || ["d2c"],
+    sustainableTier: sku.is_eco
+      ? sku.category === "sustainable"
+        ? "certified"
+        : "recyclable"
+      : undefined,
+    speedLabel: purchaseMode === "brief" ? "Production brief" : sku.is_smartstock ? "Fast dispatch" : `${sku.delivery_days_india} day lead time`,
+    publicBuyingPath: purchaseMode === "brief" ? "quote" : "instant",
+    quote_threshold: defaultQuoteThreshold(sku),
+  };
+});
 
 export const SELF_SERVE_SKUS = CATALOG_SKUS.filter((sku) => sku.buyingMode === "self_serve");
 export const ASSISTED_SKUS = CATALOG_SKUS.filter((sku) => sku.buyingMode === "assisted");
@@ -113,8 +364,27 @@ export function getCatalogSku(slug: string): CatalogSku | undefined {
   return CATALOG_SKUS.find((sku) => sku.slug === slug);
 }
 
+export function getCatalogSkuById(value: string): CatalogSku | undefined {
+  return CATALOG_SKUS.find((sku) => sku.id === value || sku.code === value || sku.slug === value);
+}
+
+export function getCatalogSkusByCategory(category: string): CatalogSku[] {
+  return CATALOG_SKUS.filter((sku) => sku.category === category);
+}
+
 export function getCatalogImage(sku: CatalogSku | Sku): string {
-  return SKU_IMAGES[sku.code] || "/categories/flexiblepacks.webp";
+  const categoryFallbacks: Record<string, string> = {
+    flexible: "/categories/flexiblepacks.webp",
+    bottles: "/categories/liquid.webp",
+    tubes: "/categories/tubes.webp",
+    boxes: "/categories/rigidpacks.webp",
+    ecommerce: "/categories/ecom.webp",
+    protective: "/categories/protectivepacks.webp",
+    rolls: "/categories/printedrolls.webp",
+    labels: "/categories/closures.webp",
+    sustainable: "/categories/sustainable.webp",
+  };
+  return SKU_IMAGES[sku.code] || categoryFallbacks[sku.category] || "/categories/flexiblepacks.webp";
 }
 
 export function getCategoryLabel(category: string): string {
@@ -139,7 +409,20 @@ export function getSkusForIndustry(slug: string): CatalogSku[] {
   });
 }
 
-export function getConfigureHref(sku: CatalogSku): string {
-  const path = sku.buyingMode === "self_serve" ? "/configure" : "/procurement-plan";
+export function requiresQuote(sku: CatalogSku, quantity?: number): boolean {
+  return sku.publicBuyingPath === "quote" || Boolean(quantity && sku.quote_threshold && quantity >= sku.quote_threshold);
+}
+
+export function getConfigureHref(sku: CatalogSku, quantity?: number): string {
+  const path = requiresQuote(sku, quantity) ? "/procurement-plan" : "/configure";
   return `${path}?sku=${encodeURIComponent(sku.code)}`;
+}
+
+export function getUnitPriceForQuantity(sku: Pick<CatalogSku, "price_tiers" | "price_min" | "price_max" | "moq">, quantity: number): number {
+  const tiers = [...(sku.price_tiers || [])].sort((a, b) => a.min_qty - b.min_qty);
+  let matched = tiers[0]?.unit_price ?? sku.price_max;
+  for (const tier of tiers) {
+    if (quantity >= tier.min_qty) matched = tier.unit_price;
+  }
+  return matched;
 }

@@ -1,0 +1,3494 @@
+{
+  "generated_at": "2026-07-18T06:48:01.047Z",
+  "currency": "INR",
+  "prices_include_gst": false,
+  "gst_note": "GST rate and HSN must be confirmed by the invoicing entity before go-live.",
+  "catalog": [
+    {
+      "code": "FP-101",
+      "slug": "stand-up-pouch",
+      "name": "Stand-up Pouch",
+      "category": "flexible",
+      "purchase_mode": "instant",
+      "public_buying_path": "instant",
+      "quote_threshold": 20000,
+      "use_case": "Snacks, coffee, pet food, spices, dry goods",
+      "standard_spec": "250 g stock stand-up pouch with zipper and premium full-colour labels at 250 units; direct digital print available from 500 units",
+      "moq": 250,
+      "moq_unit": "units",
+      "price_tiers_ex_gst": [
+        {
+          "min_qty": 250,
+          "unit_price": 32,
+          "label": "Low-MOQ launch run"
+        },
+        {
+          "min_qty": 500,
+          "unit_price": 21.24,
+          "label": "Direct-print entry"
+        },
+        {
+          "min_qty": 1000,
+          "unit_price": 15.8
+        },
+        {
+          "min_qty": 2500,
+          "unit_price": 11.4
+        },
+        {
+          "min_qty": 5000,
+          "unit_price": 8.9,
+          "label": "Best online rate"
+        }
+      ],
+      "production_estimate_ex_gst": null,
+      "delivery_days_india": 12,
+      "sample_tier": "standard",
+      "sample_price": 2999,
+      "materials": [],
+      "print_methods": [],
+      "sustainability_notes": [],
+      "supplier_route": "Packworkz supplier network",
+      "hsn_code": null,
+      "gst_rate_provisional": null,
+      "smartstock_eligible": true,
+      "industry_slugs": [
+        "food-beverage",
+        "fmcg",
+        "exports"
+      ],
+      "variant_groups": [
+        {
+          "key": "closure",
+          "label": "Closure",
+          "options": [
+            "Open top",
+            "Resealable zipper",
+            "Zipper + coffee valve"
+          ]
+        },
+        {
+          "key": "material",
+          "label": "Material",
+          "options": [
+            "Clear barrier film",
+            "Metallised barrier film",
+            "Kraft laminate",
+            "Mono-material PE"
+          ]
+        },
+        {
+          "key": "finish",
+          "label": "Finish",
+          "options": [
+            "Matte",
+            "Gloss",
+            "Soft touch"
+          ]
+        },
+        {
+          "key": "branding",
+          "label": "Branding route",
+          "options": [
+            "Premium applied label",
+            "Direct digital print"
+          ]
+        }
+      ],
+      "specification_fields": [
+        {
+          "key": "width",
+          "label": "Width (mm)",
+          "type": "number",
+          "placeholder": "e.g. 150",
+          "unit": "mm"
+        },
+        {
+          "key": "height",
+          "label": "Height (mm)",
+          "type": "number",
+          "placeholder": "e.g. 250",
+          "unit": "mm"
+        },
+        {
+          "key": "gusset",
+          "label": "Gusset / Base (mm)",
+          "type": "number",
+          "placeholder": "e.g. 80",
+          "unit": "mm"
+        },
+        {
+          "key": "print_colors",
+          "label": "No. of Print Colors",
+          "type": "select",
+          "options": [
+            "1",
+            "2",
+            "4",
+            "6",
+            "8+"
+          ]
+        }
+      ]
+    },
+    {
+      "code": "FP-103",
+      "slug": "flat-bottom-pouch",
+      "name": "Flat-bottom & Gusseted Pouch",
+      "category": "flexible",
+      "purchase_mode": "hybrid",
+      "public_buying_path": "instant",
+      "quote_threshold": 20000,
+      "use_case": "Specialty coffee, protein powder, premium snacks, tea",
+      "standard_spec": "Confirm standard size and material before publishing",
+      "moq": 500,
+      "moq_unit": "units",
+      "price_tiers_ex_gst": [
+        {
+          "min_qty": 500,
+          "unit_price": 28,
+          "label": "Launch quantity"
+        },
+        {
+          "min_qty": 1000,
+          "unit_price": 21.84
+        },
+        {
+          "min_qty": 2500,
+          "unit_price": 16.24
+        },
+        {
+          "min_qty": 5000,
+          "unit_price": 12.6,
+          "label": "Best unit rate"
+        }
+      ],
+      "production_estimate_ex_gst": {
+        "unit_min": 8,
+        "unit_max": 28,
+        "setup_min": 5000,
+        "setup_max": 50000
+      },
+      "delivery_days_india": 14,
+      "sample_tier": "premium",
+      "sample_price": 4999,
+      "materials": [],
+      "print_methods": [],
+      "sustainability_notes": [],
+      "supplier_route": "Packworkz supplier network",
+      "hsn_code": null,
+      "gst_rate_provisional": null,
+      "smartstock_eligible": false,
+      "industry_slugs": [
+        "food-beverage",
+        "fmcg",
+        "exports"
+      ],
+      "variant_groups": [
+        {
+          "key": "structure",
+          "label": "Structure",
+          "options": [
+            "Flat bottom",
+            "Side gusset",
+            "Quad seal"
+          ]
+        },
+        {
+          "key": "closure",
+          "label": "Closure",
+          "options": [
+            "Open top",
+            "Resealable zipper",
+            "Zipper + coffee valve"
+          ]
+        },
+        {
+          "key": "material",
+          "label": "Material",
+          "options": [
+            "Metallised barrier film",
+            "Kraft laminate",
+            "Mono-material PE"
+          ]
+        },
+        {
+          "key": "finish",
+          "label": "Finish",
+          "options": [
+            "Matte",
+            "Gloss",
+            "Soft touch"
+          ]
+        }
+      ],
+      "specification_fields": [
+        {
+          "key": "width",
+          "label": "Width (mm)",
+          "type": "number",
+          "placeholder": "e.g. 160",
+          "unit": "mm"
+        },
+        {
+          "key": "height",
+          "label": "Height (mm)",
+          "type": "number",
+          "placeholder": "e.g. 280",
+          "unit": "mm"
+        },
+        {
+          "key": "side_gusset",
+          "label": "Side Gusset (mm)",
+          "type": "number",
+          "placeholder": "e.g. 60",
+          "unit": "mm"
+        },
+        {
+          "key": "print_colors",
+          "label": "No. of Print Colors",
+          "type": "select",
+          "options": [
+            "1",
+            "2",
+            "4",
+            "6",
+            "8+"
+          ]
+        }
+      ]
+    },
+    {
+      "code": "FP-104",
+      "slug": "spout-pouch",
+      "name": "Spout & Refill Pouch",
+      "category": "flexible",
+      "purchase_mode": "hybrid",
+      "public_buying_path": "instant",
+      "quote_threshold": 20000,
+      "use_case": "Home care, personal care, sauces, concentrates, oils and refill systems",
+      "standard_spec": "Confirm standard size and material before publishing",
+      "moq": 500,
+      "moq_unit": "units",
+      "price_tiers_ex_gst": [
+        {
+          "min_qty": 500,
+          "unit_price": 32,
+          "label": "Launch quantity"
+        },
+        {
+          "min_qty": 1000,
+          "unit_price": 24.96
+        },
+        {
+          "min_qty": 2500,
+          "unit_price": 18.56
+        },
+        {
+          "min_qty": 5000,
+          "unit_price": 14.4,
+          "label": "Best unit rate"
+        }
+      ],
+      "production_estimate_ex_gst": {
+        "unit_min": 9,
+        "unit_max": 32,
+        "setup_min": 5000,
+        "setup_max": 50000
+      },
+      "delivery_days_india": 14,
+      "sample_tier": "premium",
+      "sample_price": 4999,
+      "materials": [],
+      "print_methods": [],
+      "sustainability_notes": [],
+      "supplier_route": "Packworkz supplier network",
+      "hsn_code": null,
+      "gst_rate_provisional": null,
+      "smartstock_eligible": false,
+      "industry_slugs": [
+        "food-beverage",
+        "fmcg",
+        "exports"
+      ],
+      "variant_groups": [
+        {
+          "key": "spout",
+          "label": "Spout position",
+          "options": [
+            "Corner spout",
+            "Centre spout"
+          ]
+        },
+        {
+          "key": "material",
+          "label": "Material",
+          "options": [
+            "PET/PE barrier laminate",
+            "Mono-material PE"
+          ]
+        },
+        {
+          "key": "finish",
+          "label": "Finish",
+          "options": [
+            "Matte",
+            "Gloss"
+          ]
+        }
+      ],
+      "specification_fields": [
+        {
+          "key": "width",
+          "label": "Width (mm)",
+          "type": "number",
+          "placeholder": "e.g. 130",
+          "unit": "mm"
+        },
+        {
+          "key": "height",
+          "label": "Height (mm)",
+          "type": "number",
+          "placeholder": "e.g. 220",
+          "unit": "mm"
+        },
+        {
+          "key": "volume_ml",
+          "label": "Volume (ml)",
+          "type": "number",
+          "placeholder": "e.g. 200",
+          "unit": "ml"
+        }
+      ]
+    },
+    {
+      "code": "FP-105",
+      "slug": "sachet-stick-pack",
+      "name": "Sachet / Stick Pack",
+      "category": "flexible",
+      "purchase_mode": "instant",
+      "public_buying_path": "instant",
+      "quote_threshold": 20000,
+      "use_case": "Sugar, salt, condiments, instant coffee, ORS, supplements",
+      "standard_spec": "Confirm standard size and material before publishing",
+      "moq": 5000,
+      "moq_unit": "units",
+      "price_tiers_ex_gst": [
+        {
+          "min_qty": 5000,
+          "unit_price": 4,
+          "label": "Launch quantity"
+        },
+        {
+          "min_qty": 10000,
+          "unit_price": 3.12
+        },
+        {
+          "min_qty": 25000,
+          "unit_price": 2.32
+        },
+        {
+          "min_qty": 50000,
+          "unit_price": 1.8,
+          "label": "Best unit rate"
+        }
+      ],
+      "production_estimate_ex_gst": null,
+      "delivery_days_india": 10,
+      "sample_tier": "standard",
+      "sample_price": 1999,
+      "materials": [],
+      "print_methods": [],
+      "sustainability_notes": [],
+      "supplier_route": "Packworkz supplier network",
+      "hsn_code": null,
+      "gst_rate_provisional": null,
+      "smartstock_eligible": true,
+      "industry_slugs": [
+        "food-beverage",
+        "fmcg",
+        "exports"
+      ],
+      "variant_groups": [
+        {
+          "key": "format",
+          "label": "Format",
+          "options": [
+            "Sachet (3-side seal)",
+            "Stick Pack (4-side seal)"
+          ]
+        },
+        {
+          "key": "material",
+          "label": "Material",
+          "options": [
+            "Plastic (BOPP/PE)",
+            "Metalized Film",
+            "Kraft Paper"
+          ]
+        }
+      ],
+      "specification_fields": [
+        {
+          "key": "width",
+          "label": "Width (mm)",
+          "type": "number",
+          "placeholder": "e.g. 60",
+          "unit": "mm"
+        },
+        {
+          "key": "length",
+          "label": "Length (mm)",
+          "type": "number",
+          "placeholder": "e.g. 100",
+          "unit": "mm"
+        },
+        {
+          "key": "fill_weight",
+          "label": "Fill Weight (g/ml)",
+          "type": "number",
+          "placeholder": "e.g. 5",
+          "unit": "g"
+        }
+      ]
+    },
+    {
+      "code": "BC-201",
+      "slug": "plastic-bottle",
+      "name": "Plastic Bottles & Jars",
+      "category": "bottles",
+      "purchase_mode": "instant",
+      "public_buying_path": "instant",
+      "quote_threshold": 25000,
+      "use_case": "Beverages, supplements, powders, sauces, personal care and home care",
+      "standard_spec": "Confirm standard size and material before publishing",
+      "moq": 500,
+      "moq_unit": "units",
+      "price_tiers_ex_gst": [
+        {
+          "min_qty": 500,
+          "unit_price": 45,
+          "label": "Launch quantity"
+        },
+        {
+          "min_qty": 1000,
+          "unit_price": 35.1
+        },
+        {
+          "min_qty": 2500,
+          "unit_price": 26.1
+        },
+        {
+          "min_qty": 5000,
+          "unit_price": 20.25,
+          "label": "Best unit rate"
+        }
+      ],
+      "production_estimate_ex_gst": null,
+      "delivery_days_india": 10,
+      "sample_tier": "standard",
+      "sample_price": 2999,
+      "materials": [],
+      "print_methods": [],
+      "sustainability_notes": [],
+      "supplier_route": "Packworkz supplier network",
+      "hsn_code": null,
+      "gst_rate_provisional": null,
+      "smartstock_eligible": true,
+      "industry_slugs": [
+        "food-beverage",
+        "pharma",
+        "beauty"
+      ],
+      "variant_groups": [
+        {
+          "key": "container",
+          "label": "Container",
+          "options": [
+            "PET bottle",
+            "HDPE bottle",
+            "Wide-mouth PET jar"
+          ]
+        },
+        {
+          "key": "closure",
+          "label": "Closure",
+          "options": [
+            "Screw cap",
+            "Flip-top cap",
+            "Disc-top cap",
+            "Lotion pump"
+          ]
+        },
+        {
+          "key": "finish",
+          "label": "Finish",
+          "options": [
+            "Clear",
+            "Natural",
+            "Amber",
+            "Opaque white"
+          ]
+        }
+      ],
+      "specification_fields": [
+        {
+          "key": "volume_ml",
+          "label": "Volume (ml)",
+          "type": "select",
+          "options": [
+            "50",
+            "100",
+            "200",
+            "250",
+            "500",
+            "1000",
+            "2000",
+            "Custom"
+          ]
+        },
+        {
+          "key": "color",
+          "label": "Bottle Color",
+          "type": "text",
+          "placeholder": "e.g. Amber, Clear, White"
+        },
+        {
+          "key": "label_type",
+          "label": "Label Type",
+          "type": "select",
+          "options": [
+            "Sleeve Label",
+            "Pressure Sensitive",
+            "In-Mould",
+            "None"
+          ]
+        }
+      ]
+    },
+    {
+      "code": "BC-202",
+      "slug": "glass-bottle",
+      "name": "Glass Bottles & Jars",
+      "category": "bottles",
+      "purchase_mode": "hybrid",
+      "public_buying_path": "instant",
+      "quote_threshold": 25000,
+      "use_case": "Sauces, oils, beverages, preserves, candles and wellness products",
+      "standard_spec": "Confirm standard size and material before publishing",
+      "moq": 200,
+      "moq_unit": "units",
+      "price_tiers_ex_gst": [
+        {
+          "min_qty": 200,
+          "unit_price": 120,
+          "label": "Launch quantity"
+        },
+        {
+          "min_qty": 400,
+          "unit_price": 93.6
+        },
+        {
+          "min_qty": 1000,
+          "unit_price": 69.6
+        },
+        {
+          "min_qty": 2000,
+          "unit_price": 54,
+          "label": "Best unit rate"
+        }
+      ],
+      "production_estimate_ex_gst": {
+        "unit_min": 22,
+        "unit_max": 120,
+        "setup_min": 5000,
+        "setup_max": 50000
+      },
+      "delivery_days_india": 18,
+      "sample_tier": "premium",
+      "sample_price": 4999,
+      "materials": [],
+      "print_methods": [],
+      "sustainability_notes": [],
+      "supplier_route": "Packworkz supplier network",
+      "hsn_code": null,
+      "gst_rate_provisional": null,
+      "smartstock_eligible": false,
+      "industry_slugs": [
+        "food-beverage",
+        "pharma",
+        "beauty"
+      ],
+      "variant_groups": [
+        {
+          "key": "container",
+          "label": "Container",
+          "options": [
+            "Glass bottle",
+            "Wide-mouth glass jar"
+          ]
+        },
+        {
+          "key": "glass",
+          "label": "Glass colour",
+          "options": [
+            "Clear",
+            "Amber",
+            "Frosted"
+          ]
+        },
+        {
+          "key": "closure",
+          "label": "Closure",
+          "options": [
+            "Metal lug cap",
+            "Screw cap",
+            "Cork"
+          ]
+        }
+      ],
+      "specification_fields": [
+        {
+          "key": "volume_ml",
+          "label": "Volume (ml)",
+          "type": "select",
+          "options": [
+            "50",
+            "100",
+            "200",
+            "330",
+            "500",
+            "750",
+            "1000"
+          ]
+        },
+        {
+          "key": "embossing",
+          "label": "Embossing / Debossing",
+          "type": "select",
+          "options": [
+            "None",
+            "Logo only",
+            "Full label panel"
+          ]
+        }
+      ]
+    },
+    {
+      "code": "BC-204",
+      "slug": "cosmetic-jar",
+      "name": "Cosmetic Jar",
+      "category": "bottles",
+      "purchase_mode": "hybrid",
+      "public_buying_path": "instant",
+      "quote_threshold": 25000,
+      "use_case": "Face cream, body butter, hair mask, serums, beard balm",
+      "standard_spec": "Confirm standard size and material before publishing",
+      "moq": 200,
+      "moq_unit": "units",
+      "price_tiers_ex_gst": [
+        {
+          "min_qty": 200,
+          "unit_price": 75,
+          "label": "Launch quantity"
+        },
+        {
+          "min_qty": 400,
+          "unit_price": 58.5
+        },
+        {
+          "min_qty": 1000,
+          "unit_price": 43.5
+        },
+        {
+          "min_qty": 2000,
+          "unit_price": 33.75,
+          "label": "Best unit rate"
+        }
+      ],
+      "production_estimate_ex_gst": {
+        "unit_min": 12,
+        "unit_max": 75,
+        "setup_min": 5000,
+        "setup_max": 50000
+      },
+      "delivery_days_india": 14,
+      "sample_tier": "premium",
+      "sample_price": 4999,
+      "materials": [],
+      "print_methods": [],
+      "sustainability_notes": [],
+      "supplier_route": "Packworkz supplier network",
+      "hsn_code": null,
+      "gst_rate_provisional": null,
+      "smartstock_eligible": false,
+      "industry_slugs": [
+        "food-beverage",
+        "pharma",
+        "beauty"
+      ],
+      "variant_groups": [
+        {
+          "key": "material",
+          "label": "Material",
+          "options": [
+            "Acrylic",
+            "PETG (Plastic)",
+            "Glass"
+          ]
+        },
+        {
+          "key": "lid_type",
+          "label": "Lid Type",
+          "options": [
+            "Standard",
+            "Flat",
+            "Inner Cap"
+          ]
+        },
+        {
+          "key": "finish",
+          "label": "Surface Finish",
+          "options": [
+            "Glossy",
+            "Matte",
+            "Frosted",
+            "Metallic"
+          ]
+        }
+      ],
+      "specification_fields": [
+        {
+          "key": "volume_ml",
+          "label": "Volume (ml)",
+          "type": "select",
+          "options": [
+            "15",
+            "30",
+            "50",
+            "100",
+            "150",
+            "200"
+          ]
+        },
+        {
+          "key": "color",
+          "label": "Jar Color",
+          "type": "text",
+          "placeholder": "e.g. Opal White, Rose Gold"
+        }
+      ]
+    },
+    {
+      "code": "BC-205",
+      "slug": "dropper-bottle",
+      "name": "Dropper Bottle",
+      "category": "bottles",
+      "purchase_mode": "hybrid",
+      "public_buying_path": "instant",
+      "quote_threshold": 25000,
+      "use_case": "Face serums, essential oils, CBD tinctures, eye drops, aromatherapy",
+      "standard_spec": "Confirm standard size and material before publishing",
+      "moq": 200,
+      "moq_unit": "units",
+      "price_tiers_ex_gst": [
+        {
+          "min_qty": 200,
+          "unit_price": 60,
+          "label": "Launch quantity"
+        },
+        {
+          "min_qty": 400,
+          "unit_price": 46.8
+        },
+        {
+          "min_qty": 1000,
+          "unit_price": 34.8
+        },
+        {
+          "min_qty": 2000,
+          "unit_price": 27,
+          "label": "Best unit rate"
+        }
+      ],
+      "production_estimate_ex_gst": {
+        "unit_min": 15,
+        "unit_max": 60,
+        "setup_min": 5000,
+        "setup_max": 50000
+      },
+      "delivery_days_india": 12,
+      "sample_tier": "standard",
+      "sample_price": 2999,
+      "materials": [],
+      "print_methods": [],
+      "sustainability_notes": [],
+      "supplier_route": "Packworkz supplier network",
+      "hsn_code": null,
+      "gst_rate_provisional": null,
+      "smartstock_eligible": false,
+      "industry_slugs": [
+        "food-beverage",
+        "pharma",
+        "beauty"
+      ],
+      "variant_groups": [
+        {
+          "key": "material",
+          "label": "Material",
+          "options": [
+            "Glass (Amber)",
+            "Glass (Clear)",
+            "PETG (Plastic)"
+          ]
+        },
+        {
+          "key": "dropper",
+          "label": "Dropper Type",
+          "options": [
+            "Standard Rubber Bulb",
+            "Child-Resistant",
+            "Plastic Pipette"
+          ]
+        }
+      ],
+      "specification_fields": [
+        {
+          "key": "volume_ml",
+          "label": "Volume (ml)",
+          "type": "select",
+          "options": [
+            "5",
+            "10",
+            "15",
+            "30",
+            "50"
+          ]
+        }
+      ]
+    },
+    {
+      "code": "BC-206",
+      "slug": "airless-pump-bottle",
+      "name": "Airless Pump Bottle",
+      "category": "bottles",
+      "purchase_mode": "hybrid",
+      "public_buying_path": "instant",
+      "quote_threshold": 25000,
+      "use_case": "Serums, moisturizers, foundations, sunscreens, anti-aging creams",
+      "standard_spec": "Confirm standard size and material before publishing",
+      "moq": 200,
+      "moq_unit": "units",
+      "price_tiers_ex_gst": [
+        {
+          "min_qty": 200,
+          "unit_price": 130,
+          "label": "Launch quantity"
+        },
+        {
+          "min_qty": 400,
+          "unit_price": 101.4
+        },
+        {
+          "min_qty": 1000,
+          "unit_price": 75.4
+        },
+        {
+          "min_qty": 2000,
+          "unit_price": 58.5,
+          "label": "Best unit rate"
+        }
+      ],
+      "production_estimate_ex_gst": {
+        "unit_min": 28,
+        "unit_max": 130,
+        "setup_min": 5000,
+        "setup_max": 50000
+      },
+      "delivery_days_india": 18,
+      "sample_tier": "complex",
+      "sample_price": 7999,
+      "materials": [],
+      "print_methods": [],
+      "sustainability_notes": [],
+      "supplier_route": "Packworkz supplier network",
+      "hsn_code": null,
+      "gst_rate_provisional": null,
+      "smartstock_eligible": false,
+      "industry_slugs": [
+        "food-beverage",
+        "pharma",
+        "beauty"
+      ],
+      "variant_groups": [
+        {
+          "key": "material",
+          "label": "Body Material",
+          "options": [
+            "Plastic (ABS)",
+            "Aluminum",
+            "PCR Plastic (Recycled)"
+          ]
+        },
+        {
+          "key": "finish",
+          "label": "Finish",
+          "options": [
+            "Glossy",
+            "Matte",
+            "Metallic Spray"
+          ]
+        }
+      ],
+      "specification_fields": [
+        {
+          "key": "volume_ml",
+          "label": "Volume (ml)",
+          "type": "select",
+          "options": [
+            "15",
+            "30",
+            "50",
+            "100",
+            "150"
+          ]
+        },
+        {
+          "key": "dose_ml",
+          "label": "Dose per Pump (ml)",
+          "type": "select",
+          "options": [
+            "0.2",
+            "0.3",
+            "0.5",
+            "1.0"
+          ]
+        },
+        {
+          "key": "color",
+          "label": "Color",
+          "type": "text",
+          "placeholder": "e.g. White, Black, Rose Gold"
+        }
+      ]
+    },
+    {
+      "code": "TS-301",
+      "slug": "cosmetic-tube",
+      "name": "Cosmetic Tube",
+      "category": "tubes",
+      "purchase_mode": "hybrid",
+      "public_buying_path": "instant",
+      "quote_threshold": 20000,
+      "use_case": "Toothpaste, lotions, sunscreen, hair color, hand cream, pharma gels",
+      "standard_spec": "Confirm standard size and material before publishing",
+      "moq": 1000,
+      "moq_unit": "units",
+      "price_tiers_ex_gst": [
+        {
+          "min_qty": 1000,
+          "unit_price": 22,
+          "label": "Launch quantity"
+        },
+        {
+          "min_qty": 2000,
+          "unit_price": 17.16
+        },
+        {
+          "min_qty": 5000,
+          "unit_price": 12.76
+        },
+        {
+          "min_qty": 10000,
+          "unit_price": 9.9,
+          "label": "Best unit rate"
+        }
+      ],
+      "production_estimate_ex_gst": {
+        "unit_min": 5,
+        "unit_max": 22,
+        "setup_min": 5000,
+        "setup_max": 50000
+      },
+      "delivery_days_india": 12,
+      "sample_tier": "standard",
+      "sample_price": 2999,
+      "materials": [],
+      "print_methods": [],
+      "sustainability_notes": [],
+      "supplier_route": "Packworkz supplier network",
+      "hsn_code": null,
+      "gst_rate_provisional": null,
+      "smartstock_eligible": true,
+      "industry_slugs": [
+        "pharma",
+        "beauty"
+      ],
+      "variant_groups": [
+        {
+          "key": "material",
+          "label": "Material",
+          "options": [
+            "HDPE / LDPE (Plastic)",
+            "Laminate (Multi-layer)",
+            "ABL (Aluminum Barrier)"
+          ]
+        },
+        {
+          "key": "cap_type",
+          "label": "Cap / Nozzle",
+          "options": [
+            "Flip-top Cap",
+            "Disc-top Cap",
+            "Nozzle (Pharma)",
+            "Screw Cap"
+          ]
+        },
+        {
+          "key": "finish",
+          "label": "Print Finish",
+          "options": [
+            "Matte",
+            "Glossy",
+            "Silk"
+          ]
+        }
+      ],
+      "specification_fields": [
+        {
+          "key": "diameter",
+          "label": "Tube Diameter (mm)",
+          "type": "select",
+          "options": [
+            "16",
+            "19",
+            "22",
+            "25",
+            "28",
+            "35",
+            "40"
+          ]
+        },
+        {
+          "key": "volume_ml",
+          "label": "Volume (ml)",
+          "type": "select",
+          "options": [
+            "10",
+            "20",
+            "30",
+            "50",
+            "75",
+            "100",
+            "150",
+            "200"
+          ]
+        },
+        {
+          "key": "print_colors",
+          "label": "Print Colors",
+          "type": "select",
+          "options": [
+            "1",
+            "2",
+            "4",
+            "6",
+            "8+"
+          ]
+        }
+      ]
+    },
+    {
+      "code": "BX-401",
+      "slug": "folding-carton",
+      "name": "Folding Cartons",
+      "category": "boxes",
+      "purchase_mode": "hybrid",
+      "public_buying_path": "instant",
+      "quote_threshold": 20000,
+      "use_case": "Beauty, supplements, food, electronics, pharma and retail products",
+      "standard_spec": "Confirm standard size and material before publishing",
+      "moq": 500,
+      "moq_unit": "units",
+      "price_tiers_ex_gst": [
+        {
+          "min_qty": 500,
+          "unit_price": 18,
+          "label": "Launch quantity"
+        },
+        {
+          "min_qty": 1000,
+          "unit_price": 14.04
+        },
+        {
+          "min_qty": 2500,
+          "unit_price": 10.44
+        },
+        {
+          "min_qty": 5000,
+          "unit_price": 8.1,
+          "label": "Best unit rate"
+        }
+      ],
+      "production_estimate_ex_gst": {
+        "unit_min": 3,
+        "unit_max": 18,
+        "setup_min": 5000,
+        "setup_max": 50000
+      },
+      "delivery_days_india": 12,
+      "sample_tier": "standard",
+      "sample_price": 2999,
+      "materials": [],
+      "print_methods": [],
+      "sustainability_notes": [],
+      "supplier_route": "Packworkz supplier network",
+      "hsn_code": null,
+      "gst_rate_provisional": null,
+      "smartstock_eligible": true,
+      "industry_slugs": [
+        "d2c",
+        "fmcg",
+        "pharma",
+        "beauty",
+        "exports"
+      ],
+      "variant_groups": [
+        {
+          "key": "structure",
+          "label": "Structure",
+          "options": [
+            "Straight tuck end",
+            "Reverse tuck end",
+            "Auto-bottom",
+            "Sleeve and tray",
+            "Window carton"
+          ]
+        },
+        {
+          "key": "board",
+          "label": "Board",
+          "options": [
+            "SBS/FBB",
+            "Natural kraft",
+            "Recycled board"
+          ]
+        },
+        {
+          "key": "finish",
+          "label": "Finish",
+          "options": [
+            "Uncoated",
+            "Matte lamination",
+            "Gloss lamination",
+            "Soft touch"
+          ]
+        }
+      ],
+      "specification_fields": [
+        {
+          "key": "length",
+          "label": "Length (mm)",
+          "type": "number",
+          "placeholder": "e.g. 100",
+          "unit": "mm"
+        },
+        {
+          "key": "width",
+          "label": "Width (mm)",
+          "type": "number",
+          "placeholder": "e.g. 50",
+          "unit": "mm"
+        },
+        {
+          "key": "height",
+          "label": "Height (mm)",
+          "type": "number",
+          "placeholder": "e.g. 150",
+          "unit": "mm"
+        },
+        {
+          "key": "board_gsm",
+          "label": "Board GSM",
+          "type": "select",
+          "options": [
+            "250",
+            "300",
+            "350",
+            "400"
+          ]
+        }
+      ]
+    },
+    {
+      "code": "BX-402",
+      "slug": "rigid-box",
+      "name": "Rigid & Magnetic Boxes",
+      "category": "boxes",
+      "purchase_mode": "instant",
+      "public_buying_path": "instant",
+      "quote_threshold": 20000,
+      "use_case": "Gifting, jewellery, beauty, fashion, electronics and premium D2C kits",
+      "standard_spec": "Confirm standard size and material before publishing",
+      "moq": 100,
+      "moq_unit": "units",
+      "price_tiers_ex_gst": [
+        {
+          "min_qty": 100,
+          "unit_price": 350,
+          "label": "Launch quantity"
+        },
+        {
+          "min_qty": 200,
+          "unit_price": 273
+        },
+        {
+          "min_qty": 500,
+          "unit_price": 203
+        },
+        {
+          "min_qty": 1000,
+          "unit_price": 157.5,
+          "label": "Best unit rate"
+        }
+      ],
+      "production_estimate_ex_gst": null,
+      "delivery_days_india": 18,
+      "sample_tier": "premium",
+      "sample_price": 4999,
+      "materials": [],
+      "print_methods": [],
+      "sustainability_notes": [],
+      "supplier_route": "Packworkz supplier network",
+      "hsn_code": null,
+      "gst_rate_provisional": null,
+      "smartstock_eligible": false,
+      "industry_slugs": [
+        "d2c",
+        "fmcg",
+        "pharma",
+        "beauty",
+        "exports"
+      ],
+      "variant_groups": [
+        {
+          "key": "structure",
+          "label": "Structure",
+          "options": [
+            "Two-piece rigid box",
+            "Magnetic book-style box",
+            "Collapsible magnetic box"
+          ]
+        },
+        {
+          "key": "insert",
+          "label": "Insert",
+          "options": [
+            "None",
+            "Paperboard",
+            "EVA foam",
+            "Moulded pulp"
+          ]
+        },
+        {
+          "key": "finish",
+          "label": "Finish",
+          "options": [
+            "Matte paper wrap",
+            "Textured paper wrap",
+            "Soft touch",
+            "Foil accent"
+          ]
+        }
+      ],
+      "specification_fields": [
+        {
+          "key": "length",
+          "label": "Length (mm)",
+          "type": "number",
+          "placeholder": "e.g. 200",
+          "unit": "mm"
+        },
+        {
+          "key": "width",
+          "label": "Width (mm)",
+          "type": "number",
+          "placeholder": "e.g. 150",
+          "unit": "mm"
+        },
+        {
+          "key": "height",
+          "label": "Height (mm)",
+          "type": "number",
+          "placeholder": "e.g. 80",
+          "unit": "mm"
+        }
+      ]
+    },
+    {
+      "code": "EC-501",
+      "slug": "mailer-box",
+      "name": "Mailer Box",
+      "category": "ecommerce",
+      "purchase_mode": "instant",
+      "public_buying_path": "instant",
+      "quote_threshold": 20000,
+      "use_case": "D2C shipping, subscription boxes, fashion, food kits, cosmetics",
+      "standard_spec": "Confirm standard size and material before publishing",
+      "moq": 200,
+      "moq_unit": "units",
+      "price_tiers_ex_gst": [
+        {
+          "min_qty": 200,
+          "unit_price": 75,
+          "label": "Launch quantity"
+        },
+        {
+          "min_qty": 400,
+          "unit_price": 58.5
+        },
+        {
+          "min_qty": 1000,
+          "unit_price": 43.5
+        },
+        {
+          "min_qty": 2000,
+          "unit_price": 33.75,
+          "label": "Best unit rate"
+        }
+      ],
+      "production_estimate_ex_gst": null,
+      "delivery_days_india": 10,
+      "sample_tier": "standard",
+      "sample_price": 2999,
+      "materials": [],
+      "print_methods": [],
+      "sustainability_notes": [],
+      "supplier_route": "Packworkz supplier network",
+      "hsn_code": null,
+      "gst_rate_provisional": null,
+      "smartstock_eligible": true,
+      "industry_slugs": [
+        "d2c"
+      ],
+      "variant_groups": [
+        {
+          "key": "board",
+          "label": "Board Type",
+          "options": [
+            "Corrugated (3-ply)",
+            "Corrugated (5-ply)",
+            "Rigid Grey Board"
+          ]
+        },
+        {
+          "key": "print",
+          "label": "Print",
+          "options": [
+            "Plain (Kraft)",
+            "Single Color",
+            "Full Color (inside+out)"
+          ]
+        },
+        {
+          "key": "finish",
+          "label": "Finish",
+          "options": [
+            "Uncoated (Kraft)",
+            "Matte Lamination",
+            "Glossy Lamination",
+            "Soft-touch"
+          ]
+        }
+      ],
+      "specification_fields": [
+        {
+          "key": "length",
+          "label": "Length (mm)",
+          "type": "number",
+          "placeholder": "e.g. 250",
+          "unit": "mm"
+        },
+        {
+          "key": "width",
+          "label": "Width (mm)",
+          "type": "number",
+          "placeholder": "e.g. 180",
+          "unit": "mm"
+        },
+        {
+          "key": "height",
+          "label": "Height (mm)",
+          "type": "number",
+          "placeholder": "e.g. 100",
+          "unit": "mm"
+        }
+      ]
+    },
+    {
+      "code": "EC-502",
+      "slug": "corrugated-shipping-box",
+      "name": "Corrugated Box (Shipping)",
+      "category": "ecommerce",
+      "purchase_mode": "hybrid",
+      "public_buying_path": "instant",
+      "quote_threshold": 20000,
+      "use_case": "General e-commerce shipping, FMCG bulk dispatch, B2B warehouse",
+      "standard_spec": "Confirm standard size and material before publishing",
+      "moq": 500,
+      "moq_unit": "units",
+      "price_tiers_ex_gst": [
+        {
+          "min_qty": 500,
+          "unit_price": 35,
+          "label": "Launch quantity"
+        },
+        {
+          "min_qty": 1000,
+          "unit_price": 27.3
+        },
+        {
+          "min_qty": 2500,
+          "unit_price": 20.3
+        },
+        {
+          "min_qty": 5000,
+          "unit_price": 15.75,
+          "label": "Best unit rate"
+        }
+      ],
+      "production_estimate_ex_gst": {
+        "unit_min": 8,
+        "unit_max": 35,
+        "setup_min": 5000,
+        "setup_max": 50000
+      },
+      "delivery_days_india": 10,
+      "sample_tier": "standard",
+      "sample_price": 2999,
+      "materials": [],
+      "print_methods": [],
+      "sustainability_notes": [],
+      "supplier_route": "Packworkz supplier network",
+      "hsn_code": null,
+      "gst_rate_provisional": null,
+      "smartstock_eligible": true,
+      "industry_slugs": [
+        "d2c"
+      ],
+      "variant_groups": [
+        {
+          "key": "ply",
+          "label": "Board Strength",
+          "options": [
+            "3-ply (Standard)",
+            "5-ply (Heavy Duty)",
+            "7-ply (Industrial)"
+          ]
+        },
+        {
+          "key": "style",
+          "label": "Box Style",
+          "options": [
+            "RSC (Regular Slotted)",
+            "Die-cut",
+            "Self-locking (No tape)"
+          ]
+        },
+        {
+          "key": "print",
+          "label": "Print",
+          "options": [
+            "Plain (Kraft)",
+            "Single Color",
+            "Two Color"
+          ]
+        }
+      ],
+      "specification_fields": [
+        {
+          "key": "length",
+          "label": "Length (mm)",
+          "type": "number",
+          "placeholder": "e.g. 300",
+          "unit": "mm"
+        },
+        {
+          "key": "width",
+          "label": "Width (mm)",
+          "type": "number",
+          "placeholder": "e.g. 200",
+          "unit": "mm"
+        },
+        {
+          "key": "height",
+          "label": "Height (mm)",
+          "type": "number",
+          "placeholder": "e.g. 150",
+          "unit": "mm"
+        },
+        {
+          "key": "ect",
+          "label": "Edge Crush Test (ECT)",
+          "type": "select",
+          "options": [
+            "23 ECT",
+            "32 ECT",
+            "44 ECT",
+            "Custom"
+          ]
+        }
+      ]
+    },
+    {
+      "code": "EC-503",
+      "slug": "food-delivery-box",
+      "name": "Food Delivery Box",
+      "category": "ecommerce",
+      "purchase_mode": "hybrid",
+      "public_buying_path": "instant",
+      "quote_threshold": 20000,
+      "use_case": "Cloud kitchens, QSR, tiffin services, meal kit delivery, bakeries",
+      "standard_spec": "Confirm standard size and material before publishing",
+      "moq": 200,
+      "moq_unit": "units",
+      "price_tiers_ex_gst": [
+        {
+          "min_qty": 200,
+          "unit_price": 40,
+          "label": "Launch quantity"
+        },
+        {
+          "min_qty": 400,
+          "unit_price": 31.2
+        },
+        {
+          "min_qty": 1000,
+          "unit_price": 23.2
+        },
+        {
+          "min_qty": 2000,
+          "unit_price": 18,
+          "label": "Best unit rate"
+        }
+      ],
+      "production_estimate_ex_gst": {
+        "unit_min": 10,
+        "unit_max": 40,
+        "setup_min": 5000,
+        "setup_max": 50000
+      },
+      "delivery_days_india": 10,
+      "sample_tier": "standard",
+      "sample_price": 2999,
+      "materials": [],
+      "print_methods": [],
+      "sustainability_notes": [],
+      "supplier_route": "Packworkz supplier network",
+      "hsn_code": null,
+      "gst_rate_provisional": null,
+      "smartstock_eligible": true,
+      "industry_slugs": [
+        "d2c"
+      ],
+      "variant_groups": [
+        {
+          "key": "type",
+          "label": "Box Type",
+          "options": [
+            "Standard (Non-thermal)",
+            "Thermal Insulated",
+            "Tamper-evident"
+          ]
+        },
+        {
+          "key": "material",
+          "label": "Board",
+          "options": [
+            "Corrugated (3-ply)",
+            "Kraft Board",
+            "Duplex with PE coating"
+          ]
+        }
+      ],
+      "specification_fields": [
+        {
+          "key": "size",
+          "label": "Size",
+          "type": "select",
+          "options": [
+            "Small (15×15×8)",
+            "Medium (25×25×10)",
+            "Large (35×35×12)",
+            "Custom"
+          ]
+        },
+        {
+          "key": "grease_coat",
+          "label": "Grease-resistant Coating",
+          "type": "select",
+          "options": [
+            "Yes",
+            "No"
+          ]
+        }
+      ]
+    },
+    {
+      "code": "EC-504",
+      "slug": "courier-bag",
+      "name": "Courier & Return Mailers",
+      "category": "ecommerce",
+      "purchase_mode": "instant",
+      "public_buying_path": "instant",
+      "quote_threshold": 20000,
+      "use_case": "E-commerce courier shipping, clothing, documents, books",
+      "standard_spec": "Confirm standard size and material before publishing",
+      "moq": 1000,
+      "moq_unit": "units",
+      "price_tiers_ex_gst": [
+        {
+          "min_qty": 1000,
+          "unit_price": 10,
+          "label": "Launch quantity"
+        },
+        {
+          "min_qty": 2000,
+          "unit_price": 7.8
+        },
+        {
+          "min_qty": 5000,
+          "unit_price": 5.8
+        },
+        {
+          "min_qty": 10000,
+          "unit_price": 4.5,
+          "label": "Best unit rate"
+        }
+      ],
+      "production_estimate_ex_gst": null,
+      "delivery_days_india": 8,
+      "sample_tier": "standard",
+      "sample_price": 1999,
+      "materials": [],
+      "print_methods": [],
+      "sustainability_notes": [],
+      "supplier_route": "Packworkz supplier network",
+      "hsn_code": null,
+      "gst_rate_provisional": null,
+      "smartstock_eligible": true,
+      "industry_slugs": [
+        "d2c"
+      ],
+      "variant_groups": [
+        {
+          "key": "material",
+          "label": "Material",
+          "options": [
+            "Recycled-content PE",
+            "Compostable film",
+            "Opaque co-extruded PE"
+          ]
+        },
+        {
+          "key": "seal",
+          "label": "Seal",
+          "options": [
+            "Single tamper seal",
+            "Dual return-ready seal"
+          ]
+        },
+        {
+          "key": "print",
+          "label": "Branding",
+          "options": [
+            "Plain",
+            "1-colour print",
+            "Full-colour print"
+          ]
+        }
+      ],
+      "specification_fields": [
+        {
+          "key": "size",
+          "label": "Bag Size",
+          "type": "select",
+          "options": [
+            "XS (18×22 cm)",
+            "S (25×30 cm)",
+            "M (30×40 cm)",
+            "L (40×50 cm)",
+            "XL (50×60 cm)",
+            "Custom"
+          ]
+        }
+      ]
+    },
+    {
+      "code": "PR-601",
+      "slug": "bubble-wrap-air-pillows",
+      "name": "Protective Wrap & Void Fill",
+      "category": "protective",
+      "purchase_mode": "instant",
+      "public_buying_path": "instant",
+      "quote_threshold": 10000,
+      "use_case": "E-commerce fulfilment, fragile goods, gifting, cosmetics and electronics",
+      "standard_spec": "Confirm standard size and material before publishing",
+      "moq": 1,
+      "moq_unit": "rolls",
+      "price_tiers_ex_gst": [
+        {
+          "min_qty": 1,
+          "unit_price": 5000,
+          "label": "Launch quantity"
+        },
+        {
+          "min_qty": 2,
+          "unit_price": 3900
+        },
+        {
+          "min_qty": 5,
+          "unit_price": 2900
+        },
+        {
+          "min_qty": 10,
+          "unit_price": 2250,
+          "label": "Best unit rate"
+        }
+      ],
+      "production_estimate_ex_gst": null,
+      "delivery_days_india": 7,
+      "sample_tier": "standard",
+      "sample_price": 1999,
+      "materials": [],
+      "print_methods": [],
+      "sustainability_notes": [],
+      "supplier_route": "Packworkz supplier network",
+      "hsn_code": null,
+      "gst_rate_provisional": null,
+      "smartstock_eligible": true,
+      "industry_slugs": [
+        "pharma",
+        "exports"
+      ],
+      "variant_groups": [
+        {
+          "key": "format",
+          "label": "Protection format",
+          "options": [
+            "Bubble wrap",
+            "Air pillows",
+            "Honeycomb paper wrap",
+            "Crinkle paper filler"
+          ]
+        }
+      ],
+      "specification_fields": [
+        {
+          "key": "roll_width",
+          "label": "Roll Width (m)",
+          "type": "select",
+          "options": [
+            "0.5",
+            "1.0",
+            "1.2",
+            "1.5"
+          ]
+        },
+        {
+          "key": "roll_length",
+          "label": "Roll Length (m)",
+          "type": "select",
+          "options": [
+            "50",
+            "100",
+            "200",
+            "500"
+          ]
+        }
+      ]
+    },
+    {
+      "code": "PR-602",
+      "slug": "foam-thermocol-inserts",
+      "name": "Custom Inserts & Dividers",
+      "category": "protective",
+      "purchase_mode": "brief",
+      "public_buying_path": "quote",
+      "quote_threshold": 10000,
+      "use_case": "Electronics, bottles, cosmetics, diagnostics, gifting and multi-product kits",
+      "standard_spec": "Confirm standard size and material before publishing",
+      "moq": 100,
+      "moq_unit": "units",
+      "price_tiers_ex_gst": [],
+      "production_estimate_ex_gst": {
+        "unit_min": 15,
+        "unit_max": 180,
+        "setup_min": 5000,
+        "setup_max": 50000
+      },
+      "delivery_days_india": 14,
+      "sample_tier": "complex",
+      "sample_price": 7999,
+      "materials": [],
+      "print_methods": [],
+      "sustainability_notes": [],
+      "supplier_route": "Packworkz supplier network",
+      "hsn_code": null,
+      "gst_rate_provisional": null,
+      "smartstock_eligible": false,
+      "industry_slugs": [
+        "pharma",
+        "exports"
+      ],
+      "variant_groups": [
+        {
+          "key": "material",
+          "label": "Insert material",
+          "options": [
+            "EPE/EVA foam",
+            "Corrugated board",
+            "Moulded pulp"
+          ]
+        },
+        {
+          "key": "validation",
+          "label": "Validation",
+          "options": [
+            "Fit check",
+            "Drop-test target",
+            "Cold-chain validation"
+          ]
+        }
+      ],
+      "specification_fields": [
+        {
+          "key": "length",
+          "label": "Length (mm)",
+          "type": "number",
+          "placeholder": "e.g. 300",
+          "unit": "mm"
+        },
+        {
+          "key": "width",
+          "label": "Width (mm)",
+          "type": "number",
+          "placeholder": "e.g. 200",
+          "unit": "mm"
+        },
+        {
+          "key": "thickness",
+          "label": "Foam Thickness (mm)",
+          "type": "select",
+          "options": [
+            "10",
+            "15",
+            "20",
+            "25",
+            "30",
+            "40",
+            "50"
+          ]
+        }
+      ]
+    },
+    {
+      "code": "RL-701",
+      "slug": "printed-packaging-roll",
+      "name": "Printed Flexible Rollstock",
+      "category": "rolls",
+      "purchase_mode": "brief",
+      "public_buying_path": "quote",
+      "quote_threshold": null,
+      "use_case": "Snacks, wafers, namkeen, biscuits, instant noodles, dry fruits",
+      "standard_spec": "Confirm standard size and material before publishing",
+      "moq": 100,
+      "moq_unit": "kg",
+      "price_tiers_ex_gst": [],
+      "production_estimate_ex_gst": {
+        "unit_min": 180,
+        "unit_max": 450,
+        "setup_min": 5000,
+        "setup_max": 50000
+      },
+      "delivery_days_india": 21,
+      "sample_tier": "complex",
+      "sample_price": 7999,
+      "materials": [],
+      "print_methods": [],
+      "sustainability_notes": [],
+      "supplier_route": "Packworkz supplier network",
+      "hsn_code": null,
+      "gst_rate_provisional": null,
+      "smartstock_eligible": false,
+      "industry_slugs": [
+        "fmcg"
+      ],
+      "variant_groups": [
+        {
+          "key": "structure",
+          "label": "Film structure",
+          "options": [
+            "Standard laminate",
+            "High-barrier laminate",
+            "Recyclable mono-material"
+          ]
+        },
+        {
+          "key": "print",
+          "label": "Print process",
+          "options": [
+            "Flexographic",
+            "Rotogravure",
+            "Digital"
+          ]
+        }
+      ],
+      "specification_fields": [
+        {
+          "key": "roll_width",
+          "label": "Roll Width (mm)",
+          "type": "number",
+          "placeholder": "e.g. 400",
+          "unit": "mm"
+        },
+        {
+          "key": "roll_length",
+          "label": "Roll Length (m)",
+          "type": "select",
+          "options": [
+            "1000",
+            "2000",
+            "3000",
+            "5000"
+          ]
+        },
+        {
+          "key": "colors",
+          "label": "No. of Print Colors",
+          "type": "select",
+          "options": [
+            "1",
+            "2",
+            "4",
+            "6",
+            "8+"
+          ]
+        }
+      ]
+    },
+    {
+      "code": "LC-801",
+      "slug": "labels",
+      "name": "Custom Labels & Stickers",
+      "category": "labels",
+      "purchase_mode": "instant",
+      "public_buying_path": "instant",
+      "quote_threshold": 100000,
+      "use_case": "Jars, bottles, pouches, boxes, seals and short-run product launches",
+      "standard_spec": "Confirm standard size and material before publishing",
+      "moq": 1000,
+      "moq_unit": "units",
+      "price_tiers_ex_gst": [
+        {
+          "min_qty": 1000,
+          "unit_price": 8,
+          "label": "Launch quantity"
+        },
+        {
+          "min_qty": 2000,
+          "unit_price": 6.24
+        },
+        {
+          "min_qty": 5000,
+          "unit_price": 4.64
+        },
+        {
+          "min_qty": 10000,
+          "unit_price": 3.6,
+          "label": "Best unit rate"
+        }
+      ],
+      "production_estimate_ex_gst": null,
+      "delivery_days_india": 10,
+      "sample_tier": "standard",
+      "sample_price": 1999,
+      "materials": [],
+      "print_methods": [],
+      "sustainability_notes": [],
+      "supplier_route": "Packworkz supplier network",
+      "hsn_code": null,
+      "gst_rate_provisional": null,
+      "smartstock_eligible": true,
+      "industry_slugs": [
+        "d2c",
+        "fmcg",
+        "pharma",
+        "beauty"
+      ],
+      "variant_groups": [
+        {
+          "key": "supply",
+          "label": "Supply format",
+          "options": [
+            "Labels on sheets",
+            "Labels on rolls",
+            "Individual die-cut stickers"
+          ]
+        },
+        {
+          "key": "material",
+          "label": "Material",
+          "options": [
+            "Paper",
+            "Water-resistant film",
+            "Clear film",
+            "Kraft paper",
+            "Tamper-evident VOID"
+          ]
+        },
+        {
+          "key": "finish",
+          "label": "Finish",
+          "options": [
+            "Matte",
+            "Gloss",
+            "Soft touch",
+            "Foil accent"
+          ]
+        }
+      ],
+      "specification_fields": [
+        {
+          "key": "width",
+          "label": "Width (mm)",
+          "type": "number",
+          "placeholder": "e.g. 70",
+          "unit": "mm"
+        },
+        {
+          "key": "height",
+          "label": "Height (mm)",
+          "type": "number",
+          "placeholder": "e.g. 110",
+          "unit": "mm"
+        },
+        {
+          "key": "print_colors",
+          "label": "Print Colors",
+          "type": "select",
+          "options": [
+            "1",
+            "2",
+            "4",
+            "6",
+            "8+"
+          ]
+        }
+      ]
+    },
+    {
+      "code": "FP-110",
+      "slug": "retort-pouch",
+      "name": "Retort Pouch",
+      "category": "flexible",
+      "purchase_mode": "brief",
+      "public_buying_path": "quote",
+      "quote_threshold": null,
+      "use_case": "Ready meals, curries, sauces, pet food and sterilised foods",
+      "standard_spec": "Custom process temperature, fill weight and seal validation",
+      "moq": 10000,
+      "moq_unit": "units",
+      "price_tiers_ex_gst": [],
+      "production_estimate_ex_gst": {
+        "unit_min": 4.2,
+        "unit_max": 14.5,
+        "setup_min": 35000,
+        "setup_max": 120000
+      },
+      "delivery_days_india": 24,
+      "sample_tier": "complex",
+      "sample_price": 4999,
+      "materials": [
+        "PET/Al/CPP",
+        "PET/NY/CPP"
+      ],
+      "print_methods": [
+        "Digital",
+        "Flexographic"
+      ],
+      "sustainability_notes": [],
+      "supplier_route": "Retort-certified laminate converter",
+      "hsn_code": "3923",
+      "gst_rate_provisional": 18,
+      "smartstock_eligible": false,
+      "industry_slugs": [
+        "food-beverage",
+        "fmcg",
+        "exports"
+      ],
+      "variant_groups": [
+        {
+          "key": "print",
+          "label": "Branding",
+          "options": [
+            "Plain",
+            "1-color print",
+            "Full-color print"
+          ]
+        },
+        {
+          "key": "finish",
+          "label": "Finish",
+          "options": [
+            "Natural / uncoated",
+            "Matte",
+            "Gloss"
+          ]
+        }
+      ],
+      "specification_fields": [
+        {
+          "key": "width",
+          "label": "Width",
+          "type": "number",
+          "unit": "mm",
+          "placeholder": "e.g. 150"
+        },
+        {
+          "key": "height",
+          "label": "Height",
+          "type": "number",
+          "unit": "mm",
+          "placeholder": "e.g. 220"
+        },
+        {
+          "key": "depth",
+          "label": "Depth / Gusset",
+          "type": "number",
+          "unit": "mm",
+          "placeholder": "e.g. 60"
+        }
+      ]
+    },
+    {
+      "code": "FP-112",
+      "slug": "centre-seal-fin-pouch",
+      "name": "Flow-wrap & Pillow Pack",
+      "category": "flexible",
+      "purchase_mode": "brief",
+      "public_buying_path": "quote",
+      "quote_threshold": null,
+      "use_case": "Biscuits, snacks, soap bars and horizontal flow-wrap products",
+      "standard_spec": "Price per kg; machine and barrier specification required",
+      "moq": 250,
+      "moq_unit": "kg",
+      "price_tiers_ex_gst": [],
+      "production_estimate_ex_gst": {
+        "unit_min": 165,
+        "unit_max": 330,
+        "setup_min": 12000,
+        "setup_max": 40000
+      },
+      "delivery_days_india": 24,
+      "sample_tier": "complex",
+      "sample_price": 4999,
+      "materials": [
+        "BOPP/CPP",
+        "BOPP/MetBOPP/CPP"
+      ],
+      "print_methods": [
+        "Digital",
+        "Flexographic"
+      ],
+      "sustainability_notes": [],
+      "supplier_route": "Rotogravure flexible-pack converter",
+      "hsn_code": "3923",
+      "gst_rate_provisional": 18,
+      "smartstock_eligible": false,
+      "industry_slugs": [
+        "food-beverage",
+        "fmcg",
+        "exports"
+      ],
+      "variant_groups": [
+        {
+          "key": "print",
+          "label": "Branding",
+          "options": [
+            "Plain",
+            "1-color print",
+            "Full-color print"
+          ]
+        },
+        {
+          "key": "finish",
+          "label": "Finish",
+          "options": [
+            "Natural / uncoated",
+            "Matte",
+            "Gloss"
+          ]
+        }
+      ],
+      "specification_fields": [
+        {
+          "key": "web_width",
+          "label": "Web width",
+          "type": "number",
+          "unit": "mm"
+        },
+        {
+          "key": "repeat",
+          "label": "Repeat length",
+          "type": "number",
+          "unit": "mm"
+        }
+      ]
+    },
+    {
+      "code": "BC-213",
+      "slug": "perfume-bottle",
+      "name": "Perfume and Attar Bottle",
+      "category": "bottles",
+      "purchase_mode": "hybrid",
+      "public_buying_path": "instant",
+      "quote_threshold": 25000,
+      "use_case": "Perfume, attar, essential oil and premium sampling",
+      "standard_spec": "30 ml stock glass bottle with crimp pump",
+      "moq": 100,
+      "moq_unit": "units",
+      "price_tiers_ex_gst": [
+        {
+          "min_qty": 100,
+          "unit_price": 88,
+          "label": "Launch quantity"
+        },
+        {
+          "min_qty": 250,
+          "unit_price": 69
+        },
+        {
+          "min_qty": 500,
+          "unit_price": 55
+        },
+        {
+          "min_qty": 1000,
+          "unit_price": 46,
+          "label": "Best unit rate"
+        }
+      ],
+      "production_estimate_ex_gst": {
+        "unit_min": 38,
+        "unit_max": 250,
+        "setup_min": 5000,
+        "setup_max": 70000
+      },
+      "delivery_days_india": 18,
+      "sample_tier": "premium",
+      "sample_price": 2999,
+      "materials": [
+        "Glass",
+        "Aluminium closure"
+      ],
+      "print_methods": [
+        "Digital",
+        "Flexographic"
+      ],
+      "sustainability_notes": [],
+      "supplier_route": "Fragrance bottle and pump importer",
+      "hsn_code": "3923",
+      "gst_rate_provisional": 18,
+      "smartstock_eligible": true,
+      "industry_slugs": [
+        "food-beverage",
+        "pharma",
+        "beauty"
+      ],
+      "variant_groups": [
+        {
+          "key": "print",
+          "label": "Branding",
+          "options": [
+            "Plain",
+            "1-color print",
+            "Full-color print"
+          ]
+        },
+        {
+          "key": "finish",
+          "label": "Finish",
+          "options": [
+            "Natural / uncoated",
+            "Matte",
+            "Gloss"
+          ]
+        }
+      ],
+      "specification_fields": [
+        {
+          "key": "width",
+          "label": "Width",
+          "type": "number",
+          "unit": "mm",
+          "placeholder": "e.g. 150"
+        },
+        {
+          "key": "height",
+          "label": "Height",
+          "type": "number",
+          "unit": "mm",
+          "placeholder": "e.g. 220"
+        },
+        {
+          "key": "depth",
+          "label": "Depth / Gusset",
+          "type": "number",
+          "unit": "mm",
+          "placeholder": "e.g. 60"
+        }
+      ]
+    },
+    {
+      "code": "EC-505",
+      "slug": "paper-shipping-mailer",
+      "name": "Paper & Padded Mailers",
+      "category": "ecommerce",
+      "purchase_mode": "instant",
+      "public_buying_path": "instant",
+      "quote_threshold": 20000,
+      "use_case": "Apparel, books, jewellery, beauty, accessories and small electronics",
+      "standard_spec": "250 x 330 mm, peel-and-seal, one-color print",
+      "moq": 100,
+      "moq_unit": "units",
+      "price_tiers_ex_gst": [
+        {
+          "min_qty": 100,
+          "unit_price": 24,
+          "label": "Launch quantity"
+        },
+        {
+          "min_qty": 250,
+          "unit_price": 17.5
+        },
+        {
+          "min_qty": 500,
+          "unit_price": 13.6
+        },
+        {
+          "min_qty": 1000,
+          "unit_price": 10.8,
+          "label": "Best unit rate"
+        }
+      ],
+      "production_estimate_ex_gst": null,
+      "delivery_days_india": 10,
+      "sample_tier": "standard",
+      "sample_price": 999,
+      "materials": [
+        "FSC kraft paper option"
+      ],
+      "print_methods": [
+        "Digital",
+        "Flexographic"
+      ],
+      "sustainability_notes": [
+        "Lower-impact material option",
+        "Claim documentation required before artwork approval"
+      ],
+      "supplier_route": "Paper mailer bag converter",
+      "hsn_code": "4819",
+      "gst_rate_provisional": 18,
+      "smartstock_eligible": true,
+      "industry_slugs": [
+        "d2c"
+      ],
+      "variant_groups": [
+        {
+          "key": "cushioning",
+          "label": "Cushioning",
+          "options": [
+            "Unpadded paper",
+            "All-paper padding",
+            "Bubble lining"
+          ]
+        },
+        {
+          "key": "paper",
+          "label": "Paper",
+          "options": [
+            "Natural kraft",
+            "White kraft",
+            "Recycled kraft"
+          ]
+        },
+        {
+          "key": "print",
+          "label": "Branding",
+          "options": [
+            "Plain",
+            "1-colour print",
+            "Full-colour print"
+          ]
+        }
+      ],
+      "specification_fields": [
+        {
+          "key": "width",
+          "label": "Width",
+          "type": "number",
+          "unit": "mm",
+          "placeholder": "e.g. 150"
+        },
+        {
+          "key": "height",
+          "label": "Height",
+          "type": "number",
+          "unit": "mm",
+          "placeholder": "e.g. 220"
+        },
+        {
+          "key": "depth",
+          "label": "Depth / Gusset",
+          "type": "number",
+          "unit": "mm",
+          "placeholder": "e.g. 60"
+        }
+      ]
+    },
+    {
+      "code": "EC-509",
+      "slug": "frosted-zipper-garment-bag",
+      "name": "Frosted Zipper Garment Bag",
+      "category": "ecommerce",
+      "purchase_mode": "instant",
+      "public_buying_path": "instant",
+      "quote_threshold": 20000,
+      "use_case": "Fashion, apparel, linens and premium inner packaging",
+      "standard_spec": "300 x 400 mm, zipper, one-color print",
+      "moq": 100,
+      "moq_unit": "units",
+      "price_tiers_ex_gst": [
+        {
+          "min_qty": 100,
+          "unit_price": 22,
+          "label": "Launch quantity"
+        },
+        {
+          "min_qty": 250,
+          "unit_price": 16
+        },
+        {
+          "min_qty": 500,
+          "unit_price": 12.5
+        },
+        {
+          "min_qty": 1000,
+          "unit_price": 10,
+          "label": "Best unit rate"
+        }
+      ],
+      "production_estimate_ex_gst": null,
+      "delivery_days_india": 10,
+      "sample_tier": "standard",
+      "sample_price": 999,
+      "materials": [
+        "PE",
+        "EVA/PE"
+      ],
+      "print_methods": [
+        "Digital",
+        "Flexographic"
+      ],
+      "sustainability_notes": [],
+      "supplier_route": "Garment polybag converter",
+      "hsn_code": "4819",
+      "gst_rate_provisional": 18,
+      "smartstock_eligible": false,
+      "industry_slugs": [
+        "d2c"
+      ],
+      "variant_groups": [
+        {
+          "key": "print",
+          "label": "Branding",
+          "options": [
+            "Plain",
+            "1-color print",
+            "Full-color print"
+          ]
+        },
+        {
+          "key": "finish",
+          "label": "Finish",
+          "options": [
+            "Natural / uncoated",
+            "Matte",
+            "Gloss"
+          ]
+        }
+      ],
+      "specification_fields": [
+        {
+          "key": "width",
+          "label": "Width",
+          "type": "number",
+          "unit": "mm",
+          "placeholder": "e.g. 150"
+        },
+        {
+          "key": "height",
+          "label": "Height",
+          "type": "number",
+          "unit": "mm",
+          "placeholder": "e.g. 220"
+        },
+        {
+          "key": "depth",
+          "label": "Depth / Gusset",
+          "type": "number",
+          "unit": "mm",
+          "placeholder": "e.g. 60"
+        }
+      ]
+    },
+    {
+      "code": "EC-510",
+      "slug": "printed-paper-carrier-bag",
+      "name": "Printed Paper Carrier Bag",
+      "category": "ecommerce",
+      "purchase_mode": "instant",
+      "public_buying_path": "instant",
+      "quote_threshold": 20000,
+      "use_case": "Retail, bakery, events, gifting and takeaway",
+      "standard_spec": "Medium bag, twisted handle, one-color print",
+      "moq": 50,
+      "moq_unit": "units",
+      "price_tiers_ex_gst": [
+        {
+          "min_qty": 50,
+          "unit_price": 24,
+          "label": "Launch quantity"
+        },
+        {
+          "min_qty": 100,
+          "unit_price": 17
+        },
+        {
+          "min_qty": 250,
+          "unit_price": 12
+        },
+        {
+          "min_qty": 500,
+          "unit_price": 9.5,
+          "label": "Best unit rate"
+        }
+      ],
+      "production_estimate_ex_gst": null,
+      "delivery_days_india": 10,
+      "sample_tier": "standard",
+      "sample_price": 999,
+      "materials": [
+        "Kraft paper",
+        "Recycled kraft option"
+      ],
+      "print_methods": [
+        "Digital",
+        "Flexographic"
+      ],
+      "sustainability_notes": [
+        "Lower-impact material option",
+        "Claim documentation required before artwork approval"
+      ],
+      "supplier_route": "Paper bag manufacturer",
+      "hsn_code": "4819",
+      "gst_rate_provisional": 18,
+      "smartstock_eligible": true,
+      "industry_slugs": [
+        "d2c"
+      ],
+      "variant_groups": [
+        {
+          "key": "print",
+          "label": "Branding",
+          "options": [
+            "Plain",
+            "1-color print",
+            "Full-color print"
+          ]
+        },
+        {
+          "key": "finish",
+          "label": "Finish",
+          "options": [
+            "Natural / uncoated",
+            "Matte",
+            "Gloss"
+          ]
+        }
+      ],
+      "specification_fields": [
+        {
+          "key": "width",
+          "label": "Width",
+          "type": "number",
+          "unit": "mm",
+          "placeholder": "e.g. 150"
+        },
+        {
+          "key": "height",
+          "label": "Height",
+          "type": "number",
+          "unit": "mm",
+          "placeholder": "e.g. 220"
+        },
+        {
+          "key": "depth",
+          "label": "Depth / Gusset",
+          "type": "number",
+          "unit": "mm",
+          "placeholder": "e.g. 60"
+        }
+      ]
+    },
+    {
+      "code": "RL-704",
+      "slug": "lidding-sealing-film",
+      "name": "Lidding and Sealing Film",
+      "category": "rolls",
+      "purchase_mode": "brief",
+      "public_buying_path": "quote",
+      "quote_threshold": null,
+      "use_case": "Dairy cups, trays, ready meals, pharma and induction seals",
+      "standard_spec": "Price per kg; cup/tray substrate and seal window required",
+      "moq": 300,
+      "moq_unit": "kg",
+      "price_tiers_ex_gst": [],
+      "production_estimate_ex_gst": {
+        "unit_min": 240,
+        "unit_max": 540,
+        "setup_min": 18000,
+        "setup_max": 90000
+      },
+      "delivery_days_india": 24,
+      "sample_tier": "complex",
+      "sample_price": 4999,
+      "materials": [
+        "PET/PE",
+        "PET/CPP",
+        "Aluminium foil laminate"
+      ],
+      "print_methods": [
+        "Digital",
+        "Flexographic"
+      ],
+      "sustainability_notes": [],
+      "supplier_route": "Specialty lidding-film converter",
+      "hsn_code": "3923",
+      "gst_rate_provisional": 18,
+      "smartstock_eligible": false,
+      "industry_slugs": [
+        "fmcg"
+      ],
+      "variant_groups": [
+        {
+          "key": "print",
+          "label": "Branding",
+          "options": [
+            "Plain",
+            "1-color print",
+            "Full-color print"
+          ]
+        },
+        {
+          "key": "finish",
+          "label": "Finish",
+          "options": [
+            "Natural / uncoated",
+            "Matte",
+            "Gloss"
+          ]
+        }
+      ],
+      "specification_fields": [
+        {
+          "key": "web_width",
+          "label": "Web width",
+          "type": "number",
+          "unit": "mm"
+        },
+        {
+          "key": "seal_substrate",
+          "label": "Seal substrate",
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "code": "RL-705",
+      "slug": "shrink-film-rollstock",
+      "name": "Shrink Film and Sleeve Rollstock",
+      "category": "rolls",
+      "purchase_mode": "brief",
+      "public_buying_path": "quote",
+      "quote_threshold": null,
+      "use_case": "Bottle bundles, tamper bands, multipacks and full-body sleeves",
+      "standard_spec": "Price per kg; shrink curve and machine specification required",
+      "moq": 300,
+      "moq_unit": "kg",
+      "price_tiers_ex_gst": [],
+      "production_estimate_ex_gst": {
+        "unit_min": 155,
+        "unit_max": 390,
+        "setup_min": 15000,
+        "setup_max": 75000
+      },
+      "delivery_days_india": 24,
+      "sample_tier": "complex",
+      "sample_price": 4999,
+      "materials": [
+        "POF",
+        "PVC",
+        "PETG"
+      ],
+      "print_methods": [
+        "Digital",
+        "Flexographic"
+      ],
+      "sustainability_notes": [],
+      "supplier_route": "Shrink-film manufacturer",
+      "hsn_code": "3923",
+      "gst_rate_provisional": 18,
+      "smartstock_eligible": false,
+      "industry_slugs": [
+        "fmcg"
+      ],
+      "variant_groups": [
+        {
+          "key": "print",
+          "label": "Branding",
+          "options": [
+            "Plain",
+            "1-color print",
+            "Full-color print"
+          ]
+        },
+        {
+          "key": "finish",
+          "label": "Finish",
+          "options": [
+            "Natural / uncoated",
+            "Matte",
+            "Gloss"
+          ]
+        }
+      ],
+      "specification_fields": [
+        {
+          "key": "width",
+          "label": "Width",
+          "type": "number",
+          "unit": "mm",
+          "placeholder": "e.g. 150"
+        },
+        {
+          "key": "height",
+          "label": "Height",
+          "type": "number",
+          "unit": "mm",
+          "placeholder": "e.g. 220"
+        },
+        {
+          "key": "depth",
+          "label": "Depth / Gusset",
+          "type": "number",
+          "unit": "mm",
+          "placeholder": "e.g. 60"
+        }
+      ]
+    },
+    {
+      "code": "LC-806",
+      "slug": "shrink-sleeve-label",
+      "name": "Shrink Sleeve & Wrap-around Labels",
+      "category": "labels",
+      "purchase_mode": "brief",
+      "public_buying_path": "quote",
+      "quote_threshold": null,
+      "use_case": "Beverages, personal care, home care and tamper evidence",
+      "standard_spec": "Container CAD, shrink curve and application equipment required",
+      "moq": 10000,
+      "moq_unit": "units",
+      "price_tiers_ex_gst": [],
+      "production_estimate_ex_gst": {
+        "unit_min": 1.8,
+        "unit_max": 8.5,
+        "setup_min": 25000,
+        "setup_max": 95000
+      },
+      "delivery_days_india": 24,
+      "sample_tier": "complex",
+      "sample_price": 4999,
+      "materials": [
+        "PETG",
+        "PVC",
+        "OPS"
+      ],
+      "print_methods": [
+        "Digital",
+        "Flexographic"
+      ],
+      "sustainability_notes": [],
+      "supplier_route": "Gravure shrink-sleeve converter",
+      "hsn_code": "4821/3919",
+      "gst_rate_provisional": 18,
+      "smartstock_eligible": false,
+      "industry_slugs": [
+        "d2c",
+        "fmcg",
+        "pharma",
+        "beauty"
+      ],
+      "variant_groups": [
+        {
+          "key": "print",
+          "label": "Branding",
+          "options": [
+            "Plain",
+            "1-color print",
+            "Full-color print"
+          ]
+        },
+        {
+          "key": "finish",
+          "label": "Finish",
+          "options": [
+            "Natural / uncoated",
+            "Matte",
+            "Gloss"
+          ]
+        }
+      ],
+      "specification_fields": [
+        {
+          "key": "width",
+          "label": "Width",
+          "type": "number",
+          "unit": "mm",
+          "placeholder": "e.g. 150"
+        },
+        {
+          "key": "height",
+          "label": "Height",
+          "type": "number",
+          "unit": "mm",
+          "placeholder": "e.g. 220"
+        },
+        {
+          "key": "depth",
+          "label": "Depth / Gusset",
+          "type": "number",
+          "unit": "mm",
+          "placeholder": "e.g. 60"
+        }
+      ]
+    },
+    {
+      "code": "LC-808",
+      "slug": "hang-tag-header-card",
+      "name": "Hang Tags & Insert Cards",
+      "category": "labels",
+      "purchase_mode": "instant",
+      "public_buying_path": "instant",
+      "quote_threshold": 100000,
+      "use_case": "Fashion, jewellery, beauty, gifting, product instructions and D2C unboxing",
+      "standard_spec": "55 x 90 mm, 4-color, punched",
+      "moq": 50,
+      "moq_unit": "units",
+      "price_tiers_ex_gst": [
+        {
+          "min_qty": 50,
+          "unit_price": 12,
+          "label": "Launch quantity"
+        },
+        {
+          "min_qty": 100,
+          "unit_price": 7.5
+        },
+        {
+          "min_qty": 250,
+          "unit_price": 4.4
+        },
+        {
+          "min_qty": 500,
+          "unit_price": 3.2,
+          "label": "Best unit rate"
+        }
+      ],
+      "production_estimate_ex_gst": null,
+      "delivery_days_india": 10,
+      "sample_tier": "standard",
+      "sample_price": 999,
+      "materials": [
+        "Paperboard",
+        "Recycled paper option"
+      ],
+      "print_methods": [
+        "Digital",
+        "Flexographic"
+      ],
+      "sustainability_notes": [
+        "Lower-impact material option",
+        "Claim documentation required before artwork approval"
+      ],
+      "supplier_route": "Digital commercial printer",
+      "hsn_code": "4821/3919",
+      "gst_rate_provisional": 18,
+      "smartstock_eligible": true,
+      "industry_slugs": [
+        "d2c",
+        "fmcg",
+        "pharma",
+        "beauty"
+      ],
+      "variant_groups": [
+        {
+          "key": "format",
+          "label": "Format",
+          "options": [
+            "Hang tag",
+            "Header card",
+            "Thank-you card",
+            "Care / instruction card"
+          ]
+        },
+        {
+          "key": "finish",
+          "label": "Finish",
+          "options": [
+            "Uncoated",
+            "Matte",
+            "Gloss",
+            "Foil accent"
+          ]
+        }
+      ],
+      "specification_fields": [
+        {
+          "key": "width",
+          "label": "Width",
+          "type": "number",
+          "unit": "mm",
+          "placeholder": "e.g. 150"
+        },
+        {
+          "key": "height",
+          "label": "Height",
+          "type": "number",
+          "unit": "mm",
+          "placeholder": "e.g. 220"
+        },
+        {
+          "key": "depth",
+          "label": "Depth / Gusset",
+          "type": "number",
+          "unit": "mm",
+          "placeholder": "e.g. 60"
+        }
+      ]
+    },
+    {
+      "code": "LC-810",
+      "slug": "printed-tissue-wrapping-paper",
+      "name": "Printed Tissue and Wrapping Paper",
+      "category": "labels",
+      "purchase_mode": "hybrid",
+      "public_buying_path": "instant",
+      "quote_threshold": 100000,
+      "use_case": "Fashion, gifting, beauty, jewellery and premium unboxing",
+      "standard_spec": "500 x 750 mm sheet, one-color repeat print",
+      "moq": 250,
+      "moq_unit": "units",
+      "price_tiers_ex_gst": [
+        {
+          "min_qty": 250,
+          "unit_price": 14,
+          "label": "Launch quantity"
+        },
+        {
+          "min_qty": 500,
+          "unit_price": 10.5
+        },
+        {
+          "min_qty": 1000,
+          "unit_price": 8.1
+        },
+        {
+          "min_qty": 2500,
+          "unit_price": 6.4,
+          "label": "Best unit rate"
+        }
+      ],
+      "production_estimate_ex_gst": {
+        "unit_min": 5.5,
+        "unit_max": 22,
+        "setup_min": 4500,
+        "setup_max": 22000
+      },
+      "delivery_days_india": 18,
+      "sample_tier": "premium",
+      "sample_price": 2999,
+      "materials": [
+        "Tissue paper",
+        "Glassine",
+        "Recycled paper"
+      ],
+      "print_methods": [
+        "Digital",
+        "Flexographic"
+      ],
+      "sustainability_notes": [
+        "Lower-impact material option",
+        "Claim documentation required before artwork approval"
+      ],
+      "supplier_route": "Tissue-paper printer",
+      "hsn_code": "4821/3919",
+      "gst_rate_provisional": 18,
+      "smartstock_eligible": true,
+      "industry_slugs": [
+        "d2c",
+        "fmcg",
+        "pharma",
+        "beauty"
+      ],
+      "variant_groups": [
+        {
+          "key": "print",
+          "label": "Branding",
+          "options": [
+            "Plain",
+            "1-color print",
+            "Full-color print"
+          ]
+        },
+        {
+          "key": "finish",
+          "label": "Finish",
+          "options": [
+            "Natural / uncoated",
+            "Matte",
+            "Gloss"
+          ]
+        }
+      ],
+      "specification_fields": [
+        {
+          "key": "width",
+          "label": "Width",
+          "type": "number",
+          "unit": "mm",
+          "placeholder": "e.g. 150"
+        },
+        {
+          "key": "height",
+          "label": "Height",
+          "type": "number",
+          "unit": "mm",
+          "placeholder": "e.g. 220"
+        },
+        {
+          "key": "depth",
+          "label": "Depth / Gusset",
+          "type": "number",
+          "unit": "mm",
+          "placeholder": "e.g. 60"
+        }
+      ]
+    },
+    {
+      "code": "LC-811",
+      "slug": "printed-bopp-tape",
+      "name": "Custom Packaging Tape",
+      "category": "labels",
+      "purchase_mode": "instant",
+      "public_buying_path": "instant",
+      "quote_threshold": 100000,
+      "use_case": "Branded shipping cartons, tamper visibility and warehouse operations",
+      "standard_spec": "48 mm x 65 m, one-color print",
+      "moq": 72,
+      "moq_unit": "units",
+      "price_tiers_ex_gst": [
+        {
+          "min_qty": 72,
+          "unit_price": 92,
+          "label": "Launch quantity"
+        },
+        {
+          "min_qty": 144,
+          "unit_price": 78
+        },
+        {
+          "min_qty": 360,
+          "unit_price": 64
+        },
+        {
+          "min_qty": 720,
+          "unit_price": 56,
+          "label": "Best unit rate"
+        }
+      ],
+      "production_estimate_ex_gst": null,
+      "delivery_days_india": 10,
+      "sample_tier": "standard",
+      "sample_price": 999,
+      "materials": [
+        "BOPP",
+        "Acrylic adhesive"
+      ],
+      "print_methods": [
+        "Digital",
+        "Flexographic"
+      ],
+      "sustainability_notes": [],
+      "supplier_route": "Printed adhesive-tape converter",
+      "hsn_code": "4821/3919",
+      "gst_rate_provisional": 18,
+      "smartstock_eligible": true,
+      "industry_slugs": [
+        "d2c",
+        "fmcg",
+        "pharma",
+        "beauty"
+      ],
+      "variant_groups": [
+        {
+          "key": "material",
+          "label": "Tape material",
+          "options": [
+            "BOPP",
+            "Self-adhesive kraft paper",
+            "Water-activated paper"
+          ]
+        },
+        {
+          "key": "print",
+          "label": "Branding",
+          "options": [
+            "Plain",
+            "1-colour repeat",
+            "2-colour repeat"
+          ]
+        }
+      ],
+      "specification_fields": [
+        {
+          "key": "color",
+          "label": "Tape color",
+          "type": "select",
+          "options": [
+            "Clear",
+            "Brown",
+            "White"
+          ]
+        }
+      ]
+    },
+    {
+      "code": "SP-905",
+      "slug": "bagasse-clamshell",
+      "name": "Bagasse Food Containers",
+      "category": "sustainable",
+      "purchase_mode": "instant",
+      "public_buying_path": "instant",
+      "quote_threshold": 20000,
+      "use_case": "QSR, cloud kitchens, events and hot takeaway food",
+      "standard_spec": "9 x 6 inch, plain, single compartment",
+      "moq": 500,
+      "moq_unit": "units",
+      "price_tiers_ex_gst": [
+        {
+          "min_qty": 500,
+          "unit_price": 9.8,
+          "label": "Launch quantity"
+        },
+        {
+          "min_qty": 1000,
+          "unit_price": 8.6
+        },
+        {
+          "min_qty": 2500,
+          "unit_price": 7.7
+        },
+        {
+          "min_qty": 5000,
+          "unit_price": 7,
+          "label": "Best unit rate"
+        }
+      ],
+      "production_estimate_ex_gst": null,
+      "delivery_days_india": 10,
+      "sample_tier": "standard",
+      "sample_price": 999,
+      "materials": [
+        "Bagasse fibre"
+      ],
+      "print_methods": [
+        "Digital",
+        "Flexographic"
+      ],
+      "sustainability_notes": [
+        "Lower-impact material option",
+        "Claim documentation required before artwork approval"
+      ],
+      "supplier_route": "Bagasse tableware manufacturer",
+      "hsn_code": "3923",
+      "gst_rate_provisional": 18,
+      "smartstock_eligible": true,
+      "industry_slugs": [
+        "d2c",
+        "food-beverage",
+        "exports"
+      ],
+      "variant_groups": [
+        {
+          "key": "format",
+          "label": "Format",
+          "options": [
+            "Clamshell",
+            "Meal tray with lid",
+            "Compartment tray"
+          ]
+        }
+      ],
+      "specification_fields": [
+        {
+          "key": "width",
+          "label": "Width",
+          "type": "number",
+          "unit": "mm",
+          "placeholder": "e.g. 150"
+        },
+        {
+          "key": "height",
+          "label": "Height",
+          "type": "number",
+          "unit": "mm",
+          "placeholder": "e.g. 220"
+        },
+        {
+          "key": "depth",
+          "label": "Depth / Gusset",
+          "type": "number",
+          "unit": "mm",
+          "placeholder": "e.g. 60"
+        }
+      ]
+    },
+    {
+      "code": "SP-907",
+      "slug": "paper-cup",
+      "name": "Paper Cups, Bowls & Food Tubs",
+      "category": "sustainable",
+      "purchase_mode": "hybrid",
+      "public_buying_path": "instant",
+      "quote_threshold": 20000,
+      "use_case": "Beverages, salads, noodles, desserts, curries and takeaway",
+      "standard_spec": "250 ml, single wall, one-color print",
+      "moq": 1000,
+      "moq_unit": "units",
+      "price_tiers_ex_gst": [
+        {
+          "min_qty": 1000,
+          "unit_price": 5.8,
+          "label": "Launch quantity"
+        },
+        {
+          "min_qty": 2500,
+          "unit_price": 4.7
+        },
+        {
+          "min_qty": 5000,
+          "unit_price": 4.1
+        },
+        {
+          "min_qty": 10000,
+          "unit_price": 3.6,
+          "label": "Best unit rate"
+        }
+      ],
+      "production_estimate_ex_gst": {
+        "unit_min": 3.2,
+        "unit_max": 8.5,
+        "setup_min": 6000,
+        "setup_max": 28000
+      },
+      "delivery_days_india": 18,
+      "sample_tier": "premium",
+      "sample_price": 2999,
+      "materials": [
+        "Food-grade paper",
+        "Aqueous/PE lining"
+      ],
+      "print_methods": [
+        "Digital",
+        "Flexographic"
+      ],
+      "sustainability_notes": [
+        "Lower-impact material option",
+        "Claim documentation required before artwork approval"
+      ],
+      "supplier_route": "Food-contact paper cup manufacturer",
+      "hsn_code": "3923",
+      "gst_rate_provisional": 18,
+      "smartstock_eligible": true,
+      "industry_slugs": [
+        "d2c",
+        "food-beverage",
+        "exports"
+      ],
+      "variant_groups": [
+        {
+          "key": "format",
+          "label": "Format",
+          "options": [
+            "Paper cup",
+            "Paper bowl",
+            "Food tub"
+          ]
+        },
+        {
+          "key": "lining",
+          "label": "Lining",
+          "options": [
+            "Aqueous barrier",
+            "PE lining",
+            "PLA lining"
+          ]
+        }
+      ],
+      "specification_fields": [
+        {
+          "key": "width",
+          "label": "Width",
+          "type": "number",
+          "unit": "mm",
+          "placeholder": "e.g. 150"
+        },
+        {
+          "key": "height",
+          "label": "Height",
+          "type": "number",
+          "unit": "mm",
+          "placeholder": "e.g. 220"
+        },
+        {
+          "key": "depth",
+          "label": "Depth / Gusset",
+          "type": "number",
+          "unit": "mm",
+          "placeholder": "e.g. 60"
+        }
+      ]
+    },
+    {
+      "code": "SP-909",
+      "slug": "greaseproof-food-wrap-paper",
+      "name": "Greaseproof and Food Wrap Paper",
+      "category": "sustainable",
+      "purchase_mode": "instant",
+      "public_buying_path": "instant",
+      "quote_threshold": 20000,
+      "use_case": "Burgers, bakery, deli, tray liners and QSR branding",
+      "standard_spec": "300 x 300 mm sheet, one-color repeat print",
+      "moq": 1000,
+      "moq_unit": "units",
+      "price_tiers_ex_gst": [
+        {
+          "min_qty": 1000,
+          "unit_price": 2.9,
+          "label": "Launch quantity"
+        },
+        {
+          "min_qty": 2500,
+          "unit_price": 2.1
+        },
+        {
+          "min_qty": 5000,
+          "unit_price": 1.65
+        },
+        {
+          "min_qty": 10000,
+          "unit_price": 1.3,
+          "label": "Best unit rate"
+        }
+      ],
+      "production_estimate_ex_gst": null,
+      "delivery_days_india": 10,
+      "sample_tier": "standard",
+      "sample_price": 999,
+      "materials": [
+        "Food-grade greaseproof paper"
+      ],
+      "print_methods": [
+        "Digital",
+        "Flexographic"
+      ],
+      "sustainability_notes": [
+        "Lower-impact material option",
+        "Claim documentation required before artwork approval"
+      ],
+      "supplier_route": "Food-contact paper printer",
+      "hsn_code": "3923",
+      "gst_rate_provisional": 18,
+      "smartstock_eligible": false,
+      "industry_slugs": [
+        "d2c",
+        "food-beverage",
+        "exports"
+      ],
+      "variant_groups": [
+        {
+          "key": "print",
+          "label": "Branding",
+          "options": [
+            "Plain",
+            "1-color print",
+            "Full-color print"
+          ]
+        },
+        {
+          "key": "finish",
+          "label": "Finish",
+          "options": [
+            "Natural / uncoated",
+            "Matte",
+            "Gloss"
+          ]
+        }
+      ],
+      "specification_fields": [
+        {
+          "key": "width",
+          "label": "Width",
+          "type": "number",
+          "unit": "mm",
+          "placeholder": "e.g. 150"
+        },
+        {
+          "key": "height",
+          "label": "Height",
+          "type": "number",
+          "unit": "mm",
+          "placeholder": "e.g. 220"
+        },
+        {
+          "key": "depth",
+          "label": "Depth / Gusset",
+          "type": "number",
+          "unit": "mm",
+          "placeholder": "e.g. 60"
+        }
+      ]
+    }
+  ]
+}

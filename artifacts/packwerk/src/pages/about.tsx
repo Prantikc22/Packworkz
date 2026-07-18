@@ -7,7 +7,7 @@ const TIMELINE = [
   { year: "2008", title: "Expansion & Modernisation", desc: "Kalyani Rotopack Pvt Ltd is formally incorporated. We invest in rotogravure printing lines, barrier laminates, and food-grade film processing — serving national brands across India." },
   { year: "2018", title: "Global Supply Network", desc: "A decade of supplier relationships evolves into a curated global network — raw material sourcing from Japan, South Korea, Germany, and domestic mills — giving us cost and quality leverage." },
   { year: "2024", title: "Packworkz is Born", desc: "Armed with 30 years of manufacturing know-how and a network of 500+ vetted factories, we launch Packworkz — India's first managed packaging platform — to give every brand the supply chain we always wished we had." },
-  { year: "2025", title: "Platform Scales Nationally", desc: "110+ SKUs, 220+ brand clients, real-time dashboards, and AI-driven inventory intelligence. Packworkz becomes the go-to packaging partner for India's fastest-growing D2C, FMCG, and pharma brands." },
+  { year: "2025", title: "Platform Scales Nationally", desc: "The catalog expands across D2C and enterprise packaging, supported by real-time order records and inventory intelligence." },
 ];
 
 const VALUES = [
@@ -19,14 +19,14 @@ const VALUES = [
 
 const STATS = [
   { val: "30+", label: "Years Manufacturing" },
-  { val: "110+", label: "Packaging SKUs" },
+  { val: "35", label: "Product families" },
   { val: "500+", label: "Factory Partners" },
   { val: "220+", label: "Brands Served" },
 ];
 
 const MISSION_STATS = [
   { num: "18–35%", label: "Cost Savings vs. Traditional" },
-  { num: "110+", label: "Packaging SKUs" },
+  { num: "35", label: "Product families" },
   { num: "0", label: "Stockouts on SmartStock" },
   { num: "48hr", label: "Pricing Turnaround" },
 ];

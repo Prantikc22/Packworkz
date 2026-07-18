@@ -1,0 +1,951 @@
+{
+  "store": "ix11eu-ek.myshopify.com",
+  "generatedAt": "2026-07-18T08:30:08.019Z",
+  "products": {
+    "FP-101": {
+      "handle": "stand-up-pouch",
+      "productId": "gid://shopify/Product/8789554299038",
+      "variants": [
+        {
+          "quantity": 250,
+          "variantId": "gid://shopify/ProductVariant/47991935664286",
+          "variantNumericId": "47991935664286",
+          "price": "8000.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991935664286:1"
+        },
+        {
+          "quantity": 500,
+          "variantId": "gid://shopify/ProductVariant/47991935697054",
+          "variantNumericId": "47991935697054",
+          "price": "10620.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991935697054:1"
+        },
+        {
+          "quantity": 1000,
+          "variantId": "gid://shopify/ProductVariant/47991935729822",
+          "variantNumericId": "47991935729822",
+          "price": "15800.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991935729822:1"
+        },
+        {
+          "quantity": 2500,
+          "variantId": "gid://shopify/ProductVariant/47991935762590",
+          "variantNumericId": "47991935762590",
+          "price": "28500.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991935762590:1"
+        },
+        {
+          "quantity": 5000,
+          "variantId": "gid://shopify/ProductVariant/47991935795358",
+          "variantNumericId": "47991935795358",
+          "price": "44500.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991935795358:1"
+        }
+      ]
+    },
+    "FP-103": {
+      "handle": "flat-bottom-pouch",
+      "productId": "gid://shopify/Product/8789554364574",
+      "variants": [
+        {
+          "quantity": 500,
+          "variantId": "gid://shopify/ProductVariant/47991935926430",
+          "variantNumericId": "47991935926430",
+          "price": "14000.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991935926430:1"
+        },
+        {
+          "quantity": 1000,
+          "variantId": "gid://shopify/ProductVariant/47991935959198",
+          "variantNumericId": "47991935959198",
+          "price": "21840.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991935959198:1"
+        },
+        {
+          "quantity": 2500,
+          "variantId": "gid://shopify/ProductVariant/47991935991966",
+          "variantNumericId": "47991935991966",
+          "price": "40600.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991935991966:1"
+        },
+        {
+          "quantity": 5000,
+          "variantId": "gid://shopify/ProductVariant/47991936024734",
+          "variantNumericId": "47991936024734",
+          "price": "63000.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991936024734:1"
+        }
+      ]
+    },
+    "FP-104": {
+      "handle": "spout-pouch",
+      "productId": "gid://shopify/Product/8789554397342",
+      "variants": [
+        {
+          "quantity": 500,
+          "variantId": "gid://shopify/ProductVariant/47991936057502",
+          "variantNumericId": "47991936057502",
+          "price": "16000.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991936057502:1"
+        },
+        {
+          "quantity": 1000,
+          "variantId": "gid://shopify/ProductVariant/47991936090270",
+          "variantNumericId": "47991936090270",
+          "price": "24960.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991936090270:1"
+        },
+        {
+          "quantity": 2500,
+          "variantId": "gid://shopify/ProductVariant/47991936123038",
+          "variantNumericId": "47991936123038",
+          "price": "46400.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991936123038:1"
+        },
+        {
+          "quantity": 5000,
+          "variantId": "gid://shopify/ProductVariant/47991936155806",
+          "variantNumericId": "47991936155806",
+          "price": "72000.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991936155806:1"
+        }
+      ]
+    },
+    "FP-105": {
+      "handle": "sachet-stick-pack",
+      "productId": "gid://shopify/Product/8789554430110",
+      "variants": [
+        {
+          "quantity": 5000,
+          "variantId": "gid://shopify/ProductVariant/47991936188574",
+          "variantNumericId": "47991936188574",
+          "price": "20000.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991936188574:1"
+        },
+        {
+          "quantity": 10000,
+          "variantId": "gid://shopify/ProductVariant/47991936221342",
+          "variantNumericId": "47991936221342",
+          "price": "31200.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991936221342:1"
+        }
+      ]
+    },
+    "BC-201": {
+      "handle": "plastic-bottle",
+      "productId": "gid://shopify/Product/8789554462878",
+      "variants": [
+        {
+          "quantity": 500,
+          "variantId": "gid://shopify/ProductVariant/47991936254110",
+          "variantNumericId": "47991936254110",
+          "price": "22500.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991936254110:1"
+        },
+        {
+          "quantity": 1000,
+          "variantId": "gid://shopify/ProductVariant/47991936286878",
+          "variantNumericId": "47991936286878",
+          "price": "35100.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991936286878:1"
+        },
+        {
+          "quantity": 2500,
+          "variantId": "gid://shopify/ProductVariant/47991936319646",
+          "variantNumericId": "47991936319646",
+          "price": "65250.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991936319646:1"
+        },
+        {
+          "quantity": 5000,
+          "variantId": "gid://shopify/ProductVariant/47991936352414",
+          "variantNumericId": "47991936352414",
+          "price": "101250.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991936352414:1"
+        }
+      ]
+    },
+    "BC-202": {
+      "handle": "glass-bottle",
+      "productId": "gid://shopify/Product/8789554495646",
+      "variants": [
+        {
+          "quantity": 200,
+          "variantId": "gid://shopify/ProductVariant/47991936385182",
+          "variantNumericId": "47991936385182",
+          "price": "24000.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991936385182:1"
+        },
+        {
+          "quantity": 400,
+          "variantId": "gid://shopify/ProductVariant/47991936417950",
+          "variantNumericId": "47991936417950",
+          "price": "37440.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991936417950:1"
+        },
+        {
+          "quantity": 1000,
+          "variantId": "gid://shopify/ProductVariant/47991936450718",
+          "variantNumericId": "47991936450718",
+          "price": "69600.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991936450718:1"
+        },
+        {
+          "quantity": 2000,
+          "variantId": "gid://shopify/ProductVariant/47991936483486",
+          "variantNumericId": "47991936483486",
+          "price": "108000.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991936483486:1"
+        }
+      ]
+    },
+    "BC-204": {
+      "handle": "cosmetic-jar",
+      "productId": "gid://shopify/Product/8789554626718",
+      "variants": [
+        {
+          "quantity": 200,
+          "variantId": "gid://shopify/ProductVariant/47991936712862",
+          "variantNumericId": "47991936712862",
+          "price": "15000.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991936712862:1"
+        },
+        {
+          "quantity": 400,
+          "variantId": "gid://shopify/ProductVariant/47991936745630",
+          "variantNumericId": "47991936745630",
+          "price": "23400.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991936745630:1"
+        },
+        {
+          "quantity": 1000,
+          "variantId": "gid://shopify/ProductVariant/47991936778398",
+          "variantNumericId": "47991936778398",
+          "price": "43500.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991936778398:1"
+        },
+        {
+          "quantity": 2000,
+          "variantId": "gid://shopify/ProductVariant/47991936811166",
+          "variantNumericId": "47991936811166",
+          "price": "67500.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991936811166:1"
+        }
+      ]
+    },
+    "BC-205": {
+      "handle": "dropper-bottle",
+      "productId": "gid://shopify/Product/8789554659486",
+      "variants": [
+        {
+          "quantity": 200,
+          "variantId": "gid://shopify/ProductVariant/47991936843934",
+          "variantNumericId": "47991936843934",
+          "price": "12000.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991936843934:1"
+        },
+        {
+          "quantity": 400,
+          "variantId": "gid://shopify/ProductVariant/47991936876702",
+          "variantNumericId": "47991936876702",
+          "price": "18720.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991936876702:1"
+        },
+        {
+          "quantity": 1000,
+          "variantId": "gid://shopify/ProductVariant/47991936909470",
+          "variantNumericId": "47991936909470",
+          "price": "34800.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991936909470:1"
+        },
+        {
+          "quantity": 2000,
+          "variantId": "gid://shopify/ProductVariant/47991936942238",
+          "variantNumericId": "47991936942238",
+          "price": "54000.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991936942238:1"
+        }
+      ]
+    },
+    "BC-206": {
+      "handle": "airless-pump-bottle",
+      "productId": "gid://shopify/Product/8789554692254",
+      "variants": [
+        {
+          "quantity": 200,
+          "variantId": "gid://shopify/ProductVariant/47991936975006",
+          "variantNumericId": "47991936975006",
+          "price": "26000.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991936975006:1"
+        },
+        {
+          "quantity": 400,
+          "variantId": "gid://shopify/ProductVariant/47991937007774",
+          "variantNumericId": "47991937007774",
+          "price": "40560.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991937007774:1"
+        },
+        {
+          "quantity": 1000,
+          "variantId": "gid://shopify/ProductVariant/47991937040542",
+          "variantNumericId": "47991937040542",
+          "price": "75400.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991937040542:1"
+        },
+        {
+          "quantity": 2000,
+          "variantId": "gid://shopify/ProductVariant/47991937073310",
+          "variantNumericId": "47991937073310",
+          "price": "117000.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991937073310:1"
+        }
+      ]
+    },
+    "TS-301": {
+      "handle": "cosmetic-tube",
+      "productId": "gid://shopify/Product/8789554725022",
+      "variants": [
+        {
+          "quantity": 1000,
+          "variantId": "gid://shopify/ProductVariant/47991937106078",
+          "variantNumericId": "47991937106078",
+          "price": "22000.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991937106078:1"
+        },
+        {
+          "quantity": 2000,
+          "variantId": "gid://shopify/ProductVariant/47991937138846",
+          "variantNumericId": "47991937138846",
+          "price": "34320.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991937138846:1"
+        },
+        {
+          "quantity": 5000,
+          "variantId": "gid://shopify/ProductVariant/47991937171614",
+          "variantNumericId": "47991937171614",
+          "price": "63800.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991937171614:1"
+        },
+        {
+          "quantity": 10000,
+          "variantId": "gid://shopify/ProductVariant/47991937204382",
+          "variantNumericId": "47991937204382",
+          "price": "99000.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991937204382:1"
+        }
+      ]
+    },
+    "BX-401": {
+      "handle": "folding-carton",
+      "productId": "gid://shopify/Product/8789554757790",
+      "variants": [
+        {
+          "quantity": 500,
+          "variantId": "gid://shopify/ProductVariant/47991937237150",
+          "variantNumericId": "47991937237150",
+          "price": "9000.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991937237150:1"
+        },
+        {
+          "quantity": 1000,
+          "variantId": "gid://shopify/ProductVariant/47991937269918",
+          "variantNumericId": "47991937269918",
+          "price": "14040.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991937269918:1"
+        },
+        {
+          "quantity": 2500,
+          "variantId": "gid://shopify/ProductVariant/47991937302686",
+          "variantNumericId": "47991937302686",
+          "price": "26100.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991937302686:1"
+        },
+        {
+          "quantity": 5000,
+          "variantId": "gid://shopify/ProductVariant/47991937335454",
+          "variantNumericId": "47991937335454",
+          "price": "40500.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991937335454:1"
+        }
+      ]
+    },
+    "BX-402": {
+      "handle": "rigid-box",
+      "productId": "gid://shopify/Product/8789554790558",
+      "variants": [
+        {
+          "quantity": 100,
+          "variantId": "gid://shopify/ProductVariant/47991937368222",
+          "variantNumericId": "47991937368222",
+          "price": "35000.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991937368222:1"
+        },
+        {
+          "quantity": 200,
+          "variantId": "gid://shopify/ProductVariant/47991937400990",
+          "variantNumericId": "47991937400990",
+          "price": "54600.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991937400990:1"
+        },
+        {
+          "quantity": 500,
+          "variantId": "gid://shopify/ProductVariant/47991937433758",
+          "variantNumericId": "47991937433758",
+          "price": "101500.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991937433758:1"
+        },
+        {
+          "quantity": 1000,
+          "variantId": "gid://shopify/ProductVariant/47991937466526",
+          "variantNumericId": "47991937466526",
+          "price": "157500.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991937466526:1"
+        }
+      ]
+    },
+    "EC-501": {
+      "handle": "mailer-box",
+      "productId": "gid://shopify/Product/8789554888862",
+      "variants": [
+        {
+          "quantity": 200,
+          "variantId": "gid://shopify/ProductVariant/47991937728670",
+          "variantNumericId": "47991937728670",
+          "price": "15000.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991937728670:1"
+        },
+        {
+          "quantity": 400,
+          "variantId": "gid://shopify/ProductVariant/47991937761438",
+          "variantNumericId": "47991937761438",
+          "price": "23400.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991937761438:1"
+        },
+        {
+          "quantity": 1000,
+          "variantId": "gid://shopify/ProductVariant/47991937794206",
+          "variantNumericId": "47991937794206",
+          "price": "43500.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991937794206:1"
+        },
+        {
+          "quantity": 2000,
+          "variantId": "gid://shopify/ProductVariant/47991937826974",
+          "variantNumericId": "47991937826974",
+          "price": "67500.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991937826974:1"
+        }
+      ]
+    },
+    "EC-502": {
+      "handle": "corrugated-shipping-box",
+      "productId": "gid://shopify/Product/8789554921630",
+      "variants": [
+        {
+          "quantity": 500,
+          "variantId": "gid://shopify/ProductVariant/47991937859742",
+          "variantNumericId": "47991937859742",
+          "price": "17500.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991937859742:1"
+        },
+        {
+          "quantity": 1000,
+          "variantId": "gid://shopify/ProductVariant/47991937892510",
+          "variantNumericId": "47991937892510",
+          "price": "27300.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991937892510:1"
+        },
+        {
+          "quantity": 2500,
+          "variantId": "gid://shopify/ProductVariant/47991937925278",
+          "variantNumericId": "47991937925278",
+          "price": "50750.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991937925278:1"
+        },
+        {
+          "quantity": 5000,
+          "variantId": "gid://shopify/ProductVariant/47991937958046",
+          "variantNumericId": "47991937958046",
+          "price": "78750.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991937958046:1"
+        }
+      ]
+    },
+    "EC-503": {
+      "handle": "food-delivery-box",
+      "productId": "gid://shopify/Product/8789554954398",
+      "variants": [
+        {
+          "quantity": 200,
+          "variantId": "gid://shopify/ProductVariant/47991937990814",
+          "variantNumericId": "47991937990814",
+          "price": "8000.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991937990814:1"
+        },
+        {
+          "quantity": 400,
+          "variantId": "gid://shopify/ProductVariant/47991938023582",
+          "variantNumericId": "47991938023582",
+          "price": "12480.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991938023582:1"
+        },
+        {
+          "quantity": 1000,
+          "variantId": "gid://shopify/ProductVariant/47991938056350",
+          "variantNumericId": "47991938056350",
+          "price": "23200.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991938056350:1"
+        },
+        {
+          "quantity": 2000,
+          "variantId": "gid://shopify/ProductVariant/47991938089118",
+          "variantNumericId": "47991938089118",
+          "price": "36000.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991938089118:1"
+        }
+      ]
+    },
+    "EC-504": {
+      "handle": "courier-bag",
+      "productId": "gid://shopify/Product/8789554987166",
+      "variants": [
+        {
+          "quantity": 1000,
+          "variantId": "gid://shopify/ProductVariant/47991938121886",
+          "variantNumericId": "47991938121886",
+          "price": "10000.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991938121886:1"
+        },
+        {
+          "quantity": 2000,
+          "variantId": "gid://shopify/ProductVariant/47991938154654",
+          "variantNumericId": "47991938154654",
+          "price": "15600.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991938154654:1"
+        },
+        {
+          "quantity": 5000,
+          "variantId": "gid://shopify/ProductVariant/47991938187422",
+          "variantNumericId": "47991938187422",
+          "price": "29000.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991938187422:1"
+        },
+        {
+          "quantity": 10000,
+          "variantId": "gid://shopify/ProductVariant/47991938220190",
+          "variantNumericId": "47991938220190",
+          "price": "45000.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991938220190:1"
+        }
+      ]
+    },
+    "PR-601": {
+      "handle": "bubble-wrap-air-pillows",
+      "productId": "gid://shopify/Product/8789555019934",
+      "variants": [
+        {
+          "quantity": 1,
+          "variantId": "gid://shopify/ProductVariant/47991938252958",
+          "variantNumericId": "47991938252958",
+          "price": "5000.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991938252958:1"
+        },
+        {
+          "quantity": 2,
+          "variantId": "gid://shopify/ProductVariant/47991938285726",
+          "variantNumericId": "47991938285726",
+          "price": "7800.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991938285726:1"
+        },
+        {
+          "quantity": 5,
+          "variantId": "gid://shopify/ProductVariant/47991938318494",
+          "variantNumericId": "47991938318494",
+          "price": "14500.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991938318494:1"
+        },
+        {
+          "quantity": 10,
+          "variantId": "gid://shopify/ProductVariant/47991938351262",
+          "variantNumericId": "47991938351262",
+          "price": "22500.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991938351262:1"
+        }
+      ]
+    },
+    "LC-801": {
+      "handle": "labels",
+      "productId": "gid://shopify/Product/8789555052702",
+      "variants": [
+        {
+          "quantity": 1000,
+          "variantId": "gid://shopify/ProductVariant/47991938384030",
+          "variantNumericId": "47991938384030",
+          "price": "8000.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991938384030:1"
+        },
+        {
+          "quantity": 2000,
+          "variantId": "gid://shopify/ProductVariant/47991938416798",
+          "variantNumericId": "47991938416798",
+          "price": "12480.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991938416798:1"
+        },
+        {
+          "quantity": 5000,
+          "variantId": "gid://shopify/ProductVariant/47991938449566",
+          "variantNumericId": "47991938449566",
+          "price": "23200.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991938449566:1"
+        },
+        {
+          "quantity": 10000,
+          "variantId": "gid://shopify/ProductVariant/47991938482334",
+          "variantNumericId": "47991938482334",
+          "price": "36000.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991938482334:1"
+        }
+      ]
+    },
+    "BC-213": {
+      "handle": "perfume-bottle",
+      "productId": "gid://shopify/Product/8789555314846",
+      "variants": [
+        {
+          "quantity": 100,
+          "variantId": "gid://shopify/ProductVariant/47991939334302",
+          "variantNumericId": "47991939334302",
+          "price": "8800.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991939334302:1"
+        },
+        {
+          "quantity": 250,
+          "variantId": "gid://shopify/ProductVariant/47991939367070",
+          "variantNumericId": "47991939367070",
+          "price": "17250.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991939367070:1"
+        },
+        {
+          "quantity": 500,
+          "variantId": "gid://shopify/ProductVariant/47991939399838",
+          "variantNumericId": "47991939399838",
+          "price": "27500.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991939399838:1"
+        },
+        {
+          "quantity": 1000,
+          "variantId": "gid://shopify/ProductVariant/47991939432606",
+          "variantNumericId": "47991939432606",
+          "price": "46000.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991939432606:1"
+        }
+      ]
+    },
+    "EC-505": {
+      "handle": "paper-shipping-mailer",
+      "productId": "gid://shopify/Product/8789555609758",
+      "variants": [
+        {
+          "quantity": 100,
+          "variantId": "gid://shopify/ProductVariant/47991940415646",
+          "variantNumericId": "47991940415646",
+          "price": "2400.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991940415646:1"
+        },
+        {
+          "quantity": 250,
+          "variantId": "gid://shopify/ProductVariant/47991940448414",
+          "variantNumericId": "47991940448414",
+          "price": "4375.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991940448414:1"
+        },
+        {
+          "quantity": 500,
+          "variantId": "gid://shopify/ProductVariant/47991940481182",
+          "variantNumericId": "47991940481182",
+          "price": "6800.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991940481182:1"
+        },
+        {
+          "quantity": 1000,
+          "variantId": "gid://shopify/ProductVariant/47991940513950",
+          "variantNumericId": "47991940513950",
+          "price": "10800.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991940513950:1"
+        }
+      ]
+    },
+    "EC-509": {
+      "handle": "frosted-zipper-garment-bag",
+      "productId": "gid://shopify/Product/8789555740830",
+      "variants": [
+        {
+          "quantity": 100,
+          "variantId": "gid://shopify/ProductVariant/47991940939934",
+          "variantNumericId": "47991940939934",
+          "price": "2200.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991940939934:1"
+        },
+        {
+          "quantity": 250,
+          "variantId": "gid://shopify/ProductVariant/47991940972702",
+          "variantNumericId": "47991940972702",
+          "price": "4000.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991940972702:1"
+        },
+        {
+          "quantity": 500,
+          "variantId": "gid://shopify/ProductVariant/47991941005470",
+          "variantNumericId": "47991941005470",
+          "price": "6250.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991941005470:1"
+        },
+        {
+          "quantity": 1000,
+          "variantId": "gid://shopify/ProductVariant/47991941038238",
+          "variantNumericId": "47991941038238",
+          "price": "10000.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991941038238:1"
+        }
+      ]
+    },
+    "EC-510": {
+      "handle": "printed-paper-carrier-bag",
+      "productId": "gid://shopify/Product/8789555773598",
+      "variants": [
+        {
+          "quantity": 50,
+          "variantId": "gid://shopify/ProductVariant/47991941071006",
+          "variantNumericId": "47991941071006",
+          "price": "1200.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991941071006:1"
+        },
+        {
+          "quantity": 100,
+          "variantId": "gid://shopify/ProductVariant/47991941103774",
+          "variantNumericId": "47991941103774",
+          "price": "1700.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991941103774:1"
+        },
+        {
+          "quantity": 250,
+          "variantId": "gid://shopify/ProductVariant/47991941136542",
+          "variantNumericId": "47991941136542",
+          "price": "3000.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991941136542:1"
+        },
+        {
+          "quantity": 500,
+          "variantId": "gid://shopify/ProductVariant/47991941169310",
+          "variantNumericId": "47991941169310",
+          "price": "4750.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991941169310:1"
+        }
+      ]
+    },
+    "LC-808": {
+      "handle": "hang-tag-header-card",
+      "productId": "gid://shopify/Product/8789556002974",
+      "variants": [
+        {
+          "quantity": 50,
+          "variantId": "gid://shopify/ProductVariant/47991941988510",
+          "variantNumericId": "47991941988510",
+          "price": "600.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991941988510:1"
+        },
+        {
+          "quantity": 100,
+          "variantId": "gid://shopify/ProductVariant/47991942021278",
+          "variantNumericId": "47991942021278",
+          "price": "750.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991942021278:1"
+        },
+        {
+          "quantity": 250,
+          "variantId": "gid://shopify/ProductVariant/47991942054046",
+          "variantNumericId": "47991942054046",
+          "price": "1100.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991942054046:1"
+        },
+        {
+          "quantity": 500,
+          "variantId": "gid://shopify/ProductVariant/47991942086814",
+          "variantNumericId": "47991942086814",
+          "price": "1600.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991942086814:1"
+        }
+      ]
+    },
+    "LC-810": {
+      "handle": "printed-tissue-wrapping-paper",
+      "productId": "gid://shopify/Product/8789556068510",
+      "variants": [
+        {
+          "quantity": 250,
+          "variantId": "gid://shopify/ProductVariant/47991942250654",
+          "variantNumericId": "47991942250654",
+          "price": "3500.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991942250654:1"
+        },
+        {
+          "quantity": 500,
+          "variantId": "gid://shopify/ProductVariant/47991942283422",
+          "variantNumericId": "47991942283422",
+          "price": "5250.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991942283422:1"
+        },
+        {
+          "quantity": 1000,
+          "variantId": "gid://shopify/ProductVariant/47991942316190",
+          "variantNumericId": "47991942316190",
+          "price": "8100.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991942316190:1"
+        },
+        {
+          "quantity": 2500,
+          "variantId": "gid://shopify/ProductVariant/47991942348958",
+          "variantNumericId": "47991942348958",
+          "price": "16000.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991942348958:1"
+        }
+      ]
+    },
+    "LC-811": {
+      "handle": "printed-bopp-tape",
+      "productId": "gid://shopify/Product/8789556101278",
+      "variants": [
+        {
+          "quantity": 72,
+          "variantId": "gid://shopify/ProductVariant/47991942381726",
+          "variantNumericId": "47991942381726",
+          "price": "6624.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991942381726:1"
+        },
+        {
+          "quantity": 144,
+          "variantId": "gid://shopify/ProductVariant/47991942414494",
+          "variantNumericId": "47991942414494",
+          "price": "11232.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991942414494:1"
+        },
+        {
+          "quantity": 360,
+          "variantId": "gid://shopify/ProductVariant/47991942447262",
+          "variantNumericId": "47991942447262",
+          "price": "23040.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991942447262:1"
+        },
+        {
+          "quantity": 720,
+          "variantId": "gid://shopify/ProductVariant/47991942480030",
+          "variantNumericId": "47991942480030",
+          "price": "40320.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991942480030:1"
+        }
+      ]
+    },
+    "SP-905": {
+      "handle": "bagasse-clamshell",
+      "productId": "gid://shopify/Product/8789556166814",
+      "variants": [
+        {
+          "quantity": 500,
+          "variantId": "gid://shopify/ProductVariant/47991942643870",
+          "variantNumericId": "47991942643870",
+          "price": "4900.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991942643870:1"
+        },
+        {
+          "quantity": 1000,
+          "variantId": "gid://shopify/ProductVariant/47991942676638",
+          "variantNumericId": "47991942676638",
+          "price": "8600.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991942676638:1"
+        },
+        {
+          "quantity": 2500,
+          "variantId": "gid://shopify/ProductVariant/47991942709406",
+          "variantNumericId": "47991942709406",
+          "price": "19250.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991942709406:1"
+        },
+        {
+          "quantity": 5000,
+          "variantId": "gid://shopify/ProductVariant/47991942742174",
+          "variantNumericId": "47991942742174",
+          "price": "35000.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991942742174:1"
+        }
+      ]
+    },
+    "SP-907": {
+      "handle": "paper-cup",
+      "productId": "gid://shopify/Product/8789556232350",
+      "variants": [
+        {
+          "quantity": 1000,
+          "variantId": "gid://shopify/ProductVariant/47991942906014",
+          "variantNumericId": "47991942906014",
+          "price": "5800.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991942906014:1"
+        },
+        {
+          "quantity": 2500,
+          "variantId": "gid://shopify/ProductVariant/47991942938782",
+          "variantNumericId": "47991942938782",
+          "price": "11750.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991942938782:1"
+        },
+        {
+          "quantity": 5000,
+          "variantId": "gid://shopify/ProductVariant/47991942971550",
+          "variantNumericId": "47991942971550",
+          "price": "20500.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991942971550:1"
+        },
+        {
+          "quantity": 10000,
+          "variantId": "gid://shopify/ProductVariant/47991943004318",
+          "variantNumericId": "47991943004318",
+          "price": "36000.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991943004318:1"
+        }
+      ]
+    },
+    "SP-909": {
+      "handle": "greaseproof-food-wrap-paper",
+      "productId": "gid://shopify/Product/8789556297886",
+      "variants": [
+        {
+          "quantity": 1000,
+          "variantId": "gid://shopify/ProductVariant/47991943168158",
+          "variantNumericId": "47991943168158",
+          "price": "2900.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991943168158:1"
+        },
+        {
+          "quantity": 2500,
+          "variantId": "gid://shopify/ProductVariant/47991943200926",
+          "variantNumericId": "47991943200926",
+          "price": "5250.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991943200926:1"
+        },
+        {
+          "quantity": 5000,
+          "variantId": "gid://shopify/ProductVariant/47991943233694",
+          "variantNumericId": "47991943233694",
+          "price": "8250.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991943233694:1"
+        },
+        {
+          "quantity": 10000,
+          "variantId": "gid://shopify/ProductVariant/47991943266462",
+          "variantNumericId": "47991943266462",
+          "price": "13000.00",
+          "cartUrl": "https://ix11eu-ek.myshopify.com/cart/47991943266462:1"
+        }
+      ]
+    }
+  }
+}

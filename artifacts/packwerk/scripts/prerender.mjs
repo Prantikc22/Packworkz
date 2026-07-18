@@ -43,7 +43,7 @@ function buildJsonLd(route) {
       mainEntity: {
         "@type": "ItemList",
         name: "Packworkz packaging SKU catalog",
-        numberOfItems: 33,
+        numberOfItems: 35,
         itemListOrder: "https://schema.org/ItemListOrderAscending",
       },
     };
@@ -87,13 +87,56 @@ function buildJsonLd(route) {
   };
 }
 
+const PRODUCT_ROUTE_DATA = [
+  ["FP-101", "stand-up-pouch", "Stand-up Pouch"],
+  ["FP-103", "flat-bottom-pouch", "Flat-bottom & Gusseted Pouch"],
+  ["FP-104", "spout-pouch", "Spout & Refill Pouch"],
+  ["FP-105", "sachet-stick-pack", "Sachet / Stick Pack"],
+  ["BC-201", "plastic-bottle", "Plastic Bottles & Jars"],
+  ["BC-202", "glass-bottle", "Glass Bottles & Jars"],
+  ["BC-204", "cosmetic-jar", "Cosmetic Jar"],
+  ["BC-205", "dropper-bottle", "Dropper Bottle"],
+  ["BC-206", "airless-pump-bottle", "Airless Pump Bottle"],
+  ["TS-301", "cosmetic-tube", "Cosmetic Tube"],
+  ["BX-401", "folding-carton", "Folding Cartons"],
+  ["BX-402", "rigid-box", "Rigid & Magnetic Boxes"],
+  ["EC-501", "mailer-box", "Mailer Box"],
+  ["EC-502", "corrugated-shipping-box", "Corrugated Shipping Box"],
+  ["EC-503", "food-delivery-box", "Food Delivery Box"],
+  ["EC-504", "courier-bag", "Courier & Return Mailers"],
+  ["PR-601", "bubble-wrap-air-pillows", "Protective Wrap & Void Fill"],
+  ["PR-602", "foam-thermocol-inserts", "Custom Inserts & Dividers"],
+  ["RL-701", "printed-packaging-roll", "Printed Flexible Rollstock"],
+  ["LC-801", "labels", "Custom Labels & Stickers"],
+  ["FP-110", "retort-pouch", "Retort Pouch"],
+  ["FP-112", "centre-seal-fin-pouch", "Flow-wrap & Pillow Pack"],
+  ["BC-213", "perfume-bottle", "Perfume & Attar Bottle"],
+  ["EC-505", "paper-shipping-mailer", "Paper & Padded Mailers"],
+  ["EC-509", "frosted-zipper-garment-bag", "Frosted Zipper Garment Bag"],
+  ["EC-510", "printed-paper-carrier-bag", "Printed Paper Carrier Bag"],
+  ["RL-704", "lidding-sealing-film", "Lidding & Sealing Film"],
+  ["RL-705", "shrink-film-rollstock", "Shrink Film & Sleeve Rollstock"],
+  ["LC-806", "shrink-sleeve-label", "Shrink Sleeve & Wrap-around Labels"],
+  ["LC-808", "hang-tag-header-card", "Hang Tags & Insert Cards"],
+  ["LC-810", "printed-tissue-wrapping-paper", "Printed Tissue & Wrapping Paper"],
+  ["LC-811", "printed-bopp-tape", "Custom Packaging Tape"],
+  ["SP-905", "bagasse-clamshell", "Bagasse Food Containers"],
+  ["SP-907", "paper-cup", "Paper Cups, Bowls & Food Tubs"],
+  ["SP-909", "greaseproof-food-wrap-paper", "Greaseproof & Food Wrap Paper"],
+].map(([code, slug, name]) => ({
+  path: `/products/${slug}`,
+  title: `${name} | Custom Packaging India | Packworkz`,
+  description: `Configure ${name.toLowerCase()} for D2C and enterprise orders. Review MOQ, materials, artwork, quantity pricing and the correct instant-buy or managed-quote path with Packworkz.`,
+  keywords: `${name.toLowerCase()} India, custom packaging India, ${code}, Packworkz`,
+}));
+
 // Keep in sync with PAGE_SEO in PublicLayout.tsx
 const ROUTES = [
   // ── Core pages ──────────────────────────────────────────────────────────────
   {
     path: "/",
     title: "Packworkz — Packaging Manufacturer & Managed Platform India | D2C, FMCG, Pharma",
-    description: "India's first managed packaging manufacturer platform. 110+ SKUs, 3 backup vendors per order, 98.7% on-time delivery. Custom packaging for D2C, FMCG & pharma brands. Pricing plan in 48 hours.",
+    description: "Managed packaging for D2C, FMCG, pharma and enterprise teams. Browse 35 focused product families, see quantity pricing, create 3D previews and manage repeat orders in one workflow.",
     keywords: "packaging manufacturer India, managed packaging platform, custom packaging India, D2C packaging manufacturer, FMCG packaging supplier India, packaging vendor India",
   },
   {
@@ -167,152 +210,32 @@ const ROUTES = [
   {
     path: "/design",
     title: "Custom Packaging Design Service India | From ₹1,999 | Packworkz",
-    description: "Professional packaging design from ₹1,999. Full branding across 110+ SKUs. Print-ready artwork, dieline templates, and design management included.",
+    description: "Packaging design and 3D previews across 35 focused product families, with print-ready artwork, dieline handoff and design management.",
     keywords: "custom packaging design India, packaging design service, packaging artwork India, D2C packaging design",
+  },
+  {
+    path: "/mockup-studio",
+    title: "Free 3D Packaging Mockup Studio | Packworkz",
+    description: "Preview boxes, pouches, bottles, jars and tubes in 3D. Add artwork, review dielines and export a branded packaging mockup before production.",
+    keywords: "3D packaging mockup India, packaging artwork preview, packaging dieline, box mockup generator",
+  },
+  {
+    path: "/smartstock",
+    title: "SmartStock AI Packaging Inventory | Packworkz",
+    description: "Anticipate packaging demand, model reorder timing and reduce emergency sourcing with SmartStock AI inventory planning from Packworkz.",
+    keywords: "packaging inventory software, packaging reorder planning, SmartStock AI, packaging stock management",
   },
 
   // ── Product catalogue listing ────────────────────────────────────────────────
   {
     path: "/products",
-    title: "Packaging Manufacturer India | 110+ SKUs — Pouches, Boxes, Bottles | Packworkz",
-    description: "Browse 110+ packaging SKUs from India's verified manufacturer network. Stand-up pouches, corrugated boxes, PET jars, poly mailers & more. MOQ from 200 units. Get a pricing plan online.",
+    title: "Packaging Products India | Pouches, Boxes, Bottles | Packworkz",
+    description: "Browse 35 focused packaging families including pouches, cartons, containers, mailers, labels, food-service packs and technical rollstock. See buying paths and quantity pricing online.",
     keywords: "packaging manufacturer India, custom packaging manufacturer, stand-up pouch manufacturer India, corrugated box manufacturer, flexible packaging manufacturer India",
   },
 
-  // ── Product category pages ───────────────────────────────────────────────────
-  {
-    path: "/products/flexible",
-    title: "Flexible Packaging Manufacturer India | Stand-Up Pouches, Rollstock | Packworkz",
-    description: "Custom flexible packaging from India's verified manufacturers. Stand-up pouches, pillow pouches, spout pouches, flat bottom bags and rollstock. MOQ from 500 units.",
-    keywords: "flexible packaging manufacturer India, stand-up pouch manufacturer India, pouch packaging supplier, rollstock film manufacturer",
-  },
-  {
-    path: "/products/bottles",
-    title: "Bottle & Jar Manufacturer India | PET, HDPE, Glass | Packworkz",
-    description: "PET jars, HDPE bottles, glass containers and more from India's verified rigid packaging manufacturers. Custom shapes, colours, closures and labelling available.",
-    keywords: "bottle manufacturer India, PET jar manufacturer India, HDPE bottle supplier, glass bottle manufacturer India",
-  },
-  {
-    path: "/products/tubes",
-    title: "Tube Packaging Manufacturer India | Laminate & Plastic Tubes | Packworkz",
-    description: "Laminate tubes, plastic squeeze tubes and cosmetic tubes with custom printing. Ideal for creams, gels, and pastes. MOQ from 1,000 units.",
-    keywords: "tube packaging manufacturer India, laminate tube supplier, cosmetic tube manufacturer India",
-  },
-  {
-    path: "/products/boxes",
-    title: "Box & Carton Manufacturer India | Mono Carton, Corrugated, Gift Box | Packworkz",
-    description: "Mono cartons, corrugated shippers, gift boxes and rigid boxes from India's verified packaging manufacturers. Full custom printing, embossing, foiling and finishing.",
-    keywords: "box manufacturer India, mono carton manufacturer India, corrugated box supplier India, gift box manufacturer",
-  },
-  {
-    path: "/products/ecommerce",
-    title: "E-commerce Packaging Manufacturer India | Poly Mailers, Courier Bags | Packworkz",
-    description: "Custom poly mailers, kraft mailers, compostable mailers and courier bags for D2C and e-commerce brands. Low MOQ from 200 units. Custom branded and plain stock available.",
-    keywords: "ecommerce packaging manufacturer India, poly mailer manufacturer, courier bag supplier India, D2C mailer packaging",
-  },
-  {
-    path: "/products/protective",
-    title: "Protective Packaging Manufacturer India | Bubble Wrap, Foam Inserts | Packworkz",
-    description: "Bubble wrap, foam inserts, air pillows and protective packaging materials for safe product transit. Custom sizes and bulk orders available across India.",
-    keywords: "protective packaging manufacturer India, bubble wrap supplier India, foam packaging India",
-  },
-  {
-    path: "/products/rolls",
-    title: "Packaging Rolls Manufacturer India | Rollstock & Centre-fold Films | Packworkz",
-    description: "Rollstock films, centre-fold films and printed packaging rolls for automated packing lines. Custom widths and print. MOQ from 50kg rolls.",
-    keywords: "packaging rolls manufacturer India, rollstock film supplier, printed packaging roll India",
-  },
-  {
-    path: "/products/labels",
-    title: "Label Manufacturer India | Self-Adhesive, Shrink Sleeve, Sticker | Packworkz",
-    description: "Custom labels and shrink sleeves from India's verified label manufacturers. Self-adhesive labels, shrink sleeves, tamper-evident seals and more. MOQ from 1,000 units.",
-    keywords: "label manufacturer India, self-adhesive label supplier India, shrink sleeve manufacturer, sticker label manufacturer India",
-  },
-  {
-    path: "/products/sustainable",
-    title: "Sustainable Packaging Products India | Compostable, Kraft, Recycled | Packworkz",
-    description: "Shop eco-friendly packaging — compostable mailers, kraft bags, recycled PE pouches and FSC-certified boxes. EPR compliance documentation included with every order.",
-    keywords: "sustainable packaging products India, compostable packaging manufacturer, eco packaging India",
-  },
   // ── Product SKU detail pages ─────────────────────────────────────────────────
-  {
-    path: "/products/stand-up-pouch",
-    title: "Stand-Up Pouch Manufacturer India | Custom Printed SUP | Packworkz",
-    description: "Custom printed stand-up pouches (SUP) in various sizes. Ideal for snacks, coffee, spices and pet food. MOQ 500 units. 10-day delivery.",
-    keywords: "stand-up pouch manufacturer India, custom SUP India, flexible pouch supplier India",
-  },
-  {
-    path: "/products/pillow-pouch",
-    title: "Pillow Pouch Manufacturer India | Flexible Pillow Bags | Packworkz",
-    description: "Custom pillow pouches and pillow bags for snacks, granules and powders. Available in multiple laminates and print finishes.",
-    keywords: "pillow pouch manufacturer India, pillow bag supplier, flexible packaging India",
-  },
-  {
-    path: "/products/flat-bottom-pouch",
-    title: "Flat Bottom Pouch Manufacturer India | Block Bottom Bags | Packworkz",
-    description: "Flat bottom pouches for premium shelf presentation. Ideal for coffee, tea, pet treats and specialty foods. MOQ 500 units.",
-    keywords: "flat bottom pouch manufacturer India, block bottom bag supplier, premium pouch India",
-  },
-  {
-    path: "/products/spout-pouch",
-    title: "Spout Pouch Manufacturer India | Liquid & Beverage Pouches | Packworkz",
-    description: "Spout pouches for juices, sauces, baby food and liquid products. Resealable, food-grade, custom printed. MOQ 500 units.",
-    keywords: "spout pouch manufacturer India, liquid pouch supplier India, beverage pouch manufacturer",
-  },
-  {
-    path: "/products/pet-jar",
-    title: "PET Jar Manufacturer India | Custom PET Jars for Food & Cosmetics | Packworkz",
-    description: "PET jars in wide-mouth and regular neck for food, supplements and cosmetics. Custom sizes, low MOQ, pan-India delivery.",
-    keywords: "PET jar manufacturer India, custom PET jar supplier, food grade jar India",
-  },
-  {
-    path: "/products/hdpe-bottle",
-    title: "HDPE Bottle Manufacturer India | Industrial & Consumer HDPE | Packworkz",
-    description: "HDPE bottles for pharma, chemicals, cleaning products and FMCG. FDA-compliant, custom caps and labels. Bulk orders available.",
-    keywords: "HDPE bottle manufacturer India, pharma bottle supplier India, plastic bottle manufacturer India",
-  },
-  {
-    path: "/products/glass-bottle",
-    title: "Glass Bottle Manufacturer India | Premium Glass Bottles & Jars | Packworkz",
-    description: "Flint and amber glass bottles for premium beverages, oils and cosmetics. Low MOQ with custom label printing.",
-    keywords: "glass bottle manufacturer India, amber glass bottle supplier, premium glass packaging India",
-  },
-  {
-    path: "/products/mono-carton",
-    title: "Mono Carton Manufacturer India | Custom Printed Retail Cartons | Packworkz",
-    description: "Mono cartons in SBS, duplex and kraftboard for FMCG and pharma retail packaging. UV, foil and emboss finishes. MOQ 500 units.",
-    keywords: "mono carton manufacturer India, retail carton supplier India, FMCG carton manufacturer",
-  },
-  {
-    path: "/products/corrugated-box",
-    title: "Corrugated Box Manufacturer India | Custom Shipping & Retail Boxes | Packworkz",
-    description: "3-ply and 5-ply corrugated boxes for e-commerce shipping and retail display. Custom sizes and print. Pan-India delivery.",
-    keywords: "corrugated box manufacturer India, shipping box supplier India, custom corrugated box India",
-  },
-  {
-    path: "/products/poly-mailer",
-    title: "Poly Mailer Manufacturer India | Custom Courier Bags | Packworkz",
-    description: "Poly mailers and courier bags for e-commerce brands. Tamper-evident, custom print, MOQ 500 units. Fast pan-India delivery.",
-    keywords: "poly mailer manufacturer India, courier bag supplier India, custom mailer bag India",
-  },
-  {
-    path: "/products/kraft-mailer",
-    title: "Kraft Mailer Manufacturer India | Eco-friendly Paper Courier Bags | Packworkz",
-    description: "Kraft paper mailers for sustainable e-commerce brands. Biodegradable, custom printed, from 500 units.",
-    keywords: "kraft mailer manufacturer India, eco mailer supplier India, paper courier bag India",
-  },
-  {
-    path: "/products/compostable-mailer",
-    title: "Compostable Mailer Manufacturer India | Home Compostable Courier Bags | Packworkz",
-    description: "Home compostable mailers certified to EN13432 and AS4736. Ideal for eco-conscious D2C brands in India. MOQ 500 units.",
-    keywords: "compostable mailer manufacturer India, biodegradable mailer India, eco courier bag India",
-  },
-  {
-    path: "/products/shrink-sleeve",
-    title: "Shrink Sleeve Manufacturer India | 360° Label Shrink Sleeves | Packworkz",
-    description: "Full-body shrink sleeves and neck bands for bottles and jars. 360° print, high-clarity PVC and PETG options. MOQ 1,000 units.",
-    keywords: "shrink sleeve manufacturer India, shrink label supplier India, 360 label India",
-  },
+  ...PRODUCT_ROUTE_DATA,
 
   // ── Industry pages ───────────────────────────────────────────────────────────
   {
@@ -369,7 +292,38 @@ const ROUTES = [
     description: "Premium gift boxes, rigid suitcases, and luxury packaging for jewellery, watches and lifestyle brands. Low MOQ, custom finishes.",
     keywords: "luxury packaging manufacturer India, gift box manufacturer India, premium packaging supplier",
   },
+  {
+    path: "/privacy",
+    title: "Privacy Policy | Packworkz",
+    description: "How Packworkz collects, uses and protects information across its packaging platform, support channels and ordering workflows.",
+    keywords: "Packworkz privacy policy",
+  },
+  {
+    path: "/terms",
+    title: "Terms of Service | Packworkz",
+    description: "Terms governing Packworkz catalog, managed quotes, samples, artwork, production and digital services.",
+    keywords: "Packworkz terms of service",
+  },
+  {
+    path: "/refund",
+    title: "Refund & Cancellation Policy | Packworkz",
+    description: "Packworkz refund and cancellation terms for samples, custom packaging, production orders and managed services.",
+    keywords: "Packworkz refund policy, packaging order cancellation",
+  },
 ];
+
+function buildSitemap() {
+  const lastmod = "2026-07-18";
+  const entries = ROUTES.map(({ path }) => {
+    const url = `https://packworkz.com${path === "/" ? "/" : path}`;
+    const isProduct = path.startsWith("/products/");
+    const priority = path === "/" ? "1.0" : path === "/products" || path === "/configure" ? "0.9" : isProduct ? "0.8" : "0.7";
+    const changefreq = path === "/" || path === "/products" ? "weekly" : "monthly";
+    return `  <url>\n    <loc>${url}</loc>\n    <lastmod>${lastmod}</lastmod>\n    <changefreq>${changefreq}</changefreq>\n    <priority>${priority}</priority>\n  </url>`;
+  });
+
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${entries.join("\n")}\n</urlset>\n`;
+}
 
 async function prerender() {
   let render;
@@ -483,6 +437,10 @@ async function prerender() {
     if (appHtml) successCount++;
     process.stdout.write(`${status}  ${outPath}\n`);
   }
+
+  const sitemap = buildSitemap();
+  writeFileSync(join(ROOT, "public/sitemap.xml"), sitemap);
+  writeFileSync(join(DIST, "sitemap.xml"), sitemap);
 
   console.log(`\nPrerender complete: ${successCount} SSR, ${fallbackCount} meta-only fallback\n`);
 }

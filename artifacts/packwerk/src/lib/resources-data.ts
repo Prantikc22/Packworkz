@@ -60,7 +60,7 @@ export const ARTICLES: ResourceArticle[] = [
       ]},
       { type: "h2", text: "How to Start" },
       { type: "p", text: "The fastest way to quantify your overpayment is to run a quick savings calculation. Packworkz offers a free packaging audit for D2C brands spending more than ₹2 lakh/month on packaging — you'll know exactly where you stand within 48 hours." },
-      { type: "p", text: "You can also order a sample from any of our 110+ packaging SKUs from ₹2,999 before committing to any order. No commitment until you approve the sample." },
+      { type: "p", text: "You can order a sample against eligible products in the focused 35-family catalog before committing to a production run." },
       { type: "cta", ctaText: "Calculate Your Packaging Savings →", ctaHref: "/#calculator" },
       { type: "h2", text: "The D2C Packaging Audit Checklist" },
       { type: "p", text: "Before you switch vendors or negotiate, run through this quick self-audit:" },

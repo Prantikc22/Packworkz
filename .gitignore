@@ -49,3 +49,6 @@ Thumbs.db
 # Replit
 .cache/
 .local/
+
+# Local browser QA output
+artifacts/packwerk/qa-screenshots/

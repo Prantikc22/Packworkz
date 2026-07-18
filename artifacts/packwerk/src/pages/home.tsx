@@ -4,6 +4,9 @@ import { INDUSTRY_IMAGES } from "@/lib/images";
 import BrandAdvantageSection from "@/components/home/BrandAdvantageSection";
 import ComparisonSection from "@/components/home/ComparisonSection";
 import { SmartStockDemo } from "@/pages/smartstock";
+import { PackagingProcessSection, SustainabilityProofSection } from "@/components/home/CommerceExperienceSections";
+import TestimonialsSection from "@/components/home/TestimonialsSection";
+import { CATALOG_SKUS } from "@/lib/catalog";
 import {
   Search, GitBranch, ShieldCheck, Truck,
   Leaf, Droplets, FileCheck, ArrowRight,
@@ -24,7 +27,7 @@ const MS = ({ icon, className = "", style }: IconProps) => (
 );
 
 const MARQUEE_PHRASES = [
-  "One platform.", "32 configured SKU families.", "Backup sourcing routes.", "Documented QC checkpoints.", "One order record.",
+  "One platform.", `${CATALOG_SKUS.length} packaging families.`, "Backup sourcing routes.", "Documented QC checkpoints.", "One order record.",
 ];
 const MARQUEE_1 = Array(6).fill(MARQUEE_PHRASES).flat();
 
@@ -44,39 +47,41 @@ const LOGO_ROW_2 = [
   { name: "Pilgrim",          file: "/images/logos/pilgrim.png" },
 ];
 
+const catalogCount = (category: string) => CATALOG_SKUS.filter((sku) => sku.category === category).length;
+
 const HERO_CARDS = [
   {
-    title: "Flexible Packaging", Icon: Package, count: "15 SKUs", slug: "flexible", badge: true,
+    title: "Flexible Packaging", Icon: Package, count: `${catalogCount("flexible")} families`, slug: "flexible", badge: true,
     pos: { top: "5%", left: "10%" }, width: 180,
     floatAnim: "float-1 6s ease-in-out infinite",
     entranceDelay: "0.3s", greenBorder: false,
   },
   {
-    title: "E-commerce Packs", Icon: ShoppingBag, count: "17 SKUs", slug: "ecommerce", badge: true,
+    title: "E-commerce Packs", Icon: ShoppingBag, count: `${catalogCount("ecommerce")} families`, slug: "ecommerce", badge: true,
     pos: { top: "3%", left: "52%" }, width: 170,
     floatAnim: "float-2 7s ease-in-out -2s infinite",
     entranceDelay: "0.5s", greenBorder: false,
   },
   {
-    title: "Boxes & Cartons", Icon: Box, count: "9 SKUs", slug: "boxes", badge: false,
+    title: "Boxes & Cartons", Icon: Box, count: `${catalogCount("boxes")} families`, slug: "boxes", badge: false,
     pos: { top: "38%", left: "5%" }, width: 175,
     floatAnim: "float-3 5.5s ease-in-out -1s infinite",
     entranceDelay: "0.4s", greenBorder: false,
   },
   {
-    title: "Sustainable", Icon: Leaf, count: "12 SKUs", slug: "sustainable", badge: false,
+    title: "Sustainable", Icon: Leaf, count: `${catalogCount("sustainable")} families`, slug: "sustainable", badge: false,
     pos: { top: "35%", left: "55%" }, width: 165,
     floatAnim: "float-4 6.5s ease-in-out -3s infinite",
     entranceDelay: "0.7s", greenBorder: true,
   },
   {
-    title: "Labels & Closures", Icon: Tag, count: "14 SKUs", slug: "labels", badge: false,
+    title: "Labels & Closures", Icon: Tag, count: `${catalogCount("labels")} families`, slug: "labels", badge: false,
     pos: { top: "68%", left: "12%" }, width: 175,
     floatAnim: "float-5 7.5s ease-in-out -1.5s infinite",
     entranceDelay: "0.6s", greenBorder: false,
   },
   {
-    title: "Premium & Gift", Icon: Gift, count: "10 SKUs", slug: "premium", badge: false,
+    title: "Premium & Gift", Icon: Gift, count: `${catalogCount("boxes")} families`, slug: "boxes", badge: false,
     pos: { top: "65%", left: "52%" }, width: 170,
     floatAnim: "float-6 6s ease-in-out -4s infinite",
     entranceDelay: "0.8s", greenBorder: false,
@@ -84,28 +89,28 @@ const HERO_CARDS = [
 ];
 
 const CATEGORIES = [
-  { title: "Flexible Packaging",    sub: "Stand-up, Pillow & Flat Bottom Pouches", cat: "flexible",    skus: 5  },
-  { title: "Bottles & Containers",  sub: "Plastic, Glass, Cosmetic & Airless",     cat: "bottles",     skus: 6  },
-  { title: "Tubes & Small Packs",   sub: "Cosmetic Tubes & Blister Packs",         cat: "tubes",       skus: 2  },
-  { title: "Boxes & Cartons",       sub: "Folding, Rigid & Magnetic Closure",      cat: "boxes",       skus: 3  },
-  { title: "E-commerce Packaging",  sub: "Mailers, Corrugated & Courier Bags",     cat: "ecommerce",   skus: 4  },
-  { title: "Protective Packaging",  sub: "Bubble Wrap, Air Pillows & Foam",        cat: "protective",  skus: 2  },
-  { title: "Packaging Rolls",       sub: "Printed, Laminated & Barrier Films",     cat: "rolls",       skus: 3  },
-  { title: "Labels & Closures",     sub: "Labels, Caps, Pumps & Spout Fitments",   cat: "labels",      skus: 3  },
-  { title: "Sustainable Packaging", sub: "Kraft, Compostable, Recycled & Bagasse", cat: "sustainable", skus: 4  },
+  { title: "Flexible Packaging",    sub: "Pouches, sachets, refill and high-barrier formats", cat: "flexible",    skus: catalogCount("flexible") },
+  { title: "Bottles & Containers",  sub: "Plastic, glass, aluminium, jars and dispensers",     cat: "bottles",     skus: catalogCount("bottles") },
+  { title: "Cosmetic Tubes",        sub: "Squeeze tubes for skincare, haircare and personal care", cat: "tubes",       skus: catalogCount("tubes") },
+  { title: "Boxes & Cartons",       sub: "Folding, corrugated, rigid and luxury structures",      cat: "boxes",       skus: catalogCount("boxes") },
+  { title: "E-commerce Packaging",  sub: "Mailers, carrier bags and return-ready fulfilment",     cat: "ecommerce",   skus: catalogCount("ecommerce") },
+  { title: "Protective Packaging",  sub: "Cushioning, void fill and custom protective inserts",     cat: "protective",  skus: catalogCount("protective") },
+  { title: "Packaging Rolls",       sub: "Printed films, lidding and shrink rollstock",              cat: "rolls",       skus: catalogCount("rolls") },
+  { title: "Labels & Brand Extras", sub: "Labels, sleeves, tape, cards and printed tissue",          cat: "labels",      skus: catalogCount("labels") },
+  { title: "Food & Sustainable",    sub: "Bagasse, paper food service and moulded fibre",           cat: "sustainable", skus: catalogCount("sustainable") },
 ];
 
 const CAT_IMAGES: Record<string, string> = {
   flexible:    "/categories/flexiblepacks.jpg",
   bottles:     "/categories/rigidpacks.jpg",
   tubes:       "/categories/tubes.jpg",
-  boxes:       "https://images.unsplash.com/photo-1553413077-190dd305871c?w=600&h=400&fit=crop&q=75",
+  boxes:       "/categories/rigidpacks.jpg",
   ecommerce:   "/categories/ecom.jpg",
   protective:  "/categories/protectivepacks.jpg",
   rolls:       "/categories/printedrolls.jpg",
   labels:      "/categories/closures.jpg",
   sustainable: "/categories/sustainable.jpg",
-  premium:     "https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=600&h=400&fit=crop&q=75",
+  premium:     "/skus/magneticbox.jpg",
 };
 
 const INDUSTRIES = [
@@ -141,12 +146,12 @@ const INDUSTRY_SOLUTIONS: Record<string, {
   },
   pharma: {
     title: "Pharma, wellness, diagnostics, supplements",
-    subtitle: "Tamper-aware cartons, labels, blister packs, bottles, and protective inserts with documentation discipline.",
+    subtitle: "Tamper-aware cartons, labels, bottles, and protective inserts with documentation discipline.",
     image: INDUSTRY_IMAGES.pharma,
     proof: "Best for traceability, tamper evidence, and clean approval cycles",
-    best: ["Blister packs", "Mono cartons", "Tamper labels", "PET/HDPE bottles"],
+    best: ["Folding cartons", "Tamper labels", "PET/HDPE bottles", "Protective inserts"],
     stack: [
-      { label: "Blister and strip support", desc: "For tablets, capsules, trial kits, and controlled dosage packs." },
+      { label: "Primary and secondary packs", desc: "Bottles, cartons and labels for supplements, diagnostics and wellness products." },
       { label: "Cartons and labels", desc: "Readable, batch-ready, QR-ready, and built for compliance workflows." },
       { label: "Transit protection", desc: "Foam inserts, corrugated shippers, and secondary packaging for fragile SKUs." },
     ],
@@ -253,7 +258,7 @@ const HOW_IT_WORKS_STEPS = [
     num: "Step 01",
     Icon: Search,
     title: "Configure and Pricing Plan",
-    desc: "Browse 32 configured SKU families, choose the specification, and see whether the format is self-serve or engineering-assisted.",
+    desc: "Browse 35 launch-ready product families, choose the specification, and follow one of two clear paths: instant buy or managed quote.",
     bg: "#0D1B2A",
   },
   {
@@ -914,7 +919,7 @@ export default function Home() {
       {/* ══════════════════════════════════════════════════════════ */}
       {/*  SECTION 4 — PAIN POINTS                                   */}
       {/* ══════════════════════════════════════════════════════════ */}
-      <section className="pw-theme-surface" style={{ background: "#FFFFFF", padding: "100px 0" }}>
+      <section className="pw-theme-surface pw-home-longform" style={{ background: "#FFFFFF", padding: "100px 0" }}>
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 40px" }}>
           <span className="scroll-animate" style={{ color: "#1B6CA8", fontSize: 11, fontWeight: 600, letterSpacing: "2px", textTransform: "uppercase", display: "block", marginBottom: 14 }}>
             THE PROBLEM
@@ -956,7 +961,8 @@ export default function Home() {
       {/* ══════════════════════════════════════════════════════════ */}
       {/*  SECTION 6 — HOW IT WORKS (dark animated timeline)        */}
       {/* ══════════════════════════════════════════════════════════ */}
-      <section className="relative overflow-hidden" style={{ background: "#08080f", padding: "100px 0" }}>
+      <PackagingProcessSection />
+      <section className="relative overflow-hidden pw-home-longform" style={{ background: "#08080f", padding: "100px 0" }}>
         {/* Remarqd-style blue radial glow */}
         <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse 70% 60% at 50% 90%, rgba(27,108,168,0.50) 0%, rgba(10,30,80,0.25) 45%, transparent 70%)" }} />
         <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse 40% 30% at 50% 100%, rgba(232,168,56,0.10) 0%, transparent 60%)" }} />
@@ -1202,6 +1208,8 @@ export default function Home() {
         <SmartStockDemo />
       </div>
 
+      <TestimonialsSection />
+
       {/* ══════════════════════════════════════════════════════════ */}
       {/*  SECTION 9 — ADVANTAGE DIAGRAM                            */}
       {/* ══════════════════════════════════════════════════════════ */}
@@ -1210,7 +1218,7 @@ export default function Home() {
       {/* ══════════════════════════════════════════════════════════ */}
       {/*  SECTION 10 — SUSTAINABLE PACKAGING BAND                  */}
       {/* ══════════════════════════════════════════════════════════ */}
-      <section id="sustainability" className="pw-sustainable-editorial">
+      <section className="pw-sustainable-editorial pw-home-longform">
         <div className="pw-sustainable-inner">
           <div className="pw-sustainable-media scroll-animate">
             <img src="/categories/sustainable.jpg" alt="Kraft pouches, cartons and jars from the Packworkz sustainable packaging range" loading="lazy" />
@@ -1236,11 +1244,12 @@ export default function Home() {
           </div>
         </div>
       </section>
+      <SustainabilityProofSection />
 
       {/* ══════════════════════════════════════════════════════════ */}
       {/*  BUILT FOR MODERN PROCUREMENT TEAMS                        */}
       {/* ══════════════════════════════════════════════════════════ */}
-      <ComparisonSection />
+      <div className="pw-home-longform"><ComparisonSection /></div>
       {false && <div className="relative" style={{ zIndex: 1, maxWidth: 940, margin: "0 auto", padding: "0 24px" }}>
 
           {/* ── Eyebrow ── */}
@@ -1327,7 +1336,7 @@ export default function Home() {
               { feature: "Vendor redundancy",    good: "3 vetted backup vendors per order — production never stalls.",  bad: "One vendor. Their delay is your delay." },
               { feature: "Quality control",       good: "Our team inspects every dispatch. Photo evidence in dashboard.", bad: "Vendor self-certifies. Rejection risk is yours." },
               { feature: "Pricing transparency",  good: "Transparent pricing + 3% discount for upfront payment.",        bad: "Credit terms hide 10–15% markup per unit." },
-              { feature: "SKU coverage",          good: "110+ SKUs across all categories. One invoice.",                 bad: "Specialised in one category. Source the rest yourself." },
+              { feature: "Product coverage",      good: "35 focused buying families, with specialist formats handled through one production brief.", bad: "Specialised in one category. Source the rest yourself." },
               { feature: "Compliance & certs",    good: "ISO, BRC, FDA, FSC on file. Export-ready documentation.",       bad: "Certification varies by vendor. Risk sits with you." },
               { feature: "Design service",        good: "Print-ready artwork from ₹1,999. Files yours forever.",         bad: "Mostly unavailable. Third-party dependency." },
               { feature: "Order visibility",      good: "Real-time dashboard — status, dispatch, ETA in one place.",     bad: "WhatsApp updates. No audit trail." },
@@ -1488,7 +1497,7 @@ export default function Home() {
       {/* ══════════════════════════════════════════════════════════ */}
       {/*  SECTION 12 — CASE STUDIES                                */}
       {/* ══════════════════════════════════════════════════════════ */}
-      <section className="pw-theme-surface" style={{ background: "#FFFFFF", padding: "100px 0" }}>
+      <section className="pw-theme-surface pw-home-longform" style={{ background: "#FFFFFF", padding: "100px 0" }}>
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 40px" }}>
           <span className="scroll-animate" style={{ color: "#1B6CA8", fontSize: 11, fontWeight: 600, letterSpacing: "2px", textTransform: "uppercase", display: "block", marginBottom: 14 }}>
             ILLUSTRATIVE OPERATING SCENARIOS

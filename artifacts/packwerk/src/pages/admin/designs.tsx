@@ -11,22 +11,24 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-const DESIGN_STATUSES = ["submitted", "in_design", "revision", "approved", "rejected"];
+const DESIGN_STATUSES = ["paid", "in_design", "revision", "approved"];
 
 export default function AdminDesigns() {
   const [statusFilter, setStatusFilter] = useState("all");
-  const { data: designs, isLoading, refetch } = useAdminListDesigns({ status: statusFilter !== "all" ? statusFilter : undefined });
+  const { data: designs, isLoading, refetch } = useAdminListDesigns();
   const { mutate: updateDesign } = useAdminUpdateDesignStatus();
   const { toast } = useToast();
 
   const changeStatus = (designId: string, status: string, notes?: string) => {
-    updateDesign({ id: designId, adminUpdateDesignStatusBody: { status, designer_notes: notes } }, {
+    updateDesign({ id: designId, data: { status: status as any, designer_notes: notes } }, {
       onSuccess: () => {
         toast({ title: `Design updated to ${status}` });
         refetch();
       },
     });
   };
+
+  const filteredDesigns = (designs || []).filter((design: any) => statusFilter === "all" || design.status === statusFilter);
 
   return (
     <div className="space-y-6">
@@ -49,7 +51,7 @@ export default function AdminDesigns() {
 
       {isLoading ? (
         <div className="flex justify-center py-20"><Loader2 className="w-8 h-8 animate-spin text-[#1B6CA8]" /></div>
-      ) : !designs || designs.length === 0 ? (
+      ) : filteredDesigns.length === 0 ? (
         <div className="text-center py-16 bg-[#F8F9FC] rounded-xl border border-[#E2EAF4]">
           <p className="text-[#64748B]">No design requests found.</p>
         </div>
@@ -68,7 +70,7 @@ export default function AdminDesigns() {
               </tr>
             </thead>
             <tbody>
-              {designs.map((d: any) => (
+              {filteredDesigns.map((d: any) => (
                 <tr key={d.id} className="border-b border-[#E2EAF4] hover:bg-[#F8F9FC]">
                   <td className="p-4 font-mono text-[#1B6CA8]">{d.design_id}</td>
                   <td className="p-4 text-[#64748B]">{d.user_id}</td>

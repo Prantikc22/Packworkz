@@ -1,5 +1,6 @@
 import { Switch, Route, Router as WouterRouter, Redirect } from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { lazy, Suspense } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { setAuthTokenGetter } from "@workspace/api-client-react";
@@ -15,6 +16,7 @@ import Products from "@/pages/products";
 import ProductDetail from "@/pages/product-detail";
 import Quote from "@/pages/quote";
 import Design from "@/pages/design";
+const MockupStudio = lazy(() => import("@/pages/mockup-studio"));
 import Samples from "@/pages/samples";
 import Login from "@/pages/login";
 import ChangePassword from "@/pages/change-password";
@@ -108,6 +110,7 @@ function Router() {
       <Route path="/quote/step/:step">{(params: { step?: string }) => <Redirect to={`/configure/step/${params.step ?? "sku"}`} />}</Route>
       <Route path="/quote/confirmed/:id">{(params: { id?: string }) => <Redirect to={`/configure/confirmed/${params.id ?? ""}`} />}</Route>
       <PublicRoute path="/design" component={Design} layout={PublicLayout} />
+      <PublicRoute path="/mockup-studio" component={MockupStudio} layout={PublicLayout} />
       <PublicRoute path="/samples" component={Samples} layout={PublicLayout} />
       <PublicRoute path="/login" component={Login} layout={PublicLayout} />
       <ProtectedRoute path="/change-password" component={ChangePassword} layout={PublicLayout} />
@@ -161,7 +164,9 @@ function App() {
       <TooltipProvider>
         <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
           <ScrollToTop />
-          <Router />
+          <Suspense fallback={<div className="min-h-screen grid place-items-center bg-slate-100 text-slate-600 font-bold">Loading Packworkz...</div>}>
+            <Router />
+          </Suspense>
         </WouterRouter>
         <Toaster />
       </TooltipProvider>

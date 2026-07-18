@@ -181,14 +181,14 @@ export default function AdminOrders() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [editingOrder, setEditingOrder] = useState<any>(null);
   const [saving, setSaving] = useState(false);
-  const { data: orders, isLoading, refetch } = useAdminListOrders({ status: statusFilter !== "all" ? statusFilter : undefined });
+  const { data: orders, isLoading, refetch } = useAdminListOrders();
   const { mutate: updateOrder } = useAdminUpdateOrderStatus();
   const { toast } = useToast();
 
   const handleSave = (orderId: string, data: Partial<EditState>) => {
     setSaving(true);
     updateOrder(
-      { id: orderId, adminUpdateOrderStatusBody: data as any },
+      { id: orderId, data: data as any },
       {
         onSuccess: () => {
           toast({ title: "Order updated successfully" });
@@ -202,6 +202,8 @@ export default function AdminOrders() {
       }
     );
   };
+
+  const filteredOrders = ((orders || []) as any[]).filter((order) => statusFilter === "all" || order.status === statusFilter);
 
   return (
     <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
@@ -228,7 +230,7 @@ export default function AdminOrders() {
 
       {isLoading ? (
         <div className="flex justify-center py-20"><Loader2 className="w-8 h-8 animate-spin" style={{ color: "#1B6CA8" }} /></div>
-      ) : !orders || orders.length === 0 ? (
+      ) : filteredOrders.length === 0 ? (
         <div className="text-center py-16 bg-white border border-[#E7E8EB]">
           <p style={{ color: "#64748B" }}>No orders found.</p>
         </div>
@@ -243,7 +245,7 @@ export default function AdminOrders() {
               </tr>
             </thead>
             <tbody>
-              {(orders as any[]).map((order: any) => {
+              {filteredOrders.map((order: any) => {
                 const statusClass = STATUS_COLORS[order.status] ?? "bg-gray-50 text-gray-600 border border-gray-200";
                 const firstItem = Array.isArray(order.items) ? order.items[0] : null;
                 return (

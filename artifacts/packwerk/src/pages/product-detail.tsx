@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "wouter";
+import { Link, Redirect } from "wouter";
 import { calculateOrderEstimate } from "@/lib/pricing";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -8,11 +8,10 @@ import { formatINR } from "@/lib/format";
 import { ArrowLeft } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { getCategoryBySlug, SKUS, SKU_IMAGES } from "@/lib/skus";
-import { CATALOG_SKUS, getConfigureHref } from "@/lib/catalog";
+import { getCategoryBySlug } from "@/lib/skus";
+import { CATALOG_SKUS, getCatalogImage, getConfigureHref, requiresQuote } from "@/lib/catalog";
 
 const LEGACY_SLUG_ALIASES: Record<string, string> = {
-  "pet-jar": "plastic-bottle",
   "hdpe-bottle": "plastic-bottle",
   "mono-carton": "folding-carton",
   "corrugated-box": "corrugated-shipping-box",
@@ -22,12 +21,31 @@ const LEGACY_SLUG_ALIASES: Record<string, string> = {
   "shrink-sleeve": "labels",
 };
 
+const LEGACY_CATEGORY_SLUGS = new Set([
+  "flexible",
+  "bottles",
+  "tubes",
+  "boxes",
+  "ecommerce",
+  "protective",
+  "rolls",
+  "labels",
+  "sustainable",
+]);
+
 export default function ProductDetail({ params }: { params: { slug: string } }) {
   const { slug } = params;
   const canonicalSlug = LEGACY_SLUG_ALIASES[slug] || slug;
-  const product = SKUS.find((sku) => sku.slug === canonicalSlug);
-  const catalogProduct = CATALOG_SKUS.find((sku) => sku.slug === canonicalSlug);
+  const product = CATALOG_SKUS.find((sku) => sku.slug === canonicalSlug);
   const [quantity, setQuantity] = useState<number>(0);
+
+  if (LEGACY_CATEGORY_SLUGS.has(slug)) {
+    return <Redirect to={`/products?category=${slug}`} replace />;
+  }
+
+  if (canonicalSlug !== slug) {
+    return <Redirect to={`/products/${canonicalSlug}`} replace />;
+  }
 
   if (!product) {
     return (
@@ -42,18 +60,16 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
   const estimate = calculateOrderEstimate(product, currentQty);
   const estimatedMin = estimate.low;
   const estimatedMax = estimate.high;
-  const productImage = SKU_IMAGES[product.code];
+  const productImage = getCatalogImage(product);
   const category = getCategoryBySlug(product.category);
   const complianceCerts = product.is_eco ? ["FSC", "EPR-ready"] : ["ISO", "BRC-ready"];
-  const buyingMode = catalogProduct?.buyingMode ?? "self_serve";
-  const configureHref = catalogProduct ? `${getConfigureHref(catalogProduct)}&qty=${currentQty}` : `/configure?sku=${product.code}&qty=${currentQty}`;
+  const quoteRequired = requiresQuote(product, currentQty);
+  const configureHref = `${getConfigureHref(product, currentQty)}&qty=${currentQty}`;
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
-      <Link href="/products">
-        <a className="inline-flex items-center text-sm font-medium text-muted hover:text-navy mb-8 transition-colors">
-          <ArrowLeft className="w-4 h-4 mr-2" /> Back to Products
-        </a>
+      <Link href="/products" className="inline-flex items-center text-sm font-medium text-muted hover:text-navy mb-8 transition-colors">
+        <ArrowLeft className="w-4 h-4 mr-2" /> Back to Products
       </Link>
 
       <div className="grid lg:grid-cols-3 gap-12">
@@ -65,8 +81,8 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
               <div className="w-full h-full flex items-center justify-center text-muted">No Image Available</div>
             )}
             <div className="absolute top-4 left-4 flex flex-col gap-2">
-              <Badge className={buyingMode === "self_serve" ? "bg-amber text-navy font-bold" : "bg-blue text-white font-bold"}>
-                {buyingMode === "self_serve" ? "Self-serve" : "Managed pricing"}
+              <Badge className={product.publicBuyingPath === "instant" ? "bg-amber text-navy font-bold" : "bg-blue text-white font-bold"}>
+                {product.publicBuyingPath === "instant" ? "Instant buy" : "Request quote"}
               </Badge>
               {product.is_smartstock && <Badge className="bg-amber text-navy font-bold">SmartStock</Badge>}
               {product.is_eco && <Badge className="bg-success text-white font-bold">Eco Friendly</Badge>}
@@ -81,7 +97,7 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
               {[
                 ["01", "SKU selected", product.code],
                 ["02", "Configure specs", "Size, finish, artwork"],
-                ["03", buyingMode === "self_serve" ? "Place sample" : "Get pricing plan", buyingMode === "self_serve" ? "Fast checkout path" : "Technical run support"],
+                ["03", quoteRequired ? "Managed quote" : "Place order", quoteRequired ? "Technical, capacity and supplier validation" : "Checkout-ready specification"],
               ].map(([step, title, body]) => (
                 <div key={step} className="rounded border border-slate-200 bg-white p-3">
                   <p className="text-[11px] font-black text-blue">{step}</p>
@@ -142,7 +158,7 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
         <div className="lg:col-span-1">
           <div className="sticky top-24 bg-white border border-border rounded-3xl p-6 shadow-sm">
             <div className="mb-6">
-              <div className="text-sm text-muted mb-1">Estimated Price Range</div>
+              <div className="text-sm text-muted mb-1">{product.publicBuyingPath === "quote" ? "Indicative production range" : "Standard-spec price"}</div>
               <div className="text-3xl font-bold text-navy">
                 {formatINR(product.price_min)} - {formatINR(product.price_max)}
                 <span className="text-sm font-normal text-muted ml-1">/ {product.moq_unit}</span>
@@ -160,6 +176,28 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
                   className="h-12"
                 />
               </div>
+
+              {product.quote_threshold && currentQty >= product.quote_threshold && product.publicBuyingPath === "instant" && (
+                <div className="border border-amber-300 bg-amber-50 p-4 text-sm text-navy">
+                  <p className="font-black">Enterprise quantity detected</p>
+                  <p className="mt-1 text-xs text-slate-600">At {product.quote_threshold.toLocaleString("en-IN")}+ units we check production capacity, freight and a sharper bulk rate before confirming.</p>
+                </div>
+              )}
+
+              {product.price_tiers && product.price_tiers.length > 0 && (
+                <div className="border-y border-border py-4">
+                  <p className="text-xs font-black uppercase tracking-wider text-muted mb-3">Quantity pricing</p>
+                  <div className="grid gap-2">
+                    {product.price_tiers.map((tier) => (
+                      <button key={tier.min_qty} type="button" onClick={() => setQuantity(tier.min_qty)} className="flex items-center justify-between text-sm border border-slate-200 px-3 py-2 hover:border-blue transition-colors">
+                        <span className="font-semibold text-navy">{tier.min_qty.toLocaleString("en-IN")}+</span>
+                        <span className="font-black text-navy">{formatINR(tier.unit_price)} / unit</span>
+                      </button>
+                    ))}
+                  </div>
+                  <p className="text-[11px] text-muted mt-3">Standard specification, ex-GST. Final freight is calculated from delivery pincode.</p>
+                </div>
+              )}
 
               <div className="bg-surface p-4 rounded-xl space-y-3">
                 <div className="flex justify-between items-center text-sm">
@@ -186,7 +224,7 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
               <div className="pt-6 space-y-3 border-t border-border">
                 <Link href={configureHref}>
                   <Button className="w-full h-12 bg-amber text-navy hover:bg-amber/90 font-bold text-lg">
-                    {buyingMode === "self_serve" ? "Start Configuration" : "Plan Managed Pricing"}
+                    {quoteRequired ? "Request Managed Quote" : "Configure and Buy"}
                   </Button>
                 </Link>
                 <Link href={`/samples?product=${product.id}`}>

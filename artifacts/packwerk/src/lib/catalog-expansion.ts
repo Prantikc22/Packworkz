@@ -1,0 +1,178 @@
+import type { CustomField, Sku, VariantGroup } from "./skus";
+
+export type PurchaseMode = "instant" | "hybrid" | "brief";
+
+type Seed = {
+  code: string;
+  name: string;
+  category: string;
+  slug: string;
+  use: string;
+  mode: PurchaseMode;
+  moq: number;
+  moqUnit?: string;
+  tiers?: Array<[number, number]>;
+  estimate?: [number, number, number, number];
+  materials: string[];
+  print?: string[];
+  eco?: boolean;
+  lead?: number;
+  spec: string;
+  supplier: string;
+  hsn?: string;
+  variants?: VariantGroup[];
+  fields?: CustomField[];
+};
+
+const SIZE_FIELDS: CustomField[] = [
+  { key: "width", label: "Width", type: "number", unit: "mm", placeholder: "e.g. 150" },
+  { key: "height", label: "Height", type: "number", unit: "mm", placeholder: "e.g. 220" },
+  { key: "depth", label: "Depth / Gusset", type: "number", unit: "mm", placeholder: "e.g. 60" },
+];
+
+const PRINT_VARIANT: VariantGroup = {
+  key: "print",
+  label: "Branding",
+  options: ["Plain", "1-color print", "Full-color print"],
+};
+
+const FINISH_VARIANT: VariantGroup = {
+  key: "finish",
+  label: "Finish",
+  options: ["Natural / uncoated", "Matte", "Gloss"],
+};
+
+function buildSku(seed: Seed, index: number): Sku {
+  const tierPrices = seed.tiers?.map(([min_qty, unit_price], tierIndex) => ({
+    min_qty,
+    unit_price,
+    label: tierIndex === 0 ? "Launch quantity" : tierIndex === (seed.tiers?.length || 0) - 1 ? "Best unit rate" : undefined,
+  }));
+  const lowestTier = tierPrices?.[tierPrices.length - 1]?.unit_price;
+  const highestTier = tierPrices?.[0]?.unit_price;
+  const estimate = seed.estimate;
+  return {
+    id: `catalog-${seed.code.toLowerCase()}`,
+    code: seed.code,
+    name: seed.name,
+    category: seed.category,
+    slug: seed.slug,
+    description: `${seed.name} configured for Indian D2C and enterprise procurement, with material, print, quantity and delivery choices captured in one production-ready specification.`,
+    use_case: seed.use,
+    price_min: lowestTier ?? estimate?.[0] ?? 1,
+    price_max: highestTier ?? estimate?.[1] ?? 1,
+    moq: seed.moq,
+    moq_unit: seed.moqUnit ?? (seed.category === "rolls" ? "kg" : seed.code.startsWith("LC-9") && seed.name.includes("Tape") ? "rolls" : "units"),
+    is_smartstock: seed.mode !== "brief" && index % 3 !== 0,
+    is_eco: Boolean(seed.eco),
+    sample_tier: seed.mode === "brief" ? "complex" : seed.mode === "hybrid" ? "premium" : "standard",
+    sample_price: seed.mode === "brief" ? 4999 : seed.mode === "hybrid" ? 2999 : 999,
+    delivery_days_india: seed.lead ?? (seed.mode === "brief" ? 24 : seed.mode === "hybrid" ? 18 : 10),
+    variants: seed.variants ?? [PRINT_VARIANT, FINISH_VARIANT],
+    customization_fields: seed.fields ?? SIZE_FIELDS,
+    purchase_mode: seed.mode,
+    standard_spec: seed.spec,
+    price_tiers: tierPrices,
+    estimate_band: estimate ? { unit_min: estimate[0], unit_max: estimate[1], setup_min: estimate[2], setup_max: estimate[3] } : undefined,
+    hsn_code: seed.hsn ?? (seed.category === "boxes" || seed.category === "ecommerce" ? "4819" : seed.category === "labels" ? "4821/3919" : "3923"),
+    gst_rate: 18,
+    materials: seed.materials,
+    print_methods: seed.print ?? ["Digital", "Flexographic"],
+    sustainability_notes: seed.eco ? ["Lower-impact material option", "Claim documentation required before artwork approval"] : [],
+    supplier_route: seed.supplier,
+  };
+}
+
+// Public prices are launch prices for the standard specification shown on each
+// product. Custom dimensions, print coverage, freight and compliance can move a
+// product into the production-brief band. Prices are ex-GST.
+const SEEDS: Seed[] = [
+  // Flexible packaging
+  { code: "FP-106", name: "Three-side Seal Pouch", category: "flexible", slug: "three-side-seal-pouch", use: "Spices, samples, masks, powders and single-use refills", mode: "instant", moq: 500, tiers: [[500, 7.9], [1000, 5.6], [2500, 3.8], [5000, 2.9]], materials: ["PET/PE", "MetPET/PE"], spec: "120 x 180 mm, digital print, 3-layer barrier", supplier: "Digital flexible-pack converter" },
+  { code: "FP-107", name: "Side Gusset Pouch", category: "flexible", slug: "side-gusset-pouch", use: "Coffee, tea, grains, pet food and bulk dry goods", mode: "hybrid", moq: 500, tiers: [[500, 15.9], [1000, 11.8], [2500, 8.6], [5000, 6.9]], estimate: [5.8, 24, 2500, 12000], materials: ["PET/PE", "MetPET/PE", "Kraft laminate"], spec: "250 g format, zipper, digital print", supplier: "Pouch converter with valve fitting" },
+  { code: "FP-108", name: "Quad Seal Pouch", category: "flexible", slug: "quad-seal-pouch", use: "Premium coffee, protein, grains and pet nutrition", mode: "hybrid", moq: 1000, tiers: [[1000, 18.5], [2500, 13.4], [5000, 10.2], [10000, 7.8]], estimate: [6.8, 27, 6000, 18000], materials: ["PET/PE", "MetPET/PE"], spec: "500 g format, zipper, full-color print", supplier: "High-barrier pouch converter" },
+  { code: "FP-109", name: "Coffee Pouch with Degassing Valve", category: "flexible", slug: "coffee-valve-pouch", use: "Fresh roasted coffee beans and ground coffee", mode: "instant", moq: 500, tiers: [[500, 19.8], [1000, 15.2], [2500, 11.4], [5000, 8.9]], materials: ["MetPET/PE", "Kraft laminate"], spec: "250 g, zipper and one-way valve, digital print", supplier: "Specialty coffee pouch converter" },
+  { code: "FP-110", name: "Retort Pouch", category: "flexible", slug: "retort-pouch", use: "Ready meals, curries, sauces, pet food and sterilised foods", mode: "brief", moq: 10000, estimate: [4.2, 14.5, 35000, 120000], materials: ["PET/Al/CPP", "PET/NY/CPP"], spec: "Custom process temperature, fill weight and seal validation", supplier: "Retort-certified laminate converter" },
+  { code: "FP-111", name: "Vacuum Pouch", category: "flexible", slug: "vacuum-pouch", use: "Meat, cheese, coffee, electronics and industrial components", mode: "hybrid", moq: 1000, tiers: [[1000, 5.8], [2500, 4.1], [5000, 3.2], [10000, 2.5]], estimate: [2.1, 9.5, 4000, 18000], materials: ["PA/PE", "EVOH/PE"], spec: "200 x 300 mm, 90 micron, plain", supplier: "Vacuum-film pouch converter" },
+  { code: "FP-112", name: "Centre Seal Fin Pouch", category: "flexible", slug: "centre-seal-fin-pouch", use: "Biscuits, snacks, soap bars and horizontal flow-wrap products", mode: "brief", moq: 250, moqUnit: "kg", estimate: [165, 330, 12000, 40000], materials: ["BOPP/CPP", "BOPP/MetBOPP/CPP"], spec: "Price per kg; machine and barrier specification required", supplier: "Rotogravure flexible-pack converter", fields: [{ key: "web_width", label: "Web width", type: "number", unit: "mm" }, { key: "repeat", label: "Repeat length", type: "number", unit: "mm" }] },
+  { code: "FP-113", name: "Stand-up Refill Pouch", category: "flexible", slug: "refill-pouch", use: "Home care, personal care, edible oil and concentrates", mode: "hybrid", moq: 1000, tiers: [[1000, 12.8], [2500, 9.1], [5000, 6.8], [10000, 5.2]], estimate: [4.4, 18, 8000, 30000], materials: ["PE mono-material", "PET/PE"], eco: true, spec: "500 ml, corner spout, mono-material option", supplier: "Liquid pouch and fitment converter" },
+
+  // Bottles, jars and primary containers
+  { code: "BC-207", name: "PET Jar", category: "bottles", slug: "pet-jar", use: "Supplements, dry fruits, confectionery, powders and pantry goods", mode: "instant", moq: 100, tiers: [[100, 18], [500, 11.5], [1000, 9.2], [3000, 7.4]], materials: ["Food-grade PET"], spec: "250 ml clear jar with standard screw lid", supplier: "Stock PET container manufacturer" },
+  { code: "BC-208", name: "Aluminium Bottle", category: "bottles", slug: "aluminium-bottle", use: "Premium beverages, oils, personal care and refill systems", mode: "hybrid", moq: 500, tiers: [[500, 68], [1000, 54], [2500, 43], [5000, 36]], estimate: [32, 110, 15000, 60000], materials: ["Food-grade aluminium"], eco: true, spec: "250 ml, screw closure, one-color print", supplier: "Aluminium bottle manufacturer" },
+  { code: "BC-209", name: "Metal Tin and Can", category: "bottles", slug: "metal-tin-can", use: "Tea, coffee, confectionery, candles, cosmetics and gifting", mode: "hybrid", moq: 250, tiers: [[250, 95], [500, 72], [1000, 56], [2500, 44]], estimate: [38, 180, 18000, 90000], materials: ["Tinplate", "Aluminium"], eco: true, spec: "Round 100 g tin, stock tooling, label branding", supplier: "Tinplate container fabricator" },
+  { code: "BC-210", name: "Food-grade Tub with Lid", category: "bottles", slug: "food-tub", use: "Dairy, dips, desserts, ice cream, nutraceutical and food service", mode: "hybrid", moq: 1000, tiers: [[1000, 12.8], [2500, 9.6], [5000, 7.7], [10000, 6.2]], estimate: [5.3, 18, 8000, 45000], materials: ["PP", "rPP option"], spec: "250 ml, tamper-evident lid, plain or labelled", supplier: "Injection-moulded food container maker" },
+  { code: "BC-211", name: "HDPE Jerrycan", category: "bottles", slug: "hdpe-jerrycan", use: "Chemicals, lubricants, agro inputs, home care and institutional liquids", mode: "brief", moq: 500, estimate: [42, 240, 15000, 80000], materials: ["UN-grade HDPE option"], spec: "1-20 L; chemical compatibility and closure test required", supplier: "Industrial blow-moulding manufacturer" },
+  { code: "BC-212", name: "Trigger Spray Bottle", category: "bottles", slug: "trigger-spray-bottle", use: "Home cleaning, garden care, detailing and salon products", mode: "instant", moq: 250, tiers: [[250, 39], [500, 31], [1000, 25], [3000, 20.5]], materials: ["HDPE", "PET"], spec: "500 ml stock bottle with trigger sprayer", supplier: "Stock bottle and closure distributor" },
+  { code: "BC-213", name: "Perfume and Attar Bottle", category: "bottles", slug: "perfume-bottle", use: "Perfume, attar, essential oil and premium sampling", mode: "hybrid", moq: 100, tiers: [[100, 88], [250, 69], [500, 55], [1000, 46]], estimate: [38, 250, 5000, 70000], materials: ["Glass", "Aluminium closure"], spec: "30 ml stock glass bottle with crimp pump", supplier: "Fragrance bottle and pump importer" },
+
+  // Tubes and dose packs
+  { code: "TS-303", name: "Aluminium Collapsible Tube", category: "tubes", slug: "aluminium-collapsible-tube", use: "Pharma ointments, adhesives, pigments and premium creams", mode: "brief", moq: 10000, estimate: [8.5, 32, 30000, 110000], materials: ["Aluminium"], eco: true, spec: "Custom diameter, nozzle, lacquer and crimp specification", supplier: "Pharma-grade aluminium tube manufacturer" },
+  { code: "TS-304", name: "Paper Tube", category: "tubes", slug: "paper-tube", use: "Tea, snacks, cosmetics, posters, candles and gift sets", mode: "hybrid", moq: 100, tiers: [[100, 110], [250, 82], [500, 63], [1000, 51]], estimate: [45, 190, 8000, 45000], materials: ["Recycled paperboard", "FSC paper option"], eco: true, spec: "75 x 150 mm, paper ends, label or full wrap", supplier: "Spiral-wound paper tube maker" },
+  { code: "TS-305", name: "Vial, Ampoule and Small-dose Pack", category: "tubes", slug: "vial-ampoule-dose-pack", use: "Diagnostics, skincare actives, nutraceutical shots and pharma", mode: "brief", moq: 1000, estimate: [6, 85, 10000, 90000], materials: ["Type I/III glass", "Medical-grade polymer"], spec: "Regulatory, sterilisation and closure system brief required", supplier: "Primary pharma packaging specialist" },
+
+  // Folding, corrugated and premium boxes
+  { code: "BX-404", name: "Auto-bottom Carton", category: "boxes", slug: "auto-bottom-carton", use: "Cosmetics, supplements, electronics and heavier retail products", mode: "instant", moq: 100, tiers: [[100, 34], [250, 23], [500, 16.8], [1000, 12.9]], materials: ["300-400 GSM SBS/FBB"], spec: "80 x 50 x 140 mm, 4-color print, matte lamination", supplier: "Digital folding-carton converter" },
+  { code: "BX-405", name: "Sleeve and Tray Box", category: "boxes", slug: "sleeve-tray-box", use: "Confectionery, skincare sets, candles and accessories", mode: "instant", moq: 50, tiers: [[50, 72], [100, 51], [250, 35], [500, 27]], materials: ["SBS/FBB", "Kraft board"], spec: "120 x 80 x 35 mm, printed sleeve with plain tray", supplier: "Short-run carton converter" },
+  { code: "BX-406", name: "Window Carton", category: "boxes", slug: "window-carton", use: "Bakery, toys, cosmetics, gifting and visible-product retail", mode: "hybrid", moq: 100, tiers: [[100, 42], [250, 29], [500, 21], [1000, 16]], estimate: [13, 58, 3500, 16000], materials: ["Paperboard", "Cellulose or PET window"], spec: "Stock window profile, 4-color print", supplier: "Carton converter with window patching" },
+  { code: "BX-407", name: "Gable and Handle Box", category: "boxes", slug: "gable-handle-box", use: "Bakery, gifts, events, takeaway and curated kits", mode: "instant", moq: 50, tiers: [[50, 68], [100, 47], [250, 31], [500, 24]], materials: ["Kraft board", "SBS"], spec: "180 x 100 x 120 mm, one-color print", supplier: "Short-run die-cut box converter" },
+  { code: "BX-408", name: "Collapsible Rigid Box", category: "boxes", slug: "collapsible-rigid-box", use: "Premium gifting, fashion, electronics and luxury D2C", mode: "hybrid", moq: 100, tiers: [[100, 285], [250, 220], [500, 178], [1000, 149]], estimate: [125, 420, 15000, 90000], materials: ["Greyboard", "Art paper", "Recycled board option"], spec: "200 x 150 x 70 mm, wrapped, concealed magnets", supplier: "Premium rigid-box manufacturer" },
+  { code: "BX-409", name: "Cylinder and Shoulder-neck Box", category: "boxes", slug: "cylinder-shoulder-neck-box", use: "Perfume, bottles, candles, spirits and luxury gifting", mode: "brief", moq: 250, estimate: [95, 380, 20000, 100000], materials: ["Greyboard", "Wrapped paper"], spec: "Custom diameter, insert, shoulder and closure engineering", supplier: "Luxury tube and rigid-box manufacturer" },
+  { code: "BX-410", name: "Bottle Divider Carton", category: "boxes", slug: "bottle-divider-carton", use: "Beverage, sauces, oils, glassware and export shipping", mode: "hybrid", moq: 250, tiers: [[250, 79], [500, 61], [1000, 49], [2500, 39]], estimate: [34, 115, 6000, 28000], materials: ["3/5-ply corrugated board"], eco: true, spec: "6-bottle RSC with die-cut partitions", supplier: "Corrugated box plant" },
+  { code: "BX-411", name: "Pharma Carton with Insert", category: "boxes", slug: "pharma-carton-insert", use: "OTC, diagnostics, devices, vials and regulated healthcare", mode: "brief", moq: 5000, estimate: [4.5, 22, 25000, 95000], materials: ["FBB", "Leaflet paper", "Tamper label option"], spec: "Artwork controls, batch panel, Braille and insert brief", supplier: "GMP pharma-carton converter" },
+
+  // D2C mailers, bags and retail carry packaging
+  { code: "EC-505", name: "Paper Shipping Mailer", category: "ecommerce", slug: "paper-shipping-mailer", use: "Apparel, books, soft goods and plastic-light fulfilment", mode: "instant", moq: 100, tiers: [[100, 24], [250, 17.5], [500, 13.6], [1000, 10.8]], materials: ["FSC kraft paper option"], eco: true, spec: "250 x 330 mm, peel-and-seal, one-color print", supplier: "Paper mailer bag converter" },
+  { code: "EC-506", name: "Padded Paper Mailer", category: "ecommerce", slug: "padded-paper-mailer", use: "Beauty, jewellery, books, accessories and small electronics", mode: "instant", moq: 100, tiers: [[100, 34], [250, 26], [500, 21], [1000, 17.5]], materials: ["Kraft paper", "Paper cushioning"], eco: true, spec: "180 x 260 mm, all-paper padded mailer", supplier: "Paper cushioning converter" },
+  { code: "EC-507", name: "Bubble Mailer", category: "ecommerce", slug: "bubble-mailer", use: "Cosmetics, accessories, electronics and fragile small goods", mode: "instant", moq: 100, tiers: [[100, 18], [250, 13.5], [500, 10.5], [1000, 8.6]], materials: ["Kraft/PE outer", "Bubble lining"], spec: "180 x 260 mm, plain kraft exterior", supplier: "Stock mailer manufacturer" },
+  { code: "EC-508", name: "Compostable Courier Mailer", category: "ecommerce", slug: "compostable-courier-mailer", use: "Fashion, lifestyle, beauty and sustainability-led D2C", mode: "hybrid", moq: 500, tiers: [[500, 17.8], [1000, 13.4], [2500, 10.2], [5000, 8.4]], estimate: [7.5, 24, 6000, 25000], materials: ["PBAT/PLA/starch blend"], eco: true, spec: "250 x 330 mm, dual seal, one-color print", supplier: "Certified compostable-film converter" },
+  { code: "EC-509", name: "Frosted Zipper Garment Bag", category: "ecommerce", slug: "frosted-zipper-garment-bag", use: "Fashion, apparel, linens and premium inner packaging", mode: "instant", moq: 100, tiers: [[100, 22], [250, 16], [500, 12.5], [1000, 10]], materials: ["PE", "EVA/PE"], spec: "300 x 400 mm, zipper, one-color print", supplier: "Garment polybag converter" },
+  { code: "EC-510", name: "Printed Paper Carrier Bag", category: "ecommerce", slug: "printed-paper-carrier-bag", use: "Retail, bakery, events, gifting and takeaway", mode: "instant", moq: 50, tiers: [[50, 24], [100, 17], [250, 12], [500, 9.5]], materials: ["Kraft paper", "Recycled kraft option"], eco: true, spec: "Medium bag, twisted handle, one-color print", supplier: "Paper bag manufacturer" },
+  { code: "EC-511", name: "Cotton and Jute Drawstring Bag", category: "ecommerce", slug: "cotton-jute-drawstring-bag", use: "Jewellery, gifting, wellness, travel and reusable retail packs", mode: "hybrid", moq: 100, tiers: [[100, 58], [250, 44], [500, 35], [1000, 29]], estimate: [24, 95, 3500, 18000], materials: ["Cotton", "Jute", "Canvas"], eco: true, spec: "150 x 200 mm, one-color screen print", supplier: "Textile bag stitching unit" },
+  { code: "EC-512", name: "Rigid Document Envelope", category: "ecommerce", slug: "rigid-document-envelope", use: "Certificates, prints, books, photos and bend-sensitive dispatch", mode: "instant", moq: 100, tiers: [[100, 28], [250, 21], [500, 17], [1000, 14]], materials: ["Paperboard", "Kraft paper"], eco: true, spec: "A4, peel-and-seal, board-backed", supplier: "Paper envelope converter" },
+  { code: "EC-513", name: "Return-ready Garment Mailer", category: "ecommerce", slug: "return-ready-garment-mailer", use: "Fashion and marketplaces with high return volumes", mode: "instant", moq: 500, tiers: [[500, 8.9], [1000, 6.8], [2500, 5.4], [5000, 4.6]], materials: ["Recycled-content PE option"], eco: true, spec: "300 x 400 mm, dual peel-and-seal strip", supplier: "Courier bag converter" },
+
+  // Protective and fulfilment packaging
+  { code: "PR-603", name: "Honeycomb Paper Wrap", category: "protective", slug: "honeycomb-paper-wrap", use: "Glassware, ceramics, cosmetics, gifts and plastic-free fulfilment", mode: "instant", moq: 10, tiers: [[10, 690], [25, 610], [50, 550], [100, 495]], materials: ["Recycled kraft paper"], eco: true, spec: "500 mm x 50 m roll", supplier: "Paper cushioning converter", fields: [{ key: "roll_width", label: "Roll width", type: "select", options: ["300 mm", "500 mm"] }] },
+  { code: "PR-604", name: "Crinkle and Shredded Paper Filler", category: "protective", slug: "crinkle-paper-filler", use: "Gift boxes, hampers, cosmetics and subscription packs", mode: "instant", moq: 10, tiers: [[10, 320], [25, 285], [50, 255], [100, 230]], materials: ["Recycled paper", "FSC paper option"], eco: true, spec: "1 kg pack, single standard color", supplier: "Paper shred and filler maker", fields: [{ key: "color", label: "Color", type: "text", placeholder: "Natural kraft" }] },
+  { code: "PR-605", name: "Corrugated Insert and Divider", category: "protective", slug: "corrugated-insert-divider", use: "Bottle sets, electronics, cosmetics and multi-product kits", mode: "hybrid", moq: 100, tiers: [[100, 24], [250, 17], [500, 13], [1000, 10.5]], estimate: [8, 45, 5000, 24000], materials: ["E/B flute corrugated board"], eco: true, spec: "Stock-grid divider for standard mailer", supplier: "Die-cut corrugated converter" },
+  { code: "PR-606", name: "Moulded Pulp Insert", category: "protective", slug: "moulded-pulp-insert", use: "Electronics, bottles, cosmetics, appliances and plastic replacement", mode: "brief", moq: 5000, estimate: [8, 55, 65000, 350000], materials: ["Recycled paper pulp", "Bagasse pulp"], eco: true, spec: "Custom tool, drop-test target and product CAD required", supplier: "Moulded-fibre tooling manufacturer" },
+  { code: "PR-607", name: "Edge and Corner Protector", category: "protective", slug: "edge-corner-protector", use: "Furniture, frames, appliances, cartons and pallet loads", mode: "instant", moq: 100, tiers: [[100, 18], [250, 14], [500, 11.5], [1000, 9.5]], materials: ["Recycled paperboard", "EPE option"], eco: true, spec: "50 x 50 x 5 mm paper angle, 1 m", supplier: "Paper angle-board manufacturer" },
+  { code: "PR-608", name: "Pallet Stretch Film", category: "protective", slug: "pallet-stretch-film", use: "Warehouse dispatch, pallet stabilisation and export handling", mode: "instant", moq: 6, tiers: [[6, 760], [24, 690], [60, 625], [120, 575]], materials: ["LLDPE", "Recycled-content option"], spec: "500 mm x 23 micron hand roll", supplier: "Stretch-film manufacturer", fields: [{ key: "micron", label: "Thickness", type: "select", options: ["17 micron", "20 micron", "23 micron", "30 micron"] }] },
+  { code: "PR-609", name: "PET/PP Strapping", category: "protective", slug: "packing-strapping", use: "Carton bundling, pallets, exports and industrial loads", mode: "instant", moq: 5, tiers: [[5, 1450], [20, 1320], [50, 1210], [100, 1120]], materials: ["PET", "PP"], spec: "12 mm x 0.7 mm PET strap roll", supplier: "Industrial strapping manufacturer", fields: [{ key: "strap", label: "Strap grade", type: "select", options: ["PP light-duty", "PET heavy-duty"] }] },
+  { code: "PR-610", name: "Insulated Cold-chain Pack", category: "protective", slug: "insulated-cold-chain-pack", use: "Pharma, diagnostics, gourmet food and temperature-sensitive delivery", mode: "brief", moq: 100, estimate: [180, 1850, 15000, 120000], materials: ["EPP/EPS", "Paper insulation", "Gel packs"], spec: "Payload, lane duration and temperature profile required", supplier: "Validated cold-chain packaging specialist" },
+  { code: "PR-611", name: "ESD and Anti-static Packaging", category: "protective", slug: "esd-antistatic-packaging", use: "Electronics, PCBs, semiconductors and sensitive assemblies", mode: "brief", moq: 500, estimate: [12, 240, 8000, 65000], materials: ["Metallised ESD film", "Conductive foam"], spec: "Surface resistance and component sensitivity brief required", supplier: "Electronics packaging specialist" },
+
+  // Enterprise films, sacks and industrial primary packs
+  { code: "RL-704", name: "Lidding and Sealing Film", category: "rolls", slug: "lidding-sealing-film", use: "Dairy cups, trays, ready meals, pharma and induction seals", mode: "brief", moq: 300, estimate: [240, 540, 18000, 90000], materials: ["PET/PE", "PET/CPP", "Aluminium foil laminate"], spec: "Price per kg; cup/tray substrate and seal window required", supplier: "Specialty lidding-film converter", fields: [{ key: "web_width", label: "Web width", type: "number", unit: "mm" }, { key: "seal_substrate", label: "Seal substrate", type: "text" }] },
+  { code: "RL-705", name: "Shrink Film and Sleeve Rollstock", category: "rolls", slug: "shrink-film-rollstock", use: "Bottle bundles, tamper bands, multipacks and full-body sleeves", mode: "brief", moq: 300, estimate: [155, 390, 15000, 75000], materials: ["POF", "PVC", "PETG"], spec: "Price per kg; shrink curve and machine specification required", supplier: "Shrink-film manufacturer" },
+  { code: "RL-706", name: "Stretch Hood and Pallet Film", category: "rolls", slug: "stretch-hood-film", use: "Cement, chemicals, appliances and export pallet loads", mode: "brief", moq: 500, estimate: [145, 285, 12000, 55000], materials: ["LLDPE"], spec: "Price per kg; load profile and equipment brief required", supplier: "Industrial blown-film plant" },
+  { code: "RL-707", name: "Retort and Aseptic Rollstock", category: "rolls", slug: "retort-aseptic-rollstock", use: "Sterilised foods, dairy, medical and shelf-stable liquids", mode: "brief", moq: 500, estimate: [310, 690, 45000, 180000], materials: ["PET/Al/CPP", "High-barrier coextrusion"], spec: "Price per kg; process validation and migration compliance required", supplier: "Retort/aseptic qualified converter" },
+  { code: "RL-708", name: "Pharma Blister Foil and Web", category: "rolls", slug: "pharma-blister-foil-web", use: "Tablets, capsules, diagnostics and medical unit doses", mode: "brief", moq: 500, estimate: [360, 980, 60000, 250000], materials: ["Aluminium lidding foil", "PVC/PVdC", "Cold-form Alu-Alu"], spec: "Price per kg; cavity, barrier and regulatory dossier required", supplier: "Pharma-primary packaging converter" },
+  { code: "RL-709", name: "Woven PP Sack", category: "rolls", slug: "woven-pp-sack", use: "Grains, flour, fertiliser, chemicals, feed and construction materials", mode: "brief", moq: 5000, estimate: [13, 58, 18000, 80000], materials: ["Woven PP", "BOPP laminated PP"], spec: "25 kg standard sack; fabric GSM, lamination and liner brief", supplier: "Woven sack manufacturer", fields: [{ key: "capacity", label: "Fill capacity", type: "select", options: ["5 kg", "10 kg", "25 kg", "50 kg"] }] },
+  { code: "RL-710", name: "FIBC Jumbo Bag", category: "rolls", slug: "fibc-jumbo-bag", use: "Bulk chemicals, minerals, food ingredients, pharma and agriculture", mode: "brief", moq: 500, estimate: [390, 1450, 25000, 150000], materials: ["Woven PP", "Conductive fabric options"], spec: "500-1500 kg SWL; safety factor, loops, liner and UN requirement", supplier: "FIBC export manufacturer" },
+  { code: "RL-711", name: "Kraft Wrapping and Interleaving Roll", category: "rolls", slug: "kraft-wrapping-roll", use: "Industrial wrapping, void fill, garment, metal and glass separation", mode: "instant", moq: 10, tiers: [[10, 1240], [25, 1150], [50, 1070], [100, 995]], materials: ["Recycled kraft paper", "Virgin kraft"], eco: true, spec: "1 m x 100 m, 80 GSM", supplier: "Kraft paper converter", fields: [{ key: "gsm", label: "Paper weight", type: "select", options: ["60 GSM", "80 GSM", "100 GSM", "120 GSM"] }] },
+
+  // Labels, print accessories and closures
+  { code: "LC-804", name: "Sheet Stickers", category: "labels", slug: "sheet-stickers", use: "Launch labels, seals, samples, events and low-volume branding", mode: "instant", moq: 50, tiers: [[50, 8.5], [100, 5.2], [250, 3.1], [500, 2.2]], materials: ["Paper", "BOPP", "Clear film"], spec: "50 mm circle, full-color digital print", supplier: "Digital label printer" },
+  { code: "LC-805", name: "Tamper-evident Seal", category: "labels", slug: "tamper-evident-seal", use: "Food, pharma, cosmetics, electronics and delivery assurance", mode: "instant", moq: 500, tiers: [[500, 2.4], [1000, 1.65], [2500, 1.05], [5000, 0.78]], materials: ["Destructible vinyl", "VOID film", "Paper"], spec: "25 x 50 mm, one-color or full-color", supplier: "Security label converter" },
+  { code: "LC-806", name: "Shrink Sleeve Label", category: "labels", slug: "shrink-sleeve-label", use: "Beverages, personal care, home care and tamper evidence", mode: "brief", moq: 10000, estimate: [1.8, 8.5, 25000, 95000], materials: ["PETG", "PVC", "OPS"], spec: "Container CAD, shrink curve and application equipment required", supplier: "Gravure shrink-sleeve converter" },
+  { code: "LC-807", name: "Wrap-around Bottle Label", category: "labels", slug: "wrap-around-bottle-label", use: "Water, beverages, oil, chemicals and high-speed bottling", mode: "brief", moq: 25000, estimate: [0.28, 1.8, 18000, 65000], materials: ["BOPP", "Pearlised BOPP", "Paper"], spec: "Roll direction, overlap, bottle diameter and machine speed required", supplier: "High-speed label converter" },
+  { code: "LC-808", name: "Hang Tag and Header Card", category: "labels", slug: "hang-tag-header-card", use: "Fashion, jewellery, accessories, toys and retail display", mode: "instant", moq: 50, tiers: [[50, 12], [100, 7.5], [250, 4.4], [500, 3.2]], materials: ["Paperboard", "Recycled paper option"], eco: true, spec: "55 x 90 mm, 4-color, punched", supplier: "Digital commercial printer" },
+  { code: "LC-809", name: "Thank-you and Instruction Card", category: "labels", slug: "thank-you-instruction-card", use: "D2C unboxing, care guides, inserts and promotional cards", mode: "instant", moq: 50, tiers: [[50, 9], [100, 5.4], [250, 3], [500, 2.1]], materials: ["300 GSM card", "Recycled board option"], eco: true, spec: "A6, double-sided full color", supplier: "Digital commercial printer" },
+  { code: "LC-810", name: "Printed Tissue and Wrapping Paper", category: "labels", slug: "printed-tissue-wrapping-paper", use: "Fashion, gifting, beauty, jewellery and premium unboxing", mode: "hybrid", moq: 250, tiers: [[250, 14], [500, 10.5], [1000, 8.1], [2500, 6.4]], estimate: [5.5, 22, 4500, 22000], materials: ["Tissue paper", "Glassine", "Recycled paper"], eco: true, spec: "500 x 750 mm sheet, one-color repeat print", supplier: "Tissue-paper printer" },
+  { code: "LC-811", name: "Custom Printed BOPP Tape", category: "labels", slug: "printed-bopp-tape", use: "Branded shipping cartons, tamper visibility and warehouse operations", mode: "instant", moq: 72, tiers: [[72, 92], [144, 78], [360, 64], [720, 56]], materials: ["BOPP", "Acrylic adhesive"], spec: "48 mm x 65 m, one-color print", supplier: "Printed adhesive-tape converter", fields: [{ key: "color", label: "Tape color", type: "select", options: ["Clear", "Brown", "White"] }] },
+  { code: "LC-812", name: "Kraft Paper Tape", category: "labels", slug: "kraft-paper-tape", use: "Plastic-light carton sealing, gifting and branded fulfilment", mode: "instant", moq: 48, tiers: [[48, 138], [96, 119], [240, 102], [480, 91]], materials: ["Kraft paper", "Water-activated or self-adhesive"], eco: true, spec: "48 mm x 50 m, plain self-adhesive", supplier: "Paper tape converter" },
+  { code: "LC-813", name: "Custom Ribbon and Closure Accessory", category: "labels", slug: "custom-ribbon-closure-accessory", use: "Luxury boxes, gifting, jewellery and event packaging", mode: "hybrid", moq: 500, tiers: [[500, 8.5], [1000, 6.2], [2500, 4.6], [5000, 3.7]], estimate: [3.2, 18, 5000, 28000], materials: ["Satin", "Cotton", "Grosgrain"], spec: "15 mm satin ribbon, one-color print, cut lengths", supplier: "Textile trim and ribbon printer" },
+
+  // Food service and inherently lower-impact formats
+  { code: "SP-905", name: "Bagasse Clamshell", category: "sustainable", slug: "bagasse-clamshell", use: "QSR, cloud kitchens, events and hot takeaway food", mode: "instant", moq: 500, tiers: [[500, 9.8], [1000, 8.6], [2500, 7.7], [5000, 7]], materials: ["Bagasse fibre"], eco: true, spec: "9 x 6 inch, plain, single compartment", supplier: "Bagasse tableware manufacturer" },
+  { code: "SP-906", name: "Bagasse Meal Tray with Lid", category: "sustainable", slug: "bagasse-meal-tray", use: "Meals, catering, delivery and institutional food service", mode: "instant", moq: 500, tiers: [[500, 14.5], [1000, 12.6], [2500, 11.1], [5000, 9.9]], materials: ["Bagasse fibre", "rPET/PLA lid option"], eco: true, spec: "750 ml tray, plain bagasse lid", supplier: "Bagasse tableware manufacturer" },
+  { code: "SP-907", name: "Paper Cup", category: "sustainable", slug: "paper-cup", use: "Coffee, beverages, sampling, events and food service", mode: "hybrid", moq: 1000, tiers: [[1000, 5.8], [2500, 4.7], [5000, 4.1], [10000, 3.6]], estimate: [3.2, 8.5, 6000, 28000], materials: ["Food-grade paper", "Aqueous/PE lining"], eco: true, spec: "250 ml, single wall, one-color print", supplier: "Food-contact paper cup manufacturer" },
+  { code: "SP-908", name: "Paper Bowl and Food Tub", category: "sustainable", slug: "paper-bowl-food-tub", use: "Salads, noodles, desserts, curries and delivery", mode: "hybrid", moq: 500, tiers: [[500, 12.8], [1000, 10.5], [2500, 8.8], [5000, 7.6]], estimate: [6.8, 18, 6000, 32000], materials: ["Food-grade paperboard", "Aqueous/PE lining"], eco: true, spec: "500 ml, plain bowl with paper lid", supplier: "Food-container paper converter" },
+  { code: "SP-909", name: "Greaseproof and Food Wrap Paper", category: "sustainable", slug: "greaseproof-food-wrap-paper", use: "Burgers, bakery, deli, tray liners and QSR branding", mode: "instant", moq: 1000, tiers: [[1000, 2.9], [2500, 2.1], [5000, 1.65], [10000, 1.3]], materials: ["Food-grade greaseproof paper"], eco: true, spec: "300 x 300 mm sheet, one-color repeat print", supplier: "Food-contact paper printer" },
+  { code: "SP-910", name: "Moulded Fibre Bottle and Jar Pack", category: "sustainable", slug: "moulded-fibre-bottle-pack", use: "Beverage, beauty, candles and fragile premium sets", mode: "brief", moq: 3000, estimate: [14, 85, 75000, 400000], materials: ["Recycled paper pulp", "Bagasse pulp"], eco: true, spec: "Custom tool, product CAD and drop-test brief required", supplier: "Moulded-fibre packaging manufacturer" },
+  { code: "SP-911", name: "Palm-leaf and Fibre Food Pack", category: "sustainable", slug: "palm-leaf-fibre-food-pack", use: "Premium catering, events, gifting and natural food presentation", mode: "instant", moq: 250, tiers: [[250, 24], [500, 20], [1000, 17.2], [2500, 15]], materials: ["Areca palm leaf", "Plant fibre"], eco: true, spec: "Standard tray format, plain", supplier: "Natural fibre tableware producer" },
+];
+
+export const EXPANDED_SKUS: Sku[] = SEEDS.map(buildSku);

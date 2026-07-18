@@ -10,12 +10,12 @@ const CERTIFICATIONS = [
 ];
 
 const CATEGORIES = [
-  { label: "Flexible Packaging",  count: "80+ SKUs", desc: "Pouches, films, laminates, wrappers" },
-  { label: "Rigid & Bottles",     count: "40+ SKUs", desc: "PET, HDPE, glass, aluminium" },
-  { label: "Boxes & Cartons",     count: "30+ SKUs", desc: "Mono, duplex, corrugated, SBS" },
-  { label: "E-commerce",          count: "25+ SKUs", desc: "Mailers, bubble wrap, kraft tapes" },
-  { label: "Labels & Closures",   count: "20+ SKUs", desc: "Pressure-sensitive, in-mould, caps" },
-  { label: "Sustainable",         count: "15+ SKUs", desc: "Kraft, recycled, compostable" },
+  { label: "Flexible Packaging", count: "7 families", desc: "Pouches, sachets, refill and barrier formats" },
+  { label: "Rigid & Bottles", count: "6 families", desc: "Plastic, glass, airless, fragrance and tube formats" },
+  { label: "Boxes & Cartons", count: "5 families", desc: "Folding, corrugated, mailer, rigid and food-delivery boxes" },
+  { label: "Fulfilment", count: "6 families", desc: "Mailers, carrier bags, void fill and custom inserts" },
+  { label: "Labels & Accessories", count: "4 families", desc: "Labels, tape, cards, tissue and wrapping" },
+  { label: "Films & Sustainable", count: "7 families", desc: "Rollstock, lidding, fibre, paper and food service" },
 ];
 
 const VETTING_STEPS = [
@@ -107,7 +107,7 @@ export default function Network() {
           <div className="pw-reveal" style={{ textAlign: "center", marginBottom: 56 }}>
             <p style={{ color: "#60a5fa", fontSize: 11, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", marginBottom: 14 }}>CATEGORY COVERAGE</p>
             <h2 style={{ color: "white", fontSize: "clamp(2rem,4vw,2.8rem)", fontWeight: 800, lineHeight: 1.1, letterSpacing: "-1px" }}>
-              110+ SKUs. Every packaging need. One network.
+              35 focused product families. One connected network.
             </h2>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 10 }}>
@@ -154,7 +154,7 @@ export default function Network() {
             <span className="animated-border animated-border-white">
               <Link href="/configure"><button className="btn-fill btn-amber px-8 py-3 text-sm pw-btn-transition">Get Pricing Plan →</button></Link>
             </span>
-            <Link href="/products"><button className="btn-fill btn-outline-white px-8 py-3 text-sm pw-btn-transition">Browse 110+ SKUs</button></Link>
+            <Link href="/products"><button className="btn-fill btn-outline-white px-8 py-3 text-sm pw-btn-transition">Browse 35 product families</button></Link>
           </div>
           <p style={{ color: "rgba(255,255,255,0.28)", fontSize: 12, marginTop: 14, letterSpacing: "0.2px" }}>
             No minimum for samples · MOQ from 500 units for bulk

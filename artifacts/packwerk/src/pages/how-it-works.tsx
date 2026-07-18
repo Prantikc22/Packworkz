@@ -10,7 +10,7 @@ const STEPS = [
     Icon: Search,
     title: "Configure and Price",
     intro:
-      "Start by browsing our catalogue of 110+ SKUs or describing what you need. No sales call required. No commitment until you approve.",
+      "Start by browsing 35 focused product families or describing what you need. No sales call is required for standard formats.",
     substeps: [
       {
         title: "Browse or describe",
@@ -331,7 +331,7 @@ export default function HowItWorks() {
             color: "rgba(255,255,255,0.6)", fontSize: 17,
             margin: "0 auto 44px", lineHeight: 1.65,
           }}>
-            Browse 110+ packaging SKUs or speak to our team today.
+            Browse 35 packaging product families or speak to our team today.
           </p>
 
           <div style={{ display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap" }}>

@@ -11,12 +11,12 @@ import {
 const PAGE_SEO: Record<string, { title: string; description: string; keywords: string }> = {
   "/": {
     title: "Packworkz — Packaging Manufacturer & Managed Platform India | D2C, FMCG, Pharma",
-    description: "Managed packaging procurement for D2C, FMCG and pharma teams. Configure 32 packaging families, review indicative pricing, plan quality checkpoints and manage repeat orders in one workflow.",
+    description: "Managed packaging for D2C, FMCG, pharma and enterprise teams. Browse 35 focused product families, see quantity pricing, create 3D previews and manage repeat orders in one workflow.",
     keywords: "packaging manufacturer India, managed packaging platform, custom packaging India, D2C packaging manufacturer, FMCG packaging supplier India, packaging vendor India",
   },
   "/products": {
     title: "Packaging Products India | Pouches, Boxes, Bottles | Packworkz",
-    description: "Browse 32 configured packaging families including pouches, corrugated boxes, PET jars, mailers, labels and technical rollstock. See starting quantities and indicative price bands online.",
+    description: "Browse 35 focused packaging families including pouches, cartons, containers, mailers, labels, food-service packs and technical rollstock. See buying paths and quantity pricing online.",
     keywords: "packaging manufacturer India, custom packaging manufacturer, stand-up pouch manufacturer India, corrugated box manufacturer, flexible packaging manufacturer India",
   },
   "/industries": {
@@ -61,8 +61,13 @@ const PAGE_SEO: Record<string, { title: string; description: string; keywords: s
   },
   "/design": {
     title: "Custom Packaging Design Service India | From ₹1,999 | Packworkz",
-    description: "Professional packaging design from ₹1,999. Full branding across 110+ SKUs. Print-ready artwork, dieline templates, and design management included.",
+    description: "Packaging design and 3D previews across 35 focused product families, with print-ready artwork, dieline handoff and design management.",
     keywords: "custom packaging design India, packaging design service, packaging artwork India, D2C packaging design, print-ready packaging",
+  },
+  "/mockup-studio": {
+    title: "Free 3D Packaging Mockup Studio | Boxes, Pouches & Bottles | Packworkz",
+    description: "Create an interactive 3D packaging preview, apply a brand color or logo, rotate the pack and export a review image before production.",
+    keywords: "3D packaging mockup, packaging design preview, box mockup generator, pouch mockup, bottle mockup India",
   },
   "/contact": {
     title: "Contact Packworkz | Custom Packaging India | +91 82089 90366",
@@ -86,7 +91,7 @@ const PAGE_SEO: Record<string, { title: string; description: string; keywords: s
   },
   "/industries/pharma": {
     title: "Pharma Packaging Manufacturer India | CPCB & FDA Compliant | Packworkz",
-    description: "Pharma-grade packaging with full compliance documentation. Blister packs, HDPE bottles, amber glass, foil laminates — all with QC certificates and CPCB compliance.",
+    description: "Pharma packaging across HDPE and glass containers, folding cartons, labels and managed high-barrier formats, with documentation verified against the final specification.",
     keywords: "pharma packaging manufacturer India, pharmaceutical packaging supplier, FDA compliant packaging India, CPCB packaging India",
   },
   "/industries/beauty": {
@@ -142,14 +147,14 @@ const PAGE_SEO: Record<string, { title: string; description: string; keywords: s
 };
 
 const PRODUCT_CATS = [
-  { icon: Package,      label: "Flexible Packaging",   desc: "Pouches, films & wraps",           href: "/products/flexible" },
-  { icon: Box,          label: "Rigid Packaging",       desc: "Jars, bottles & hard shells",      href: "/products/rigid" },
-  { icon: ShoppingBag,  label: "Boxes & Retail",        desc: "Mono, duplex & gift boxes",        href: "/products/boxes" },
-  { icon: Layers,       label: "E-commerce Packaging",  desc: "Mailers, corrugated & tapes",      href: "/products/ecommerce" },
-  { icon: RotateCcw,    label: "Packaging Rolls",       desc: "Rollstock & centre-fold films",    href: "/products/rolls" },
-  { icon: Tag,          label: "Labels & Accessories",  desc: "Stickers, inserts & ribbons",      href: "/products/labels" },
-  { icon: Leaf,         label: "Sustainable Packaging", desc: "Kraft, recycled & compostable",    href: "/products/sustainable" },
-  { icon: Gift,         label: "Premium & Gift",        desc: "Luxury rigid & foil options",      href: "/products/premium" },
+  { icon: Package,      label: "Flexible Packaging",   desc: "Pouches, films & wraps",           href: "/products?category=flexible" },
+  { icon: Box,          label: "Bottles & Containers",  desc: "Jars, bottles & dispensing packs", href: "/products?category=bottles" },
+  { icon: ShoppingBag,  label: "Boxes & Cartons",       desc: "Folding, rigid & gift boxes",       href: "/products?category=boxes" },
+  { icon: Layers,       label: "E-commerce Packaging",  desc: "Mailers, corrugated & carrier bags", href: "/products?category=ecommerce" },
+  { icon: RotateCcw,    label: "Packaging Rolls",       desc: "Rollstock, lidding & shrink films", href: "/products?category=rolls" },
+  { icon: Tag,          label: "Labels & Accessories",  desc: "Labels, cards, tissue & tape",      href: "/products?category=labels" },
+  { icon: Leaf,         label: "Sustainable Foodservice", desc: "Bagasse, paper cups & food wraps", href: "/products?category=sustainable" },
+  { icon: Gift,         label: "Protective Packaging",  desc: "Void fill, wrap & custom inserts",  href: "/products?category=protective" },
 ];
 
 // ── Industry mega-menu data ───────────────────────────────────────────────────
@@ -1106,11 +1111,11 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
           <div className="flex flex-col gap-3">
             <h4 style={{ color: "white", fontWeight: 700, fontSize: 11, letterSpacing: "2px", textTransform: "uppercase", marginBottom: 4 }}>PRODUCTS</h4>
             {[
-              { label: "Flexible Packaging", href: "/products/flexible" },
-              { label: "Rigid Packaging", href: "/products/rigid" },
-              { label: "E-commerce Packaging", href: "/products/ecommerce" },
-              { label: "Sustainable Packaging", href: "/products/sustainable" },
-              { label: "Premium & Gift", href: "/products/premium" },
+              { label: "Flexible Packaging", href: "/products?category=flexible" },
+              { label: "Bottles & Containers", href: "/products?category=bottles" },
+              { label: "E-commerce Packaging", href: "/products?category=ecommerce" },
+              { label: "Sustainable Foodservice", href: "/products?category=sustainable" },
+              { label: "Boxes & Cartons", href: "/products?category=boxes" },
             ].map(l => (
               <Link key={l.href} href={l.href}
                 style={{ color: "#94A3B8", textDecoration: "none", fontSize: 14, transition: "color 0.15s" }}

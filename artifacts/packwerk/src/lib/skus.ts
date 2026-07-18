@@ -35,6 +35,17 @@ export type Sku = {
   delivery_days_india: number;
   variants: VariantGroup[];
   customization_fields: CustomField[];
+  purchase_mode?: "instant" | "hybrid" | "brief";
+  standard_spec?: string;
+  price_tiers?: Array<{ min_qty: number; unit_price: number; label?: string }>;
+  estimate_band?: { unit_min: number; unit_max: number; setup_min: number; setup_max: number };
+  hsn_code?: string;
+  gst_rate?: number;
+  materials?: string[];
+  print_methods?: string[];
+  sustainability_notes?: string[];
+  supplier_route?: string;
+  quote_threshold?: number;
 };
 
 export type Category = {
@@ -46,15 +57,15 @@ export type Category = {
 
 // ── Category definitions ────────────────────────────────────────────────────
 export const CATEGORIES: Category[] = [
-  { slug: "flexible",   label: "Flexible Packaging",    icon: "package_2",                 count: 5 },
+  { slug: "flexible",   label: "Flexible Packaging",    icon: "package_2",                 count: 6 },
   { slug: "bottles",    label: "Bottles & Containers",  icon: "local_drink",               count: 6 },
-  { slug: "tubes",      label: "Tubes & Small Packs",   icon: "medication",                count: 2 },
-  { slug: "boxes",      label: "Boxes & Cartons",       icon: "inventory_2",               count: 3 },
-  { slug: "ecommerce",  label: "E-commerce Packaging",  icon: "local_shipping",            count: 4 },
+  { slug: "tubes",      label: "Tubes & Small Packs",   icon: "medication",                count: 1 },
+  { slug: "boxes",      label: "Boxes & Cartons",       icon: "inventory_2",               count: 2 },
+  { slug: "ecommerce",  label: "E-commerce Packaging",  icon: "local_shipping",            count: 7 },
   { slug: "protective", label: "Protective Packaging",  icon: "shield",                    count: 2 },
   { slug: "rolls",      label: "Packaging Rolls",       icon: "density_medium",            count: 3 },
-  { slug: "labels",     label: "Labels & Closures",     icon: "label",                     count: 3 },
-  { slug: "sustainable",label: "Sustainable Packaging", icon: "eco",                       count: 4 },
+  { slug: "labels",     label: "Labels & Accessories",  icon: "label",                     count: 5 },
+  { slug: "sustainable",label: "Sustainable Foodservice",icon: "eco",                      count: 3 },
 ];
 
 // ── Full SKU catalog ────────────────────────────────────────────────────────
@@ -69,12 +80,13 @@ export const SKUS: Sku[] = [
     slug: "stand-up-pouch",
     description: "Gusseted base stand-up pouch ideal for retail display. Supports multiple closure and material combinations.",
     use_case: "Snacks, coffee, pet food, spices, dry goods",
-    price_min: 4.50, price_max: 18.00, moq: 1000, moq_unit: "units",
+    price_min: 8.90, price_max: 32.00, moq: 250, moq_unit: "units",
     is_smartstock: true, is_eco: false, sample_tier: "standard", sample_price: 2999, delivery_days_india: 12,
     variants: [
       { key: "closure", label: "Closure Type", options: ["None", "Zipper", "Spout"] },
       { key: "material", label: "Material", options: ["Plastic (BOPP/PE)", "Kraft Paper", "Metalized Film"] },
       { key: "finish", label: "Finish", options: ["Matte", "Glossy"] },
+      { key: "branding", label: "Branding route", options: ["Premium applied label (from 250)", "Direct digital print (from 500)"] },
     ],
     customization_fields: [
       { key: "width", label: "Width (mm)", type: "number", placeholder: "e.g. 150", unit: "mm" },
@@ -82,6 +94,16 @@ export const SKUS: Sku[] = [
       { key: "gusset", label: "Gusset / Base (mm)", type: "number", placeholder: "e.g. 80", unit: "mm" },
       { key: "print_colors", label: "No. of Print Colors", type: "select", options: ["1", "2", "4", "6", "8+"] },
     ],
+    purchase_mode: "instant",
+    standard_spec: "250 g stock stand-up pouch with zipper and premium full-colour labels at 250 units; direct digital print available from 500 units",
+    price_tiers: [
+      { min_qty: 250, unit_price: 32, label: "Low-MOQ launch run" },
+      { min_qty: 500, unit_price: 21.24, label: "Direct-print entry" },
+      { min_qty: 1000, unit_price: 15.8 },
+      { min_qty: 2500, unit_price: 11.4 },
+      { min_qty: 5000, unit_price: 8.9, label: "Best online rate" },
+    ],
+    quote_threshold: 20000,
   },
   {
     id: "flex-pillow",
@@ -730,6 +752,8 @@ export const SKU_IMAGES: Record<string, string> = {
   "FP-103": "/skus/flatbottompouch.jpg",
   "FP-104": "/skus/spoutpouch.jpg",
   "FP-105": "/skus/sachet.jpg",
+  "FP-110": "/shopify-products/FP-110.jpg",
+  "FP-112": "/shopify-products/FP-112.jpg",
   // Bottles & Containers
   "BC-201": "/skus/plasticbottles.jpg",
   "BC-202": "/skus/glassbottles.jpg",
@@ -737,6 +761,7 @@ export const SKU_IMAGES: Record<string, string> = {
   "BC-204": "/skus/cosmeticjar.jpg",
   "BC-205": "/skus/dropperbottle.jpg",
   "BC-206": "/skus/airlesspumpbottles.jpg",
+  "BC-213": "/shopify-products/BC-213.jpg",
   // Tubes & Small Packs
   "TS-301": "/skus/cosmetictubes.jpg",
   "TS-302": "/skus/blisterpacks.jpg",
@@ -749,22 +774,34 @@ export const SKU_IMAGES: Record<string, string> = {
   "EC-502": "/skus/corrugatedbox.jpg",
   "EC-503": "/skus/foodbox.jpg",
   "EC-504": "/skus/courierbag.jpg",
+  "EC-505": "/shopify-products/EC-505.jpg",
+  "EC-509": "/shopify-products/EC-509.jpg",
+  "EC-510": "/shopify-products/EC-510.jpg",
   // Protective Packaging
-  "PR-601": "/skus/bubblewrapbox.jpg",
-  "PR-602": "/skus/foaminsert.jpg",
+  "PR-601": "/shopify-products/PR-601.jpg",
+  "PR-602": "/shopify-products/PR-602.jpg",
   // Packaging Rolls
   "RL-701": "/skus/printedpackagingrolls.jpg",
   "RL-702": "/skus/laminatedrolls.jpg",
   "RL-703": "/skus/ecofriendlyroll.jpg",
+  "RL-704": "/shopify-products/RL-704.jpg",
+  "RL-705": "/shopify-products/RL-705.jpg",
   // Labels & Closures
   "LC-801": "/skus/labels.jpg",
   "LC-802": "/skus/closures.jpg",
   "LC-803": "/skus/zipper.jpg",
+  "LC-806": "/shopify-products/LC-806.jpg",
+  "LC-808": "/shopify-products/LC-808.jpg",
+  "LC-810": "/shopify-products/LC-810.jpg",
+  "LC-811": "/shopify-products/LC-811.jpg",
   // Sustainable Packaging
   "SP-901": "/skus/kraftpaperpacks.jpg",
   "SP-902": "/skus/compostablepacks.jpg",
   "SP-903": "/skus/recycledfoodbox.jpg",
   "SP-904": "/skus/recycledbox.jpg",
+  "SP-905": "/shopify-products/SP-905.jpg",
+  "SP-907": "/shopify-products/SP-907.jpg",
+  "SP-909": "/shopify-products/SP-909.jpg",
 };
 
 // ── Lookup helpers ──────────────────────────────────────────────────────────

@@ -50,17 +50,17 @@ export default function DashboardOverview() {
     );
   }
 
+  const recentOrders = (data?.recent_orders as any[]) ?? [];
   const activeOrders = data?.active_orders ?? 0;
-  const inProd = data?.in_production_count ?? 0;
-  const dispatched = data?.dispatched_count ?? 0;
-  const pendingQuotes = data?.pending_quotes ?? 0;
+  const inProd = recentOrders.filter((order) => order.status === "confirmed" || order.status === "in_production" || order.status === "qc").length;
+  const dispatched = recentOrders.filter((order) => order.status === "dispatched").length;
+  const pendingQuotes = 0;
   const totalSaved = data?.total_saved ?? 0;
   const ordersCompleted = data?.orders_completed ?? 0;
   const creditEligible = data?.credit_eligible ?? false;
   const creditLimit = data?.credit_limit ?? 500000;
-  const companyName = data?.company_name ?? "Your Company";
-  const recentOrders = (data?.recent_orders as any[]) ?? [];
-  const pendingQuotesList = (data?.pending_quotes_list as any[]) ?? [];
+  const companyName = "Your Company";
+  const pendingQuotesList: any[] = [];
 
   const activeOrderList = recentOrders.filter((o: any) => o.status !== "delivered" && o.status !== "cancelled");
 

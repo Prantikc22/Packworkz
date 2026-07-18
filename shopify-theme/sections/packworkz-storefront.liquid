@@ -1,0 +1,47 @@
+<section class="pw-storefront" aria-labelledby="pw-storefront-title">
+  <div class="pw-storefront__inner">
+    <div class="pw-storefront__copy">
+      <p class="pw-kicker">PACKWORKZ SELF-SERVE STORE</p>
+      <h1 id="pw-storefront-title">Packaging for launches.<br><span>Production for scale.</span></h1>
+      <p class="pw-storefront__lede">
+        Buy proven packaging formats at clear quantity breaks. Every order includes artwork review,
+        GST-ready checkout, and a direct path to managed production when volume or complexity grows.
+      </p>
+      <div class="pw-storefront__actions">
+        <a class="pw-button pw-button--amber" href="{{ routes.all_products_collection_url }}">Shop instant-buy packaging</a>
+        <a class="pw-button pw-button--outline" href="https://packworkz.com/configure">Plan custom production</a>
+      </div>
+      <div class="pw-storefront__proof" aria-label="Store benefits">
+        <span><strong>28</strong> instant-buy families</span>
+        <span><strong>7</strong> managed production families</span>
+        <span><strong>1</strong> accountable packaging partner</span>
+      </div>
+    </div>
+
+    <div class="pw-storefront__products" aria-label="Featured packaging formats">
+      {% for product in collections.all.products limit: 4 %}
+        <a class="pw-storefront__product pw-reveal" href="{{ product.url }}" style="--pw-delay: {{ forloop.index0 | times: 90 }}ms">
+          <div class="pw-storefront__product-media">
+            {% if product.featured_image %}
+              {{ product.featured_image | image_url: width: 720 | image_tag: loading: 'eager', widths: '240, 360, 540, 720', sizes: '(min-width: 990px) 20vw, 44vw', alt: product.title }}
+            {% endif %}
+          </div>
+          <div class="pw-storefront__product-meta">
+            <span>{{ product.title }}</span>
+            <small>From {{ product.price_min | money }}</small>
+          </div>
+        </a>
+      {% else %}
+        <div class="pw-storefront__empty">The focused launch catalogue is being prepared.</div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Packworkz storefront hero",
+  "settings": [],
+  "presets": [{ "name": "Packworkz storefront hero" }]
+}
+{% endschema %}

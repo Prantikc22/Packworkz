@@ -7,17 +7,17 @@ import {
   getCatalogImage,
   getCategoryLabel,
   getConfigureHref,
-  type BuyingMode,
 } from "@/lib/catalog";
+type PublicPath = "instant" | "quote";
 
 const MS = ({ icon, className = "", style }: { icon: string; className?: string; style?: React.CSSProperties }) => (
   <span className={`material-symbols-outlined ${className}`} style={style}>{icon}</span>
 );
 
-const FILTERS: Array<{ key: BuyingMode | "all"; label: string; hint: string; icon: string }> = [
-  { key: "all", label: "All packaging", hint: "33 ready SKU bases", icon: "inventory_2" },
-  { key: "self_serve", label: "Self-serve", hint: "Configure online", icon: "tune" },
-  { key: "assisted", label: "Managed pricing", hint: "For rolls & technical runs", icon: "support_agent" },
+const FILTERS: Array<{ key: PublicPath | "all"; label: string; hint: string; icon: string }> = [
+  { key: "all", label: "All packaging", hint: "Full D2C + enterprise range", icon: "inventory_2" },
+  { key: "instant", label: "Instant buy", hint: "Tier price shown", icon: "shopping_cart" },
+  { key: "quote", label: "Request quote", hint: "Technical or high-volume", icon: "precision_manufacturing" },
 ];
 
 export default function Products() {
@@ -29,13 +29,14 @@ export default function Products() {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState<string | undefined>(initialCat);
   const [industry, setIndustry] = useState<string | undefined>(initialIndustry);
-  const [mode, setMode] = useState<BuyingMode | "all">("all");
+  const [mode, setMode] = useState<PublicPath | "all">("all");
   const [ecoOnly, setEcoOnly] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(24);
 
   useEffect(() => {
-    if (initialCat) setCategory(initialCat);
-    if (initialIndustry) setIndustry(initialIndustry);
-  }, []);
+    setCategory(initialCat);
+    setIndustry(initialIndustry);
+  }, [initialCat, initialIndustry]);
 
   const filteredSkus = useMemo(() => {
     const term = search.trim().toLowerCase();
@@ -43,7 +44,7 @@ export default function Products() {
     return CATALOG_SKUS.filter((sku) => {
       if (category && sku.category !== category) return false;
       if (industry && !sku.industrySlugs.includes(industry)) return false;
-      if (mode !== "all" && sku.buyingMode !== mode) return false;
+      if (mode !== "all" && sku.publicBuyingPath !== mode) return false;
       if (ecoOnly && !sku.is_eco && sku.category !== "sustainable") return false;
       if (!term) return true;
 
@@ -52,8 +53,12 @@ export default function Products() {
     });
   }, [category, ecoOnly, industry, mode, search]);
 
-  const totalSelfServe = CATALOG_SKUS.filter((sku) => sku.buyingMode === "self_serve").length;
-  const totalAssisted = CATALOG_SKUS.length - totalSelfServe;
+  useEffect(() => setVisibleCount(24), [category, ecoOnly, industry, mode, search]);
+
+  const visibleSkus = filteredSkus.slice(0, visibleCount);
+
+  const totalInstant = CATALOG_SKUS.filter((sku) => sku.publicBuyingPath === "instant").length;
+  const totalQuote = CATALOG_SKUS.filter((sku) => sku.publicBuyingPath === "quote").length;
 
   return (
     <div className="products-page min-h-screen" style={{ background: "#F8F9FC", fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
@@ -75,10 +80,9 @@ export default function Products() {
               </p>
               <div className="mt-6 flex flex-wrap gap-3">
                 {[
-                  `${totalSelfServe} self-serve SKUs`,
-                  `${totalAssisted} managed SKUs`,
-                  "Samples from Rs 2,999",
-                  "EPR docs on sustainable packs",
+                  `${CATALOG_SKUS.length} product families`,
+                  `${totalInstant} instant-buy`,
+                  `${totalQuote} request-quote`,
                 ].map((item) => (
                   <span key={item} className="px-3 py-2 rounded-full bg-slate-100 text-xs font-bold" style={{ color: "#334155" }}>{item}</span>
                 ))}
@@ -92,7 +96,7 @@ export default function Products() {
               {[
                 ["1", "Pick SKU", "Choose product, industry, or sustainable catalog."],
                 ["2", "Configure", "Size, material, finish, artwork, and sample defaults."],
-                ["3", "Approve", "Self-serve SKUs move faster. Technical SKUs get guided pricing."],
+                ["3", "Approve", "Buy standard packs online or receive one managed quote for technical work."],
               ].map(([num, title, body]) => (
                 <div key={num} className="flex gap-3 pb-4 last:pb-0">
                   <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-black shrink-0" style={{ background: "#E8A838", color: "#0D1B2A" }}>{num}</div>
@@ -220,7 +224,7 @@ export default function Products() {
             </div>
           ) : (
             <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-5">
-              {filteredSkus.map((sku, index) => (
+              {visibleSkus.map((sku, index) => (
                 <Link key={sku.id} href={`/products/${sku.slug}`}>
                   <div
                     className="pw-sku-card group bg-white border border-slate-200 rounded-lg overflow-hidden transition-all cursor-pointer h-full flex flex-col pw-reveal"
@@ -229,8 +233,8 @@ export default function Products() {
                     <div className="pw-sku-image h-44 overflow-hidden relative bg-slate-100">
                       <img src={getCatalogImage(sku)} alt={sku.name} className="w-full h-full object-cover group-hover:scale-105 transition-all duration-500" />
                       <div className="absolute top-3 left-3 flex flex-col gap-1.5">
-                        <span className="px-2 py-0.5 rounded text-xs font-black" style={{ background: sku.buyingMode === "self_serve" ? "#E8A838" : "#1B6CA8", color: sku.buyingMode === "self_serve" ? "#0F1C2C" : "white" }}>
-                          {sku.buyingMode === "self_serve" ? "Self-serve" : "Managed"}
+                        <span className="px-2 py-0.5 rounded text-xs font-black" style={{ background: sku.publicBuyingPath === "instant" ? "#E8A838" : "#0D1B2A", color: sku.publicBuyingPath === "instant" ? "#0F1C2C" : "white" }}>
+                          {sku.publicBuyingPath === "instant" ? "Instant buy" : "Request quote"}
                         </span>
                         {sku.is_eco && <span className="px-2 py-0.5 rounded text-xs font-black bg-green-500 text-white">Eco</span>}
                       </div>
@@ -252,23 +256,31 @@ export default function Products() {
                       </div>
                       <div className="mt-auto flex items-center justify-between pt-4 border-t border-slate-100">
                         <div>
-                          <p className="text-xs" style={{ color: "#74777d" }}>Est. per {sku.moq_unit}</p>
+                          <p className="text-xs" style={{ color: "#74777d" }}>{sku.publicBuyingPath === "quote" ? "Indicative range" : `From ${sku.moq.toLocaleString("en-IN")} ${sku.moq_unit}`}</p>
                           <p className="font-black text-sm" style={{ fontFamily: "'Manrope', sans-serif", color: "#0D1B2A" }}>
-                            {formatINR(sku.price_min)} - {formatINR(sku.price_max)}
+                            {sku.publicBuyingPath === "quote" ? `${formatINR(sku.price_min)} - ${formatINR(sku.price_max)}` : `${formatINR(sku.price_tiers?.[0]?.unit_price ?? sku.price_max)} / ${sku.moq_unit.replace(/s$/, "")}`}
                           </p>
                         </div>
                         <button
                           onClick={(event) => { event.preventDefault(); window.location.href = getConfigureHref(sku); }}
                           className="px-4 py-2 rounded text-xs font-black text-white hover:opacity-90 transition-all"
-                          style={{ background: sku.buyingMode === "self_serve" ? "#0D1B2A" : "#1B6CA8" }}
+                          style={{ background: sku.publicBuyingPath === "instant" ? "#0D1B2A" : "#1B6CA8" }}
                         >
-                          {sku.buyingMode === "self_serve" ? "Configure" : "Plan pricing"}
+                          {sku.publicBuyingPath === "instant" ? "Configure" : "Request quote"}
                         </button>
                       </div>
                     </div>
                   </div>
                 </Link>
               ))}
+            </div>
+          )}
+          {visibleCount < filteredSkus.length && (
+            <div className="mt-8 flex items-center justify-between border-t border-slate-200 pt-6">
+              <p className="text-sm text-slate-500">Showing {visibleCount} of {filteredSkus.length} matching families</p>
+              <button type="button" onClick={() => setVisibleCount((count) => Math.min(count + 24, filteredSkus.length))} className="btn-fill btn-navy px-6 py-3 text-sm">
+                Show 24 more
+              </button>
             </div>
           )}
         </main>

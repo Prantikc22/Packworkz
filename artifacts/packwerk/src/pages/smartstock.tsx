@@ -85,9 +85,11 @@ export function SmartStockDemo({ standalone = false }: { standalone?: boolean })
               {standalone ? "Change the forecast. See the decision." : "Your next packaging order, already anticipated."}
             </h2>
             <p style={{ color: "#64748B", fontSize: 16, lineHeight: 1.8, marginBottom: 26 }}>
-              {standalone
-                ? "Adjust the expected increase in orders or switch SKUs. SmartStock instantly recalculates when to reorder, how much to buy, and the cost of waiting."
-                : "SmartStock learns from repeat orders, signals risk early, and prepares the quantity and supplier path before a packaging shortage becomes urgent."}
+              {standalone ? (
+                "Adjust the expected increase in orders or switch SKUs. SmartStock instantly recalculates when to reorder, how much to buy, and the cost of waiting."
+              ) : (
+                <><strong style={{ color: "#0D1B2A" }}>SmartStock</strong> learns from repeat orders, signals risk early, and prepares the quantity and supplier path before a packaging shortage becomes urgent.</>
+              )}
             </p>
             <div className="smartstock-try-hint">
               <span className="material-symbols-outlined">touch_app</span>
@@ -145,7 +147,7 @@ export function SmartStockDemo({ standalone = false }: { standalone?: boolean })
                     border: selected === i ? "1px solid #E8A838" : "1px solid rgba(255,255,255,0.10)",
                     background: selected === i ? "rgba(232,168,56,0.12)" : "rgba(255,255,255,0.05)",
                     color: "white",
-                    borderRadius: 12,
+                    borderRadius: 2,
                     padding: 12,
                     cursor: "pointer",
                   }}
@@ -157,7 +159,7 @@ export function SmartStockDemo({ standalone = false }: { standalone?: boolean })
             </div>
 
             <div style={{ display: "grid", gridTemplateColumns: "1.05fr 0.95fr", gap: 12 }} className="smartstock-panel-grid">
-              <div style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.09)", borderRadius: 16, padding: 18 }}>
+              <div style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.09)", borderRadius: 2, padding: 18 }}>
                 <div style={{ display: "flex", justifyContent: "space-between", gap: 12, marginBottom: 18 }}>
                   <div>
                     <p style={{ color: "rgba(255,255,255,0.48)", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.14em", fontWeight: 800 }}>Selected SKU</p>
@@ -171,7 +173,7 @@ export function SmartStockDemo({ standalone = false }: { standalone?: boolean })
                     { label: "Reorder in", value: `${reorderIn}d` },
                     { label: "Daily burn", value: adjustedDaily },
                   ].map((stat) => (
-                    <div key={stat.label} style={{ background: "rgba(255,255,255,0.06)", borderRadius: 12, padding: 12 }}>
+                    <div key={stat.label} style={{ background: "rgba(255,255,255,0.06)", borderRadius: 2, padding: 12 }}>
                       <p style={{ color: "white", fontSize: 24, fontWeight: 900, lineHeight: 1 }}>{stat.value}</p>
                       <span style={{ color: "rgba(255,255,255,0.45)", fontSize: 10, textTransform: "uppercase", letterSpacing: "0.1em" }}>{stat.label}</span>
                     </div>
@@ -204,7 +206,7 @@ export function SmartStockDemo({ standalone = false }: { standalone?: boolean })
               </div>
 
               <div style={{ display: "grid", gap: 12 }}>
-                <div style={{ background: "#ffffff", borderRadius: 16, padding: 18 }}>
+                <div style={{ background: "#ffffff", borderRadius: 2, padding: 18 }}>
                   <p style={{ color: "#64748B", fontSize: 11, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.14em" }}>AI recommendation</p>
                   <h4 style={{ color: "#0D1B2A", fontSize: 26, fontWeight: 900, margin: "8px 0 4px" }}>{suggestedQty.toLocaleString()} units</h4>
                   <p style={{ color: "#64748B", fontSize: 13, lineHeight: 1.55 }}>Place reorder through {sku.vendor}. Holds 45 days of expected demand plus safety buffer.</p>

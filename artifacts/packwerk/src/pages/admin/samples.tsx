@@ -15,7 +15,7 @@ const SAMPLE_STATUSES = ["pending", "dispatched", "delivered"];
 
 export default function AdminSamples() {
   const [statusFilter, setStatusFilter] = useState("all");
-  const { data: samples, isLoading, refetch } = useAdminListSamples({ status: statusFilter !== "all" ? statusFilter : undefined });
+  const { data: samples, isLoading, refetch } = useAdminListSamples();
   const { mutate: updateSample } = useAdminDispatchSample();
   const { toast } = useToast();
 
@@ -27,6 +27,8 @@ export default function AdminSamples() {
       },
     });
   };
+
+  const filteredSamples = (samples || []).filter((sample: any) => statusFilter === "all" || sample.status === statusFilter);
 
   return (
     <div className="space-y-6">
@@ -49,7 +51,7 @@ export default function AdminSamples() {
 
       {isLoading ? (
         <div className="flex justify-center py-20"><Loader2 className="w-8 h-8 animate-spin text-[#1B6CA8]" /></div>
-      ) : !samples || samples.length === 0 ? (
+      ) : filteredSamples.length === 0 ? (
         <div className="text-center py-16 bg-[#F8F9FC] rounded-xl border border-[#E2EAF4]">
           <p className="text-[#64748B]">No sample requests found.</p>
         </div>
@@ -68,7 +70,7 @@ export default function AdminSamples() {
               </tr>
             </thead>
             <tbody>
-              {samples.map((s: any) => (
+              {filteredSamples.map((s: any) => (
                 <tr key={s.id} className="border-b border-[#E2EAF4] hover:bg-[#F8F9FC]">
                   <td className="p-4 font-mono text-[#1B6CA8]">{s.sample_id}</td>
                   <td className="p-4 text-[#64748B]">{s.user_id}</td>
