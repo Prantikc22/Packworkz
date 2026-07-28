@@ -45,19 +45,25 @@ const PROCESS = [
 
 function ProductVisual() {
   return (
-    <div className="pw-process-product-grid">
-      {[
-        ["/skus/Standup_Pouch.jpg", "Stand-up pouches", "from 500 units"],
-        ["/skus/mailerbox.jpg", "Mailer boxes", "from 50 units"],
-        ["/skus/plasticbottles.jpg", "Bottles and jars", "from 100 units"],
-        ["/skus/compostablepacks.jpg", "Lower-impact packs", "verified options"],
-      ].map(([image, title, meta]) => (
-        <div key={title}>
-          <img src={image} alt={title} />
-          <strong>{title}</strong>
-          <span>{meta}</span>
+    <div className="pw-process-capabilities">
+      <article className="catalogue">
+        <div><small>READY CATALOGUE</small><h4>49 focused product families</h4><p>Standard formats with MOQs and quantity breaks already mapped.</p></div>
+        <div className="pw-capability-products" aria-hidden="true">
+          <img src="/skus/Standup_Pouch.jpg" alt="" /><img src="/skus/mailerbox.jpg" alt="" /><img src="/skus/plasticbottles.jpg" alt="" />
         </div>
-      ))}
+      </article>
+      <article className="sizing">
+        <div><small>STANDARD SIZING</small><h4>Choose a production-ready size</h4><p>Instant-buy products use fixed, tested dimensions.</p></div>
+        <div className="pw-capability-size" aria-hidden="true"><span>140</span><span>220</span><span>80</span><i /></div>
+      </article>
+      <article className="tailored">
+        <div><small>TAILOR-MADE</small><h4>Go beyond the catalogue</h4><p>Tooling, rollstock and regulated formats move to one managed brief.</p></div>
+        <img src="/skus/rigidbox.jpg" alt="Premium tailor-made rigid packaging" />
+      </article>
+      <article className="production">
+        <div><small>VETTED PRODUCTION</small><h4>The right route for every specification</h4><p>Supplier fit, artwork and QC checkpoints stay attached.</p></div>
+        <div className="pw-capability-checks"><span><Check size={14} /> Material matched</span><span><Check size={14} /> Artwork reviewed</span><span><Check size={14} /> Production tracked</span></div>
+      </article>
     </div>
   );
 }
@@ -143,7 +149,7 @@ function OrderVisual() {
           <div key={label} className={index <= stage ? "active" : ""}><i>{index < stage ? <Check size={12} /> : index + 1}</i><span>{label}</span></div>
         ))}
       </div>
-      <div className="pw-order-command-action"><span><Truck size={15} /> Delivery and GST invoice calculated at checkout</span><button type="button">Continue to checkout <ArrowRight size={16} /></button></div>
+      <div className="pw-order-command-action"><span><Truck size={15} /> Delivery and GST are locked before payment</span><button type="button">Continue to payment <ArrowRight size={16} /></button></div>
     </div>
   );
 }
@@ -163,7 +169,7 @@ export function PackagingProcessSection() {
         <div className="pw-platform-heading">
           <p>THE PACKWORKZ FLOW</p>
           <h2>Making packaging simple.</h2>
-          <span>Self-serve where it should be. Packaging expertise where it matters.</span>
+          <span>Instant buy for standard formats. Managed quotes for technical production.</span>
         </div>
         <div className="pw-platform-tabs" role="tablist" aria-label="Packworkz process">
           {PROCESS.map((step, index) => {
@@ -194,10 +200,10 @@ export function PackagingProcessSection() {
 }
 
 const SUSTAINABILITY_ITEMS = [
-  { image: "/skus/recycledbox.jpg", icon: ClipboardCheck, title: "Material transparency", body: "See the structure, recycled-content option and evidence needed before an environmental claim reaches your artwork." },
-  { image: "/skus/kraftpaperpacks.jpg", icon: ShieldCheck, title: "Responsible sourcing", body: "Route paper, fibre and compostable products through suppliers that can provide the relevant certificates and declarations." },
-  { image: "/skus/compostablepacks.jpg", icon: PackageCheck, title: "Right-size decisions", body: "Compare dimensions, material weight and protection needs before paying to ship unnecessary air or over-engineered layers." },
-  { image: "/images/sustainable-bg.webp", icon: Leaf, title: "End-of-life guidance", body: "Give customers clear disposal language based on the actual pack structure, local collection reality and verified certification." },
+  { image: "/skus/recycledbox.jpg", icon: ClipboardCheck, badge: "Evidence matched", title: "Material transparency", body: "See the structure, recycled-content option and evidence needed before an environmental claim reaches your artwork." },
+  { image: "/skus/kraftpaperpacks.jpg", icon: ShieldCheck, badge: "Supplier documents", title: "Responsible sourcing", body: "Route paper, fibre and compostable products through suppliers that can provide the relevant certificates and declarations." },
+  { image: "/images/foodservice-containers-premium.jpg", icon: PackageCheck, badge: "Right-sized spec", title: "Right-size foodservice", body: "Compare bowl, tub, dip-cup and bagasse formats before paying to ship unnecessary air or over-engineered layers." },
+  { image: "/images/sustainable-bg.webp", icon: Leaf, badge: "Claim guidance", title: "End-of-life guidance", body: "Give customers clear disposal language based on the actual pack structure, local collection reality and verified certification." },
 ];
 
 export function SustainabilityProofSection() {
@@ -213,7 +219,7 @@ export function SustainabilityProofSection() {
           const Icon = item.icon;
           return (
             <article key={item.title}>
-              <div className="pw-sustainability-image"><img src={item.image} alt="" /><span><Icon size={18} /> Verified path</span></div>
+              <div className="pw-sustainability-image"><img src={item.image} alt={`${item.title} packaging example`} /><span><Icon size={18} /> {item.badge}</span></div>
               <h3>{item.title}</h3>
               <p>{item.body}</p>
             </article>

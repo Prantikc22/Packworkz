@@ -1,6 +1,7 @@
+import { useState } from "react";
 import { useGetDashboardOverview } from "@workspace/api-client-react";
 import { Link } from "wouter";
-import { Loader2, RefreshCw, Plus, Package } from "lucide-react";
+import { Check, Link2, Loader2, RefreshCw, Plus, Package, X } from "lucide-react";
 
 const MS = ({ icon, className = "", style }: { icon: string; className?: string; style?: React.CSSProperties }) => (
   <span className={`material-symbols-outlined ${className}`} style={style}>{icon}</span>
@@ -36,7 +37,43 @@ function fmtINR(n: number) {
 }
 
 export default function DashboardOverview() {
-  const { data, isLoading } = useGetDashboardOverview();
+  const { data, isLoading, refetch } = useGetDashboardOverview();
+  const storedUser = (() => {
+    if (typeof window === "undefined") return {} as Record<string, string>;
+    try { return JSON.parse(localStorage.getItem("packwerk_user") || "{}"); } catch { return {}; }
+  })();
+  const savedClaimReference = typeof window === "undefined" ? "" : localStorage.getItem("packwerk_claim_reference") || "";
+  const [claimOpen, setClaimOpen] = useState(!!savedClaimReference);
+  const [claimReference, setClaimReference] = useState(savedClaimReference);
+  const [claimContact, setClaimContact] = useState(storedUser.email || storedUser.phone || "");
+  const [claimError, setClaimError] = useState("");
+  const [claimSuccess, setClaimSuccess] = useState("");
+  const [claiming, setClaiming] = useState(false);
+
+  const claimHistory = async (event: React.FormEvent) => {
+    event.preventDefault();
+    setClaiming(true);
+    setClaimError("");
+    setClaimSuccess("");
+    try {
+      const token = localStorage.getItem("packwerk_access_token");
+      const response = await fetch("/api/dashboard/claim-history", {
+        method: "POST",
+        headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ reference: claimReference, contact: claimContact }),
+      });
+      const body = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(body.error || "We could not link that record.");
+      localStorage.removeItem("packwerk_claim_reference");
+      setClaimSuccess(`${body.order_reference || body.quote_reference} is now in your workspace.`);
+      setClaimReference("");
+      await refetch();
+    } catch (requestError) {
+      setClaimError(requestError instanceof Error ? requestError.message : "We could not link that record.");
+    } finally {
+      setClaiming(false);
+    }
+  };
 
   const today = new Date().toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
   const hour = new Date().getHours();
@@ -50,17 +87,18 @@ export default function DashboardOverview() {
     );
   }
 
-  const recentOrders = (data?.recent_orders as any[]) ?? [];
-  const activeOrders = data?.active_orders ?? 0;
+  const overview = data as any;
+  const recentOrders = (overview?.recent_orders as any[]) ?? [];
+  const activeOrders = overview?.active_orders ?? 0;
   const inProd = recentOrders.filter((order) => order.status === "confirmed" || order.status === "in_production" || order.status === "qc").length;
   const dispatched = recentOrders.filter((order) => order.status === "dispatched").length;
-  const pendingQuotes = 0;
-  const totalSaved = data?.total_saved ?? 0;
-  const ordersCompleted = data?.orders_completed ?? 0;
-  const creditEligible = data?.credit_eligible ?? false;
-  const creditLimit = data?.credit_limit ?? 500000;
-  const companyName = "Your Company";
-  const pendingQuotesList: any[] = [];
+  const pendingQuotes = overview?.pending_quotes ?? 0;
+  const totalSaved = overview?.total_saved ?? 0;
+  const ordersCompleted = overview?.orders_completed ?? 0;
+  const creditEligible = overview?.credit_eligible ?? false;
+  const creditLimit = overview?.credit_limit ?? 500000;
+  const companyName = overview?.company_name || storedUser.company_name || "your team";
+  const pendingQuotesList: any[] = (overview?.pending_quotes_list as any[]) ?? [];
 
   const activeOrderList = recentOrders.filter((o: any) => o.status !== "delivered" && o.status !== "cancelled");
 
@@ -68,12 +106,36 @@ export default function DashboardOverview() {
     <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
 
       {/* ── Greeting ── */}
-      <div className="mb-8">
-        <h1 className="font-black text-[28px] leading-tight" style={{ color: "#0D1B2A", letterSpacing: "-0.01em" }}>
-          {greeting}, {companyName}
-        </h1>
-        <p className="text-[13px] mt-1" style={{ color: "#94A3B8" }}>{today}</p>
+      <div className="mb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+        <div>
+          <h1 className="font-black text-[28px] leading-tight" style={{ color: "#0D1B2A", letterSpacing: "-0.01em" }}>
+            {greeting}, {companyName}
+          </h1>
+          <p className="text-[13px] mt-1" style={{ color: "#94A3B8" }}>{today}</p>
+        </div>
+        <button onClick={() => setClaimOpen((open) => !open)} className="min-h-10 px-4 border border-[#bdcbd8] bg-white inline-flex items-center justify-center gap-2 text-xs font-black text-[#1b6ca8] hover:border-[#1b6ca8]">
+          <Link2 size={15} /> Link past order or brief
+        </button>
       </div>
+
+      {claimOpen && (
+        <div className="mb-8 grid lg:grid-cols-[0.68fr_1.32fr] border border-[#c9d6e1] bg-white">
+          <div className="p-6 bg-[#0d1b2a] text-white">
+            <div className="flex items-start justify-between gap-4">
+              <div><p className="text-[10px] font-black tracking-[0.18em] text-[#75b5e4] mb-2">SECURE RECORD LINK</p><h2 className="text-xl font-black">Bring an earlier guest order into this workspace.</h2></div>
+              <button aria-label="Close" onClick={() => setClaimOpen(false)} className="w-8 h-8 grid place-items-center border border-[#38536a] text-[#9eb0bf]"><X size={16} /></button>
+            </div>
+            <p className="mt-4 text-xs leading-relaxed text-[#9eb0bf]">Use the private reference from the confirmation and the same checkout email or mobile. We never link records by email alone.</p>
+          </div>
+          <form onSubmit={claimHistory} className="p-6 grid sm:grid-cols-[1fr_1fr_auto] gap-4 items-end">
+            <label><span className="account-label">ORDER OR PLAN REFERENCE</span><input required className="account-input" placeholder="PO-2026-10001" value={claimReference} onChange={(event) => setClaimReference(event.target.value.toUpperCase())} /></label>
+            <label><span className="account-label">CHECKOUT EMAIL OR MOBILE</span><input required className="account-input" placeholder="you@company.com" value={claimContact} onChange={(event) => setClaimContact(event.target.value)} /></label>
+            <button disabled={claiming} className="h-[54px] px-6 bg-[#e8a838] text-[#071522] font-black inline-flex items-center justify-center gap-2 disabled:opacity-60">{claiming ? <Loader2 size={17} className="animate-spin" /> : <Link2 size={17} />} Link record</button>
+            {claimError && <p className="sm:col-span-3 text-sm text-[#a52b2b]">{claimError}</p>}
+            {claimSuccess && <p className="sm:col-span-3 flex items-center gap-2 text-sm font-bold text-[#168458]"><Check size={17} /> {claimSuccess}</p>}
+          </form>
+        </div>
+      )}
 
       {/* ── 4 Metric Cards ── */}
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-8">

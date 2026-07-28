@@ -3,12 +3,40 @@ import { sb } from "../lib/supabase";
 import { requireAuth } from "../lib/auth";
 import { generateId } from "../lib/generateId";
 import { pushToSheetDB } from "../lib/sheetdb";
+import { claimCustomerReference } from "../lib/customerHistory";
 
 type AuthRequest = Request & { userId: string };
 
 const router: IRouter = Router();
 
 router.use("/dashboard", requireAuth as never);
+
+router.post("/dashboard/claim-history", async (req, res): Promise<void> => {
+  const userId = (req as unknown as AuthRequest).userId;
+  const reference = String(req.body?.reference || "").trim().toUpperCase();
+  const contact = String(req.body?.contact || "").trim();
+
+  if (!reference || reference.length > 64 || !contact || contact.length > 160) {
+    res.status(400).json({ error: "Enter the reference and checkout email or mobile." });
+    return;
+  }
+
+  try {
+    const claimed = await claimCustomerReference(userId, reference, contact);
+    if (!claimed) {
+      res.status(404).json({ error: "We could not verify that reference with those checkout details." });
+      return;
+    }
+    res.json({
+      success: true,
+      order_reference: claimed.order?.order_id || null,
+      quote_reference: claimed.quote?.quote_id || null,
+    });
+  } catch (error) {
+    console.error("[dashboard/claim-history] DB error:", error);
+    res.status(500).json({ error: "We could not link that record right now. Please try again." });
+  }
+});
 
 router.get("/dashboard/overview", async (req, res): Promise<void> => {
   const userId = (req as unknown as AuthRequest).userId;
@@ -30,17 +58,11 @@ router.get("/dashboard/overview", async (req, res): Promise<void> => {
   const inProductionCount = orders.filter(o => o.status === "in_production" || o.status === "confirmed").length;
   const dispatchedCount = orders.filter(o => o.status === "dispatched").length;
 
-  const { data: userRow } = await sb.from("users_profile").select("email").eq("id", userId).maybeSingle();
-  const userEmailForCount = userRow?.email ?? "";
-
-  // Count both user_id-linked and email-matched (unlinked) pending quotes
-  const [countByUserId, countByEmail] = await Promise.all([
-    sb.from("quote_requests").select("id", { count: "exact", head: true }).eq("user_id", userId).in("status", ["submitted", "under_review", "reviewing", "quoted"]),
-    userEmailForCount
-      ? sb.from("quote_requests").select("id", { count: "exact", head: true }).is("user_id", null).eq("email", userEmailForCount).in("status", ["submitted", "under_review", "reviewing", "quoted"])
-      : Promise.resolve({ count: 0 }),
-  ]);
-  const pendingQuotesCount = (countByUserId.count ?? 0) + (countByEmail.count ?? 0);
+  const { count: pendingQuotesCount } = await sb
+    .from("quote_requests")
+    .select("id", { count: "exact", head: true })
+    .eq("user_id", userId)
+    .in("status", ["submitted", "under_review", "reviewing", "quoted"]);
 
   const { data: allOrders } = await sb
     .from("orders")
@@ -113,37 +135,18 @@ router.get("/dashboard/quotes", async (req, res): Promise<void> => {
   const { tab } = req.query as { tab?: string };
 
   const statusFilter = tab === "history"
-    ? ["accepted", "rejected", "expired"]
+    ? ["accepted", "paid", "rejected", "expired", "cancelled"]
     : ["submitted", "under_review", "reviewing", "quoted"];
 
-  // Get user's email so we can also match quotes submitted without being logged in
-  const { data: user } = await sb.from("users_profile").select("email").eq("id", userId).maybeSingle();
-  const userEmail = user?.email ?? "";
-
-  // Fetch quotes both by user_id and by email (for quotes submitted while not logged in)
-  const [byUserId, byEmail] = await Promise.all([
-    sb.from("quote_requests").select("*").eq("user_id", userId).in("status", statusFilter).order("created_at", { ascending: false }),
-    userEmail
-      ? sb.from("quote_requests").select("*").is("user_id", null).eq("email", userEmail).in("status", statusFilter).order("created_at", { ascending: false })
-      : Promise.resolve({ data: [] as any[] }),
-  ]);
-
-  // Merge + deduplicate
-  const seen = new Set<string>();
-  const allQuotes = [...(byUserId.data || []), ...(byEmail.data || [])].filter(q => {
-    if (seen.has(q.id)) return false;
-    seen.add(q.id);
-    return true;
-  }).sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
-
-  // Auto-link user_id for any email-matched quotes so they show up correctly going forward
-  const unlinked = (byEmail.data || []);
-  if (unlinked.length > 0) {
-    await sb.from("quote_requests").update({ user_id: userId }).in("id", unlinked.map(q => q.id));
-  }
+  const { data: allQuotes } = await sb
+    .from("quote_requests")
+    .select("*")
+    .eq("user_id", userId)
+    .in("status", statusFilter)
+    .order("created_at", { ascending: false });
 
   res.json(
-    allQuotes.map(q => ({
+    (allQuotes || []).map(q => ({
       ...q,
       total_estimated_min: q.total_estimated_min ? Number(q.total_estimated_min) : null,
       total_estimated_max: q.total_estimated_max ? Number(q.total_estimated_max) : null,
@@ -156,25 +159,15 @@ router.post("/dashboard/quotes/:id/accept", async (req, res): Promise<void> => {
   const userId = (req as unknown as AuthRequest).userId;
   const quoteUuid = req.params.id;
 
-  // Get user email for fallback matching
-  const { data: userProfile } = await sb.from("users_profile").select("email").eq("id", userId).maybeSingle();
-  const userEmail = userProfile?.email ?? "";
-
-  // Accept if quote belongs to user by user_id OR by email (when user_id was null)
   const { data: quote } = await sb
     .from("quote_requests")
     .select("*")
     .eq("id", quoteUuid)
     .maybeSingle();
 
-  if (!quote || (quote.user_id !== userId && quote.email?.toLowerCase() !== userEmail.toLowerCase())) {
+  if (!quote || quote.user_id !== userId) {
     res.status(404).json({ error: "Quote not found" });
     return;
-  }
-
-  // Auto-link user_id if still null
-  if (!quote.user_id) {
-    await sb.from("quote_requests").update({ user_id: userId }).eq("id", quoteUuid);
   }
 
   if (quote.status !== "quoted") {

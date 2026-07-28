@@ -19,6 +19,10 @@ const LEGACY_SLUG_ALIASES: Record<string, string> = {
   "kraft-mailer": "mailer-box",
   "compostable-mailer": "compostable-packaging",
   "shrink-sleeve": "labels",
+  "paper-labels-stickers": "round-paper-labels",
+  "folding-carton": "straight-tuck-end-carton",
+  "rigid-box": "two-piece-rigid-box",
+  "paper-cup": "paper-bowls-food-containers",
 };
 
 const LEGACY_CATEGORY_SLUGS = new Set([
@@ -74,7 +78,7 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
 
       <div className="grid lg:grid-cols-3 gap-12">
         <div className="lg:col-span-2 space-y-8">
-          <div className="aspect-[4/3] bg-surface rounded-3xl overflow-hidden border border-border relative">
+          <div className="aspect-[4/3] bg-surface overflow-hidden border border-border relative">
             {productImage ? (
               <img src={productImage} alt={product.name} className="w-full h-full object-cover" />
             ) : (
@@ -156,7 +160,7 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
         </div>
 
         <div className="lg:col-span-1">
-          <div className="sticky top-24 bg-white border border-border rounded-3xl p-6 shadow-sm">
+          <div className="sticky top-24 bg-white border border-border p-6 shadow-sm">
             <div className="mb-6">
               <div className="text-sm text-muted mb-1">{product.publicBuyingPath === "quote" ? "Indicative production range" : "Standard-spec price"}</div>
               <div className="text-3xl font-bold text-navy">
@@ -167,8 +171,9 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
 
             <div className="space-y-6">
               <div>
-                <Label className="font-semibold text-navy mb-2 block">Quantity (Min {product.moq})</Label>
+                <Label htmlFor="product-quantity" className="font-semibold text-navy mb-2 block">Quantity (Min {product.moq})</Label>
                 <Input 
+                  id="product-quantity"
                   type="number" 
                   min={product.moq} 
                   value={currentQty} 
@@ -224,7 +229,7 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
               <div className="pt-6 space-y-3 border-t border-border">
                 <Link href={configureHref}>
                   <Button className="w-full h-12 bg-amber text-navy hover:bg-amber/90 font-bold text-lg">
-                    {quoteRequired ? "Request Managed Quote" : "Configure and Buy"}
+                    {quoteRequired ? "Request Managed Quote" : "Choose options & checkout"}
                   </Button>
                 </Link>
                 <Link href={`/samples?product=${product.id}`}>

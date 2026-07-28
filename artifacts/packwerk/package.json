@@ -8,7 +8,7 @@
     "build": "vite build --config vite.config.ts && pnpm run build:ssr && node scripts/prerender.mjs",
     "build:client": "vite build --config vite.config.ts",
     "build:ssr": "vite build --config vite.ssr.config.ts",
-    "shopify:sync": "tsx scripts/sync-shopify-catalog.ts",
+    "audit:pricing": "tsx scripts/export-pricing-margin-audit.ts",
     "serve": "vite preview --config vite.config.ts --host 0.0.0.0",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
@@ -81,6 +81,7 @@
     "zod": "catalog:"
   },
   "dependencies": {
+    "@workspace/commerce": "workspace:*",
     "three": "^0.185.1"
   }
 }

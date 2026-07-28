@@ -5,9 +5,9 @@ import { useToast } from "@/hooks/use-toast";
 import { CATEGORIES } from "@/lib/skus";
 import type { Sku, VariantGroup } from "@/lib/skus";
 import { CATALOG_SKUS as SKUS, getCatalogImage, getCatalogSkusByCategory as getSkusByCategory, requiresQuote } from "@/lib/catalog";
-import { buildShopifyCheckoutUrl, getShopifyVariant } from "@/lib/shopify";
-import { openRazorpay } from "@/lib/razorpay";
+import { openOrderPayment, openRazorpay, prepareOrderPayment, type PreparedOrderPayment } from "@/lib/razorpay";
 import { calculateOrderEstimate } from "@/lib/pricing";
+import { COMMERCE_PRODUCTS, RAZORPAY_PAYMENT_LIMIT_RUPEES } from "@workspace/commerce";
 import {
   Loader2, CheckCircle2, ChevronDown, ChevronUp,
   Upload, Palette, X, Truck, Zap, Warehouse, ArrowRight, Shield,
@@ -39,9 +39,21 @@ const PROJECT_ID = `PX-${Math.floor(1000 + Math.random() * 9000)}-${["ALPHA","BE
 
 // ── Price helpers ──────────────────────────────────────────────────────────
 // Realistic market rates: at MOQ = price_max/piece, scales down toward price_min at high volume
-function calcPrice(sku: Sku | undefined, qty: number, delivery: DeliveryOption, artworkOption: ArtworkOption) {
-  const result = calculateOrderEstimate(sku, qty, delivery, artworkOption);
-  return { low: result.low, high: result.high, mat: result.material, setup: result.setup, logistics: result.logistics, artAdd: result.artwork, perPiece: result.unit };
+function calcPrice(sku: Sku | undefined, qty: number, delivery: DeliveryOption, artworkOption: ArtworkOption, sizeCode?: string, configuration?: Record<string, string>) {
+  const result = calculateOrderEstimate(sku, qty, delivery, artworkOption, sizeCode, configuration);
+  return {
+    low: result.low,
+    high: result.high,
+    mat: result.material,
+    setup: result.setup,
+    logistics: result.logistics,
+    artAdd: result.artwork,
+    perPiece: result.unit,
+    subtotal: "subtotal" in result ? result.subtotal : result.low,
+    gst: "gst" in result ? result.gst : 0,
+    total: "total" in result ? result.total : result.low,
+    paymentEligible: "paymentEligible" in result ? result.paymentEligible : false,
+  };
 }
 
 // ── Spec unit helpers ───────────────────────────────────────────────────────
@@ -77,15 +89,16 @@ const MS = ({ icon, className = "", style }: { icon: string; className?: string;
 
 // ── Order Summary Sidebar ──────────────────────────────────────────────────
 function OrderSummary({
-  sku, qty, delivery, artworkOption, buyingMode, onSubmit, submitting
+  sku, qty, delivery, artworkOption, sizeCode, configuration, buyingMode, onSubmit, submitting
 }: {
   sku: Sku | undefined; qty: number; delivery: DeliveryOption;
-  artworkOption: ArtworkOption; buyingMode: "self" | "assisted"; onSubmit?: () => void; submitting?: boolean;
+  artworkOption: ArtworkOption; sizeCode?: string; configuration?: Record<string, string>; buyingMode: "self" | "assisted"; onSubmit?: () => void; submitting?: boolean;
 }) {
-  const { low, high, mat, setup, logistics, artAdd } = calcPrice(sku, qty, delivery, artworkOption);
+  const { low, high, mat, setup, logistics, artAdd, gst, total, paymentEligible } = calcPrice(sku, qty, delivery, artworkOption, sizeCode, configuration);
+  const selectedSize = sku ? COMMERCE_PRODUCTS[sku.code]?.sizes.find((item) => item.code === sizeCode) : undefined;
 
   return (
-    <div className="rounded-lg overflow-y-auto pw-order-summary" style={{ background: "#0F1C2C", border: "1px solid rgba(255,255,255,0.08)" }}>
+    <div className="rounded-none overflow-y-auto pw-order-summary" style={{ background: "#0F1C2C", border: "1px solid rgba(255,255,255,0.08)" }}>
       <div className="px-6 py-5 border-b" style={{ borderColor: "rgba(255,255,255,0.08)" }}>
         <div className="text-xs font-bold uppercase tracking-[0.18em] text-white">Order Summary</div>
       </div>
@@ -94,6 +107,7 @@ function OrderSummary({
           <div>
             <div className="text-xs text-slate-500 uppercase tracking-wider mb-1">Product</div>
             <div className="text-white font-bold text-sm leading-snug">{sku?.name || "—"}</div>
+            {selectedSize && <div className="text-xs mt-1" style={{ color: "#7CB5E4" }}>{selectedSize.label} · {selectedSize.detail}</div>}
             {sku && <div className="text-xs text-slate-500 mt-0.5 font-mono">{(sku as any).specs?.code || (sku as any).code || ""}</div>}
           </div>
           <div className="text-right">
@@ -106,41 +120,56 @@ function OrderSummary({
           <div className="space-y-2 pt-2 border-t" style={{ borderColor: "rgba(255,255,255,0.08)" }}>
             <div className="flex justify-between text-sm">
               <span className="text-slate-400">Material Cost</span>
-              <span className="text-white font-medium" style={{ fontFamily: "'Manrope', sans-serif" }}>₹{fmt(mat)}</span>
+              <span className="text-white font-medium" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>₹{fmt(mat)}</span>
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-slate-400">Print Setup</span>
-              <span className="text-white font-medium" style={{ fontFamily: "'Manrope', sans-serif" }}>₹{fmt(setup)}</span>
+              <span className="text-white font-medium" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>₹{fmt(setup)}</span>
             </div>
             {artAdd > 0 && (
               <div className="flex justify-between text-sm">
                 <span className="text-slate-400">Design Service</span>
-                <span className="text-white font-medium" style={{ fontFamily: "'Manrope', sans-serif" }}>₹{fmt(artAdd)}</span>
+                <span className="text-white font-medium" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>₹{fmt(artAdd)}</span>
               </div>
             )}
             <div className="flex justify-between text-sm">
               <span className="text-slate-400">Logistics</span>
-              <span className="text-white font-medium" style={{ fontFamily: "'Manrope', sans-serif" }}>₹{fmt(logistics)}</span>
+              <span className="text-white font-medium" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>₹{fmt(logistics)}</span>
             </div>
+            {buyingMode === "self" && (
+              <div className="flex justify-between text-sm pt-2 border-t" style={{ borderColor: "rgba(255,255,255,0.08)" }}>
+                <span className="text-slate-400">GST (18%)</span>
+                <span className="text-white font-medium">₹{fmt(gst ?? 0)}</span>
+              </div>
+            )}
           </div>
         )}
 
         <div className="pt-3 border-t" style={{ borderColor: "rgba(255,255,255,0.08)" }}>
-          <div className="text-xs text-slate-500 uppercase tracking-wider mb-2">Estimated Range</div>
+          <div className="text-xs text-slate-500 uppercase tracking-wider mb-2">{buyingMode === "self" ? "Payable total" : "Estimated range"}</div>
           {sku ? (
             <>
-              <div className="font-black text-white leading-none" style={{ fontFamily: "'Manrope', sans-serif", fontSize: "clamp(1.2rem,2.2vw,1.6rem)" }}>
-                ₹{fmt(low)} <span className="text-slate-400 font-bold text-base">–</span> ₹{fmt(high)}
+              <div className="font-black text-white leading-none" style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: "clamp(1.2rem,2.2vw,1.6rem)" }}>
+                {buyingMode === "self" ? `₹${fmt(total ?? low)}` : <>₹{fmt(low)} <span className="text-slate-400 font-bold text-base">–</span> ₹{fmt(high)}</>}
               </div>
               <div className="flex items-center gap-1.5 mt-2 px-2 py-1.5 rounded" style={{ background: "rgba(27,108,168,0.12)" }}>
-                <span className="text-xs font-bold" style={{ color: "#60a5fa" }}>≈ ₹{fmt((low / qty))} – ₹{fmt((high / qty))} per piece</span>
+                <span className="text-xs font-bold" style={{ color: "#60a5fa" }}>
+                  {buyingMode === "self"
+                    ? `₹${fmt((total ?? low) / qty)} effective per piece, including GST`
+                    : `₹${fmt(low / qty)} – ₹${fmt(high / qty)} estimated per piece`}
+                </span>
               </div>
               {qty >= ((sku as any).moq || 500) * 3 && (
                 <div className="text-xs mt-1.5 px-2 py-1" style={{ color: "#4ade80", background: "rgba(74,222,128,0.07)", borderRadius: 4 }}>
                   ✓ Volume discount applied — order more, pay less per piece
                 </div>
               )}
-              <div className="text-xs text-slate-500 mt-1.5">Excludes GST. Indicative estimate; final pricing follows artwork and specification review.</div>
+              <div className="text-xs text-slate-500 mt-1.5">{buyingMode === "self" ? "Includes GST and the delivery shown above." : "Excludes GST. Final pricing follows engineering and artwork review."}</div>
+              {buyingMode === "self" && !paymentEligible && (
+                <div className="mt-3 p-3 text-xs leading-relaxed" style={{ color: "#FBD38D", background: "rgba(232,168,56,0.12)", border: "1px solid rgba(232,168,56,0.28)" }}>
+                  Online payment is currently available up to ₹{RAZORPAY_PAYMENT_LIMIT_RUPEES.toLocaleString("en-IN")}. Submit this order plan and our team will confirm the payment route and production slot.
+                </div>
+              )}
             </>
           ) : (
             <div className="text-slate-500 text-sm">Select a product to see estimate</div>
@@ -155,7 +184,7 @@ function OrderSummary({
               className="w-full py-3 rounded font-black uppercase tracking-widest text-sm transition-all hover:opacity-90 active:scale-95 flex items-center justify-center gap-2 mt-2"
               style={{ background: "#E8A838", color: "#0F1C2C" }}
             >
-              {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <>{buyingMode === "assisted" ? "REQUEST MANAGED QUOTE" : "CONTINUE TO CHECKOUT"} <ArrowRight className="w-4 h-4" /></>}
+              {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <>{buyingMode === "assisted" ? "REQUEST MANAGED QUOTE" : paymentEligible ? "SAVE & CONTINUE TO PAYMENT" : "SUBMIT FOR PAYMENT CONFIRMATION"} <ArrowRight className="w-4 h-4" /></>}
             </button>
 
             <div className="mt-4 pt-4 border-t" style={{ borderColor: "rgba(255,255,255,0.08)" }}>
@@ -167,7 +196,7 @@ function OrderSummary({
                   { n: "3", text: "Approve the specification before production starts" },
                 ] : [
                   { n: "1", text: "Your specification is saved to the Packworkz order record" },
-                  { n: "2", text: "Shopify confirms tax, delivery, and payment securely" },
+                  { n: "2", text: paymentEligible ? "Pay securely with Razorpay without leaving Packworkz" : "Packworkz confirms the payment route for totals above ₹50,000" },
                   { n: "3", text: "Artwork is checked before production and SmartStock tracking begins" },
                 ]).map(({ n, text }) => (
                   <div key={n} className="flex items-start gap-2.5">
@@ -281,276 +310,184 @@ function Particles() {
 }
 
 // ── Animated Confirmation Screen ───────────────────────────────────────────
-function ConfirmationScreen({ quoteId, email, designPaid, sampleOption, samplePaid, buyingMode }: {
-  quoteId: string;
-  email: string;
-  designPaid: boolean;
-  sampleOption: string;
-  samplePaid: boolean;
-  buyingMode: "self" | "assisted";
-}) {
-  const [show, setShow] = useState(false);
-  const [showSteps, setShowSteps] = useState(false);
-  const [checkDone, setCheckDone] = useState(false);
-  const checkoutUrl = buyingMode === "self" ? sessionStorage.getItem(`packworkz_checkout_${quoteId}`) : null;
+type ConfirmationQuote = {
+  contact_name?: string;
+  company_name?: string;
+  email?: string;
+  phone?: string;
+  items?: Array<{ product_name?: string; sku_code?: string; quantity?: number; custom_specs?: { standard_size?: string } }>;
+};
+
+function ConfirmationScreen({ quoteId, buyingMode }: { quoteId: string; buyingMode: "self" | "assisted" }) {
+  const [quote, setQuote] = useState<ConfirmationQuote | null>(null);
+  const [prepared, setPrepared] = useState<PreparedOrderPayment | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [paying, setPaying] = useState(false);
+  const [orderId, setOrderId] = useState("");
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    const t1 = setTimeout(() => setShow(true), 80);
-    const t2 = setTimeout(() => setCheckDone(true), 500);
-    const t3 = setTimeout(() => setShowSteps(true), 900);
-    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
-  }, []);
+    let active = true;
+    const load = async () => {
+      try {
+        const quoteResponse = await fetch(`/api/quotes/${encodeURIComponent(quoteId)}`);
+        if (!quoteResponse.ok) throw new Error("We could not load this order plan.");
+        const quoteData = await quoteResponse.json();
+        if (!active) return;
+        setQuote(quoteData);
+        if (buyingMode === "self") {
+          const payment = await prepareOrderPayment(quoteId);
+          if (!active) return;
+          setPrepared(payment);
+          if (payment.status === "already_paid" && payment.order_id) setOrderId(payment.order_id);
+        }
+      } catch (cause) {
+        if (active) setError(cause instanceof Error ? cause.message : "We could not prepare the next step.");
+      } finally {
+        if (active) setLoading(false);
+      }
+    };
+    load();
+    return () => { active = false; };
+  }, [buyingMode, quoteId]);
 
-  const samplePaidFinal = sampleOption !== "none" && samplePaid;
-  const waMsg = encodeURIComponent(`Hi, my request ID is ${quoteId}. Can you share an update?`);
+  const item = quote?.items?.[0];
+  const isPaid = Boolean(orderId);
+  const isQuote = buyingMode === "assisted";
+  const gatewayPending = prepared?.status === "gateway_not_configured";
+  const requiresConfirmation = prepared?.status === "manual_confirmation" || prepared?.status === "gateway_not_configured";
+  const size = item?.sku_code && item.custom_specs?.standard_size
+    ? COMMERCE_PRODUCTS[item.sku_code]?.sizes.find((candidate) => candidate.code === item.custom_specs?.standard_size)
+    : undefined;
+  const waMsg = encodeURIComponent(`Hi, my Packworkz reference is ${orderId || quoteId}. Please share the next update.`);
 
-  const STEPS = buyingMode === "assisted" ? [
-    {
-      num: "STEP 01",
-      title: "We review your specs",
-      body: "Our team manually reviews every request and sources competing prices from our factory network.",
-    },
-    {
-      num: "STEP 02",
-      title: "You receive your pricing plan",
-      body: "Itemised pricing, timeline, and payment terms sent to your email and WhatsApp within 48 hours.",
-    },
-    {
-      num: "STEP 03",
-      title: "You approve, we produce",
-      body: "Approve your pricing plan and your dashboard is activated. Track every stage from production to delivery.",
-    },
+  const pay = async () => {
+    if (!prepared) return;
+    setPaying(true);
+    setError("");
+    try {
+      await openOrderPayment({
+        prepared,
+        name: quote?.contact_name,
+        email: quote?.email,
+        contact: quote?.phone,
+        description: `${item?.product_name || "Packaging"} · ${quoteId}`,
+        onDismiss: () => setPaying(false),
+        onError: (message) => {
+          setPaying(false);
+          setError(message);
+        },
+        onSuccess: (result) => {
+          setOrderId(result.order_id);
+          setPaying(false);
+        },
+      });
+    } catch (cause) {
+      setPaying(false);
+      setError(cause instanceof Error ? cause.message : "Payment could not be started.");
+    }
+  };
+
+  const eyebrow = isPaid ? "PAYMENT VERIFIED" : isQuote ? "PRODUCTION BRIEF RECEIVED" : gatewayPending ? "ONLINE CHECKOUT PENDING" : requiresConfirmation ? "ORDER PLAN RECEIVED" : "SPECIFICATION LOCKED";
+  const title = isPaid ? "Your order is confirmed." : isQuote ? "Your packaging brief is with our engineers." : gatewayPending ? "Online checkout is not active yet." : requiresConfirmation ? "We’ll confirm your payment route." : "One secure step remains.";
+  const body = isPaid
+    ? "Payment is verified and the prepress review is queued. Nothing enters production until your artwork and specification pass the final check."
+    : isQuote
+      ? "Compatibility, tooling, supplier capacity and the production rate will be reviewed before we send an itemised commercial plan."
+      : requiresConfirmation
+        ? prepared?.message || "Your specification is saved. Our team will confirm payment and the production slot directly."
+        : "Your size, quantity, artwork route, delivery and GST are already attached. Pay without configuring anything again.";
+
+  const steps = isPaid ? [
+    ["01", "Payment verified", "Your payment and specification are tied to one Packworkz order."],
+    ["02", "Artwork preflight", "We check dimensions, bleed, colour and print readiness before production."],
+    ["03", "Production + SmartStock", "Track production now and get an earlier reorder signal after delivery."],
+  ] : isQuote ? [
+    ["01", "Technical review", "Material, dimensions, tooling and compliance are checked."],
+    ["02", "Itemised commercial", "You receive final pricing, lead time and payment milestones."],
+    ["03", "Approval before production", "No tooling or manufacturing begins without your approval."],
+  ] : gatewayPending ? [
+    ["01", "Specification saved", "Your exact product, size, quantity and artwork route are already in Packworkz."],
+    ["02", "Online checkout activation", "Once the payment gateway is live, eligible orders continue directly to secure payment here."],
+    ["03", "Prepress and production", "Artwork is checked before the approved production slot begins."],
+  ] : requiresConfirmation ? [
+    ["01", "Specification saved", "Your exact order plan is already in Packworkz."],
+    ["02", "Payment route confirmed", "We confirm bank transfer, split payment or a secure payment link."],
+    ["03", "Prepress and production", "Artwork is checked before the approved production slot begins."],
   ] : [
-    { num: "STEP 01", title: "Specification saved", body: "The SKU, quantity, artwork path, delivery choice, and request ID are attached to your order." },
-    { num: "STEP 02", title: "Secure checkout", body: "Shopify confirms the final total, tax, delivery details, and payment." },
-    { num: "STEP 03", title: "Produce and track", body: "Artwork is checked before production, then the order and SmartStock reorder signal are tracked." },
+    ["01", "Specification locked", "No product or size needs to be selected again."],
+    ["02", "Razorpay checkout", "Pay securely on this page with UPI, card or netbanking."],
+    ["03", "Order confirmation", "Receive an order ID and move directly into prepress review."],
   ];
 
   return (
-    <div style={{ position: "relative", minHeight: "100vh", background: "#0D1B2A", overflow: "hidden" }}>
+    <main className="min-h-[calc(100vh-68px)] relative overflow-hidden" style={{ background: "#071522", color: "white" }}>
       <Particles />
-
-      <div style={{
-        position: "relative", zIndex: 1,
-        maxWidth: 600, margin: "0 auto",
-        padding: "80px 40px",
-        textAlign: "center",
-        fontFamily: "'Plus Jakarta Sans', sans-serif",
-      }}>
-
-        {/* ── Animated checkmark circle ── */}
-        <div style={{
-          width: 120, height: 120,
-          border: "2px solid #E8A838",
-          borderRadius: "50%",
-          margin: "0 auto 32px",
-          display: "flex", alignItems: "center", justifyContent: "center",
-          transition: "all 0.6s cubic-bezier(0.34,1.56,0.64,1)",
-          transform: show ? "scale(1)" : "scale(0)",
-          opacity: show ? 1 : 0,
-        }}>
-          <svg viewBox="0 0 52 52" width="72" height="72">
-            <circle cx="26" cy="26" r="25" fill="none" stroke="#E8A838" strokeWidth="2" />
-            <path
-              fill="none"
-              stroke="#E8A838"
-              strokeWidth="3"
-              strokeLinecap="round"
-              d="M14 27 L22 35 L38 19"
-              style={{
-                strokeDasharray: 60,
-                strokeDashoffset: checkDone ? 0 : 60,
-                transition: "stroke-dashoffset 0.6s ease 0.3s",
-              }}
-            />
-          </svg>
-        </div>
-
-        {/* ── Eyebrow ── */}
-        <div style={{
-          color: "#E8A838", fontSize: 11, fontWeight: 600,
-          letterSpacing: "2px", textTransform: "uppercase",
-          marginBottom: 12,
-          transition: "all 0.5s ease 0.2s",
-          opacity: show ? 1 : 0, transform: show ? "translateY(0)" : "translateY(10px)",
-        }}>
-          {buyingMode === "assisted" ? "TECHNICAL REQUEST SECURED" : "READY FOR SECURE CHECKOUT"}
-        </div>
-
-        {/* ── Headline ── */}
-        <h1 style={{
-          color: "white",
-          fontSize: "clamp(2.4rem, 5vw, 3.25rem)",
-          fontWeight: 700, lineHeight: 1.1,
-          margin: "0 0 8px",
-          fontFamily: "'Space Grotesk', sans-serif",
-          transition: "all 0.5s ease 0.3s",
-          opacity: show ? 1 : 0, transform: show ? "translateY(0)" : "translateY(10px)",
-        }}>
-          {buyingMode === "assisted" ? "Engineering review started." : "Your packaging is ready to order."}
-        </h1>
-
-        {/* ── Request ID ── */}
-        <div style={{
-          fontFamily: "'JetBrains Mono', 'Courier New', monospace",
-          fontSize: 22, fontWeight: 600, letterSpacing: "2px",
-          color: "#E8A838", marginBottom: 16,
-          transition: "all 0.5s ease 0.4s",
-          opacity: show ? 1 : 0, transform: show ? "translateY(0)" : "translateY(10px)",
-        }}>
-          {quoteId}
-        </div>
-
-        {/* ── Subtext ── */}
-        <p style={{
-          color: "rgba(255,255,255,0.6)",
-          fontSize: 17, lineHeight: 1.7,
-          maxWidth: 420, margin: "0 auto 48px",
-          transition: "all 0.5s ease 0.5s",
-          opacity: show ? 1 : 0, transform: show ? "translateY(0)" : "translateY(10px)",
-        }}>
-          {buyingMode === "assisted"
-            ? "Your technical brief is safely stored. A Packworkz specialist will validate compatibility, tooling, and the final production rate."
-            : "Your Packworkz specification is safely stored. Continue to Shopify to confirm tax, delivery, and payment securely."}
-        </p>
-
-        {/* ── What Happens Next ── */}
-        <div style={{
-          display: "flex", gap: 16, marginBottom: 48,
-          flexWrap: "wrap",
-          transition: "all 0.5s ease",
-          opacity: showSteps ? 1 : 0, transform: showSteps ? "translateY(0)" : "translateY(16px)",
-        }}>
-          {STEPS.map((step, i) => (
-            <div
-              key={i}
-              style={{
-                flex: "1 1 160px",
-                background: "rgba(255,255,255,0.06)",
-                border: "1px solid rgba(255,255,255,0.1)",
-                borderRadius: 14,
-                padding: "24px 20px",
-                textAlign: "left",
-                transition: `all 0.4s ease ${i * 0.1}s`,
-                opacity: showSteps ? 1 : 0,
-                transform: showSteps ? "translateY(0)" : "translateY(12px)",
-              }}
-            >
-              <div style={{ color: "#E8A838", fontSize: 11, fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", marginBottom: 8 }}>
-                {step.num}
+      <div className="relative z-10 max-w-6xl mx-auto px-5 sm:px-8 py-16 sm:py-24">
+        <div className="grid lg:grid-cols-[1.05fr_0.95fr] border" style={{ borderColor: "rgba(255,255,255,0.14)", background: "rgba(11,28,43,0.96)" }}>
+          <section className="p-7 sm:p-12 lg:p-16 border-b lg:border-b-0 lg:border-r" style={{ borderColor: "rgba(255,255,255,0.12)" }}>
+            <div className="flex items-center gap-3 mb-8">
+              <div className="w-11 h-11 flex items-center justify-center" style={{ background: isPaid ? "#1B8A5A" : "#E8A838", color: "#071522" }}>
+                {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <CheckCircle2 className="w-6 h-6" />}
               </div>
-              <div style={{ color: "white", fontSize: 15, fontWeight: 700, marginBottom: 6 }}>
-                {step.title}
+              <span className="text-[11px] font-black tracking-[0.2em]" style={{ color: isPaid ? "#62D39B" : "#E8A838" }}>{eyebrow}</span>
+            </div>
+            <h1 className="text-4xl sm:text-5xl font-black leading-[1.04] mb-5" style={{ fontFamily: "'Space Grotesk', sans-serif", letterSpacing: 0 }}>{title}</h1>
+            <p className="text-base sm:text-lg leading-relaxed max-w-xl" style={{ color: "#9FB0C2" }}>{body}</p>
+
+            <div className="mt-9 py-5 border-y grid grid-cols-2 gap-5" style={{ borderColor: "rgba(255,255,255,0.1)" }}>
+              <div>
+                <span className="block text-[10px] uppercase tracking-[0.16em] mb-1" style={{ color: "#71859A" }}>{isPaid ? "Order ID" : "Reference"}</span>
+                <strong className="font-mono text-sm sm:text-base" style={{ color: "#E8A838" }}>{orderId || quoteId}</strong>
               </div>
-              <div style={{ color: "rgba(255,255,255,0.55)", fontSize: 13, lineHeight: 1.6 }}>
-                {step.body}
+              <div>
+                <span className="block text-[10px] uppercase tracking-[0.16em] mb-1" style={{ color: "#71859A" }}>Order plan</span>
+                <strong className="text-sm sm:text-base">{item?.product_name || (loading ? "Loading…" : "Packaging")}</strong>
+                {size && <span className="block text-xs mt-1" style={{ color: "#8CA0B4" }}>{size.label} · {size.detail}</span>}
               </div>
             </div>
-          ))}
-        </div>
 
-        {/* ── CTA Buttons ── */}
-        <div style={{
-          display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap", marginBottom: 32,
-          transition: "all 0.5s ease 0.6s",
-          opacity: showSteps ? 1 : 0, transform: showSteps ? "translateY(0)" : "translateY(10px)",
-        }}>
-          {checkoutUrl && (
-            <a href={checkoutUrl} style={{
-              display: "inline-flex", alignItems: "center", gap: 10,
-              padding: "14px 24px", borderRadius: 8,
-              background: "#E8A838", color: "#0D1B2A",
-              fontSize: 14, fontWeight: 800, textDecoration: "none",
-            }}>
-              Continue to secure checkout <ArrowRight size={18} />
-            </a>
-          )}
-          <a
-            href={`https://wa.me/918208990366?text=${waMsg}`}
-            target="_blank" rel="noopener noreferrer"
-            style={{
-              display: "inline-flex", alignItems: "center", gap: 10,
-              padding: "14px 24px", borderRadius: 8,
-              background: checkoutUrl ? "transparent" : "#E8A838", color: checkoutUrl ? "rgba(255,255,255,0.86)" : "#0D1B2A",
-              border: checkoutUrl ? "1px solid rgba(255,255,255,0.25)" : "none",
-              fontSize: 14, fontWeight: 800,
-              textDecoration: "none",
-              transition: "background 0.2s, transform 0.15s",
-            }}
-            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = checkoutUrl ? "rgba(255,255,255,0.08)" : "#D4941E"; (e.currentTarget as HTMLElement).style.transform = "translateY(-1px)"; }}
-            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = checkoutUrl ? "transparent" : "#E8A838"; (e.currentTarget as HTMLElement).style.transform = "translateY(0)"; }}
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="#0D1B2A">
-              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-            </svg>
-            WhatsApp us for faster response
-          </a>
+            {prepared?.amount_rupees ? (
+              <div className="mt-7 flex items-end justify-between gap-4">
+                <div>
+                  <span className="block text-[10px] uppercase tracking-[0.16em] mb-1" style={{ color: "#71859A" }}>{isPaid ? "Amount paid" : requiresConfirmation ? "Order value" : "Secure payment"}</span>
+                  <strong className="text-3xl font-black">₹{prepared.amount_rupees.toLocaleString("en-IN", { maximumFractionDigits: 2 })}</strong>
+                  <span className="block text-xs mt-1" style={{ color: "#71859A" }}>GST and listed delivery included</span>
+                </div>
+              </div>
+            ) : null}
 
-          <Link href="/products"
-            style={{
-              display: "inline-flex", alignItems: "center",
-              padding: "14px 24px", borderRadius: 10,
-              border: "1px solid rgba(255,255,255,0.25)",
-              color: "rgba(255,255,255,0.85)",
-              fontSize: 14, fontWeight: 700,
-              textDecoration: "none",
-              transition: "border-color 0.2s, background 0.2s, transform 0.15s",
-            }}
-            onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => { e.currentTarget.style.background = "rgba(255,255,255,0.08)"; e.currentTarget.style.transform = "translateY(-1px)"; }}
-            onMouseLeave={(e: React.MouseEvent<HTMLAnchorElement>) => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.transform = "translateY(0)"; }}
-          >
-            Browse more products
-          </Link>
-        </div>
+            {!loading && prepared?.status === "ready" && !isPaid && (
+              <button type="button" onClick={pay} disabled={paying} className="mt-8 w-full sm:w-auto px-7 py-4 font-black flex items-center justify-center gap-3 transition-transform hover:-translate-y-0.5 disabled:opacity-60" style={{ background: "#E8A838", color: "#071522" }}>
+                {paying ? <><Loader2 className="w-5 h-5 animate-spin" /> Opening secure payment</> : <>Pay securely with Razorpay <ArrowRight className="w-5 h-5" /></>}
+              </button>
+            )}
 
-        {/* ── Design brief card ── */}
-        {designPaid && (
-          <div style={{
-            background: "rgba(27,108,168,0.15)",
-            border: "1px solid rgba(27,108,168,0.3)",
-            borderRadius: 12, padding: "20px 24px",
-            textAlign: "left",
-            display: "flex", alignItems: "center", gap: 16,
-            marginBottom: 16,
-            transition: "all 0.5s ease 0.7s",
-            opacity: showSteps ? 1 : 0,
-          }}>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1B6CA8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
-            </svg>
-            <div style={{ flex: 1 }}>
-              <div style={{ color: "white", fontSize: 14, fontWeight: 700, marginBottom: 4 }}>Complete your design brief</div>
-              <div style={{ color: "rgba(255,255,255,0.6)", fontSize: 13, lineHeight: 1.5 }}>Your designer needs a few details to get started. Takes 3 minutes.</div>
-              <a href="/design/brief" style={{ color: "#1B6CA8", fontSize: 13, fontWeight: 600, textDecoration: "none", display: "inline-block", marginTop: 6 }}>Complete brief →</a>
-            </div>
-          </div>
-        )}
+            {error && <div className="mt-6 p-4 text-sm" style={{ background: "rgba(220,38,38,0.12)", border: "1px solid rgba(248,113,113,0.35)", color: "#FCA5A5" }}>{error}</div>}
+          </section>
 
-        {/* ── Sample confirmed card ── */}
-        {samplePaidFinal && (
-          <div style={{
-            background: "rgba(27,108,168,0.15)",
-            border: "1px solid rgba(27,108,168,0.3)",
-            borderRadius: 12, padding: "20px 24px",
-            textAlign: "left",
-            display: "flex", alignItems: "center", gap: 16,
-            transition: "all 0.5s ease 0.8s",
-            opacity: showSteps ? 1 : 0,
-          }}>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1B6CA8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
-            </svg>
+          <aside className="p-7 sm:p-12 lg:p-14" style={{ background: "#0E2030" }}>
+            <p className="text-[11px] font-black uppercase tracking-[0.2em] mb-7" style={{ color: "#7CB5E4" }}>What happens next</p>
             <div>
-              <div style={{ color: "white", fontSize: 14, fontWeight: 700, marginBottom: 4 }}>Sample request confirmed</div>
-              <div style={{ color: "rgba(255,255,255,0.6)", fontSize: 13, lineHeight: 1.5 }}>
-                Your sample will be dispatched in 5–7 days. We'll send tracking details to your email.
-              </div>
+              {steps.map(([number, heading, detail], index) => (
+                <div key={number} className="grid grid-cols-[42px_1fr] gap-4 pb-7 mb-7 border-b last:border-b-0 last:mb-0 last:pb-0" style={{ borderColor: "rgba(255,255,255,0.1)" }}>
+                  <span className="font-mono text-sm pt-0.5" style={{ color: index === 0 ? "#E8A838" : "#577087" }}>{number}</span>
+                  <div>
+                    <h2 className="font-bold text-base mb-2">{heading}</h2>
+                    <p className="text-sm leading-relaxed" style={{ color: "#8FA3B6" }}>{detail}</p>
+                  </div>
+                </div>
+              ))}
             </div>
-          </div>
-        )}
-
+            <div className="mt-9 flex flex-col sm:flex-row lg:flex-col gap-3">
+              <a href={`https://wa.me/918208990366?text=${waMsg}`} target="_blank" rel="noopener noreferrer" className="px-5 py-3.5 text-center font-bold text-sm border" style={{ borderColor: "rgba(255,255,255,0.24)", color: "white" }}>Message order desk</a>
+              <Link href={isPaid ? `/track-order?reference=${encodeURIComponent(orderId || quoteId)}` : "/products"} className="px-5 py-3.5 text-center font-bold text-sm" style={{ background: "#18344A", color: "#D7E5F0" }}>{isPaid ? "Track without an account" : "Browse products"}</Link>
+            </div>
+            {isPaid && <p className="mt-4 text-xs leading-relaxed" style={{ color: "#71859A" }}>Use this order ID and the email or mobile submitted at checkout. No account is required.</p>}
+          </aside>
+        </div>
       </div>
-    </div>
+    </main>
   );
 }
 
@@ -575,11 +512,21 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
   // ── SKU selection ────────────────────────────────────────────────────────
   const [selectedCategory, setSelectedCategory] = useState<string>(() => loadDraft().selectedCategory || CATEGORIES[0].slug);
   const [ecoFilter, setEcoFilter] = useState<boolean>(() => loadDraft().ecoFilter ?? false);
-  const [selectedSkuId, setSelectedSkuId] = useState<string>(() => loadDraft().selectedSkuId || SKUS[0].id);
+  const [selectedSkuId, setSelectedSkuId] = useState<string>(() => {
+    const savedSkuId = loadDraft().selectedSkuId;
+    if (savedSkuId === "LC-801") return SKUS.find((sku) => sku.code === "LC-816")?.id || SKUS[0].id;
+    return SKUS.some((sku) => sku.id === savedSkuId) ? savedSkuId : SKUS[0].id;
+  });
+  const [catalogOpen, setCatalogOpen] = useState<boolean>(() => {
+    if (typeof window === "undefined") return true;
+    const search = new URLSearchParams(window.location.search);
+    return !search.get("sku") && !search.get("product");
+  });
   const [qty, setQty] = useState<number>(() => loadDraft().qty || SKUS[0].moq);
   const [qtyUnit, setQtyUnit] = useState<'pieces' | 'kg'>(() => loadDraft().qtyUnit || 'pieces');
   const [variantSelections, setVariantSelections] = useState<Record<string, string>>(() => loadDraft().variantSelections || {});
   const [customFieldValues, setCustomFieldValues] = useState<Record<string, string>>(() => loadDraft().customFieldValues || {});
+  const [selectedSizeCode, setSelectedSizeCode] = useState<string>(() => loadDraft().selectedSizeCode || COMMERCE_PRODUCTS[SKUS[0].code]?.sizes[0]?.code || "");
   const [dimUnit, setDimUnit] = useState<"mm"|"cm"|"in">("mm");
   const [weightUnit, setWeightUnit] = useState<"g"|"kg"|"t">("g");
 
@@ -635,9 +582,11 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
   // ── Read URL params on mount to pre-select SKU from product pages ─────────
   useEffect(() => {
     const search = new URLSearchParams(window.location.search);
-    const skuParam = search.get("sku");
+    const rawSkuParam = search.get("sku");
+    const skuParam = rawSkuParam === "LC-801" ? "LC-816" : rawSkuParam;
     const productParam = search.get("product");
     const qtyParam = search.get("qty");
+    const structureParam = search.get("structure");
     const match = skuParam
       ? SKUS.find(s => s.code === skuParam || s.id === skuParam || s.slug === skuParam)
       : productParam
@@ -648,7 +597,12 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
       setSelectedCategory(match.category);
       const defaults: Record<string, string> = {};
       match.variants.forEach(g => { defaults[g.key] = g.options[0]; });
+      if (structureParam) {
+        const structureGroup = match.variants.find((group) => group.key === "structure");
+        if (structureGroup?.options.includes(structureParam)) defaults.structure = structureParam;
+      }
       setVariantSelections(defaults);
+      setSelectedSizeCode(COMMERCE_PRODUCTS[match.code]?.sizes[0]?.code || "");
     }
     if (qtyParam) {
       const q = parseInt(qtyParam);
@@ -659,7 +613,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
   // ── Helper: collect all state into one object for saving ──────────────────
   const getAllState = () => ({
     contactName, company, email, phone, buyingAsBusiness, gstRegistered, gstin, poReference,
-    selectedCategory, selectedSkuId, qty, qtyUnit, variantSelections, customFieldValues, ecoFilter,
+    selectedCategory, selectedSkuId, qty, qtyUnit, variantSelections, customFieldValues, selectedSizeCode, ecoFilter,
     artworkOption, designPaid, artworkFileUrl,
     deliveryOption, addressLine, city, deliveryState, pincode,
     sampleOption, samplePaid, notes,
@@ -700,8 +654,8 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
 
   const selectedSku = useMemo(() => SKUS.find(s => s.id === selectedSkuId), [selectedSkuId]);
   const selectedSkuMoq = selectedSku?.moq || 500;
-  const exactShopifyVariant = selectedSku ? getShopifyVariant(selectedSku.code, qty) : undefined;
-  const selectedSkuBuyingMode = selectedSku && !isAssistedSku(selectedSku) && !requiresQuote(selectedSku, qty) && exactShopifyVariant ? "self" : "assisted";
+  const commerceProduct = selectedSku ? COMMERCE_PRODUCTS[selectedSku.code] : undefined;
+  const selectedSkuBuyingMode = selectedSku && !isAssistedSku(selectedSku) && !requiresQuote(selectedSku, qty) ? "self" : "assisted";
   const quantityPresets = useMemo(() => {
     if (!selectedSku || qtyUnit !== "pieces") return [50, 100, 250, 500, 1000];
     const tierQuantities = (selectedSku.price_tiers || [])
@@ -714,6 +668,14 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
     if (qtyUnit === "pieces" && selectedSku && qty < selectedSku.moq) setQty(selectedSku.moq);
   }, [qty, qtyUnit, selectedSku]);
 
+  useEffect(() => {
+    if (!commerceProduct) return;
+    if (!commerceProduct.sizes.some((item) => item.code === selectedSizeCode)) {
+      setSelectedSizeCode(commerceProduct.sizes[0].code);
+    }
+    if (qtyUnit !== "pieces") setQtyUnit("pieces");
+  }, [commerceProduct, qtyUnit, selectedSizeCode]);
+
   const initVariants = (sku: Sku) => {
     const defaults: Record<string, string> = {};
     sku.variants.forEach(g => { defaults[g.key] = g.options[0]; });
@@ -725,6 +687,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
     const sku = SKUS.find(s => s.id === skuId);
     if (sku) {
       initVariants(sku);
+      setSelectedSizeCode(COMMERCE_PRODUCTS[sku.code]?.sizes[0]?.code || "");
       if (qtyUnit === "pieces") setQty(prev => Math.max(prev, sku.moq));
     }
   };
@@ -735,12 +698,13 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
     if (first) {
       setSelectedSkuId(first.id);
       initVariants(first);
+      setSelectedSizeCode(COMMERCE_PRODUCTS[first.code]?.sizes[0]?.code || "");
       if (qtyUnit === "pieces") setQty(first.moq);
     }
   };
 
   const handleSubmit = () => {
-    const { low, high } = calcPrice(selectedSku, qty, deliveryOption, artworkOption);
+    const { low, high } = calcPrice(selectedSku, qty, deliveryOption, artworkOption, selectedSizeCode, variantSelections);
     submitMutation.mutate({
       data: {
         contact_name: contactName, company_name: company, email, phone,
@@ -757,13 +721,17 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
         total_estimated_max: high,
         items: [{
           product_id: selectedSkuId,
+          sku_code: selectedSku?.code,
           product_name: selectedSku?.name || selectedSkuId,
           category: selectedCategory,
           quantity: qty, quantity_unit: qtyUnit,
           artwork_status: artworkOption,
           artwork_file_url: artworkFileUrl || undefined,
           variant_selections: Object.keys(variantSelections).length ? variantSelections : undefined,
-          custom_specs: Object.keys(customFieldValues).length ? customFieldValues : undefined,
+          custom_specs: {
+            ...(Object.keys(customFieldValues).length ? customFieldValues : {}),
+            ...(selectedSizeCode ? { standard_size: selectedSizeCode } : {}),
+          },
           sample_requested: sampleOption !== "none",
           sample_tier: sampleOption === "express" ? "premium" : sampleOption === "standard" ? "standard" : "none",
           design_paid: designPaid,
@@ -777,22 +745,6 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
       } as any
     }, {
       onSuccess: (res) => {
-        if (selectedSkuBuyingMode === "self" && selectedSku) {
-          const checkoutUrl = buildShopifyCheckoutUrl({
-            requestId: res.quote_id,
-            skuCode: selectedSku.code,
-            quantity: qty,
-            artwork: artworkOption,
-            delivery: deliveryOption,
-            email,
-            firstName: contactName,
-            address1: addressLine,
-            city,
-            province: deliveryState,
-            zip: pincode,
-          });
-          if (checkoutUrl) sessionStorage.setItem(`packworkz_checkout_${res.quote_id}`, checkoutUrl);
-        }
         clearDraft();
         setLocation(`/configure/confirmed/${res.quote_id}?mode=${selectedSkuBuyingMode}`);
       },
@@ -805,10 +757,6 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
     return (
       <ConfirmationScreen
         quoteId={params.id}
-        email={email}
-        designPaid={designPaid}
-        sampleOption={sampleOption}
-        samplePaid={samplePaid}
         buyingMode={new URLSearchParams(window.location.search).get("mode") === "assisted" ? "assisted" : "self"}
       />
     );
@@ -901,7 +849,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                 <StepHeader step={1} total={TOTAL_STEPS} title="Build your packaging plan" subtitle="Start with the format and quantity. No contact details required yet." />
 
                 {/* Category grid */}
-                <div className="bg-white rounded-lg border border-slate-200 p-5">
+                {catalogOpen && <div className="bg-white rounded-none border border-slate-200 p-5">
                   <div className="flex justify-between items-center mb-4">
                     <span className="font-bold text-slate-800 text-sm" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>Product Category</span>
                     <div className="flex gap-2">
@@ -917,7 +865,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                     {CATEGORIES.map(cat => (
                       <button key={cat.slug}
                         onClick={() => handleSelectCategory(cat.slug)}
-                        className="flex flex-col items-center gap-1.5 p-3 rounded-lg border-2 transition-all"
+                        className="flex flex-col items-center gap-1.5 p-3 rounded-none border-2 transition-all"
                         style={{ borderColor: selectedCategory === cat.slug ? "#1B6CA8" : "#E2E8F0", background: selectedCategory === cat.slug ? "rgba(27,108,168,0.06)" : "white" }}
                       >
                         <MS icon={cat.icon} className={`text-2xl ${selectedCategory === cat.slug ? "" : "text-slate-400"}`}
@@ -928,31 +876,39 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                       </button>
                     ))}
                   </div>
-                </div>
+                </div>}
 
                 {/* SKU cards */}
-                <div className="bg-white rounded-lg border border-slate-200 p-5">
-                  <div className="font-bold text-slate-800 text-sm mb-4" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
-                    Select Template — <span className="font-normal text-slate-400">{CATEGORIES.find(c => c.slug === selectedCategory)?.label}</span>
+                <div className="bg-white rounded-none border border-slate-200 p-5">
+                  <div className="flex items-center justify-between gap-4 mb-4">
+                    <div className="font-bold text-slate-800 text-sm" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+                      {catalogOpen ? "Choose a product" : "Your selected product"}
+                      {catalogOpen && <span className="font-normal text-slate-400"> — {CATEGORIES.find(c => c.slug === selectedCategory)?.label}</span>}
+                    </div>
+                    {!catalogOpen && (
+                      <button type="button" onClick={() => setCatalogOpen(true)} className="text-xs font-bold text-blue hover:text-navy">
+                        Change product
+                      </button>
+                    )}
                   </div>
-                  <div className="mb-4 rounded-lg border px-4 py-3" style={{ background: selectedSkuBuyingMode === "assisted" ? "#FFF7E6" : "#F1F8FF", borderColor: selectedSkuBuyingMode === "assisted" ? "#F2D89C" : "#CFE4F5" }}>
+                  <div className="mb-4 rounded-none border px-4 py-3" style={{ background: selectedSkuBuyingMode === "assisted" ? "#FFF7E6" : "#F1F8FF", borderColor: selectedSkuBuyingMode === "assisted" ? "#F2D89C" : "#CFE4F5" }}>
                     <p className="text-xs leading-relaxed" style={{ color: selectedSkuBuyingMode === "assisted" ? "#8A5A00" : "#1B5F94" }}>
-                      <strong>{selectedSkuBuyingMode === "assisted" ? "Engineering-assisted format:" : "Self-serve format:"}</strong>{" "}
+                      <strong>{selectedSkuBuyingMode === "assisted" ? "Managed quote:" : "Instant buy:"}</strong>{" "}
                       {selectedSkuBuyingMode === "assisted"
                         ? "This structure needs compatibility, tooling, or barrier review. Complete the technical brief for a production-ready quote."
                         : "Configure the standard format and quantity now. You will see an indicative order value before sharing contact details."}
                     </p>
                   </div>
-                  {currentCatSkus.length === 0 ? (
+                  {(catalogOpen ? currentCatSkus : selectedSku ? [selectedSku] : []).length === 0 ? (
                     <p className="text-sm text-slate-400 py-4 text-center">No eco-friendly SKUs in this category.</p>
                   ) : (
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      {currentCatSkus.map(sku => (
+                      {(catalogOpen ? currentCatSkus : selectedSku ? [selectedSku] : []).map(sku => (
                         <button key={sku.id} onClick={() => handleSelectSku(sku.id)}
-                          className="flex items-start gap-3 p-4 rounded-lg border-2 text-left transition-all"
+                          className="flex items-start gap-3 p-4 rounded-none border-2 text-left transition-all"
                           style={{ borderColor: selectedSkuId === sku.id ? "#1B6CA8" : "#E2E8F0", background: selectedSkuId === sku.id ? "rgba(27,108,168,0.04)" : "white" }}
                         >
-                          <div className="w-14 h-14 rounded-lg bg-slate-100 shrink-0 overflow-hidden">
+                          <div className="w-14 h-14 rounded-none bg-slate-100 shrink-0 overflow-hidden">
                             <img src={getCatalogImage(sku)} alt={sku.name} className="w-full h-full object-cover" />
                           </div>
                           <div className="flex-1 min-w-0">
@@ -961,7 +917,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                               {sku.is_eco && <span className="text-xs px-1.5 py-0.5 rounded font-bold" style={{ background: "rgba(22,163,74,0.1)", color: "#16A34A" }}>ECO</span>}
                               {sku.is_smartstock && <span className="text-xs px-1.5 py-0.5 rounded font-bold" style={{ background: "rgba(232,168,56,0.12)", color: "#E8A838" }}>SmartStock</span>}
                               <span className="text-xs px-1.5 py-0.5 rounded font-bold" style={{ background: isAssistedSku(sku) ? "rgba(232,168,56,0.14)" : "rgba(27,108,168,0.10)", color: isAssistedSku(sku) ? "#92600A" : "#1B6CA8" }}>
-                                {isAssistedSku(sku) ? "Assisted" : "Self-serve"}
+                                {isAssistedSku(sku) ? "Managed quote" : "Instant buy"}
                               </span>
                             </div>
                             <div className="font-bold text-slate-800 text-sm mb-0.5">{sku.name}</div>
@@ -988,17 +944,49 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                       Configure — {selectedSku.name}
                     </div>
                     <div className="space-y-4">
-                      {selectedSku.variants.map(group => (
-                        <VariantSelector key={group.key} group={group}
-                          selected={variantSelections[group.key] || group.options[0]}
-                          onSelect={v => setVariantSelections(prev => ({ ...prev, [group.key]: v }))} />
-                      ))}
+                      {selectedSku.variants.map(group => {
+                        return (
+                          <VariantSelector key={group.key} group={group}
+                            selected={variantSelections[group.key] || group.options[0]}
+                            onSelect={v => setVariantSelections(prev => ({ ...prev, [group.key]: v }))} />
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {/* Fixed, priced size menu for every instant-buy family. */}
+                {selectedSkuBuyingMode === "self" && commerceProduct && (
+                  <div className="bg-white border border-slate-200 p-5">
+                    <div className="flex items-start justify-between gap-4 mb-4">
+                      <div>
+                        <div className="font-bold text-slate-800 text-sm" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>Choose a production size</div>
+                        <p className="text-xs text-slate-500 mt-1">Every option is pre-engineered and linked to its exact quantity pricing. Custom dimensions move to a managed quote.</p>
+                      </div>
+                      <span className="text-[10px] font-black uppercase tracking-wider px-2 py-1" style={{ color: "#17613C", background: "#EAF8F0" }}>Price locked</span>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      {commerceProduct.sizes.map((item) => {
+                        const active = selectedSizeCode === item.code;
+                        return (
+                          <button
+                            key={item.code}
+                            type="button"
+                            onClick={() => setSelectedSizeCode(item.code)}
+                            className="text-left p-3 border transition-colors"
+                            style={{ borderColor: active ? "#1B6CA8" : "#DCE4EE", background: active ? "#EEF6FC" : "#FFFFFF" }}
+                          >
+                            <span className="block text-sm font-black" style={{ color: active ? "#155A8C" : "#0D1B2A" }}>{item.label}</span>
+                            <span className="block text-[11px] mt-1 leading-snug text-slate-500">{item.detail}</span>
+                          </button>
+                        );
+                      })}
                     </div>
                   </div>
                 )}
 
                 {/* Package Size & Specs */}
-                {selectedSku && selectedSku.customization_fields.length > 0 && selectedSku.category !== "rolls" && (
+                {selectedSku && selectedSkuBuyingMode === "assisted" && selectedSku.customization_fields.length > 0 && selectedSku.category !== "rolls" && (
                   <div className="bg-white rounded-lg border border-slate-200 p-5">
                     <div className="font-bold text-slate-800 text-sm mb-1" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
                       Package Size &amp; Specs
@@ -1071,7 +1059,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                         );
                       })}
                     </div>
-                    <p className="text-xs text-slate-400 mt-3">Leave blank if flexible — we'll confirm at pricing stage.</p>
+                    <p className="text-xs text-slate-400 mt-3">Approximate dimensions are enough. Engineering confirms the production specification before pricing is approved.</p>
                   </div>
                 )}
 
@@ -1082,7 +1070,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                   </div>
                   <div className="space-y-3">
                     {/* Unit toggle */}
-                    <div className="flex gap-0 rounded-lg border border-slate-200 overflow-hidden w-fit">
+                    {selectedSku?.category === "rolls" && <div className="flex gap-0 rounded-lg border border-slate-200 overflow-hidden w-fit">
                       {(["pieces", "kg"] as const).map(u => (
                         <button key={u} onClick={() => { setQtyUnit(u); setQty(u === "pieces" ? selectedSkuMoq : 50); }}
                           className="px-4 py-1.5 text-sm font-semibold transition-all"
@@ -1090,7 +1078,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                           {u === "pieces" ? "Pieces" : "Kg (film)"}
                         </button>
                       ))}
-                    </div>
+                    </div>}
                     <div className="flex gap-2 flex-wrap">
                       {quantityPresets.map(q => (
                         <button key={q} onClick={() => setQty(q)}
@@ -1099,12 +1087,16 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                           {q.toLocaleString()}
                         </button>
                       ))}
-                      <input type="number" value={qty}
-                        onChange={e => setQty(Math.max(qtyUnit === "pieces" ? selectedSkuMoq : 50, parseInt(e.target.value) || (qtyUnit === "pieces" ? selectedSkuMoq : 50)))}
-                        className="w-28 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-400 bg-slate-50" placeholder="Custom" />
+                      {selectedSkuBuyingMode === "assisted" && (
+                        <input type="number" value={qty}
+                          onChange={e => setQty(Math.max(qtyUnit === "pieces" ? selectedSkuMoq : 50, parseInt(e.target.value) || (qtyUnit === "pieces" ? selectedSkuMoq : 50)))}
+                          className="w-28 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-400 bg-slate-50" placeholder="Custom" />
+                      )}
                     </div>
                     <p className="text-xs text-slate-400">
-                      {qtyUnit === "pieces" ? `Minimum: ${selectedSkuMoq.toLocaleString()} pieces for ${selectedSku?.name || "this SKU"}` : "Minimum: 50 kg of packaging film"}
+                      {selectedSkuBuyingMode === "self"
+                        ? "Choose one of the production quantities above. Larger or custom runs move to a managed volume quote."
+                        : qtyUnit === "pieces" ? `Minimum: ${selectedSkuMoq.toLocaleString()} pieces for ${selectedSku?.name || "this SKU"}` : "Minimum: 50 kg of packaging film"}
                     </p>
                     {selectedSkuBuyingMode === "assisted" && (
                       <div className="flex items-start gap-2 p-3 rounded-lg" style={{ background: "#FFF7E6", border: "1px solid #F2D89C" }}>
@@ -1252,7 +1244,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                           <div className="font-bold text-sm text-slate-800">{opt.label}</div>
                           <div className="text-xs text-slate-400 mt-0.5">{opt.time}</div>
                         </div>
-                        <div className="font-black text-sm" style={{ color: "#374151", fontFamily: "'Manrope', sans-serif" }}>{opt.price}</div>
+                        <div className="font-black text-sm" style={{ color: "#374151", fontFamily: "'Space Grotesk', sans-serif" }}>{opt.price}</div>
                       </button>
                     ))}
                   </div>
@@ -1405,6 +1397,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                         ["SKU", selectedSku?.name || "—"],
                         ["SKU Code", selectedSku?.code || "—"],
                         ["Quantity", `${qty.toLocaleString()} ${qtyUnit}`],
+                        ...(selectedSkuBuyingMode === "self" && commerceProduct ? [["Production size", commerceProduct.sizes.find((item) => item.code === selectedSizeCode)?.label || selectedSizeCode]] : []),
                         ...Object.entries(variantSelections).map(([k, v]) => {
                           const group = selectedSku?.variants.find(g => g.key === k);
                           return [group?.label || k, v];
@@ -1448,7 +1441,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                     <div style={{ display: "flex", gap: 0, flexDirection: "column" as const }}>
                       {(selectedSkuBuyingMode === "self" ? [
                         { n: "1", title: "Save the Packworkz specification", body: "The exact SKU, quantity, artwork route, and delivery choice are attached to the order.", color: "#1B6CA8" },
-                        { n: "2", title: "Complete secure checkout", body: "Shopify confirms GST, shipping details, and payment without re-entering the specification.", color: "#E8A838" },
+                        { n: "2", title: "Complete secure payment", body: "Razorpay collects payment on Packworkz without asking you to configure the product again.", color: "#E8A838" },
                         { n: "3", title: "Artwork check and production", body: "Nothing enters production until the artwork and specification pass prepress review.", color: "#22C55E" },
                       ] : [
                         { n: "1", title: "We review your spec", body: "Same day — our team checks SKU, quantity, and delivery requirements.", color: "#1B6CA8" },
@@ -1484,7 +1477,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                 <button onClick={handleSubmit} disabled={submitMutation.isPending || artworkUploading}
                   className="px-5 sm:px-8 py-2.5 rounded-lg text-sm font-black uppercase tracking-wider transition-all hover:opacity-90 flex items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed min-w-0"
                   style={{ background: "#E8A838", color: "#0F1C2C" }}>
-                  {artworkUploading ? <><Loader2 className="w-4 h-4 animate-spin" /> Uploading artwork…</> : submitMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <>{selectedSkuBuyingMode === "assisted" ? "Request managed quote" : "Continue to checkout"} <ArrowRight className="w-4 h-4" /></>}
+                  {artworkUploading ? <><Loader2 className="w-4 h-4 animate-spin" /> Uploading artwork…</> : submitMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <>{selectedSkuBuyingMode === "assisted" ? "Request managed quote" : "Save and continue to payment"} <ArrowRight className="w-4 h-4" /></>}
                 </button>
               )}
             </div>
@@ -1497,6 +1490,8 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
               qty={qty}
               delivery={deliveryOption}
               artworkOption={artworkOption}
+              sizeCode={selectedSizeCode}
+              configuration={variantSelections}
               buyingMode={selectedSkuBuyingMode}
               onSubmit={isLastStep ? handleSubmit : undefined}
               submitting={submitMutation.isPending}

@@ -9,7 +9,7 @@ import TestimonialsSection from "@/components/home/TestimonialsSection";
 import { CATALOG_SKUS } from "@/lib/catalog";
 import {
   Search, GitBranch, ShieldCheck, Truck,
-  Leaf, Droplets, FileCheck, ArrowRight,
+  Leaf, Droplets, FileCheck, ArrowRight, ArrowLeft,
   Package, ShoppingBag, Box, Tag, Gift,
 } from "lucide-react";
 
@@ -40,7 +40,6 @@ const LOGO_ROW_1 = [
   { name: "Rage Coffee",      file: "/images/logos/ragecoffee.png" },
 ];
 const LOGO_ROW_2 = [
-  { name: "Juicy Chemistry",  file: "/images/logos/juicychemistry.png" },
   { name: "Mogu Mogu",        file: "/images/logos/mogumogi.png" },
   { name: "Olipop",           file: "/images/logos/olipop.webp" },
   { name: "Voltas",           file: "/images/logos/voltas.png" },
@@ -109,7 +108,7 @@ const CAT_IMAGES: Record<string, string> = {
   protective:  "/categories/protectivepacks.jpg",
   rolls:       "/categories/printedrolls.jpg",
   labels:      "/categories/closures.jpg",
-  sustainable: "/categories/sustainable.jpg",
+  sustainable: "/images/foodservice-containers-premium.jpg",
   premium:     "/skus/magneticbox.jpg",
 };
 
@@ -175,7 +174,7 @@ const INDUSTRY_SOLUTIONS: Record<string, {
     proof: "Best for lower damage, faster dispatch, and branded delivery moments",
     best: ["Mailer boxes", "Poly mailers", "Corrugated shippers", "Paper mailers"],
     stack: [
-      { label: "Self-serve mailers", desc: "Pick size, print, quantity, and delivery window without a vendor call." },
+      { label: "Instant-buy mailers", desc: "Pick a fixed size, print, quantity, and delivery window without a vendor call." },
       { label: "Return-ready packaging", desc: "Tamper-safe, POD-compatible, and practical for reverse logistics." },
       { label: "Launch bundles", desc: "Boxes, tissue, stickers, sleeves, and inserts in one managed order." },
     ],
@@ -188,7 +187,7 @@ const INDUSTRY_SOLUTIONS: Record<string, {
     best: ["Pillow pouches", "Mono cartons", "Rollstock", "Pressure labels"],
     stack: [
       { label: "Repeat SKU playbooks", desc: "Standardised material, print, MOQ, and reorder windows per product." },
-      { label: "Managed rollstock", desc: "Assisted pricing for films, laminates, and machine-specific roll formats." },
+      { label: "Managed rollstock", desc: "Reviewed pricing for films, laminates, and machine-specific roll formats." },
       { label: "SmartStock fit", desc: "Consumption-aware reorder prompts for SKUs you cannot afford to miss." },
     ],
   },
@@ -258,7 +257,7 @@ const HOW_IT_WORKS_STEPS = [
     num: "Step 01",
     Icon: Search,
     title: "Configure and Pricing Plan",
-    desc: "Browse 35 launch-ready product families, choose the specification, and follow one of two clear paths: instant buy or managed quote.",
+    desc: "Browse 49 launch-ready product families, choose the specification, and follow one of two clear paths: instant buy or managed quote.",
     bg: "#0D1B2A",
   },
   {
@@ -518,9 +517,14 @@ export default function Home() {
 
   const caseIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const processRef = useRef<HTMLDivElement>(null);
+  const industryTabsRef = useRef<HTMLDivElement>(null);
   const stepEls = useRef<(HTMLDivElement | null)[]>([]);
   const activeIndustry = INDUSTRIES.find((industry) => industry.slug === activeIndustrySlug) || INDUSTRIES[0];
   const activeIndustrySolution = INDUSTRY_SOLUTIONS[activeIndustry.slug];
+
+  const moveIndustryTabs = (direction: -1 | 1) => {
+    industryTabsRef.current?.scrollBy({ left: direction * 230, behavior: "smooth" });
+  };
 
   const startCaseRotation = () => {
     if (caseIntervalRef.current) clearInterval(caseIntervalRef.current);
@@ -627,7 +631,7 @@ export default function Home() {
         className="relative overflow-hidden"
         style={{
           background: "linear-gradient(135deg, #020817 0%, #071a45 40%, #153e9f 100%)",
-          minHeight: 620,
+          minHeight: "100svh",
         }}
       >
         {/* Subtle geometric lines */}
@@ -747,12 +751,10 @@ export default function Home() {
         {/* Left content */}
         <div className="relative z-10 max-w-7xl mx-auto px-8 md:px-20 pt-28 pb-14">
           {/* All text + CTAs + stats pinned to left column */}
-          <div className="lg:max-w-[48%]">
-            <p className="font-bold tracking-[0.2em] mb-5 text-sm uppercase" style={{ color: "#93c5fd" }}>
-              AI-POWERED PACKAGING PROCUREMENT PLATFORM
-            </p>
-            <h1 className="clash-display text-white leading-[1.05] mb-6" style={{ fontSize: "clamp(2.6rem, 5vw, 5rem)" }}>
-              Your Packaging.<br />Sorted. Forever.
+          <div className="lg:max-w-[54%]">
+            <h1 className="clash-display text-white leading-[1.05] mb-6" style={{ fontSize: "clamp(2.6rem, 5vw, 4.7rem)" }}>
+              <span className="block lg:whitespace-nowrap">Your Packaging.</span>
+              <span className="block lg:whitespace-nowrap">Sorted. Forever.</span>
             </h1>
             <p className="text-blue-100 text-lg md:text-xl mb-3 max-w-lg font-light">
               Design. Source. QC. Deliver. One platform. Zero vendor chaos.
@@ -772,26 +774,31 @@ export default function Home() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 mb-3" style={{ alignItems: "stretch" }}>
               <span className="animated-border animated-border-white" style={{ display: "flex" }}>
-                <Link href="/configure" style={{ flex: 1, display: "flex" }}>
+                <Link href="/products" style={{ flex: 1, display: "flex" }}>
                   <button className="btn-fill btn-amber px-9 py-4 text-base whitespace-nowrap" style={{ flex: 1 }}>
-                    <span>Get Pricing Plan</span><MS icon="arrow_forward" />
+                    <span>Shop packaging</span><MS icon="arrow_forward" />
                   </button>
                 </Link>
               </span>
-              <Link href="/products" style={{ display: "flex" }}>
+              <Link href="/configure" style={{ display: "flex" }}>
                 <button className="btn-fill btn-outline-white px-9 py-4 text-base whitespace-nowrap" style={{ flex: 1 }}>
-                  <span>Browse the catalog</span>
+                  <span>Get a quote</span>
                 </button>
               </Link>
             </div>
-            <p style={{ color: "rgba(255,255,255,0.32)", fontSize: 12, marginBottom: 24, letterSpacing: "0.2px" }}>
-              No minimum for samples · MOQ from 500 units for bulk
-            </p>
+            <div style={{ marginBottom: 24, display: "flex", alignItems: "center", gap: 18, flexWrap: "wrap" }}>
+              <p style={{ color: "rgba(255,255,255,0.42)", fontSize: 12, letterSpacing: "0.2px" }}>
+                No minimum for samples · MOQ from 500 units for bulk
+              </p>
+              <Link href="/mockup-studio" style={{ color: "#93c5fd", fontSize: 12, fontWeight: 800, textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 5 }}>
+                Preview artwork in 3D <MS icon="view_in_ar" className="text-base" />
+              </Link>
+            </div>
 
             {/* Stats badges — locked inside left column */}
             <div className="flex flex-wrap gap-x-7 gap-y-3 pt-7 border-t border-white/15">
               {[
-                { icon: "inventory_2",       value: "32", label: "Configured SKU Families" },
+                { icon: "inventory_2",       value: String(CATALOG_SKUS.length), label: "Configured SKU Families" },
                 { icon: "workspace_premium", value: "Multi", label: "Category Coverage" },
                 { icon: "public",            value: "India", label: "Delivery Network" },
                 { icon: "verified",          value: "QC", label: "Documented Checkpoints" },
@@ -1132,8 +1139,8 @@ export default function Home() {
                 Explore practical packaging stacks selected for your product, supply chain, compliance needs, and route to market.
               </p>
               <div className="pw-sector-note scroll-animate scroll-animate-delay-3">
-                <span>Self-serve for standard SKUs.</span>
-                <span>Assisted quotes for rolls, films, and technical packs.</span>
+                <span>Instant buy for standard SKUs.</span>
+                <span>Managed quotes for rolls, films, and technical packs.</span>
               </div>
               <Link href="/industries">
                 <button className="btn-fill btn-navy px-6 py-3 text-sm pw-btn-transition">
@@ -1145,10 +1152,13 @@ export default function Home() {
 
             <div className="pw-sector-showcase">
               <div className="pw-sector-tab-header">
-                <strong>Explore all 8 industries</strong>
-                <span>Select an industry to update the playbook</span>
+                <div><strong>Explore all 8 industries</strong><span>Select an industry to update the playbook</span></div>
+                <div className="pw-sector-tab-controls" aria-label="Scroll industries">
+                  <button type="button" onClick={() => moveIndustryTabs(-1)} title="Previous industries"><ArrowLeft size={16} /></button>
+                  <button type="button" onClick={() => moveIndustryTabs(1)} title="Next industries"><ArrowRight size={16} /></button>
+                </div>
               </div>
-              <div className="pw-sector-tabs" role="tablist" aria-label="Industries served by Packworkz">
+              <div ref={industryTabsRef} className="pw-sector-tabs" role="tablist" aria-label="Industries served by Packworkz">
                 {INDUSTRIES.map((industry) => (
                   <button
                     key={industry.slug}
@@ -1221,8 +1231,8 @@ export default function Home() {
       <section className="pw-sustainable-editorial pw-home-longform">
         <div className="pw-sustainable-inner">
           <div className="pw-sustainable-media scroll-animate">
-            <img src="/categories/sustainable.jpg" alt="Kraft pouches, cartons and jars from the Packworkz sustainable packaging range" loading="lazy" />
-            <div className="pw-sustainable-media-label"><span>Material library</span><strong>Kraft · recycled · compostable</strong></div>
+            <img src="/images/foodservice-containers-premium.jpg" alt="Premium paper bowls and food containers from the Packworkz sustainable foodservice range" loading="lazy" />
+            <div className="pw-sustainable-media-label"><span>Foodservice range</span><strong>Paper bowls · food tubs · fibre lids</strong></div>
           </div>
           <div className="pw-sustainable-copy">
             <p className="pw-sustainable-eyebrow scroll-animate"><Leaf size={16} /> RESPONSIBLE MATERIALS</p>
@@ -1336,7 +1346,7 @@ export default function Home() {
               { feature: "Vendor redundancy",    good: "3 vetted backup vendors per order — production never stalls.",  bad: "One vendor. Their delay is your delay." },
               { feature: "Quality control",       good: "Our team inspects every dispatch. Photo evidence in dashboard.", bad: "Vendor self-certifies. Rejection risk is yours." },
               { feature: "Pricing transparency",  good: "Transparent pricing + 3% discount for upfront payment.",        bad: "Credit terms hide 10–15% markup per unit." },
-              { feature: "Product coverage",      good: "35 focused buying families, with specialist formats handled through one production brief.", bad: "Specialised in one category. Source the rest yourself." },
+              { feature: "Product coverage",      good: "49 focused buying families, with specialist formats handled through one production brief.", bad: "Specialised in one category. Source the rest yourself." },
               { feature: "Compliance & certs",    good: "ISO, BRC, FDA, FSC on file. Export-ready documentation.",       bad: "Certification varies by vendor. Risk sits with you." },
               { feature: "Design service",        good: "Print-ready artwork from ₹1,999. Files yours forever.",         bad: "Mostly unavailable. Third-party dependency." },
               { feature: "Order visibility",      good: "Real-time dashboard — status, dispatch, ETA in one place.",     bad: "WhatsApp updates. No audit trail." },
@@ -1479,7 +1489,7 @@ export default function Home() {
               <span className="animated-border animated-border-white">
                 <Link href="/configure">
                   <button className="btn-fill btn-amber px-8 py-3 text-sm">
-                    Get Pricing Plan →
+                    Get a managed quote →
                   </button>
                 </Link>
               </span>

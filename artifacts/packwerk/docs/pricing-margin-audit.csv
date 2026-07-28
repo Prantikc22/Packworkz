@@ -1,0 +1,1535 @@
+sku,size_code,size,quantity,unit_price_ex_gst,loaded_landed_cost,product_gross_margin_pct,checkout_route,configuration
+FP-101,100G,100 g,250,18.41,11.96,35.04,online checkout,standard
+FP-101,100G,100 g,250,27.62,17.95,35.01,online checkout,premium
+FP-101,250G,250 g,250,22.45,14.59,35.01,online checkout,standard
+FP-101,250G,250 g,250,33.68,21.88,35.04,online checkout,premium
+FP-101,500G,500 g,250,26.50,17.22,35.02,online checkout,standard
+FP-101,500G,500 g,250,39.74,25.82,35.03,online checkout,premium
+FP-101,1KG,1 kg,250,31.88,20.72,35.01,online checkout,standard
+FP-101,1KG,1 kg,250,47.82,31.08,35.01,online checkout,premium
+FP-101,100G,100 g,500,14.35,9.30,35.19,online checkout,standard
+FP-101,100G,100 g,500,21.53,13.95,35.21,online checkout,premium
+FP-101,250G,250 g,500,17.50,11.34,35.20,online checkout,standard
+FP-101,250G,250 g,500,26.25,17.01,35.20,online checkout,premium
+FP-101,500G,500 g,500,20.65,13.38,35.21,online checkout,standard
+FP-101,500G,500 g,500,30.98,20.07,35.22,online checkout,premium
+FP-101,1KG,1 kg,500,24.85,16.10,35.21,online checkout,standard
+FP-101,1KG,1 kg,500,37.28,24.15,35.22,online checkout,premium
+FP-101,100G,100 g,1000,11.07,7.17,35.23,online checkout,standard
+FP-101,100G,100 g,1000,16.61,10.76,35.22,online checkout,premium
+FP-101,250G,250 g,1000,13.50,8.75,35.19,online checkout,standard
+FP-101,250G,250 g,1000,20.25,13.13,35.16,online checkout,premium
+FP-101,500G,500 g,1000,15.93,10.32,35.22,online checkout,standard
+FP-101,500G,500 g,1000,23.90,15.49,35.19,online checkout,premium
+FP-101,1KG,1 kg,1000,19.17,12.42,35.21,online checkout,standard
+FP-101,1KG,1 kg,1000,28.76,18.64,35.19,online checkout,premium
+FP-101,100G,100 g,2500,8.18,5.31,35.09,online checkout,standard
+FP-101,100G,100 g,2500,12.27,7.97,35.04,online checkout,premium
+FP-101,250G,250 g,2500,9.98,6.48,35.07,online checkout,standard
+FP-101,250G,250 g,2500,14.96,9.72,35.03,online checkout,premium
+FP-101,500G,500 g,2500,11.77,7.65,35.00,online checkout,standard
+FP-101,500G,500 g,2500,17.65,11.47,35.01,payment confirmation,premium
+FP-101,1KG,1 kg,2500,14.16,9.20,35.03,online checkout,standard
+FP-101,1KG,1 kg,2500,21.24,13.80,35.03,payment confirmation,premium
+FP-101,100G,100 g,5000,6.56,4.26,35.06,online checkout,standard
+FP-101,100G,100 g,5000,9.83,6.38,35.10,payment confirmation,premium
+FP-101,250G,250 g,5000,7.99,5.19,35.04,online checkout,standard
+FP-101,250G,250 g,5000,11.99,7.79,35.03,payment confirmation,premium
+FP-101,500G,500 g,5000,9.43,6.12,35.10,payment confirmation,standard
+FP-101,500G,500 g,5000,14.15,9.19,35.05,payment confirmation,premium
+FP-101,1KG,1 kg,5000,11.35,7.37,35.07,payment confirmation,standard
+FP-101,1KG,1 kg,5000,17.02,11.05,35.08,payment confirmation,premium
+FP-103,250G,250 g,500,18.92,12.07,36.21,online checkout,standard
+FP-103,250G,250 g,500,28.38,18.11,36.19,online checkout,premium
+FP-103,500G,500 g,500,22.00,14.04,36.18,online checkout,standard
+FP-103,500G,500 g,500,33.00,21.06,36.18,online checkout,premium
+FP-103,1KG,1 kg,500,28.16,17.97,36.19,online checkout,standard
+FP-103,1KG,1 kg,500,42.24,26.96,36.17,online checkout,premium
+FP-103,2KG,2 kg,500,34.77,22.18,36.21,online checkout,standard
+FP-103,2KG,2 kg,500,52.15,33.27,36.20,online checkout,premium
+FP-103,250G,250 g,1000,15.01,9.75,35.04,online checkout,standard
+FP-103,250G,250 g,1000,22.52,14.63,35.04,online checkout,premium
+FP-103,500G,500 g,1000,17.45,11.34,35.01,online checkout,standard
+FP-103,500G,500 g,1000,26.18,17.01,35.03,online checkout,premium
+FP-103,1KG,1 kg,1000,22.34,14.52,35.00,online checkout,standard
+FP-103,1KG,1 kg,1000,33.51,21.77,35.03,online checkout,premium
+FP-103,2KG,2 kg,1000,27.58,17.92,35.03,online checkout,standard
+FP-103,2KG,2 kg,1000,41.36,26.88,35.01,payment confirmation,premium
+FP-103,250G,250 g,2500,11.44,7.43,35.05,online checkout,standard
+FP-103,250G,250 g,2500,17.16,11.15,35.02,payment confirmation,premium
+FP-103,500G,500 g,2500,13.30,8.64,35.04,online checkout,standard
+FP-103,500G,500 g,2500,19.96,12.96,35.07,payment confirmation,premium
+FP-103,1KG,1 kg,2500,17.03,11.06,35.06,payment confirmation,standard
+FP-103,1KG,1 kg,2500,25.54,16.59,35.04,payment confirmation,premium
+FP-103,2KG,2 kg,2500,21.02,13.65,35.06,payment confirmation,standard
+FP-103,2KG,2 kg,2500,31.53,20.48,35.05,payment confirmation,premium
+FP-103,250G,250 g,5000,8.87,5.76,35.06,payment confirmation,standard
+FP-103,250G,250 g,5000,13.30,8.64,35.04,payment confirmation,premium
+FP-103,500G,500 g,5000,10.31,6.70,35.01,payment confirmation,standard
+FP-103,500G,500 g,5000,15.47,10.05,35.04,payment confirmation,premium
+FP-103,1KG,1 kg,5000,13.20,8.58,35.00,payment confirmation,standard
+FP-103,1KG,1 kg,5000,19.80,12.86,35.05,payment confirmation,premium
+FP-103,2KG,2 kg,5000,16.30,10.59,35.03,payment confirmation,standard
+FP-103,2KG,2 kg,5000,24.44,15.88,35.02,payment confirmation,premium
+FP-104,250ML,250 ml,500,15.69,10.19,35.05,online checkout,standard
+FP-104,250ML,250 ml,500,23.53,15.29,35.02,online checkout,premium
+FP-104,500ML,500 ml,500,19.13,12.43,35.02,online checkout,standard
+FP-104,500ML,500 ml,500,28.70,18.64,35.05,online checkout,premium
+FP-104,1L,1 litre,500,24.11,15.66,35.05,online checkout,standard
+FP-104,1L,1 litre,500,36.16,23.49,35.04,online checkout,premium
+FP-104,2L,2 litres,500,29.66,19.27,35.03,online checkout,standard
+FP-104,2L,2 litres,500,44.48,28.90,35.03,online checkout,premium
+FP-104,250ML,250 ml,1000,12.28,7.98,35.02,online checkout,standard
+FP-104,250ML,250 ml,1000,18.42,11.97,35.02,online checkout,premium
+FP-104,500ML,500 ml,1000,14.97,9.73,35.00,online checkout,standard
+FP-104,500ML,500 ml,1000,22.47,14.60,35.02,online checkout,premium
+FP-104,1L,1 litre,1000,18.87,12.26,35.03,online checkout,standard
+FP-104,1L,1 litre,1000,28.30,18.39,35.02,online checkout,premium
+FP-104,2L,2 litres,1000,23.21,15.08,35.03,online checkout,standard
+FP-104,2L,2 litres,1000,34.81,22.62,35.02,online checkout,premium
+FP-104,250ML,250 ml,2500,9.55,6.20,35.08,online checkout,standard
+FP-104,250ML,250 ml,2500,14.32,9.30,35.06,online checkout,premium
+FP-104,500ML,500 ml,2500,11.64,7.56,35.05,online checkout,standard
+FP-104,500ML,500 ml,2500,17.46,11.34,35.05,payment confirmation,premium
+FP-104,1L,1 litre,2500,14.67,9.53,35.04,online checkout,standard
+FP-104,1L,1 litre,2500,22.00,14.29,35.05,payment confirmation,premium
+FP-104,2L,2 litres,2500,18.05,11.72,35.07,payment confirmation,standard
+FP-104,2L,2 litres,2500,27.07,17.58,35.06,payment confirmation,premium
+FP-104,250ML,250 ml,5000,7.10,4.61,35.07,online checkout,standard
+FP-104,250ML,250 ml,5000,10.64,6.91,35.06,payment confirmation,premium
+FP-104,500ML,500 ml,5000,8.65,5.62,35.03,payment confirmation,standard
+FP-104,500ML,500 ml,5000,12.98,8.43,35.05,payment confirmation,premium
+FP-104,1L,1 litre,5000,10.90,7.08,35.05,payment confirmation,standard
+FP-104,1L,1 litre,5000,16.35,10.62,35.05,payment confirmation,premium
+FP-104,2L,2 litres,5000,13.41,8.71,35.05,payment confirmation,standard
+FP-104,2L,2 litres,5000,20.12,13.07,35.04,payment confirmation,premium
+FP-104,250ML,250 ml,10000,5.74,3.72,35.19,payment confirmation,standard
+FP-104,250ML,250 ml,10000,8.60,5.58,35.12,payment confirmation,premium
+FP-104,500ML,500 ml,10000,6.99,4.54,35.05,payment confirmation,standard
+FP-104,500ML,500 ml,10000,10.49,6.81,35.08,payment confirmation,premium
+FP-104,1L,1 litre,10000,8.81,5.72,35.07,payment confirmation,standard
+FP-104,1L,1 litre,10000,13.22,8.58,35.10,payment confirmation,premium
+FP-104,2L,2 litres,10000,10.84,7.04,35.06,payment confirmation,standard
+FP-104,2L,2 litres,10000,16.26,10.56,35.06,payment confirmation,premium
+FP-105,5G,5 g / ml,5000,1.73,1.05,39.31,online checkout,standard
+FP-105,5G,5 g / ml,5000,2.60,1.58,39.23,online checkout,premium
+FP-105,10G,10 g / ml,5000,2.40,1.46,39.17,online checkout,standard
+FP-105,10G,10 g / ml,5000,3.60,2.19,39.17,online checkout,premium
+FP-105,20G,20 g / ml,5000,2.88,1.75,39.24,online checkout,standard
+FP-105,20G,20 g / ml,5000,4.32,2.63,39.12,online checkout,premium
+FP-105,50G,50 g / ml,5000,3.56,2.16,39.33,online checkout,standard
+FP-105,50G,50 g / ml,5000,5.33,3.24,39.21,online checkout,premium
+FP-105,5G,5 g / ml,10000,1.34,0.82,38.81,online checkout,standard
+FP-105,5G,5 g / ml,10000,2.00,1.23,38.50,online checkout,premium
+FP-105,10G,10 g / ml,10000,1.85,1.14,38.38,online checkout,standard
+FP-105,10G,10 g / ml,10000,2.78,1.71,38.49,online checkout,premium
+FP-105,20G,20 g / ml,10000,2.23,1.37,38.57,online checkout,standard
+FP-105,20G,20 g / ml,10000,3.33,2.05,38.44,online checkout,premium
+FP-105,50G,50 g / ml,10000,2.74,1.69,38.32,online checkout,standard
+FP-105,50G,50 g / ml,10000,4.11,2.53,38.44,payment confirmation,premium
+FP-105,5G,5 g / ml,25000,0.98,0.61,37.76,online checkout,standard
+FP-105,5G,5 g / ml,25000,1.46,0.92,36.99,online checkout,premium
+FP-105,10G,10 g / ml,25000,1.35,0.85,37.04,online checkout,standard
+FP-105,10G,10 g / ml,25000,2.03,1.27,37.44,payment confirmation,premium
+FP-105,20G,20 g / ml,25000,1.62,1.02,37.04,payment confirmation,standard
+FP-105,20G,20 g / ml,25000,2.44,1.53,37.30,payment confirmation,premium
+FP-105,50G,50 g / ml,25000,2.00,1.26,37.00,payment confirmation,standard
+FP-105,50G,50 g / ml,25000,3.00,1.89,37.00,payment confirmation,premium
+FP-105,5G,5 g / ml,50000,0.76,0.47,38.16,online checkout,standard
+FP-105,5G,5 g / ml,50000,1.14,0.70,38.60,payment confirmation,premium
+FP-105,10G,10 g / ml,50000,1.05,0.65,38.10,payment confirmation,standard
+FP-105,10G,10 g / ml,50000,1.58,0.98,37.97,payment confirmation,premium
+FP-105,20G,20 g / ml,50000,1.26,0.78,38.10,payment confirmation,standard
+FP-105,20G,20 g / ml,50000,1.89,1.17,38.10,payment confirmation,premium
+FP-105,50G,50 g / ml,50000,1.56,0.96,38.46,payment confirmation,standard
+FP-105,50G,50 g / ml,50000,2.34,1.44,38.46,payment confirmation,premium
+BC-201,100ML,100 ml,500,17.28,10.89,36.98,online checkout,standard
+BC-201,100ML,100 ml,500,25.92,16.33,37.00,online checkout,premium
+BC-201,250ML,250 ml,500,24.00,15.12,37.00,online checkout,standard
+BC-201,250ML,250 ml,500,36.00,22.68,37.00,online checkout,premium
+BC-201,500ML,500 ml,500,30.72,19.35,37.01,online checkout,standard
+BC-201,500ML,500 ml,500,46.08,29.03,37.00,online checkout,premium
+BC-201,1L,1 litre,500,39.60,24.95,36.99,online checkout,standard
+BC-201,1L,1 litre,500,59.40,37.42,37.00,online checkout,premium
+BC-201,100ML,100 ml,1000,13.32,8.40,36.94,online checkout,standard
+BC-201,100ML,100 ml,1000,19.98,12.60,36.94,online checkout,premium
+BC-201,250ML,250 ml,1000,18.50,11.67,36.92,online checkout,standard
+BC-201,250ML,250 ml,1000,27.75,17.50,36.94,online checkout,premium
+BC-201,500ML,500 ml,1000,23.68,14.94,36.91,online checkout,standard
+BC-201,500ML,500 ml,1000,35.52,22.41,36.91,online checkout,premium
+BC-201,1L,1 litre,1000,30.53,19.26,36.91,online checkout,standard
+BC-201,1L,1 litre,1000,45.79,28.88,36.93,payment confirmation,premium
+BC-201,100ML,100 ml,2500,10.08,6.38,36.71,online checkout,standard
+BC-201,100ML,100 ml,2500,15.12,9.57,36.71,online checkout,premium
+BC-201,250ML,250 ml,2500,14.00,8.86,36.71,online checkout,standard
+BC-201,250ML,250 ml,2500,21.00,13.29,36.71,payment confirmation,premium
+BC-201,500ML,500 ml,2500,17.93,11.34,36.75,payment confirmation,standard
+BC-201,500ML,500 ml,2500,26.89,17.01,36.74,payment confirmation,premium
+BC-201,1L,1 litre,2500,23.10,14.62,36.71,payment confirmation,standard
+BC-201,1L,1 litre,2500,34.65,21.93,36.71,payment confirmation,premium
+BC-201,100ML,100 ml,5000,7.92,4.90,38.13,online checkout,standard
+BC-201,100ML,100 ml,5000,11.88,7.35,38.13,payment confirmation,premium
+BC-201,250ML,250 ml,5000,11.00,6.81,38.09,payment confirmation,standard
+BC-201,250ML,250 ml,5000,16.50,10.21,38.12,payment confirmation,premium
+BC-201,500ML,500 ml,5000,14.08,8.72,38.07,payment confirmation,standard
+BC-201,500ML,500 ml,5000,21.12,13.08,38.07,payment confirmation,premium
+BC-201,1L,1 litre,5000,18.15,11.24,38.07,payment confirmation,standard
+BC-201,1L,1 litre,5000,27.23,16.85,38.12,payment confirmation,premium
+BC-202,200ML,200 ml,200,51.85,33.70,35.00,online checkout,standard
+BC-202,200ML,200 ml,200,77.77,50.54,35.01,online checkout,premium
+BC-202,500ML,500 ml,200,66.47,43.20,35.01,online checkout,standard
+BC-202,500ML,500 ml,200,99.71,64.80,35.01,online checkout,premium
+BC-202,750ML,750 ml,200,82.43,53.57,35.01,online checkout,standard
+BC-202,750ML,750 ml,200,123.64,80.35,35.01,online checkout,premium
+BC-202,1L,1 litre,200,97.05,63.07,35.01,online checkout,standard
+BC-202,1L,1 litre,200,145.57,94.61,35.01,online checkout,premium
+BC-202,200ML,200 ml,500,41.48,26.96,35.00,online checkout,standard
+BC-202,200ML,200 ml,500,62.22,40.44,35.00,online checkout,premium
+BC-202,500ML,500 ml,500,53.17,34.56,35.00,online checkout,standard
+BC-202,500ML,500 ml,500,79.76,51.84,35.01,payment confirmation,premium
+BC-202,750ML,750 ml,500,65.94,42.85,35.02,online checkout,standard
+BC-202,750ML,750 ml,500,98.90,64.28,35.01,payment confirmation,premium
+BC-202,1L,1 litre,500,77.64,50.46,35.01,online checkout,standard
+BC-202,1L,1 litre,500,116.45,75.69,35.00,payment confirmation,premium
+BC-202,200ML,200 ml,1000,32.41,21.06,35.02,online checkout,standard
+BC-202,200ML,200 ml,1000,48.61,31.59,35.01,payment confirmation,premium
+BC-202,500ML,500 ml,1000,41.54,27.00,35.00,payment confirmation,standard
+BC-202,500ML,500 ml,1000,62.31,40.50,35.00,payment confirmation,premium
+BC-202,750ML,750 ml,1000,51.51,33.48,35.00,payment confirmation,standard
+BC-202,750ML,750 ml,1000,77.27,50.22,35.01,payment confirmation,premium
+BC-202,1L,1 litre,1000,60.65,39.42,35.00,payment confirmation,standard
+BC-202,1L,1 litre,1000,90.98,59.13,35.01,payment confirmation,premium
+BC-202,200ML,200 ml,2500,27.23,17.69,35.03,payment confirmation,standard
+BC-202,200ML,200 ml,2500,40.84,26.54,35.01,payment confirmation,premium
+BC-202,500ML,500 ml,2500,34.90,22.68,35.01,payment confirmation,standard
+BC-202,500ML,500 ml,2500,52.35,34.02,35.01,payment confirmation,premium
+BC-202,750ML,750 ml,2500,43.28,28.12,35.03,payment confirmation,standard
+BC-202,750ML,750 ml,2500,64.92,42.18,35.03,payment confirmation,premium
+BC-202,1L,1 litre,2500,50.96,33.11,35.03,payment confirmation,standard
+BC-202,1L,1 litre,2500,76.44,49.67,35.02,payment confirmation,premium
+BC-204,30ML,30 ml,200,39.35,25.57,35.02,online checkout,standard
+BC-204,30ML,30 ml,200,59.02,38.36,35.01,online checkout,premium
+BC-204,50ML,50 ml,200,53.17,34.56,35.00,online checkout,standard
+BC-204,50ML,50 ml,200,79.76,51.84,35.01,online checkout,premium
+BC-204,100ML,100 ml,200,68.07,44.24,35.01,online checkout,standard
+BC-204,100ML,100 ml,200,102.10,66.36,35.00,online checkout,premium
+BC-204,200ML,200 ml,200,86.14,55.99,35.00,online checkout,standard
+BC-204,200ML,200 ml,200,129.21,83.98,35.01,online checkout,premium
+BC-204,30ML,30 ml,500,30.74,19.98,35.00,online checkout,standard
+BC-204,30ML,30 ml,500,46.11,29.97,35.00,online checkout,premium
+BC-204,50ML,50 ml,500,41.54,27.00,35.00,online checkout,standard
+BC-204,50ML,50 ml,500,62.31,40.50,35.00,online checkout,premium
+BC-204,100ML,100 ml,500,53.18,34.56,35.01,online checkout,standard
+BC-204,100ML,100 ml,500,79.76,51.84,35.01,online checkout,premium
+BC-204,200ML,200 ml,500,67.30,43.74,35.01,online checkout,standard
+BC-204,200ML,200 ml,500,100.95,65.61,35.01,payment confirmation,premium
+BC-204,30ML,30 ml,1000,24.60,15.98,35.04,online checkout,standard
+BC-204,30ML,30 ml,1000,36.90,23.98,35.01,online checkout,premium
+BC-204,50ML,50 ml,1000,33.24,21.60,35.02,online checkout,standard
+BC-204,50ML,50 ml,1000,49.86,32.40,35.02,payment confirmation,premium
+BC-204,100ML,100 ml,1000,42.55,27.65,35.02,payment confirmation,standard
+BC-204,100ML,100 ml,1000,63.83,41.47,35.03,payment confirmation,premium
+BC-204,200ML,200 ml,1000,53.85,34.99,35.02,payment confirmation,standard
+BC-204,200ML,200 ml,1000,80.78,52.49,35.02,payment confirmation,premium
+BC-204,30ML,30 ml,2500,19.68,12.79,35.01,payment confirmation,standard
+BC-204,30ML,30 ml,2500,29.52,19.18,35.03,payment confirmation,premium
+BC-204,50ML,50 ml,2500,26.59,17.28,35.01,payment confirmation,standard
+BC-204,50ML,50 ml,2500,39.89,25.92,35.02,payment confirmation,premium
+BC-204,100ML,100 ml,2500,34.04,22.12,35.02,payment confirmation,standard
+BC-204,100ML,100 ml,2500,51.06,33.18,35.02,payment confirmation,premium
+BC-204,200ML,200 ml,2500,43.08,27.99,35.03,payment confirmation,standard
+BC-204,200ML,200 ml,2500,64.62,41.99,35.02,payment confirmation,premium
+BC-205,15ML,15 ml,200,33.67,21.88,35.02,online checkout,standard
+BC-205,15ML,15 ml,200,50.50,32.82,35.01,online checkout,premium
+BC-205,30ML,30 ml,200,44.88,29.17,35.00,online checkout,standard
+BC-205,30ML,30 ml,200,67.33,43.76,35.01,online checkout,premium
+BC-205,50ML,50 ml,200,52.96,34.42,35.01,online checkout,standard
+BC-205,50ML,50 ml,200,79.44,51.63,35.01,online checkout,premium
+BC-205,100ML,100 ml,200,66.43,43.17,35.01,online checkout,standard
+BC-205,100ML,100 ml,200,99.64,64.76,35.01,online checkout,premium
+BC-205,15ML,15 ml,500,26.25,17.01,35.20,online checkout,standard
+BC-205,15ML,15 ml,500,39.38,25.51,35.22,online checkout,premium
+BC-205,30ML,30 ml,500,35.00,22.68,35.20,online checkout,standard
+BC-205,30ML,30 ml,500,52.50,34.02,35.20,online checkout,premium
+BC-205,50ML,50 ml,500,41.30,26.76,35.21,online checkout,standard
+BC-205,50ML,50 ml,500,61.95,40.14,35.21,online checkout,premium
+BC-205,100ML,100 ml,500,51.80,33.57,35.19,online checkout,standard
+BC-205,100ML,100 ml,500,77.70,50.35,35.20,online checkout,premium
+BC-205,15ML,15 ml,1000,21.19,13.77,35.02,online checkout,standard
+BC-205,15ML,15 ml,1000,31.79,20.66,35.01,online checkout,premium
+BC-205,30ML,30 ml,1000,28.25,18.36,35.01,online checkout,standard
+BC-205,30ML,30 ml,1000,42.38,27.54,35.02,payment confirmation,premium
+BC-205,50ML,50 ml,1000,33.34,21.66,35.03,online checkout,standard
+BC-205,50ML,50 ml,1000,50.01,32.50,35.01,payment confirmation,premium
+BC-205,100ML,100 ml,1000,41.81,27.17,35.02,payment confirmation,standard
+BC-205,100ML,100 ml,1000,62.72,40.76,35.01,payment confirmation,premium
+BC-205,15ML,15 ml,2500,17.46,11.34,35.05,payment confirmation,standard
+BC-205,15ML,15 ml,2500,26.18,17.01,35.03,payment confirmation,premium
+BC-205,30ML,30 ml,2500,23.27,15.12,35.02,payment confirmation,standard
+BC-205,30ML,30 ml,2500,34.91,22.68,35.03,payment confirmation,premium
+BC-205,50ML,50 ml,2500,27.46,17.84,35.03,payment confirmation,standard
+BC-205,50ML,50 ml,2500,41.19,26.76,35.03,payment confirmation,premium
+BC-205,100ML,100 ml,2500,34.44,22.38,35.02,payment confirmation,standard
+BC-205,100ML,100 ml,2500,51.66,33.57,35.02,payment confirmation,premium
+BC-206,30ML,30 ml,200,79.03,51.36,35.01,online checkout,standard
+BC-206,30ML,30 ml,200,118.54,77.05,35.00,online checkout,premium
+BC-206,50ML,50 ml,200,96.37,62.64,35.00,online checkout,standard
+BC-206,50ML,50 ml,200,144.56,93.96,35.00,online checkout,premium
+BC-206,100ML,100 ml,200,123.36,80.18,35.00,online checkout,standard
+BC-206,100ML,100 ml,200,185.04,120.27,35.00,online checkout,premium
+BC-206,150ML,150 ml,200,140.71,91.45,35.01,online checkout,standard
+BC-206,150ML,150 ml,200,211.06,137.18,35.00,payment confirmation,premium
+BC-206,30ML,30 ml,500,65.41,42.51,35.01,online checkout,standard
+BC-206,30ML,30 ml,500,98.11,63.76,35.01,payment confirmation,premium
+BC-206,50ML,50 ml,500,79.77,51.84,35.01,online checkout,standard
+BC-206,50ML,50 ml,500,119.65,77.76,35.01,payment confirmation,premium
+BC-206,100ML,100 ml,500,102.10,66.36,35.00,payment confirmation,standard
+BC-206,100ML,100 ml,500,153.14,99.53,35.01,payment confirmation,premium
+BC-206,150ML,150 ml,500,116.45,75.69,35.00,payment confirmation,standard
+BC-206,150ML,150 ml,500,174.68,113.53,35.01,payment confirmation,premium
+BC-206,30ML,30 ml,1000,57.24,37.20,35.01,payment confirmation,standard
+BC-206,30ML,30 ml,1000,85.85,55.79,35.01,payment confirmation,premium
+BC-206,50ML,50 ml,1000,69.80,45.36,35.01,payment confirmation,standard
+BC-206,50ML,50 ml,1000,104.69,68.04,35.01,payment confirmation,premium
+BC-206,100ML,100 ml,1000,89.34,58.06,35.01,payment confirmation,standard
+BC-206,100ML,100 ml,1000,134.00,87.09,35.01,payment confirmation,premium
+BC-206,150ML,150 ml,1000,101.90,66.23,35.00,payment confirmation,standard
+BC-206,150ML,150 ml,1000,152.85,99.34,35.01,payment confirmation,premium
+BC-206,30ML,30 ml,2500,47.70,31.00,35.01,payment confirmation,standard
+BC-206,30ML,30 ml,2500,71.56,46.51,35.01,payment confirmation,premium
+BC-206,50ML,50 ml,2500,58.17,37.81,35.00,payment confirmation,standard
+BC-206,50ML,50 ml,2500,87.27,56.72,35.01,payment confirmation,premium
+BC-206,100ML,100 ml,2500,74.47,48.40,35.01,payment confirmation,standard
+BC-206,100ML,100 ml,2500,111.70,72.60,35.00,payment confirmation,premium
+BC-206,150ML,150 ml,2500,84.93,55.20,35.01,payment confirmation,standard
+BC-206,150ML,150 ml,2500,127.40,82.80,35.01,payment confirmation,premium
+TS-301,30ML,30 ml,1000,15.56,10.11,35.03,online checkout,standard
+TS-301,30ML,30 ml,1000,23.33,15.16,35.02,online checkout,premium
+TS-301,50ML,50 ml,1000,19.95,12.96,35.04,online checkout,standard
+TS-301,50ML,50 ml,1000,29.92,19.44,35.03,online checkout,premium
+TS-301,100ML,100 ml,1000,24.93,16.20,35.02,online checkout,standard
+TS-301,100ML,100 ml,1000,37.39,24.30,35.01,online checkout,premium
+TS-301,150ML,150 ml,1000,28.92,18.79,35.03,online checkout,standard
+TS-301,150ML,150 ml,1000,43.37,28.19,35.00,payment confirmation,premium
+TS-301,30ML,30 ml,2500,11.68,7.59,35.02,online checkout,standard
+TS-301,30ML,30 ml,2500,17.52,11.38,35.05,payment confirmation,premium
+TS-301,50ML,50 ml,2500,14.97,9.73,35.00,online checkout,standard
+TS-301,50ML,50 ml,2500,22.47,14.60,35.02,payment confirmation,premium
+TS-301,100ML,100 ml,2500,18.72,12.16,35.04,payment confirmation,standard
+TS-301,100ML,100 ml,2500,28.07,18.24,35.02,payment confirmation,premium
+TS-301,150ML,150 ml,2500,21.71,14.11,35.01,payment confirmation,standard
+TS-301,150ML,150 ml,2500,32.56,21.16,35.01,payment confirmation,premium
+TS-301,30ML,30 ml,5000,9.08,5.90,35.02,payment confirmation,standard
+TS-301,30ML,30 ml,5000,13.62,8.85,35.02,payment confirmation,premium
+TS-301,50ML,50 ml,5000,11.64,7.56,35.05,payment confirmation,standard
+TS-301,50ML,50 ml,5000,17.46,11.34,35.05,payment confirmation,premium
+TS-301,100ML,100 ml,5000,14.55,9.45,35.05,payment confirmation,standard
+TS-301,100ML,100 ml,5000,21.83,14.17,35.09,payment confirmation,premium
+TS-301,150ML,150 ml,5000,16.88,10.96,35.07,payment confirmation,standard
+TS-301,150ML,150 ml,5000,25.32,16.44,35.07,payment confirmation,premium
+TS-301,30ML,30 ml,10000,7.18,4.63,35.52,payment confirmation,standard
+TS-301,30ML,30 ml,10000,10.77,6.95,35.47,payment confirmation,premium
+TS-301,50ML,50 ml,10000,9.20,5.94,35.43,payment confirmation,standard
+TS-301,50ML,50 ml,10000,13.80,8.91,35.43,payment confirmation,premium
+TS-301,100ML,100 ml,10000,11.50,7.43,35.39,payment confirmation,standard
+TS-301,100ML,100 ml,10000,17.25,11.14,35.42,payment confirmation,premium
+TS-301,150ML,150 ml,10000,13.34,8.61,35.46,payment confirmation,standard
+TS-301,150ML,150 ml,10000,20.01,12.92,35.43,payment confirmation,premium
+BX-401,S,Small,25,40.56,26.12,35.60,online checkout,standard
+BX-401,S,Small,25,60.84,39.18,35.60,online checkout,premium
+BX-401,M,Medium,25,52.00,33.49,35.60,online checkout,standard
+BX-401,M,Medium,25,78.00,50.23,35.60,online checkout,premium
+BX-401,L,Large,25,69.69,44.88,35.60,online checkout,standard
+BX-401,L,Large,25,104.53,67.31,35.61,online checkout,premium
+BX-401,S,Small,50,35.10,21.90,37.61,online checkout,standard
+BX-401,S,Small,50,52.66,32.85,37.62,online checkout,premium
+BX-401,M,Medium,50,45.00,28.08,37.60,online checkout,standard
+BX-401,M,Medium,50,67.50,42.12,37.60,online checkout,premium
+BX-401,L,Large,50,60.30,37.63,37.60,online checkout,standard
+BX-401,L,Large,50,90.45,56.44,37.60,online checkout,premium
+BX-401,S,Small,100,29.64,18.53,37.48,online checkout,standard
+BX-401,S,Small,100,44.46,27.80,37.47,online checkout,premium
+BX-401,M,Medium,100,38.00,23.76,37.47,online checkout,standard
+BX-401,M,Medium,100,57.00,35.64,37.47,online checkout,premium
+BX-401,L,Large,100,50.92,31.84,37.47,online checkout,standard
+BX-401,L,Large,100,76.38,47.76,37.47,online checkout,premium
+BX-401,S,Small,250,19.50,12.21,37.38,online checkout,standard
+BX-401,S,Small,250,29.25,18.32,37.37,online checkout,premium
+BX-401,M,Medium,250,25.00,15.66,37.36,online checkout,standard
+BX-401,M,Medium,250,37.50,23.49,37.36,online checkout,premium
+BX-401,L,Large,250,33.50,20.98,37.37,online checkout,standard
+BX-401,L,Large,250,50.25,31.48,37.35,online checkout,premium
+BX-401,S,Small,500,14.04,8.85,36.97,online checkout,standard
+BX-401,S,Small,500,21.06,13.27,36.99,online checkout,premium
+BX-401,M,Medium,500,18.00,11.34,37.00,online checkout,standard
+BX-401,M,Medium,500,27.00,17.01,37.00,online checkout,premium
+BX-401,L,Large,500,24.12,15.20,36.98,online checkout,standard
+BX-401,L,Large,500,36.18,22.79,37.01,online checkout,premium
+BX-401,S,Small,1000,10.92,6.91,36.72,online checkout,standard
+BX-401,S,Small,1000,16.38,10.37,36.69,online checkout,premium
+BX-401,M,Medium,1000,14.00,8.86,36.71,online checkout,standard
+BX-401,M,Medium,1000,21.00,13.29,36.71,online checkout,premium
+BX-401,L,Large,1000,18.77,11.87,36.76,online checkout,standard
+BX-401,L,Large,1000,28.14,17.81,36.71,online checkout,premium
+BX-402,S,Small,50,272.00,176.26,35.20,online checkout,standard
+BX-402,S,Small,50,408.00,264.40,35.20,online checkout,premium
+BX-402,M,Medium,50,340.00,220.33,35.20,online checkout,standard
+BX-402,M,Medium,50,510.00,330.50,35.20,online checkout,premium
+BX-402,L,Large,50,462.40,299.65,35.20,online checkout,standard
+BX-402,L,Large,50,693.60,449.47,35.20,online checkout,premium
+BX-402,S,Small,100,220.00,142.56,35.20,online checkout,standard
+BX-402,S,Small,100,330.00,213.84,35.20,online checkout,premium
+BX-402,M,Medium,100,275.00,178.20,35.20,online checkout,standard
+BX-402,M,Medium,100,412.50,267.30,35.20,payment confirmation,premium
+BX-402,L,Large,100,374.00,242.35,35.20,online checkout,standard
+BX-402,L,Large,100,561.00,363.53,35.20,payment confirmation,premium
+BX-402,S,Small,250,180.00,116.65,35.19,payment confirmation,standard
+BX-402,S,Small,250,270.00,174.97,35.20,payment confirmation,premium
+BX-402,M,Medium,250,225.00,145.81,35.20,payment confirmation,standard
+BX-402,M,Medium,250,337.50,218.72,35.19,payment confirmation,premium
+BX-402,L,Large,250,306.00,198.30,35.20,payment confirmation,standard
+BX-402,L,Large,250,459.00,297.45,35.20,payment confirmation,premium
+BX-402,S,Small,500,142.40,90.72,36.29,payment confirmation,standard
+BX-402,S,Small,500,213.61,136.08,36.30,payment confirmation,premium
+BX-402,M,Medium,500,178.00,113.40,36.29,payment confirmation,standard
+BX-402,M,Medium,500,267.00,170.10,36.29,payment confirmation,premium
+BX-402,L,Large,500,242.08,154.22,36.29,payment confirmation,standard
+BX-402,L,Large,500,363.12,231.34,36.29,payment confirmation,premium
+BX-402,S,Small,1000,116.00,73.45,36.68,payment confirmation,standard
+BX-402,S,Small,1000,174.00,110.17,36.68,payment confirmation,premium
+BX-402,M,Medium,1000,145.00,91.81,36.68,payment confirmation,standard
+BX-402,M,Medium,1000,217.50,137.72,36.68,payment confirmation,premium
+BX-402,L,Large,1000,197.20,124.86,36.68,payment confirmation,standard
+BX-402,L,Large,1000,295.80,187.29,36.68,payment confirmation,premium
+BX-403,S,Small,50,316.00,204.77,35.20,online checkout,standard
+BX-403,S,Small,50,474.00,307.15,35.20,online checkout,premium
+BX-403,M,Medium,50,395.00,255.96,35.20,online checkout,standard
+BX-403,M,Medium,50,592.50,383.94,35.20,online checkout,premium
+BX-403,L,Large,50,537.21,348.11,35.20,online checkout,standard
+BX-403,L,Large,50,805.80,522.16,35.20,online checkout,premium
+BX-403,S,Small,100,260.00,164.16,36.86,online checkout,standard
+BX-403,S,Small,100,390.00,246.24,36.86,online checkout,premium
+BX-403,M,Medium,100,325.00,205.20,36.86,online checkout,standard
+BX-403,M,Medium,100,487.50,307.80,36.86,payment confirmation,premium
+BX-403,L,Large,100,442.01,279.07,36.86,payment confirmation,standard
+BX-403,L,Large,100,663.01,418.61,36.86,payment confirmation,premium
+BX-403,S,Small,250,204.00,129.60,36.47,payment confirmation,standard
+BX-403,S,Small,250,306.00,194.40,36.47,payment confirmation,premium
+BX-403,M,Medium,250,255.00,162.00,36.47,payment confirmation,standard
+BX-403,M,Medium,250,382.50,243.00,36.47,payment confirmation,premium
+BX-403,L,Large,250,346.80,220.32,36.47,payment confirmation,standard
+BX-403,L,Large,250,520.21,330.48,36.47,payment confirmation,premium
+BX-403,S,Small,500,164.00,103.69,36.77,payment confirmation,standard
+BX-403,S,Small,500,246.00,155.53,36.78,payment confirmation,premium
+BX-403,M,Medium,500,205.00,129.61,36.78,payment confirmation,standard
+BX-403,M,Medium,500,307.50,194.42,36.77,payment confirmation,premium
+BX-403,L,Large,500,278.80,176.27,36.78,payment confirmation,standard
+BX-403,L,Large,500,418.21,264.40,36.78,payment confirmation,premium
+BX-403,S,Small,1000,135.21,85.54,36.74,payment confirmation,standard
+BX-403,S,Small,1000,202.80,128.30,36.74,payment confirmation,premium
+BX-403,M,Medium,1000,169.00,106.92,36.73,payment confirmation,standard
+BX-403,M,Medium,1000,253.50,160.38,36.73,payment confirmation,premium
+BX-403,L,Large,1000,229.84,145.41,36.73,payment confirmation,standard
+BX-403,L,Large,1000,344.76,218.12,36.73,payment confirmation,premium
+BX-404,S,Small,25,37.59,24.43,35.01,online checkout,standard
+BX-404,S,Small,25,56.39,36.64,35.02,online checkout,premium
+BX-404,M,Medium,25,48.19,31.32,35.01,online checkout,standard
+BX-404,M,Medium,25,72.29,46.98,35.01,online checkout,premium
+BX-404,L,Large,25,64.58,41.97,35.01,online checkout,standard
+BX-404,L,Large,25,96.87,62.95,35.02,online checkout,premium
+BX-404,S,Small,50,31.21,20.22,35.21,online checkout,standard
+BX-404,S,Small,50,46.80,30.33,35.19,online checkout,premium
+BX-404,M,Medium,50,40.00,25.92,35.20,online checkout,standard
+BX-404,M,Medium,50,60.00,38.88,35.20,online checkout,premium
+BX-404,L,Large,50,53.60,34.73,35.21,online checkout,standard
+BX-404,L,Large,50,80.41,52.10,35.21,online checkout,premium
+BX-404,S,Small,100,26.52,16.85,36.46,online checkout,standard
+BX-404,S,Small,100,39.78,25.27,36.48,online checkout,premium
+BX-404,M,Medium,100,34.00,21.60,36.47,online checkout,standard
+BX-404,M,Medium,100,51.00,32.40,36.47,online checkout,premium
+BX-404,L,Large,100,45.56,28.94,36.48,online checkout,standard
+BX-404,L,Large,100,68.34,43.42,36.46,online checkout,premium
+BX-404,S,Small,250,17.95,11.38,36.60,online checkout,standard
+BX-404,S,Small,250,26.92,17.07,36.59,online checkout,premium
+BX-404,M,Medium,250,23.00,14.59,36.57,online checkout,standard
+BX-404,M,Medium,250,34.50,21.88,36.58,online checkout,premium
+BX-404,L,Large,250,30.82,19.55,36.57,online checkout,standard
+BX-404,L,Large,250,46.23,29.33,36.56,online checkout,premium
+BX-404,S,Small,500,13.11,8.26,36.99,online checkout,standard
+BX-404,S,Small,500,19.66,12.39,36.98,online checkout,premium
+BX-404,M,Medium,500,16.80,10.59,36.96,online checkout,standard
+BX-404,M,Medium,500,25.21,15.88,37.01,online checkout,premium
+BX-404,L,Large,500,22.52,14.19,36.99,online checkout,standard
+BX-404,L,Large,500,33.77,21.29,36.96,online checkout,premium
+BX-404,S,Small,1000,10.07,6.33,37.14,online checkout,standard
+BX-404,S,Small,1000,15.10,9.49,37.15,online checkout,premium
+BX-404,M,Medium,1000,12.90,8.11,37.13,online checkout,standard
+BX-404,M,Medium,1000,19.36,12.16,37.19,online checkout,premium
+BX-404,L,Large,1000,17.29,10.87,37.13,online checkout,standard
+BX-404,L,Large,1000,25.93,16.30,37.14,online checkout,premium
+BX-405,S,Small,25,76.00,49.25,35.20,online checkout,standard
+BX-405,S,Small,25,114.00,73.87,35.20,online checkout,premium
+BX-405,M,Medium,25,95.00,61.56,35.20,online checkout,standard
+BX-405,M,Medium,25,142.50,92.34,35.20,online checkout,premium
+BX-405,L,Large,25,131.10,84.95,35.20,online checkout,standard
+BX-405,L,Large,25,196.65,127.43,35.20,online checkout,premium
+BX-405,S,Small,50,57.60,36.29,37.00,online checkout,standard
+BX-405,S,Small,50,86.40,54.43,37.00,online checkout,premium
+BX-405,M,Medium,50,72.00,45.36,37.00,online checkout,standard
+BX-405,M,Medium,50,108.00,68.04,37.00,online checkout,premium
+BX-405,L,Large,50,99.36,62.60,37.00,online checkout,standard
+BX-405,L,Large,50,149.04,93.90,37.00,online checkout,premium
+BX-405,S,Small,100,40.81,25.93,36.46,online checkout,standard
+BX-405,S,Small,100,61.20,38.89,36.45,online checkout,premium
+BX-405,M,Medium,100,51.00,32.41,36.45,online checkout,standard
+BX-405,M,Medium,100,76.50,48.61,36.46,online checkout,premium
+BX-405,L,Large,100,70.38,44.73,36.45,online checkout,standard
+BX-405,L,Large,100,105.57,67.09,36.45,online checkout,premium
+BX-405,S,Small,250,28.00,17.71,36.75,online checkout,standard
+BX-405,S,Small,250,42.00,26.57,36.74,online checkout,premium
+BX-405,M,Medium,250,35.00,22.14,36.74,online checkout,standard
+BX-405,M,Medium,250,52.50,33.21,36.74,online checkout,premium
+BX-405,L,Large,250,48.30,30.55,36.75,online checkout,standard
+BX-405,L,Large,250,72.45,45.83,36.74,online checkout,premium
+BX-405,S,Small,500,21.60,13.66,36.76,online checkout,standard
+BX-405,S,Small,500,32.41,20.48,36.81,online checkout,premium
+BX-405,M,Medium,500,27.00,17.07,36.78,online checkout,standard
+BX-405,M,Medium,500,40.50,25.61,36.77,online checkout,premium
+BX-405,L,Large,500,37.26,23.56,36.77,online checkout,standard
+BX-405,L,Large,500,55.89,35.33,36.79,online checkout,premium
+BX-406,S,Small,25,46.02,29.49,35.92,online checkout,standard
+BX-406,S,Small,25,69.03,44.24,35.91,online checkout,premium
+BX-406,M,Medium,25,59.00,37.81,35.92,online checkout,standard
+BX-406,M,Medium,25,88.50,56.72,35.91,online checkout,premium
+BX-406,L,Large,25,79.06,50.67,35.91,online checkout,standard
+BX-406,L,Large,25,118.59,76.00,35.91,online checkout,premium
+BX-406,S,Small,50,39.00,25.28,35.18,online checkout,standard
+BX-406,S,Small,50,58.50,37.92,35.18,online checkout,premium
+BX-406,M,Medium,50,50.00,32.41,35.18,online checkout,standard
+BX-406,M,Medium,50,75.00,48.61,35.19,online checkout,premium
+BX-406,L,Large,50,67.00,43.43,35.18,online checkout,standard
+BX-406,L,Large,50,100.50,65.14,35.18,online checkout,premium
+BX-406,S,Small,100,32.76,20.64,37.00,online checkout,standard
+BX-406,S,Small,100,49.14,30.96,37.00,online checkout,premium
+BX-406,M,Medium,100,42.00,26.46,37.00,online checkout,standard
+BX-406,M,Medium,100,63.00,39.69,37.00,online checkout,premium
+BX-406,L,Large,100,56.28,35.46,36.99,online checkout,standard
+BX-406,L,Large,100,84.42,53.18,37.01,online checkout,premium
+BX-406,S,Small,250,22.62,14.32,36.69,online checkout,standard
+BX-406,S,Small,250,33.93,21.48,36.69,online checkout,premium
+BX-406,M,Medium,250,29.00,18.36,36.69,online checkout,standard
+BX-406,M,Medium,250,43.50,27.54,36.69,online checkout,premium
+BX-406,L,Large,250,38.86,24.60,36.70,online checkout,standard
+BX-406,L,Large,250,58.29,36.90,36.70,online checkout,premium
+BX-406,S,Small,500,16.38,10.37,36.69,online checkout,standard
+BX-406,S,Small,500,24.57,15.55,36.71,online checkout,premium
+BX-406,M,Medium,500,21.00,13.29,36.71,online checkout,standard
+BX-406,M,Medium,500,31.50,19.93,36.73,online checkout,premium
+BX-406,L,Large,500,28.14,17.81,36.71,online checkout,standard
+BX-406,L,Large,500,42.21,26.71,36.72,online checkout,premium
+BX-406,S,Small,1000,12.48,7.92,36.54,online checkout,standard
+BX-406,S,Small,1000,18.72,11.89,36.49,online checkout,premium
+BX-406,M,Medium,1000,16.00,10.16,36.50,online checkout,standard
+BX-406,M,Medium,1000,24.00,15.24,36.50,online checkout,premium
+BX-406,L,Large,1000,21.44,13.61,36.52,online checkout,standard
+BX-406,L,Large,1000,32.17,20.42,36.52,online checkout,premium
+BX-408,S,Small,50,276.00,178.85,35.20,online checkout,standard
+BX-408,S,Small,50,414.00,268.27,35.20,online checkout,premium
+BX-408,M,Medium,50,345.00,223.56,35.20,online checkout,standard
+BX-408,M,Medium,50,517.50,335.34,35.20,online checkout,premium
+BX-408,L,Large,50,469.21,304.04,35.20,online checkout,standard
+BX-408,L,Large,50,703.80,456.06,35.20,online checkout,premium
+BX-408,S,Small,100,228.00,142.56,37.47,online checkout,standard
+BX-408,S,Small,100,342.00,213.84,37.47,online checkout,premium
+BX-408,M,Medium,100,285.00,178.20,37.47,online checkout,standard
+BX-408,M,Medium,100,427.50,267.30,37.47,payment confirmation,premium
+BX-408,L,Large,100,387.60,242.35,37.47,online checkout,standard
+BX-408,L,Large,100,581.41,363.53,37.47,payment confirmation,premium
+BX-408,S,Small,250,176.00,110.59,37.16,payment confirmation,standard
+BX-408,S,Small,250,264.00,165.89,37.16,payment confirmation,premium
+BX-408,M,Medium,250,220.00,138.24,37.16,payment confirmation,standard
+BX-408,M,Medium,250,330.00,207.36,37.16,payment confirmation,premium
+BX-408,L,Large,250,299.21,188.01,37.16,payment confirmation,standard
+BX-408,L,Large,250,448.81,282.01,37.16,payment confirmation,premium
+BX-408,S,Small,500,142.40,88.99,37.51,payment confirmation,standard
+BX-408,S,Small,500,213.61,133.49,37.51,payment confirmation,premium
+BX-408,M,Medium,500,178.00,111.24,37.51,payment confirmation,standard
+BX-408,M,Medium,500,267.00,166.86,37.51,payment confirmation,premium
+BX-408,L,Large,500,242.08,151.29,37.50,payment confirmation,standard
+BX-408,L,Large,500,363.12,226.93,37.51,payment confirmation,premium
+BX-408,S,Small,1000,119.20,74.31,37.66,payment confirmation,standard
+BX-408,S,Small,1000,178.80,111.47,37.66,payment confirmation,premium
+BX-408,M,Medium,1000,149.00,92.89,37.66,payment confirmation,standard
+BX-408,M,Medium,1000,223.50,139.34,37.66,payment confirmation,premium
+BX-408,L,Large,1000,202.64,126.33,37.66,payment confirmation,standard
+BX-408,L,Large,1000,303.97,189.50,37.66,payment confirmation,premium
+BX-412,S,Small,25,40.56,26.12,35.60,online checkout,standard
+BX-412,S,Small,25,60.84,39.18,35.60,online checkout,premium
+BX-412,M,Medium,25,52.00,33.49,35.60,online checkout,standard
+BX-412,M,Medium,25,78.00,50.23,35.60,online checkout,premium
+BX-412,L,Large,25,69.69,44.88,35.60,online checkout,standard
+BX-412,L,Large,25,104.53,67.31,35.61,online checkout,premium
+BX-412,S,Small,50,35.10,21.90,37.61,online checkout,standard
+BX-412,S,Small,50,52.66,32.85,37.62,online checkout,premium
+BX-412,M,Medium,50,45.00,28.08,37.60,online checkout,standard
+BX-412,M,Medium,50,67.50,42.12,37.60,online checkout,premium
+BX-412,L,Large,50,60.30,37.63,37.60,online checkout,standard
+BX-412,L,Large,50,90.45,56.44,37.60,online checkout,premium
+BX-412,S,Small,100,29.64,18.53,37.48,online checkout,standard
+BX-412,S,Small,100,44.46,27.80,37.47,online checkout,premium
+BX-412,M,Medium,100,38.00,23.76,37.47,online checkout,standard
+BX-412,M,Medium,100,57.00,35.64,37.47,online checkout,premium
+BX-412,L,Large,100,50.92,31.84,37.47,online checkout,standard
+BX-412,L,Large,100,76.38,47.76,37.47,online checkout,premium
+BX-412,S,Small,250,19.50,12.21,37.38,online checkout,standard
+BX-412,S,Small,250,29.25,18.32,37.37,online checkout,premium
+BX-412,M,Medium,250,25.00,15.66,37.36,online checkout,standard
+BX-412,M,Medium,250,37.50,23.49,37.36,online checkout,premium
+BX-412,L,Large,250,33.50,20.98,37.37,online checkout,standard
+BX-412,L,Large,250,50.25,31.48,37.35,online checkout,premium
+BX-412,S,Small,500,14.43,9.10,36.94,online checkout,standard
+BX-412,S,Small,500,21.65,13.65,36.95,online checkout,premium
+BX-412,M,Medium,500,18.50,11.67,36.92,online checkout,standard
+BX-412,M,Medium,500,27.75,17.50,36.94,online checkout,premium
+BX-412,L,Large,500,24.80,15.64,36.94,online checkout,standard
+BX-412,L,Large,500,37.19,23.46,36.92,online checkout,premium
+BX-412,S,Small,1000,11.08,7.08,36.10,online checkout,standard
+BX-412,S,Small,1000,16.62,10.62,36.10,online checkout,premium
+BX-412,M,Medium,1000,14.20,9.08,36.06,online checkout,standard
+BX-412,M,Medium,1000,21.30,13.62,36.06,online checkout,premium
+BX-412,L,Large,1000,19.03,12.17,36.05,online checkout,standard
+BX-412,L,Large,1000,28.55,18.25,36.08,online checkout,premium
+EC-501,S,Small,50,26.52,16.85,36.46,online checkout,standard
+EC-501,S,Small,50,39.78,25.27,36.48,online checkout,premium
+EC-501,M,Medium,50,34.00,21.60,36.47,online checkout,standard
+EC-501,M,Medium,50,51.00,32.40,36.47,online checkout,premium
+EC-501,L,Large,50,46.92,29.81,36.47,online checkout,standard
+EC-501,L,Large,50,70.38,44.71,36.47,online checkout,premium
+EC-501,S,Small,100,22.62,14.32,36.69,online checkout,standard
+EC-501,S,Small,100,33.93,21.48,36.69,online checkout,premium
+EC-501,M,Medium,100,29.00,18.36,36.69,online checkout,standard
+EC-501,M,Medium,100,43.50,27.54,36.69,online checkout,premium
+EC-501,L,Large,100,40.02,25.34,36.68,online checkout,standard
+EC-501,L,Large,100,60.03,38.01,36.68,online checkout,premium
+EC-501,S,Small,250,18.72,11.79,37.02,online checkout,standard
+EC-501,S,Small,250,28.08,17.69,37.00,online checkout,premium
+EC-501,M,Medium,250,24.00,15.12,37.00,online checkout,standard
+EC-501,M,Medium,250,36.00,22.68,37.00,online checkout,premium
+EC-501,L,Large,250,33.12,20.87,36.99,online checkout,standard
+EC-501,L,Large,250,49.68,31.30,37.00,online checkout,premium
+EC-501,S,Small,500,15.61,9.70,37.86,online checkout,standard
+EC-501,S,Small,500,23.40,14.54,37.86,online checkout,premium
+EC-501,M,Medium,500,20.00,12.43,37.85,online checkout,standard
+EC-501,M,Medium,500,30.00,18.64,37.87,online checkout,premium
+EC-501,L,Large,500,27.60,17.15,37.86,online checkout,standard
+EC-501,L,Large,500,41.40,25.73,37.85,online checkout,premium
+EC-501,S,Small,1000,13.26,8.01,39.59,online checkout,standard
+EC-501,S,Small,1000,19.89,12.02,39.57,online checkout,premium
+EC-501,M,Medium,1000,17.00,10.27,39.59,online checkout,standard
+EC-501,M,Medium,1000,25.50,15.40,39.61,online checkout,premium
+EC-501,L,Large,1000,23.46,14.17,39.60,online checkout,standard
+EC-501,L,Large,1000,35.19,21.26,39.59,online checkout,premium
+EC-501,S,Small,2500,10.92,6.74,38.28,online checkout,standard
+EC-501,S,Small,2500,16.38,10.11,38.28,payment confirmation,premium
+EC-501,M,Medium,2500,14.00,8.64,38.29,online checkout,standard
+EC-501,M,Medium,2500,21.00,12.96,38.29,payment confirmation,premium
+EC-501,L,Large,2500,19.32,11.92,38.30,payment confirmation,standard
+EC-501,L,Large,2500,28.98,17.88,38.30,payment confirmation,premium
+EC-502,S,Small,500,23.95,15.56,35.03,online checkout,standard
+EC-502,S,Small,500,35.92,23.34,35.02,online checkout,premium
+EC-502,M,Medium,500,29.93,19.45,35.02,online checkout,standard
+EC-502,M,Medium,500,44.90,29.17,35.03,online checkout,premium
+EC-502,L,Large,500,42.51,27.62,35.03,online checkout,standard
+EC-502,L,Large,500,63.76,41.43,35.02,online checkout,premium
+EC-502,S,Small,1000,19.96,12.97,35.02,online checkout,standard
+EC-502,S,Small,1000,29.93,19.45,35.02,online checkout,premium
+EC-502,M,Medium,1000,24.94,16.21,35.00,online checkout,standard
+EC-502,M,Medium,1000,37.42,24.32,35.01,online checkout,premium
+EC-502,L,Large,1000,35.42,23.02,35.01,online checkout,standard
+EC-502,L,Large,1000,53.13,34.53,35.01,payment confirmation,premium
+EC-502,S,Small,2500,15.96,10.37,35.03,payment confirmation,standard
+EC-502,S,Small,2500,23.93,15.55,35.02,payment confirmation,premium
+EC-502,M,Medium,2500,19.95,12.96,35.04,payment confirmation,standard
+EC-502,M,Medium,2500,29.92,19.44,35.03,payment confirmation,premium
+EC-502,L,Large,2500,28.32,18.40,35.03,payment confirmation,standard
+EC-502,L,Large,2500,42.48,27.60,35.03,payment confirmation,premium
+EC-502,S,Small,5000,11.98,7.78,35.06,payment confirmation,standard
+EC-502,S,Small,5000,17.97,11.68,35.00,payment confirmation,premium
+EC-502,M,Medium,5000,14.97,9.73,35.00,payment confirmation,standard
+EC-502,M,Medium,5000,22.47,14.60,35.02,payment confirmation,premium
+EC-502,L,Large,5000,21.27,13.82,35.03,payment confirmation,standard
+EC-502,L,Large,5000,31.89,20.72,35.03,payment confirmation,premium
+EC-503,S,Snack / burger,200,23.95,15.56,35.03,online checkout,standard
+EC-503,S,Snack / burger,200,35.92,23.34,35.02,online checkout,premium
+EC-503,M,Meal,200,29.93,19.45,35.02,online checkout,standard
+EC-503,M,Meal,200,44.90,29.17,35.03,online checkout,premium
+EC-503,L,Family meal,200,41.31,26.84,35.03,online checkout,standard
+EC-503,L,Family meal,200,61.96,40.26,35.02,online checkout,premium
+EC-503,S,Snack / burger,500,18.62,12.10,35.02,online checkout,standard
+EC-503,S,Snack / burger,500,27.93,18.14,35.05,online checkout,premium
+EC-503,M,Meal,500,23.27,15.12,35.02,online checkout,standard
+EC-503,M,Meal,500,34.91,22.68,35.03,online checkout,premium
+EC-503,L,Family meal,500,32.12,20.87,35.02,online checkout,standard
+EC-503,L,Family meal,500,48.17,31.30,35.02,online checkout,premium
+EC-503,S,Snack / burger,1000,14.63,9.50,35.06,online checkout,standard
+EC-503,S,Snack / burger,1000,21.94,14.26,35.00,online checkout,premium
+EC-503,M,Meal,1000,18.28,11.88,35.01,online checkout,standard
+EC-503,M,Meal,1000,27.42,17.82,35.01,online checkout,premium
+EC-503,L,Family meal,1000,25.23,16.39,35.04,online checkout,standard
+EC-503,L,Family meal,1000,37.84,24.59,35.02,online checkout,premium
+EC-503,S,Snack / burger,2500,11.31,7.34,35.10,online checkout,standard
+EC-503,S,Snack / burger,2500,16.96,11.02,35.02,payment confirmation,premium
+EC-503,M,Meal,2500,14.13,9.18,35.03,online checkout,standard
+EC-503,M,Meal,2500,21.20,13.77,35.05,payment confirmation,premium
+EC-503,L,Family meal,2500,19.50,12.67,35.03,payment confirmation,standard
+EC-503,L,Family meal,2500,29.25,19.00,35.04,payment confirmation,premium
+EC-504,S,Small,1000,5.85,3.80,35.04,online checkout,standard
+EC-504,S,Small,1000,8.78,5.70,35.08,online checkout,premium
+EC-504,M,Medium,1000,7.50,4.87,35.07,online checkout,standard
+EC-504,M,Medium,1000,11.25,7.30,35.11,online checkout,premium
+EC-504,L,Large,1000,9.75,6.33,35.08,online checkout,standard
+EC-504,L,Large,1000,14.63,9.50,35.06,online checkout,premium
+EC-504,XL,Extra large,1000,11.63,7.55,35.08,online checkout,standard
+EC-504,XL,Extra large,1000,17.44,11.32,35.09,online checkout,premium
+EC-504,S,Small,2500,4.68,3.03,35.26,online checkout,standard
+EC-504,S,Small,2500,7.01,4.55,35.09,online checkout,premium
+EC-504,M,Medium,2500,5.99,3.89,35.06,online checkout,standard
+EC-504,M,Medium,2500,8.99,5.83,35.15,online checkout,premium
+EC-504,L,Large,2500,7.79,5.06,35.04,online checkout,standard
+EC-504,L,Large,2500,11.69,7.59,35.07,online checkout,premium
+EC-504,XL,Extra large,2500,9.29,6.03,35.09,online checkout,standard
+EC-504,XL,Extra large,2500,13.93,9.04,35.10,online checkout,premium
+EC-504,S,Small,5000,3.65,2.36,35.34,online checkout,standard
+EC-504,S,Small,5000,5.47,3.55,35.10,online checkout,premium
+EC-504,M,Medium,5000,4.67,3.03,35.12,online checkout,standard
+EC-504,M,Medium,5000,7.01,4.54,35.24,online checkout,premium
+EC-504,L,Large,5000,6.08,3.94,35.20,online checkout,standard
+EC-504,L,Large,5000,9.11,5.91,35.13,payment confirmation,premium
+EC-504,XL,Extra large,5000,7.24,4.70,35.08,online checkout,standard
+EC-504,XL,Extra large,5000,10.86,7.04,35.17,payment confirmation,premium
+EC-504,S,Small,10000,3.00,1.94,35.33,online checkout,standard
+EC-504,S,Small,10000,4.50,2.91,35.33,payment confirmation,premium
+EC-504,M,Medium,10000,3.84,2.49,35.16,online checkout,standard
+EC-504,M,Medium,10000,5.76,3.74,35.07,payment confirmation,premium
+EC-504,L,Large,10000,5.00,3.24,35.20,payment confirmation,standard
+EC-504,L,Large,10000,7.49,4.86,35.11,payment confirmation,premium
+EC-504,XL,Extra large,10000,5.96,3.86,35.23,payment confirmation,standard
+EC-504,XL,Extra large,10000,8.93,5.79,35.16,payment confirmation,premium
+PR-601,HONEYCOMB,Honeycomb paper,1,1495.40,972.01,35.00,online checkout,standard
+PR-601,HONEYCOMB,Honeycomb paper,1,2243.11,1458.01,35.00,online checkout,premium
+PR-601,BUBBLE,Bubble wrap,1,1226.24,797.05,35.00,online checkout,standard
+PR-601,BUBBLE,Bubble wrap,1,1839.35,1195.57,35.00,online checkout,premium
+PR-601,AIR,Air pillows,1,1345.87,874.81,35.00,online checkout,standard
+PR-601,AIR,Air pillows,1,2018.80,1312.21,35.00,online checkout,premium
+PR-601,CRINKLE,Crinkle paper,1,2018.80,1312.21,35.00,online checkout,standard
+PR-601,CRINKLE,Crinkle paper,1,3028.19,1968.32,35.00,online checkout,premium
+PR-601,HONEYCOMB,Honeycomb paper,5,1329.24,864.00,35.00,online checkout,standard
+PR-601,HONEYCOMB,Honeycomb paper,5,1993.86,1296.00,35.00,online checkout,premium
+PR-601,BUBBLE,Bubble wrap,5,1089.98,708.48,35.00,online checkout,standard
+PR-601,BUBBLE,Bubble wrap,5,1634.97,1062.72,35.00,online checkout,premium
+PR-601,AIR,Air pillows,5,1196.32,777.60,35.00,online checkout,standard
+PR-601,AIR,Air pillows,5,1794.48,1166.40,35.00,online checkout,premium
+PR-601,CRINKLE,Crinkle paper,5,1794.48,1166.40,35.00,online checkout,standard
+PR-601,CRINKLE,Crinkle paper,5,2691.72,1749.60,35.00,online checkout,premium
+PR-601,HONEYCOMB,Honeycomb paper,10,1212.94,788.41,35.00,online checkout,standard
+PR-601,HONEYCOMB,Honeycomb paper,10,1819.42,1182.62,35.00,online checkout,premium
+PR-601,BUBBLE,Bubble wrap,10,994.62,646.50,35.00,online checkout,standard
+PR-601,BUBBLE,Bubble wrap,10,1491.92,969.74,35.00,online checkout,premium
+PR-601,AIR,Air pillows,10,1091.65,709.57,35.00,online checkout,standard
+PR-601,AIR,Air pillows,10,1637.47,1064.35,35.00,online checkout,premium
+PR-601,CRINKLE,Crinkle paper,10,1637.47,1064.35,35.00,online checkout,standard
+PR-601,CRINKLE,Crinkle paper,10,2456.21,1596.53,35.00,online checkout,premium
+PR-601,HONEYCOMB,Honeycomb paper,25,1080.00,702.00,35.00,online checkout,standard
+PR-601,HONEYCOMB,Honeycomb paper,25,1620.00,1053.00,35.00,online checkout,premium
+PR-601,BUBBLE,Bubble wrap,25,885.60,575.64,35.00,online checkout,standard
+PR-601,BUBBLE,Bubble wrap,25,1328.40,863.46,35.00,online checkout,premium
+PR-601,AIR,Air pillows,25,972.00,631.80,35.00,online checkout,standard
+PR-601,AIR,Air pillows,25,1458.00,947.70,35.00,online checkout,premium
+PR-601,CRINKLE,Crinkle paper,25,1458.00,947.70,35.00,online checkout,standard
+PR-601,CRINKLE,Crinkle paper,25,2187.00,1421.55,35.00,payment confirmation,premium
+LC-804,40MM,40 mm,25,8.64,5.60,35.19,online checkout,standard
+LC-804,40MM,40 mm,25,12.96,8.40,35.19,online checkout,premium
+LC-804,60MM,60 mm,25,12.00,7.78,35.17,online checkout,standard
+LC-804,60MM,60 mm,25,18.00,11.67,35.17,online checkout,premium
+LC-804,90MM,90 mm,25,17.40,11.28,35.17,online checkout,standard
+LC-804,90MM,90 mm,25,26.10,16.92,35.17,online checkout,premium
+LC-804,100X150,100 x 150 mm,25,23.40,15.17,35.17,online checkout,standard
+LC-804,100X150,100 x 150 mm,25,35.10,22.76,35.16,online checkout,premium
+LC-804,40MM,40 mm,50,6.84,4.44,35.09,online checkout,standard
+LC-804,40MM,40 mm,50,10.26,6.65,35.19,online checkout,premium
+LC-804,60MM,60 mm,50,9.50,6.16,35.16,online checkout,standard
+LC-804,60MM,60 mm,50,14.25,9.24,35.16,online checkout,premium
+LC-804,90MM,90 mm,50,13.78,8.93,35.20,online checkout,standard
+LC-804,90MM,90 mm,50,20.67,13.40,35.17,online checkout,premium
+LC-804,100X150,100 x 150 mm,50,18.53,12.01,35.19,online checkout,standard
+LC-804,100X150,100 x 150 mm,50,27.79,18.02,35.16,online checkout,premium
+LC-804,40MM,40 mm,100,5.91,3.77,36.21,online checkout,standard
+LC-804,40MM,40 mm,100,8.86,5.66,36.12,online checkout,premium
+LC-804,60MM,60 mm,100,8.20,5.24,36.10,online checkout,standard
+LC-804,60MM,60 mm,100,12.30,7.86,36.10,online checkout,premium
+LC-804,90MM,90 mm,100,11.89,7.60,36.08,online checkout,standard
+LC-804,90MM,90 mm,100,17.84,11.40,36.10,online checkout,premium
+LC-804,100X150,100 x 150 mm,100,15.99,10.22,36.09,online checkout,standard
+LC-804,100X150,100 x 150 mm,100,23.99,15.33,36.10,online checkout,premium
+LC-804,40MM,40 mm,250,3.68,2.35,36.14,online checkout,standard
+LC-804,40MM,40 mm,250,5.51,3.53,35.93,online checkout,premium
+LC-804,60MM,60 mm,250,5.10,3.27,35.88,online checkout,standard
+LC-804,60MM,60 mm,250,7.65,4.91,35.82,online checkout,premium
+LC-804,90MM,90 mm,250,7.40,4.74,35.95,online checkout,standard
+LC-804,90MM,90 mm,250,11.10,7.11,35.95,online checkout,premium
+LC-804,100X150,100 x 150 mm,250,9.95,6.38,35.88,online checkout,standard
+LC-804,100X150,100 x 150 mm,250,14.92,9.56,35.92,online checkout,premium
+LC-804,40MM,40 mm,500,2.63,1.68,36.12,online checkout,standard
+LC-804,40MM,40 mm,500,3.95,2.53,35.95,online checkout,premium
+LC-804,60MM,60 mm,500,3.65,2.34,35.89,online checkout,standard
+LC-804,60MM,60 mm,500,5.48,3.51,35.95,online checkout,premium
+LC-804,90MM,90 mm,500,5.30,3.39,36.04,online checkout,standard
+LC-804,90MM,90 mm,500,7.94,5.09,35.89,online checkout,premium
+LC-804,100X150,100 x 150 mm,500,7.12,4.56,35.96,online checkout,standard
+LC-804,100X150,100 x 150 mm,500,10.68,6.84,35.96,online checkout,premium
+LC-804,40MM,40 mm,1000,1.91,1.22,36.13,online checkout,standard
+LC-804,40MM,40 mm,1000,2.87,1.84,35.89,online checkout,premium
+LC-804,60MM,60 mm,1000,2.65,1.70,35.85,online checkout,standard
+LC-804,60MM,60 mm,1000,3.98,2.55,35.93,online checkout,premium
+LC-804,90MM,90 mm,1000,3.85,2.46,36.10,online checkout,standard
+LC-804,90MM,90 mm,1000,5.77,3.70,35.88,online checkout,premium
+LC-804,100X150,100 x 150 mm,1000,5.17,3.31,35.98,online checkout,standard
+LC-804,100X150,100 x 150 mm,1000,7.76,4.97,35.95,online checkout,premium
+LC-804,40MM,40 mm,2500,1.34,0.85,36.57,online checkout,standard
+LC-804,40MM,40 mm,2500,2.00,1.27,36.50,online checkout,premium
+LC-804,60MM,60 mm,2500,1.85,1.18,36.22,online checkout,standard
+LC-804,60MM,60 mm,2500,2.78,1.77,36.33,online checkout,premium
+LC-804,90MM,90 mm,2500,2.69,1.71,36.43,online checkout,standard
+LC-804,90MM,90 mm,2500,4.03,2.57,36.23,online checkout,premium
+LC-804,100X150,100 x 150 mm,2500,3.61,2.30,36.29,online checkout,standard
+LC-804,100X150,100 x 150 mm,2500,5.42,3.45,36.35,online checkout,premium
+LC-804,40MM,40 mm,5000,0.98,0.62,36.73,online checkout,standard
+LC-804,40MM,40 mm,5000,1.46,0.93,36.30,online checkout,premium
+LC-804,60MM,60 mm,5000,1.35,0.86,36.30,online checkout,standard
+LC-804,60MM,60 mm,5000,2.03,1.29,36.45,online checkout,premium
+LC-804,90MM,90 mm,5000,1.96,1.25,36.22,online checkout,standard
+LC-804,90MM,90 mm,5000,2.94,1.87,36.39,online checkout,premium
+LC-804,100X150,100 x 150 mm,5000,2.64,1.68,36.36,online checkout,standard
+LC-804,100X150,100 x 150 mm,5000,3.95,2.52,36.20,online checkout,premium
+LC-805,40MM,40 mm,25,9.00,5.84,35.11,online checkout,standard
+LC-805,40MM,40 mm,25,13.50,8.76,35.11,online checkout,premium
+LC-805,60MM,60 mm,25,12.50,8.11,35.12,online checkout,standard
+LC-805,60MM,60 mm,25,18.75,12.16,35.15,online checkout,premium
+LC-805,90MM,90 mm,25,18.13,11.76,35.14,online checkout,standard
+LC-805,90MM,90 mm,25,27.19,17.64,35.12,online checkout,premium
+LC-805,100X150,100 x 150 mm,25,24.38,15.81,35.15,online checkout,standard
+LC-805,100X150,100 x 150 mm,25,36.57,23.72,35.14,online checkout,premium
+LC-805,40MM,40 mm,50,7.56,4.82,36.24,online checkout,standard
+LC-805,40MM,40 mm,50,11.34,7.24,36.16,online checkout,premium
+LC-805,60MM,60 mm,50,10.50,6.70,36.19,online checkout,standard
+LC-805,60MM,60 mm,50,15.75,10.05,36.19,online checkout,premium
+LC-805,90MM,90 mm,50,15.23,9.71,36.24,online checkout,standard
+LC-805,90MM,90 mm,50,22.84,14.57,36.21,online checkout,premium
+LC-805,100X150,100 x 150 mm,50,20.48,13.06,36.23,online checkout,standard
+LC-805,100X150,100 x 150 mm,50,30.72,19.60,36.20,online checkout,premium
+LC-805,40MM,40 mm,100,6.63,4.24,36.05,online checkout,standard
+LC-805,40MM,40 mm,100,9.94,6.36,36.02,online checkout,premium
+LC-805,60MM,60 mm,100,9.20,5.89,35.98,online checkout,standard
+LC-805,60MM,60 mm,100,13.80,8.83,36.01,online checkout,premium
+LC-805,90MM,90 mm,100,13.34,8.54,35.98,online checkout,standard
+LC-805,90MM,90 mm,100,20.01,12.81,35.98,online checkout,premium
+LC-805,100X150,100 x 150 mm,100,17.94,11.49,35.95,online checkout,standard
+LC-805,100X150,100 x 150 mm,100,26.91,17.23,35.97,online checkout,premium
+LC-805,40MM,40 mm,250,4.18,2.66,36.36,online checkout,standard
+LC-805,40MM,40 mm,250,6.27,4.00,36.20,online checkout,premium
+LC-805,60MM,60 mm,250,5.80,3.70,36.21,online checkout,standard
+LC-805,60MM,60 mm,250,8.70,5.55,36.21,online checkout,premium
+LC-805,90MM,90 mm,250,8.41,5.37,36.15,online checkout,standard
+LC-805,90MM,90 mm,250,12.62,8.05,36.21,online checkout,premium
+LC-805,100X150,100 x 150 mm,250,11.31,7.21,36.25,online checkout,standard
+LC-805,100X150,100 x 150 mm,250,16.97,10.82,36.24,online checkout,premium
+LC-805,40MM,40 mm,500,2.96,1.89,36.15,online checkout,standard
+LC-805,40MM,40 mm,500,4.43,2.83,36.12,online checkout,premium
+LC-805,60MM,60 mm,500,4.10,2.62,36.10,online checkout,standard
+LC-805,60MM,60 mm,500,6.15,3.93,36.10,online checkout,premium
+LC-805,90MM,90 mm,500,5.95,3.80,36.13,online checkout,standard
+LC-805,90MM,90 mm,500,8.92,5.70,36.10,online checkout,premium
+LC-805,100X150,100 x 150 mm,500,8.00,5.11,36.12,online checkout,standard
+LC-805,100X150,100 x 150 mm,500,12.00,7.66,36.17,online checkout,premium
+LC-805,40MM,40 mm,1000,2.16,1.38,36.11,online checkout,standard
+LC-805,40MM,40 mm,1000,3.24,2.07,36.11,online checkout,premium
+LC-805,60MM,60 mm,1000,3.00,1.92,36.00,online checkout,standard
+LC-805,60MM,60 mm,1000,4.50,2.88,36.00,online checkout,premium
+LC-805,90MM,90 mm,1000,4.35,2.78,36.09,online checkout,standard
+LC-805,90MM,90 mm,1000,6.53,4.18,35.99,online checkout,premium
+LC-805,100X150,100 x 150 mm,1000,5.85,3.74,36.07,online checkout,standard
+LC-805,100X150,100 x 150 mm,1000,8.78,5.62,35.99,online checkout,premium
+LC-805,40MM,40 mm,2500,1.52,0.96,36.84,online checkout,standard
+LC-805,40MM,40 mm,2500,2.27,1.45,36.12,online checkout,premium
+LC-805,60MM,60 mm,2500,2.10,1.34,36.19,online checkout,standard
+LC-805,60MM,60 mm,2500,3.16,2.01,36.39,online checkout,premium
+LC-805,90MM,90 mm,2500,3.05,1.94,36.39,online checkout,standard
+LC-805,90MM,90 mm,2500,4.57,2.91,36.32,online checkout,premium
+LC-805,100X150,100 x 150 mm,2500,4.10,2.61,36.34,online checkout,standard
+LC-805,100X150,100 x 150 mm,2500,6.15,3.92,36.26,online checkout,premium
+LC-805,40MM,40 mm,5000,1.08,0.69,36.11,online checkout,standard
+LC-805,40MM,40 mm,5000,1.62,1.04,35.80,online checkout,premium
+LC-805,60MM,60 mm,5000,1.50,0.96,36.00,online checkout,standard
+LC-805,60MM,60 mm,5000,2.25,1.44,36.00,online checkout,premium
+LC-805,90MM,90 mm,5000,2.18,1.39,36.24,online checkout,standard
+LC-805,90MM,90 mm,5000,3.27,2.09,36.09,online checkout,premium
+LC-805,100X150,100 x 150 mm,5000,2.93,1.87,36.18,online checkout,standard
+LC-805,100X150,100 x 150 mm,5000,4.39,2.81,35.99,online checkout,premium
+LC-815,40MM,40 mm,50,12.96,8.40,35.19,online checkout,standard
+LC-815,40MM,40 mm,50,19.44,12.60,35.19,online checkout,premium
+LC-815,60MM,60 mm,50,18.00,11.67,35.17,online checkout,standard
+LC-815,60MM,60 mm,50,27.00,17.50,35.19,online checkout,premium
+LC-815,90MM,90 mm,50,26.10,16.92,35.17,online checkout,standard
+LC-815,90MM,90 mm,50,39.15,25.38,35.17,online checkout,premium
+LC-815,100X150,100 x 150 mm,50,35.10,22.76,35.16,online checkout,standard
+LC-815,100X150,100 x 150 mm,50,52.66,34.13,35.19,online checkout,premium
+LC-815,40MM,40 mm,100,9.72,6.22,36.01,online checkout,standard
+LC-815,40MM,40 mm,100,14.58,9.33,36.01,online checkout,premium
+LC-815,60MM,60 mm,100,13.50,8.64,36.00,online checkout,standard
+LC-815,60MM,60 mm,100,20.25,12.96,36.00,online checkout,premium
+LC-815,90MM,90 mm,100,19.58,12.53,36.01,online checkout,standard
+LC-815,90MM,90 mm,100,29.37,18.79,36.02,online checkout,premium
+LC-815,100X150,100 x 150 mm,100,26.33,16.85,36.00,online checkout,standard
+LC-815,100X150,100 x 150 mm,100,39.49,25.27,36.01,online checkout,premium
+LC-815,40MM,40 mm,250,6.41,4.08,36.35,online checkout,standard
+LC-815,40MM,40 mm,250,9.62,6.12,36.38,online checkout,premium
+LC-815,60MM,60 mm,250,8.90,5.67,36.29,online checkout,standard
+LC-815,60MM,60 mm,250,13.36,8.50,36.38,online checkout,premium
+LC-815,90MM,90 mm,250,12.91,8.22,36.33,online checkout,standard
+LC-815,90MM,90 mm,250,19.36,12.33,36.31,online checkout,premium
+LC-815,100X150,100 x 150 mm,250,17.36,11.06,36.29,online checkout,standard
+LC-815,100X150,100 x 150 mm,250,26.04,16.58,36.33,online checkout,premium
+LC-815,40MM,40 mm,500,4.68,2.97,36.54,online checkout,standard
+LC-815,40MM,40 mm,500,7.02,4.46,36.47,online checkout,premium
+LC-815,60MM,60 mm,500,6.50,4.13,36.46,online checkout,standard
+LC-815,60MM,60 mm,500,9.75,6.20,36.41,online checkout,premium
+LC-815,90MM,90 mm,500,9.43,5.99,36.48,online checkout,standard
+LC-815,90MM,90 mm,500,14.14,8.98,36.49,online checkout,premium
+LC-815,100X150,100 x 150 mm,500,12.68,8.05,36.51,online checkout,standard
+LC-815,100X150,100 x 150 mm,500,19.02,12.08,36.49,online checkout,premium
+LC-815,40MM,40 mm,1000,3.46,2.20,36.42,online checkout,standard
+LC-815,40MM,40 mm,1000,5.19,3.29,36.61,online checkout,premium
+LC-815,60MM,60 mm,1000,4.80,3.05,36.46,online checkout,standard
+LC-815,60MM,60 mm,1000,7.20,4.57,36.53,online checkout,premium
+LC-815,90MM,90 mm,1000,6.96,4.42,36.49,online checkout,standard
+LC-815,90MM,90 mm,1000,10.44,6.63,36.49,online checkout,premium
+LC-815,100X150,100 x 150 mm,1000,9.36,5.95,36.43,online checkout,standard
+LC-815,100X150,100 x 150 mm,1000,14.04,8.92,36.47,online checkout,premium
+LC-815,40MM,40 mm,2500,2.45,1.56,36.33,online checkout,standard
+LC-815,40MM,40 mm,2500,3.68,2.33,36.68,online checkout,premium
+LC-815,60MM,60 mm,2500,3.40,2.16,36.47,online checkout,standard
+LC-815,60MM,60 mm,2500,5.10,3.24,36.47,online checkout,premium
+LC-815,90MM,90 mm,2500,4.93,3.13,36.51,online checkout,standard
+LC-815,90MM,90 mm,2500,7.40,4.70,36.49,online checkout,premium
+LC-815,100X150,100 x 150 mm,2500,6.63,4.21,36.50,online checkout,standard
+LC-815,100X150,100 x 150 mm,2500,9.95,6.32,36.48,online checkout,premium
+LC-816,40R,40 mm round,25,8.50,5.51,35.18,online checkout,standard
+LC-816,40R,40 mm round,25,12.75,8.27,35.14,online checkout,premium
+LC-816,60R,60 mm round,25,11.48,7.44,35.19,online checkout,standard
+LC-816,60R,60 mm round,25,17.22,11.16,35.19,online checkout,premium
+LC-816,90R,90 mm round,25,17.43,11.30,35.17,online checkout,standard
+LC-816,90R,90 mm round,25,26.14,16.94,35.20,online checkout,premium
+LC-816,40R,40 mm round,50,6.80,4.38,35.59,online checkout,standard
+LC-816,40R,40 mm round,50,10.20,6.57,35.59,online checkout,premium
+LC-816,60R,60 mm round,50,9.18,5.91,35.62,online checkout,standard
+LC-816,60R,60 mm round,50,13.77,8.87,35.58,online checkout,premium
+LC-816,90R,90 mm round,50,13.94,8.98,35.58,online checkout,standard
+LC-816,90R,90 mm round,50,20.91,13.47,35.58,online checkout,premium
+LC-816,40R,40 mm round,100,5.80,3.73,35.69,online checkout,standard
+LC-816,40R,40 mm round,100,8.70,5.59,35.75,online checkout,premium
+LC-816,60R,60 mm round,100,7.83,5.04,35.63,online checkout,standard
+LC-816,60R,60 mm round,100,11.75,7.55,35.74,online checkout,premium
+LC-816,90R,90 mm round,100,11.89,7.65,35.66,online checkout,standard
+LC-816,90R,90 mm round,100,17.84,11.47,35.71,online checkout,premium
+LC-816,40R,40 mm round,250,3.60,2.33,35.28,online checkout,standard
+LC-816,40R,40 mm round,250,5.40,3.50,35.19,online checkout,premium
+LC-816,60R,60 mm round,250,4.87,3.15,35.32,online checkout,standard
+LC-816,60R,60 mm round,250,7.30,4.72,35.34,online checkout,premium
+LC-816,90R,90 mm round,250,7.38,4.78,35.23,online checkout,standard
+LC-816,90R,90 mm round,250,11.07,7.16,35.32,online checkout,premium
+LC-816,40R,40 mm round,500,2.60,1.68,35.38,online checkout,standard
+LC-816,40R,40 mm round,500,3.91,2.52,35.55,online checkout,premium
+LC-816,60R,60 mm round,500,3.51,2.27,35.33,online checkout,standard
+LC-816,60R,60 mm round,500,5.27,3.40,35.48,online checkout,premium
+LC-816,90R,90 mm round,500,5.33,3.44,35.46,online checkout,standard
+LC-816,90R,90 mm round,500,8.00,5.17,35.38,online checkout,premium
+LC-816,40R,40 mm round,1000,1.95,1.26,35.38,online checkout,standard
+LC-816,40R,40 mm round,1000,2.93,1.89,35.49,online checkout,premium
+LC-816,60R,60 mm round,1000,2.64,1.70,35.61,online checkout,standard
+LC-816,60R,60 mm round,1000,3.95,2.55,35.44,online checkout,premium
+LC-816,90R,90 mm round,1000,4.00,2.58,35.50,online checkout,standard
+LC-816,90R,90 mm round,1000,6.00,3.87,35.50,online checkout,premium
+LC-816,40R,40 mm round,2500,1.40,0.90,35.71,online checkout,standard
+LC-816,40R,40 mm round,2500,2.10,1.35,35.71,online checkout,premium
+LC-816,60R,60 mm round,2500,1.89,1.22,35.45,online checkout,standard
+LC-816,60R,60 mm round,2500,2.84,1.82,35.92,online checkout,premium
+LC-816,90R,90 mm round,2500,2.87,1.84,35.89,online checkout,standard
+LC-816,90R,90 mm round,2500,4.31,2.77,35.73,online checkout,premium
+LC-816,40R,40 mm round,5000,1.05,0.67,36.19,online checkout,standard
+LC-816,40R,40 mm round,5000,1.58,1.01,36.08,online checkout,premium
+LC-816,60R,60 mm round,5000,1.42,0.90,36.62,online checkout,standard
+LC-816,60R,60 mm round,5000,2.13,1.36,36.15,online checkout,premium
+LC-816,90R,90 mm round,5000,2.16,1.37,36.57,online checkout,standard
+LC-816,90R,90 mm round,5000,3.23,2.06,36.22,online checkout,premium
+LC-817,40S,40 x 40 mm,25,8.50,5.51,35.18,online checkout,standard
+LC-817,40S,40 x 40 mm,25,12.75,8.27,35.14,online checkout,premium
+LC-817,60S,60 x 60 mm,25,11.48,7.44,35.19,online checkout,standard
+LC-817,60S,60 x 60 mm,25,17.22,11.16,35.19,online checkout,premium
+LC-817,90S,90 x 90 mm,25,17.43,11.30,35.17,online checkout,standard
+LC-817,90S,90 x 90 mm,25,26.14,16.94,35.20,online checkout,premium
+LC-817,40S,40 x 40 mm,50,6.80,4.38,35.59,online checkout,standard
+LC-817,40S,40 x 40 mm,50,10.20,6.57,35.59,online checkout,premium
+LC-817,60S,60 x 60 mm,50,9.18,5.91,35.62,online checkout,standard
+LC-817,60S,60 x 60 mm,50,13.77,8.87,35.58,online checkout,premium
+LC-817,90S,90 x 90 mm,50,13.94,8.98,35.58,online checkout,standard
+LC-817,90S,90 x 90 mm,50,20.91,13.47,35.58,online checkout,premium
+LC-817,40S,40 x 40 mm,100,5.80,3.73,35.69,online checkout,standard
+LC-817,40S,40 x 40 mm,100,8.70,5.59,35.75,online checkout,premium
+LC-817,60S,60 x 60 mm,100,7.83,5.04,35.63,online checkout,standard
+LC-817,60S,60 x 60 mm,100,11.75,7.55,35.74,online checkout,premium
+LC-817,90S,90 x 90 mm,100,11.89,7.65,35.66,online checkout,standard
+LC-817,90S,90 x 90 mm,100,17.84,11.47,35.71,online checkout,premium
+LC-817,40S,40 x 40 mm,250,3.60,2.33,35.28,online checkout,standard
+LC-817,40S,40 x 40 mm,250,5.40,3.50,35.19,online checkout,premium
+LC-817,60S,60 x 60 mm,250,4.87,3.15,35.32,online checkout,standard
+LC-817,60S,60 x 60 mm,250,7.30,4.72,35.34,online checkout,premium
+LC-817,90S,90 x 90 mm,250,7.38,4.78,35.23,online checkout,standard
+LC-817,90S,90 x 90 mm,250,11.07,7.16,35.32,online checkout,premium
+LC-817,40S,40 x 40 mm,500,2.60,1.68,35.38,online checkout,standard
+LC-817,40S,40 x 40 mm,500,3.91,2.52,35.55,online checkout,premium
+LC-817,60S,60 x 60 mm,500,3.51,2.27,35.33,online checkout,standard
+LC-817,60S,60 x 60 mm,500,5.27,3.40,35.48,online checkout,premium
+LC-817,90S,90 x 90 mm,500,5.33,3.44,35.46,online checkout,standard
+LC-817,90S,90 x 90 mm,500,8.00,5.17,35.38,online checkout,premium
+LC-817,40S,40 x 40 mm,1000,1.95,1.26,35.38,online checkout,standard
+LC-817,40S,40 x 40 mm,1000,2.93,1.89,35.49,online checkout,premium
+LC-817,60S,60 x 60 mm,1000,2.64,1.70,35.61,online checkout,standard
+LC-817,60S,60 x 60 mm,1000,3.95,2.55,35.44,online checkout,premium
+LC-817,90S,90 x 90 mm,1000,4.00,2.58,35.50,online checkout,standard
+LC-817,90S,90 x 90 mm,1000,6.00,3.87,35.50,online checkout,premium
+LC-817,40S,40 x 40 mm,2500,1.40,0.90,35.71,online checkout,standard
+LC-817,40S,40 x 40 mm,2500,2.10,1.35,35.71,online checkout,premium
+LC-817,60S,60 x 60 mm,2500,1.89,1.22,35.45,online checkout,standard
+LC-817,60S,60 x 60 mm,2500,2.84,1.82,35.92,online checkout,premium
+LC-817,90S,90 x 90 mm,2500,2.87,1.84,35.89,online checkout,standard
+LC-817,90S,90 x 90 mm,2500,4.31,2.77,35.73,online checkout,premium
+LC-817,40S,40 x 40 mm,5000,1.05,0.67,36.19,online checkout,standard
+LC-817,40S,40 x 40 mm,5000,1.58,1.01,36.08,online checkout,premium
+LC-817,60S,60 x 60 mm,5000,1.42,0.90,36.62,online checkout,standard
+LC-817,60S,60 x 60 mm,5000,2.13,1.36,36.15,online checkout,premium
+LC-817,90S,90 x 90 mm,5000,2.16,1.37,36.57,online checkout,standard
+LC-817,90S,90 x 90 mm,5000,3.23,2.06,36.22,online checkout,premium
+LC-818,50X30,50 x 30 mm,25,6.63,4.30,35.14,online checkout,standard
+LC-818,50X30,50 x 30 mm,25,9.95,6.45,35.18,online checkout,premium
+LC-818,75X50,75 x 50 mm,25,8.50,5.51,35.18,online checkout,standard
+LC-818,75X50,75 x 50 mm,25,12.75,8.27,35.14,online checkout,premium
+LC-818,100X150,100 x 150 mm,25,18.28,11.85,35.18,online checkout,standard
+LC-818,100X150,100 x 150 mm,25,27.42,17.77,35.19,online checkout,premium
+LC-818,50X30,50 x 30 mm,50,5.62,3.63,35.41,online checkout,standard
+LC-818,50X30,50 x 30 mm,50,8.43,5.44,35.47,online checkout,premium
+LC-818,75X50,75 x 50 mm,50,7.20,4.65,35.42,online checkout,standard
+LC-818,75X50,75 x 50 mm,50,10.80,6.98,35.37,online checkout,premium
+LC-818,100X150,100 x 150 mm,50,15.48,10.00,35.40,online checkout,standard
+LC-818,100X150,100 x 150 mm,50,23.22,15.00,35.40,online checkout,premium
+LC-818,50X30,50 x 30 mm,100,5.00,3.21,35.80,online checkout,standard
+LC-818,50X30,50 x 30 mm,100,7.49,4.81,35.78,online checkout,premium
+LC-818,75X50,75 x 50 mm,100,6.40,4.11,35.78,online checkout,standard
+LC-818,75X50,75 x 50 mm,100,9.61,6.17,35.80,online checkout,premium
+LC-818,100X150,100 x 150 mm,100,13.76,8.84,35.76,online checkout,standard
+LC-818,100X150,100 x 150 mm,100,20.64,13.25,35.80,online checkout,premium
+LC-818,50X30,50 x 30 mm,250,3.12,2.01,35.58,online checkout,standard
+LC-818,50X30,50 x 30 mm,250,4.68,3.02,35.47,online checkout,premium
+LC-818,75X50,75 x 50 mm,250,4.00,2.58,35.50,online checkout,standard
+LC-818,75X50,75 x 50 mm,250,6.00,3.87,35.50,online checkout,premium
+LC-818,100X150,100 x 150 mm,250,8.60,5.55,35.47,online checkout,standard
+LC-818,100X150,100 x 150 mm,250,12.90,8.32,35.50,online checkout,premium
+LC-818,50X30,50 x 30 mm,500,2.27,1.45,36.12,online checkout,standard
+LC-818,50X30,50 x 30 mm,500,3.40,2.18,35.88,online checkout,premium
+LC-818,75X50,75 x 50 mm,500,2.90,1.86,35.86,online checkout,standard
+LC-818,75X50,75 x 50 mm,500,4.35,2.79,35.86,online checkout,premium
+LC-818,100X150,100 x 150 mm,500,6.24,4.00,35.90,online checkout,standard
+LC-818,100X150,100 x 150 mm,500,9.36,6.00,35.90,online checkout,premium
+LC-818,50X30,50 x 30 mm,1000,1.72,1.10,36.05,online checkout,standard
+LC-818,50X30,50 x 30 mm,1000,2.58,1.65,36.05,online checkout,premium
+LC-818,75X50,75 x 50 mm,1000,2.21,1.41,36.20,online checkout,standard
+LC-818,75X50,75 x 50 mm,1000,3.30,2.11,36.06,online checkout,premium
+LC-818,100X150,100 x 150 mm,1000,4.74,3.03,36.08,online checkout,standard
+LC-818,100X150,100 x 150 mm,1000,7.10,4.55,35.92,online checkout,premium
+LC-818,50X30,50 x 30 mm,2500,1.24,0.80,35.48,online checkout,standard
+LC-818,50X30,50 x 30 mm,2500,1.85,1.19,35.68,online checkout,premium
+LC-818,75X50,75 x 50 mm,2500,1.58,1.02,35.44,online checkout,standard
+LC-818,75X50,75 x 50 mm,2500,2.37,1.53,35.44,online checkout,premium
+LC-818,100X150,100 x 150 mm,2500,3.40,2.19,35.59,online checkout,standard
+LC-818,100X150,100 x 150 mm,2500,5.10,3.29,35.49,online checkout,premium
+LC-818,50X30,50 x 30 mm,5000,0.93,0.59,36.56,online checkout,standard
+LC-818,50X30,50 x 30 mm,5000,1.39,0.89,35.97,online checkout,premium
+LC-818,75X50,75 x 50 mm,5000,1.18,0.76,35.59,online checkout,standard
+LC-818,75X50,75 x 50 mm,5000,1.77,1.14,35.59,online checkout,premium
+LC-818,100X150,100 x 150 mm,5000,2.54,1.63,35.83,online checkout,standard
+LC-818,100X150,100 x 150 mm,5000,3.81,2.45,35.70,online checkout,premium
+LC-819,50X30,50 x 30 mm,25,6.63,4.30,35.14,online checkout,standard
+LC-819,50X30,50 x 30 mm,25,9.95,6.45,35.18,online checkout,premium
+LC-819,70X45,70 x 45 mm,25,8.50,5.51,35.18,online checkout,standard
+LC-819,70X45,70 x 45 mm,25,12.75,8.27,35.14,online checkout,premium
+LC-819,90X60,90 x 60 mm,25,12.07,7.82,35.21,online checkout,standard
+LC-819,90X60,90 x 60 mm,25,18.11,11.74,35.17,online checkout,premium
+LC-819,50X30,50 x 30 mm,50,5.62,3.63,35.41,online checkout,standard
+LC-819,50X30,50 x 30 mm,50,8.43,5.44,35.47,online checkout,premium
+LC-819,70X45,70 x 45 mm,50,7.20,4.65,35.42,online checkout,standard
+LC-819,70X45,70 x 45 mm,50,10.80,6.98,35.37,online checkout,premium
+LC-819,90X60,90 x 60 mm,50,10.23,6.60,35.48,online checkout,standard
+LC-819,90X60,90 x 60 mm,50,15.34,9.90,35.46,online checkout,premium
+LC-819,50X30,50 x 30 mm,100,5.00,3.21,35.80,online checkout,standard
+LC-819,50X30,50 x 30 mm,100,7.49,4.81,35.78,online checkout,premium
+LC-819,70X45,70 x 45 mm,100,6.40,4.11,35.78,online checkout,standard
+LC-819,70X45,70 x 45 mm,100,9.61,6.17,35.80,online checkout,premium
+LC-819,90X60,90 x 60 mm,100,9.09,5.84,35.75,online checkout,standard
+LC-819,90X60,90 x 60 mm,100,13.64,8.75,35.85,online checkout,premium
+LC-819,50X30,50 x 30 mm,250,3.12,2.01,35.58,online checkout,standard
+LC-819,50X30,50 x 30 mm,250,4.68,3.02,35.47,online checkout,premium
+LC-819,70X45,70 x 45 mm,250,4.00,2.58,35.50,online checkout,standard
+LC-819,70X45,70 x 45 mm,250,6.00,3.87,35.50,online checkout,premium
+LC-819,90X60,90 x 60 mm,250,5.68,3.66,35.56,online checkout,standard
+LC-819,90X60,90 x 60 mm,250,8.52,5.50,35.45,online checkout,premium
+LC-819,50X30,50 x 30 mm,500,2.27,1.45,36.12,online checkout,standard
+LC-819,50X30,50 x 30 mm,500,3.40,2.18,35.88,online checkout,premium
+LC-819,70X45,70 x 45 mm,500,2.90,1.86,35.86,online checkout,standard
+LC-819,70X45,70 x 45 mm,500,4.35,2.79,35.86,online checkout,premium
+LC-819,90X60,90 x 60 mm,500,4.12,2.64,35.92,online checkout,standard
+LC-819,90X60,90 x 60 mm,500,6.18,3.96,35.92,online checkout,premium
+LC-819,50X30,50 x 30 mm,1000,1.72,1.10,36.05,online checkout,standard
+LC-819,50X30,50 x 30 mm,1000,2.58,1.65,36.05,online checkout,premium
+LC-819,70X45,70 x 45 mm,1000,2.21,1.41,36.20,online checkout,standard
+LC-819,70X45,70 x 45 mm,1000,3.30,2.11,36.06,online checkout,premium
+LC-819,90X60,90 x 60 mm,1000,3.13,2.00,36.10,online checkout,standard
+LC-819,90X60,90 x 60 mm,1000,4.69,3.00,36.03,online checkout,premium
+LC-819,50X30,50 x 30 mm,2500,1.24,0.80,35.48,online checkout,standard
+LC-819,50X30,50 x 30 mm,2500,1.85,1.19,35.68,online checkout,premium
+LC-819,70X45,70 x 45 mm,2500,1.58,1.02,35.44,online checkout,standard
+LC-819,70X45,70 x 45 mm,2500,2.37,1.53,35.44,online checkout,premium
+LC-819,90X60,90 x 60 mm,2500,2.25,1.45,35.56,online checkout,standard
+LC-819,90X60,90 x 60 mm,2500,3.37,2.17,35.61,online checkout,premium
+LC-819,50X30,50 x 30 mm,5000,0.93,0.59,36.56,online checkout,standard
+LC-819,50X30,50 x 30 mm,5000,1.39,0.89,35.97,online checkout,premium
+LC-819,70X45,70 x 45 mm,5000,1.18,0.76,35.59,online checkout,standard
+LC-819,70X45,70 x 45 mm,5000,1.77,1.14,35.59,online checkout,premium
+LC-819,90X60,90 x 60 mm,5000,1.68,1.08,35.71,online checkout,standard
+LC-819,90X60,90 x 60 mm,5000,2.52,1.62,35.71,online checkout,premium
+LC-820,50MAX,Up to 50 x 50 mm,25,10.53,6.83,35.14,online checkout,standard
+LC-820,50MAX,Up to 50 x 50 mm,25,15.80,10.24,35.19,online checkout,premium
+LC-820,75MAX,Up to 75 x 75 mm,25,13.50,8.75,35.19,online checkout,standard
+LC-820,75MAX,Up to 75 x 75 mm,25,20.25,13.13,35.16,online checkout,premium
+LC-820,100MAX,Up to 100 x 100 mm,25,19.17,12.42,35.21,online checkout,standard
+LC-820,100MAX,Up to 100 x 100 mm,25,28.76,18.64,35.19,online checkout,premium
+LC-820,50MAX,Up to 50 x 50 mm,50,8.19,5.31,35.16,online checkout,standard
+LC-820,50MAX,Up to 50 x 50 mm,50,12.29,7.97,35.15,online checkout,premium
+LC-820,75MAX,Up to 75 x 75 mm,50,10.50,6.81,35.14,online checkout,standard
+LC-820,75MAX,Up to 75 x 75 mm,50,15.75,10.21,35.17,online checkout,premium
+LC-820,100MAX,Up to 100 x 100 mm,50,14.91,9.67,35.14,online checkout,standard
+LC-820,100MAX,Up to 100 x 100 mm,50,22.37,14.51,35.14,online checkout,premium
+LC-820,50MAX,Up to 50 x 50 mm,100,6.63,4.21,36.50,online checkout,standard
+LC-820,50MAX,Up to 50 x 50 mm,100,9.95,6.32,36.48,online checkout,premium
+LC-820,75MAX,Up to 75 x 75 mm,100,8.50,5.40,36.47,online checkout,standard
+LC-820,75MAX,Up to 75 x 75 mm,100,12.75,8.10,36.47,online checkout,premium
+LC-820,100MAX,Up to 100 x 100 mm,100,12.07,7.67,36.45,online checkout,standard
+LC-820,100MAX,Up to 100 x 100 mm,100,18.11,11.50,36.50,online checkout,premium
+LC-820,50MAX,Up to 50 x 50 mm,250,4.22,2.70,36.02,online checkout,standard
+LC-820,50MAX,Up to 50 x 50 mm,250,6.32,4.05,35.92,online checkout,premium
+LC-820,75MAX,Up to 75 x 75 mm,250,5.40,3.46,35.93,online checkout,standard
+LC-820,75MAX,Up to 75 x 75 mm,250,8.11,5.19,36.00,online checkout,premium
+LC-820,100MAX,Up to 100 x 100 mm,250,7.67,4.91,35.98,online checkout,standard
+LC-820,100MAX,Up to 100 x 100 mm,250,11.51,7.37,35.97,online checkout,premium
+LC-820,50MAX,Up to 50 x 50 mm,500,2.97,1.90,36.03,online checkout,standard
+LC-820,50MAX,Up to 50 x 50 mm,500,4.45,2.85,35.96,online checkout,premium
+LC-820,75MAX,Up to 75 x 75 mm,500,3.80,2.44,35.79,online checkout,standard
+LC-820,75MAX,Up to 75 x 75 mm,500,5.70,3.66,35.79,online checkout,premium
+LC-820,100MAX,Up to 100 x 100 mm,500,5.40,3.46,35.93,online checkout,standard
+LC-820,100MAX,Up to 100 x 100 mm,500,8.10,5.20,35.80,online checkout,premium
+LC-820,50MAX,Up to 50 x 50 mm,1000,2.19,1.40,36.07,online checkout,standard
+LC-820,50MAX,Up to 50 x 50 mm,1000,3.28,2.09,36.28,online checkout,premium
+LC-820,75MAX,Up to 75 x 75 mm,1000,2.80,1.79,36.07,online checkout,standard
+LC-820,75MAX,Up to 75 x 75 mm,1000,4.20,2.69,35.95,online checkout,premium
+LC-820,100MAX,Up to 100 x 100 mm,1000,3.98,2.54,36.18,online checkout,standard
+LC-820,100MAX,Up to 100 x 100 mm,1000,5.97,3.81,36.18,online checkout,premium
+LC-820,50MAX,Up to 50 x 50 mm,2500,1.56,1.00,35.90,online checkout,standard
+LC-820,50MAX,Up to 50 x 50 mm,2500,2.34,1.50,35.90,online checkout,premium
+LC-820,75MAX,Up to 75 x 75 mm,2500,2.00,1.28,36.00,online checkout,standard
+LC-820,75MAX,Up to 75 x 75 mm,2500,3.00,1.92,36.00,online checkout,premium
+LC-820,100MAX,Up to 100 x 100 mm,2500,2.84,1.82,35.92,online checkout,standard
+LC-820,100MAX,Up to 100 x 100 mm,2500,4.26,2.73,35.92,online checkout,premium
+BC-213,10ML,10 ml attar,100,58.33,37.91,35.01,online checkout,standard
+BC-213,10ML,10 ml attar,100,87.49,56.86,35.01,online checkout,premium
+BC-213,30ML,30 ml perfume,100,74.77,48.60,35.00,online checkout,standard
+BC-213,30ML,30 ml perfume,100,112.16,72.90,35.00,online checkout,premium
+BC-213,50ML,50 ml perfume,100,91.22,59.29,35.00,online checkout,standard
+BC-213,50ML,50 ml perfume,100,136.84,88.94,35.00,online checkout,premium
+BC-213,100ML,100 ml perfume,100,110.67,71.93,35.00,online checkout,standard
+BC-213,100ML,100 ml perfume,100,165.99,107.89,35.00,online checkout,premium
+BC-213,10ML,10 ml attar,250,46.68,30.33,35.03,online checkout,standard
+BC-213,10ML,10 ml attar,250,70.02,45.50,35.02,online checkout,premium
+BC-213,30ML,30 ml perfume,250,59.84,38.89,35.01,online checkout,standard
+BC-213,30ML,30 ml perfume,250,89.76,58.34,35.00,online checkout,premium
+BC-213,50ML,50 ml perfume,250,73.01,47.45,35.01,online checkout,standard
+BC-213,50ML,50 ml perfume,250,109.51,71.17,35.01,online checkout,premium
+BC-213,100ML,100 ml perfume,250,88.57,57.56,35.01,online checkout,standard
+BC-213,100ML,100 ml perfume,250,132.85,86.34,35.01,online checkout,premium
+BC-213,10ML,10 ml attar,500,38.90,25.28,35.01,online checkout,standard
+BC-213,10ML,10 ml attar,500,58.35,37.92,35.01,online checkout,premium
+BC-213,30ML,30 ml perfume,500,49.87,32.41,35.01,online checkout,standard
+BC-213,30ML,30 ml perfume,500,74.81,48.61,35.02,online checkout,premium
+BC-213,50ML,50 ml perfume,500,60.85,39.54,35.02,online checkout,standard
+BC-213,50ML,50 ml perfume,500,91.27,59.31,35.02,payment confirmation,premium
+BC-213,100ML,100 ml perfume,500,73.81,47.97,35.01,online checkout,standard
+BC-213,100ML,100 ml perfume,500,110.72,71.95,35.02,payment confirmation,premium
+BC-213,10ML,10 ml attar,1000,32.41,21.06,35.02,online checkout,standard
+BC-213,10ML,10 ml attar,1000,48.61,31.59,35.01,payment confirmation,premium
+BC-213,30ML,30 ml perfume,1000,41.54,27.00,35.00,payment confirmation,standard
+BC-213,30ML,30 ml perfume,1000,62.31,40.50,35.00,payment confirmation,premium
+BC-213,50ML,50 ml perfume,1000,50.68,32.94,35.00,payment confirmation,standard
+BC-213,50ML,50 ml perfume,1000,76.02,49.41,35.00,payment confirmation,premium
+BC-213,100ML,100 ml perfume,1000,61.48,39.96,35.00,payment confirmation,standard
+BC-213,100ML,100 ml perfume,1000,92.22,59.94,35.00,payment confirmation,premium
+EC-505,S,Small,100,15.61,10.11,35.23,online checkout,standard
+EC-505,S,Small,100,23.40,15.16,35.21,online checkout,premium
+EC-505,M,Medium,100,20.00,12.96,35.20,online checkout,standard
+EC-505,M,Medium,100,30.00,19.44,35.20,online checkout,premium
+EC-505,L,Large,100,25.60,16.59,35.20,online checkout,standard
+EC-505,L,Large,100,38.41,24.88,35.23,online checkout,premium
+EC-505,XL,Extra large,100,30.40,19.70,35.20,online checkout,standard
+EC-505,XL,Extra large,100,45.60,29.55,35.20,online checkout,premium
+EC-505,S,Small,250,11.70,7.59,35.13,online checkout,standard
+EC-505,S,Small,250,17.55,11.38,35.16,online checkout,premium
+EC-505,M,Medium,250,15.00,9.73,35.13,online checkout,standard
+EC-505,M,Medium,250,22.50,14.60,35.11,online checkout,premium
+EC-505,L,Large,250,19.20,12.45,35.16,online checkout,standard
+EC-505,L,Large,250,28.80,18.68,35.14,online checkout,premium
+EC-505,XL,Extra large,250,22.80,14.79,35.13,online checkout,standard
+EC-505,XL,Extra large,250,34.21,22.18,35.17,online checkout,premium
+EC-505,S,Small,500,9.21,5.90,35.94,online checkout,standard
+EC-505,S,Small,500,13.81,8.85,35.92,online checkout,premium
+EC-505,M,Medium,500,11.80,7.56,35.93,online checkout,standard
+EC-505,M,Medium,500,17.71,11.34,35.97,online checkout,premium
+EC-505,L,Large,500,15.11,9.68,35.94,online checkout,standard
+EC-505,L,Large,500,22.66,14.52,35.92,online checkout,premium
+EC-505,XL,Extra large,500,17.94,11.49,35.95,online checkout,standard
+EC-505,XL,Extra large,500,26.91,17.24,35.93,online checkout,premium
+EC-505,S,Small,1000,7.53,4.89,35.06,online checkout,standard
+EC-505,S,Small,1000,11.30,7.34,35.04,online checkout,premium
+EC-505,M,Medium,1000,9.65,6.27,35.03,online checkout,standard
+EC-505,M,Medium,1000,14.48,9.40,35.08,online checkout,premium
+EC-505,L,Large,1000,12.36,8.03,35.03,online checkout,standard
+EC-505,L,Large,1000,18.53,12.04,35.02,online checkout,premium
+EC-505,XL,Extra large,1000,14.67,9.53,35.04,online checkout,standard
+EC-505,XL,Extra large,1000,22.01,14.30,35.03,online checkout,premium
+EC-509,S,Accessories,100,14.27,9.27,35.04,online checkout,standard
+EC-509,S,Accessories,100,21.39,13.90,35.02,online checkout,premium
+EC-509,M,T-shirt,100,18.28,11.88,35.01,online checkout,standard
+EC-509,M,T-shirt,100,27.42,17.82,35.01,online checkout,premium
+EC-509,L,Sweatshirt,100,22.85,14.85,35.01,online checkout,standard
+EC-509,L,Sweatshirt,100,34.28,22.28,35.01,online checkout,premium
+EC-509,XL,Bulk apparel,100,27.79,18.06,35.01,online checkout,standard
+EC-509,XL,Bulk apparel,100,41.68,27.09,35.00,online checkout,premium
+EC-509,S,Accessories,250,10.77,7.00,35.00,online checkout,standard
+EC-509,S,Accessories,250,16.15,10.49,35.05,online checkout,premium
+EC-509,M,T-shirt,250,13.80,8.97,35.00,online checkout,standard
+EC-509,M,T-shirt,250,20.71,13.46,35.01,online checkout,premium
+EC-509,L,Sweatshirt,250,17.25,11.21,35.01,online checkout,standard
+EC-509,L,Sweatshirt,250,25.88,16.82,35.01,online checkout,premium
+EC-509,XL,Bulk apparel,250,20.98,13.63,35.03,online checkout,standard
+EC-509,XL,Bulk apparel,250,31.47,20.45,35.02,online checkout,premium
+EC-509,S,Accessories,500,8.31,5.40,35.02,online checkout,standard
+EC-509,S,Accessories,500,12.47,8.10,35.04,online checkout,premium
+EC-509,M,T-shirt,500,10.65,6.92,35.02,online checkout,standard
+EC-509,M,T-shirt,500,15.98,10.38,35.04,online checkout,premium
+EC-509,L,Sweatshirt,500,13.32,8.65,35.06,online checkout,standard
+EC-509,L,Sweatshirt,500,19.97,12.98,35.00,online checkout,premium
+EC-509,XL,Bulk apparel,500,16.19,10.52,35.02,online checkout,standard
+EC-509,XL,Bulk apparel,500,24.29,15.78,35.03,online checkout,premium
+EC-509,S,Accessories,1000,6.63,4.30,35.14,online checkout,standard
+EC-509,S,Accessories,1000,9.95,6.45,35.18,online checkout,premium
+EC-509,M,T-shirt,1000,8.50,5.51,35.18,online checkout,standard
+EC-509,M,T-shirt,1000,12.75,8.27,35.14,online checkout,premium
+EC-509,L,Sweatshirt,1000,10.63,6.89,35.18,online checkout,standard
+EC-509,L,Sweatshirt,1000,15.94,10.33,35.19,online checkout,premium
+EC-509,XL,Bulk apparel,1000,12.92,8.38,35.14,online checkout,standard
+EC-509,XL,Bulk apparel,1000,19.38,12.56,35.19,online checkout,premium
+EC-510,S,Small,50,16.00,10.37,35.19,online checkout,standard
+EC-510,S,Small,50,24.00,15.55,35.21,online checkout,premium
+EC-510,M,Medium,50,20.00,12.96,35.20,online checkout,standard
+EC-510,M,Medium,50,30.00,19.44,35.20,online checkout,premium
+EC-510,L,Large,50,26.40,17.11,35.19,online checkout,standard
+EC-510,L,Large,50,39.60,25.66,35.20,online checkout,premium
+EC-510,S,Small,100,12.00,7.78,35.17,online checkout,standard
+EC-510,S,Small,100,18.00,11.68,35.11,online checkout,premium
+EC-510,M,Medium,100,15.00,9.73,35.13,online checkout,standard
+EC-510,M,Medium,100,22.50,14.60,35.11,online checkout,premium
+EC-510,L,Large,100,19.80,12.84,35.15,online checkout,standard
+EC-510,L,Large,100,29.71,19.27,35.14,online checkout,premium
+EC-510,S,Small,250,8.53,5.54,35.05,online checkout,standard
+EC-510,S,Small,250,12.78,8.30,35.05,online checkout,premium
+EC-510,M,Medium,250,10.65,6.92,35.02,online checkout,standard
+EC-510,M,Medium,250,15.98,10.38,35.04,online checkout,premium
+EC-510,L,Large,250,14.06,9.13,35.06,online checkout,standard
+EC-510,L,Large,250,21.09,13.70,35.04,online checkout,premium
+EC-510,S,Small,500,6.65,4.32,35.04,online checkout,standard
+EC-510,S,Small,500,9.98,6.48,35.07,online checkout,premium
+EC-510,M,Medium,500,8.31,5.40,35.02,online checkout,standard
+EC-510,M,Medium,500,12.47,8.10,35.04,online checkout,premium
+EC-510,L,Large,500,10.97,7.13,35.00,online checkout,standard
+EC-510,L,Large,500,16.46,10.69,35.05,online checkout,premium
+LC-808,TAG,Hang tag,50,9.50,5.94,37.47,online checkout,standard
+LC-808,TAG,Hang tag,50,14.25,8.91,37.47,online checkout,premium
+LC-808,A7,A7 insert,50,10.64,6.65,37.50,online checkout,standard
+LC-808,A7,A7 insert,50,15.96,9.98,37.47,online checkout,premium
+LC-808,A6,A6 insert,50,12.16,7.60,37.50,online checkout,standard
+LC-808,A6,A6 insert,50,18.25,11.40,37.53,online checkout,premium
+LC-808,TAG,Hang tag,100,6.33,4.11,35.07,online checkout,standard
+LC-808,TAG,Hang tag,100,9.50,6.17,35.05,online checkout,premium
+LC-808,A7,A7 insert,100,7.09,4.60,35.12,online checkout,standard
+LC-808,A7,A7 insert,100,10.64,6.90,35.15,online checkout,premium
+LC-808,A6,A6 insert,100,8.11,5.26,35.14,online checkout,standard
+LC-808,A6,A6 insert,100,12.16,7.89,35.12,online checkout,premium
+LC-808,TAG,Hang tag,250,4.00,2.60,35.00,online checkout,standard
+LC-808,TAG,Hang tag,250,6.00,3.90,35.00,online checkout,premium
+LC-808,A7,A7 insert,250,4.49,2.91,35.19,online checkout,standard
+LC-808,A7,A7 insert,250,6.73,4.37,35.07,online checkout,premium
+LC-808,A6,A6 insert,250,5.13,3.33,35.09,online checkout,standard
+LC-808,A6,A6 insert,250,7.68,4.99,35.03,online checkout,premium
+LC-808,TAG,Hang tag,500,2.84,1.84,35.21,online checkout,standard
+LC-808,TAG,Hang tag,500,4.26,2.76,35.21,online checkout,premium
+LC-808,A7,A7 insert,500,3.19,2.06,35.42,online checkout,standard
+LC-808,A7,A7 insert,500,4.78,3.09,35.36,online checkout,premium
+LC-808,A6,A6 insert,500,3.64,2.36,35.16,online checkout,standard
+LC-808,A6,A6 insert,500,5.46,3.53,35.35,online checkout,premium
+LC-810,HALF,Half sheet,250,8.39,5.44,35.16,online checkout,standard
+LC-810,HALF,Half sheet,250,12.58,8.16,35.14,online checkout,premium
+LC-810,FULL,Full sheet,250,11.64,7.56,35.05,online checkout,standard
+LC-810,FULL,Full sheet,250,17.46,11.34,35.05,online checkout,premium
+LC-810,XL,Extra large,250,16.53,10.74,35.03,online checkout,standard
+LC-810,XL,Extra large,250,24.80,16.10,35.08,online checkout,premium
+LC-810,HALF,Half sheet,500,6.59,4.28,35.05,online checkout,standard
+LC-810,HALF,Half sheet,500,9.88,6.42,35.02,online checkout,premium
+LC-810,FULL,Full sheet,500,9.14,5.94,35.01,online checkout,standard
+LC-810,FULL,Full sheet,500,13.71,8.91,35.01,online checkout,premium
+LC-810,XL,Extra large,500,12.98,8.43,35.05,online checkout,standard
+LC-810,XL,Extra large,500,19.47,12.65,35.03,online checkout,premium
+LC-810,HALF,Half sheet,1000,5.04,3.27,35.12,online checkout,standard
+LC-810,HALF,Half sheet,1000,7.56,4.90,35.19,online checkout,premium
+LC-810,FULL,Full sheet,1000,7.00,4.54,35.14,online checkout,standard
+LC-810,FULL,Full sheet,1000,10.50,6.81,35.14,online checkout,premium
+LC-810,XL,Extra large,1000,9.94,6.45,35.11,online checkout,standard
+LC-810,XL,Extra large,1000,14.91,9.67,35.14,online checkout,premium
+LC-810,HALF,Half sheet,2500,4.09,2.65,35.21,online checkout,standard
+LC-810,HALF,Half sheet,2500,6.13,3.97,35.24,online checkout,premium
+LC-810,FULL,Full sheet,2500,5.67,3.68,35.10,online checkout,standard
+LC-810,FULL,Full sheet,2500,8.51,5.52,35.14,online checkout,premium
+LC-810,XL,Extra large,2500,8.06,5.23,35.11,online checkout,standard
+LC-810,XL,Extra large,2500,12.08,7.84,35.10,online checkout,premium
+LC-811,48X50,48 mm x 50 m,72,109.67,71.28,35.01,online checkout,standard
+LC-811,48X50,48 mm x 50 m,72,164.50,106.92,35.00,online checkout,premium
+LC-811,48X65,48 mm x 65 m,72,124.62,81.00,35.00,online checkout,standard
+LC-811,48X65,48 mm x 65 m,72,186.93,121.50,35.00,online checkout,premium
+LC-811,72X65,72 mm x 65 m,72,171.98,111.78,35.00,online checkout,standard
+LC-811,72X65,72 mm x 65 m,72,257.97,167.67,35.00,online checkout,premium
+LC-811,48X50,48 mm x 50 m,144,90.68,58.93,35.01,online checkout,standard
+LC-811,48X50,48 mm x 50 m,144,136.02,88.40,35.01,online checkout,premium
+LC-811,48X65,48 mm x 65 m,144,103.04,66.97,35.01,online checkout,standard
+LC-811,48X65,48 mm x 65 m,144,154.56,100.45,35.01,online checkout,premium
+LC-811,72X65,72 mm x 65 m,144,142.20,92.42,35.01,online checkout,standard
+LC-811,72X65,72 mm x 65 m,144,213.30,138.63,35.01,online checkout,premium
+LC-811,48X50,48 mm x 50 m,360,73.12,47.52,35.01,online checkout,standard
+LC-811,48X50,48 mm x 50 m,360,109.67,71.28,35.01,online checkout,premium
+LC-811,48X65,48 mm x 65 m,360,83.08,54.00,35.00,online checkout,standard
+LC-811,48X65,48 mm x 65 m,360,124.62,81.00,35.00,payment confirmation,premium
+LC-811,72X65,72 mm x 65 m,360,114.66,74.52,35.01,payment confirmation,standard
+LC-811,72X65,72 mm x 65 m,360,171.98,111.78,35.00,payment confirmation,premium
+LC-811,48X50,48 mm x 50 m,720,61.42,39.92,35.00,payment confirmation,standard
+LC-811,48X50,48 mm x 50 m,720,92.13,59.88,35.00,payment confirmation,premium
+LC-811,48X65,48 mm x 65 m,720,69.80,45.36,35.01,payment confirmation,standard
+LC-811,48X65,48 mm x 65 m,720,104.69,68.04,35.01,payment confirmation,premium
+LC-811,72X65,72 mm x 65 m,720,96.32,62.60,35.01,payment confirmation,standard
+LC-811,72X65,72 mm x 65 m,720,144.47,93.90,35.00,payment confirmation,premium
+SP-905,6X6,6 x 6 in,100,13.88,8.91,35.81,online checkout,standard
+SP-905,6X6,6 x 6 in,100,20.82,13.37,35.78,online checkout,premium
+SP-905,9X6,9 x 6 in,100,18.50,11.88,35.78,online checkout,standard
+SP-905,9X6,9 x 6 in,100,27.75,17.82,35.78,online checkout,premium
+SP-905,9X9,9 x 9 in,100,24.98,16.04,35.79,online checkout,standard
+SP-905,9X9,9 x 9 in,100,37.47,24.06,35.79,online checkout,premium
+SP-905,6X6,6 x 6 in,250,13.13,8.50,35.26,online checkout,standard
+SP-905,6X6,6 x 6 in,250,19.69,12.76,35.20,online checkout,premium
+SP-905,9X6,9 x 6 in,250,17.50,11.34,35.20,online checkout,standard
+SP-905,9X6,9 x 6 in,250,26.25,17.01,35.20,online checkout,premium
+SP-905,9X9,9 x 9 in,250,23.63,15.31,35.21,online checkout,standard
+SP-905,9X9,9 x 9 in,250,35.44,22.96,35.21,online checkout,premium
+SP-905,6X6,6 x 6 in,500,12.57,8.16,35.08,online checkout,standard
+SP-905,6X6,6 x 6 in,500,18.85,12.24,35.07,online checkout,premium
+SP-905,9X6,9 x 6 in,500,16.75,10.88,35.04,online checkout,standard
+SP-905,9X6,9 x 6 in,500,25.13,16.32,35.06,online checkout,premium
+SP-905,9X9,9 x 9 in,500,22.62,14.69,35.06,online checkout,standard
+SP-905,9X9,9 x 9 in,500,33.92,22.03,35.05,online checkout,premium
+SP-905,6X6,6 x 6 in,1000,10.24,6.64,35.16,online checkout,standard
+SP-905,6X6,6 x 6 in,1000,15.36,9.97,35.09,online checkout,premium
+SP-905,9X6,9 x 6 in,1000,13.65,8.86,35.09,online checkout,standard
+SP-905,9X6,9 x 6 in,1000,20.48,13.29,35.11,online checkout,premium
+SP-905,9X9,9 x 9 in,1000,18.43,11.96,35.11,online checkout,standard
+SP-905,9X9,9 x 9 in,1000,27.65,17.94,35.12,online checkout,premium
+SP-905,6X6,6 x 6 in,2500,8.52,5.51,35.33,online checkout,standard
+SP-905,6X6,6 x 6 in,2500,12.77,8.27,35.24,online checkout,premium
+SP-905,9X6,9 x 6 in,2500,11.35,7.35,35.24,online checkout,standard
+SP-905,9X6,9 x 6 in,2500,17.03,11.02,35.29,payment confirmation,premium
+SP-905,9X9,9 x 9 in,2500,15.33,9.92,35.29,online checkout,standard
+SP-905,9X9,9 x 9 in,2500,22.99,14.88,35.28,payment confirmation,premium
+SP-905,6X6,6 x 6 in,5000,7.28,4.70,35.44,online checkout,standard
+SP-905,6X6,6 x 6 in,5000,10.92,7.05,35.44,payment confirmation,premium
+SP-905,9X6,9 x 6 in,5000,9.70,6.27,35.36,payment confirmation,standard
+SP-905,9X6,9 x 6 in,5000,14.55,9.40,35.40,payment confirmation,premium
+SP-905,9X9,9 x 9 in,5000,13.10,8.46,35.42,payment confirmation,standard
+SP-905,9X9,9 x 9 in,5000,19.65,12.70,35.37,payment confirmation,premium
+SP-907,200ML,200 ml bowl,100,10.23,6.61,35.39,online checkout,standard
+SP-907,200ML,200 ml bowl,100,15.34,9.91,35.40,online checkout,premium
+SP-907,300ML,300 ml bowl,100,11.36,7.34,35.39,online checkout,standard
+SP-907,300ML,300 ml bowl,100,17.04,11.02,35.33,online checkout,premium
+SP-907,500ML,500 ml bowl,100,14.20,9.18,35.35,online checkout,standard
+SP-907,500ML,500 ml bowl,100,21.30,13.77,35.35,online checkout,premium
+SP-907,750ML-TALL,750 ml bowl,100,16.76,10.83,35.38,online checkout,standard
+SP-907,750ML-TALL,750 ml bowl,100,25.14,16.25,35.36,online checkout,premium
+SP-907,600ML-FLAT,600 ml flat bowl,100,16.48,10.65,35.38,online checkout,standard
+SP-907,600ML-FLAT,600 ml flat bowl,100,24.71,15.97,35.37,online checkout,premium
+SP-907,750ML-FLAT,750 ml flat bowl,100,18.46,11.93,35.37,online checkout,standard
+SP-907,750ML-FLAT,750 ml flat bowl,100,27.69,17.90,35.36,online checkout,premium
+SP-907,1000ML,"1,000 ml flat bowl",100,21.59,13.95,35.39,online checkout,standard
+SP-907,1000ML,"1,000 ml flat bowl",100,32.38,20.93,35.36,online checkout,premium
+SP-907,1250ML,"1,250 ml flat bowl",100,24.43,15.79,35.37,online checkout,standard
+SP-907,1250ML,"1,250 ml flat bowl",100,36.64,23.68,35.37,online checkout,premium
+SP-907,200ML,200 ml bowl,250,9.00,5.84,35.11,online checkout,standard
+SP-907,200ML,200 ml bowl,250,13.50,8.76,35.11,online checkout,premium
+SP-907,300ML,300 ml bowl,250,10.00,6.49,35.10,online checkout,standard
+SP-907,300ML,300 ml bowl,250,15.00,9.73,35.13,online checkout,premium
+SP-907,500ML,500 ml bowl,250,12.50,8.11,35.12,online checkout,standard
+SP-907,500ML,500 ml bowl,250,18.75,12.16,35.15,online checkout,premium
+SP-907,750ML-TALL,750 ml bowl,250,14.75,9.57,35.12,online checkout,standard
+SP-907,750ML-TALL,750 ml bowl,250,22.13,14.35,35.16,online checkout,premium
+SP-907,600ML-FLAT,600 ml flat bowl,250,14.50,9.41,35.10,online checkout,standard
+SP-907,600ML-FLAT,600 ml flat bowl,250,21.75,14.11,35.13,online checkout,premium
+SP-907,750ML-FLAT,750 ml flat bowl,250,16.25,10.54,35.14,online checkout,standard
+SP-907,750ML-FLAT,750 ml flat bowl,250,24.38,15.81,35.15,online checkout,premium
+SP-907,1000ML,"1,000 ml flat bowl",250,19.00,12.33,35.11,online checkout,standard
+SP-907,1000ML,"1,000 ml flat bowl",250,28.50,18.49,35.12,online checkout,premium
+SP-907,1250ML,"1,250 ml flat bowl",250,21.50,13.95,35.12,online checkout,standard
+SP-907,1250ML,"1,250 ml flat bowl",250,32.25,20.92,35.13,online checkout,premium
+SP-907,200ML,200 ml bowl,500,7.78,5.05,35.09,online checkout,standard
+SP-907,200ML,200 ml bowl,500,11.67,7.58,35.05,online checkout,premium
+SP-907,300ML,300 ml bowl,500,8.65,5.62,35.03,online checkout,standard
+SP-907,300ML,300 ml bowl,500,12.96,8.42,35.03,online checkout,premium
+SP-907,500ML,500 ml bowl,500,10.80,7.02,35.00,online checkout,standard
+SP-907,500ML,500 ml bowl,500,16.21,10.53,35.04,online checkout,premium
+SP-907,750ML-TALL,750 ml bowl,500,12.75,8.28,35.06,online checkout,standard
+SP-907,750ML-TALL,750 ml bowl,500,19.13,12.43,35.02,online checkout,premium
+SP-907,600ML-FLAT,600 ml flat bowl,500,12.53,8.14,35.04,online checkout,standard
+SP-907,600ML-FLAT,600 ml flat bowl,500,18.80,12.21,35.05,online checkout,premium
+SP-907,750ML-FLAT,750 ml flat bowl,500,14.05,9.13,35.02,online checkout,standard
+SP-907,750ML-FLAT,750 ml flat bowl,500,21.07,13.69,35.03,online checkout,premium
+SP-907,1000ML,"1,000 ml flat bowl",500,16.42,10.67,35.02,online checkout,standard
+SP-907,1000ML,"1,000 ml flat bowl",500,24.64,16.01,35.02,online checkout,premium
+SP-907,1250ML,"1,250 ml flat bowl",500,18.58,12.07,35.04,online checkout,standard
+SP-907,1250ML,"1,250 ml flat bowl",500,27.87,18.11,35.02,online checkout,premium
+SP-907,200ML,200 ml bowl,1000,6.84,4.44,35.09,online checkout,standard
+SP-907,200ML,200 ml bowl,1000,10.26,6.65,35.19,online checkout,premium
+SP-907,300ML,300 ml bowl,1000,7.60,4.93,35.13,online checkout,standard
+SP-907,300ML,300 ml bowl,1000,11.40,7.39,35.18,online checkout,premium
+SP-907,500ML,500 ml bowl,1000,9.50,6.16,35.16,online checkout,standard
+SP-907,500ML,500 ml bowl,1000,14.25,9.24,35.16,online checkout,premium
+SP-907,750ML-TALL,750 ml bowl,1000,11.21,7.27,35.15,online checkout,standard
+SP-907,750ML-TALL,750 ml bowl,1000,16.82,10.90,35.20,online checkout,premium
+SP-907,600ML-FLAT,600 ml flat bowl,1000,11.02,7.15,35.12,online checkout,standard
+SP-907,600ML-FLAT,600 ml flat bowl,1000,16.53,10.72,35.15,online checkout,premium
+SP-907,750ML-FLAT,750 ml flat bowl,1000,12.35,8.01,35.14,online checkout,standard
+SP-907,750ML-FLAT,750 ml flat bowl,1000,18.53,12.01,35.19,online checkout,premium
+SP-907,1000ML,"1,000 ml flat bowl",1000,14.44,9.36,35.18,online checkout,standard
+SP-907,1000ML,"1,000 ml flat bowl",1000,21.66,14.04,35.18,online checkout,premium
+SP-907,1250ML,"1,250 ml flat bowl",1000,16.34,10.60,35.13,online checkout,standard
+SP-907,1250ML,"1,250 ml flat bowl",1000,24.51,15.89,35.17,online checkout,premium
+SP-907,200ML,200 ml bowl,2500,5.76,3.74,35.07,online checkout,standard
+SP-907,200ML,200 ml bowl,2500,8.64,5.61,35.07,online checkout,premium
+SP-907,300ML,300 ml bowl,2500,6.40,4.15,35.16,online checkout,standard
+SP-907,300ML,300 ml bowl,2500,9.61,6.23,35.17,online checkout,premium
+SP-907,500ML,500 ml bowl,2500,8.00,5.19,35.12,online checkout,standard
+SP-907,500ML,500 ml bowl,2500,12.00,7.79,35.08,online checkout,premium
+SP-907,750ML-TALL,750 ml bowl,2500,9.44,6.12,35.17,online checkout,standard
+SP-907,750ML-TALL,750 ml bowl,2500,14.16,9.19,35.10,online checkout,premium
+SP-907,600ML-FLAT,600 ml flat bowl,2500,9.28,6.02,35.13,online checkout,standard
+SP-907,600ML-FLAT,600 ml flat bowl,2500,13.92,9.03,35.13,online checkout,premium
+SP-907,750ML-FLAT,750 ml flat bowl,2500,10.40,6.75,35.10,online checkout,standard
+SP-907,750ML-FLAT,750 ml flat bowl,2500,15.61,10.12,35.17,online checkout,premium
+SP-907,1000ML,"1,000 ml flat bowl",2500,12.16,7.89,35.12,online checkout,standard
+SP-907,1000ML,"1,000 ml flat bowl",2500,18.25,11.83,35.18,payment confirmation,premium
+SP-907,1250ML,"1,250 ml flat bowl",2500,13.76,8.93,35.10,online checkout,standard
+SP-907,1250ML,"1,250 ml flat bowl",2500,20.64,13.39,35.13,payment confirmation,premium
+SP-907,200ML,200 ml bowl,5000,4.79,3.11,35.07,online checkout,standard
+SP-907,200ML,200 ml bowl,5000,7.19,4.67,35.05,online checkout,premium
+SP-907,300ML,300 ml bowl,5000,5.33,3.46,35.08,online checkout,standard
+SP-907,300ML,300 ml bowl,5000,7.98,5.18,35.09,payment confirmation,premium
+SP-907,500ML,500 ml bowl,5000,6.65,4.32,35.04,online checkout,standard
+SP-907,500ML,500 ml bowl,5000,9.98,6.48,35.07,payment confirmation,premium
+SP-907,750ML-TALL,750 ml bowl,5000,7.85,5.10,35.03,online checkout,standard
+SP-907,750ML-TALL,750 ml bowl,5000,11.78,7.65,35.06,payment confirmation,premium
+SP-907,600ML-FLAT,600 ml flat bowl,5000,7.72,5.01,35.10,online checkout,standard
+SP-907,600ML-FLAT,600 ml flat bowl,5000,11.58,7.52,35.06,payment confirmation,premium
+SP-907,750ML-FLAT,750 ml flat bowl,5000,8.65,5.62,35.03,payment confirmation,standard
+SP-907,750ML-FLAT,750 ml flat bowl,5000,12.97,8.42,35.08,payment confirmation,premium
+SP-907,1000ML,"1,000 ml flat bowl",5000,10.11,6.57,35.01,payment confirmation,standard
+SP-907,1000ML,"1,000 ml flat bowl",5000,15.17,9.85,35.07,payment confirmation,premium
+SP-907,1250ML,"1,250 ml flat bowl",5000,11.44,7.43,35.05,payment confirmation,standard
+SP-907,1250ML,"1,250 ml flat bowl",5000,17.16,11.15,35.02,payment confirmation,premium
+SP-907,200ML,200 ml bowl,10000,3.79,2.46,35.09,online checkout,standard
+SP-907,200ML,200 ml bowl,10000,5.67,3.68,35.10,payment confirmation,premium
+SP-907,300ML,300 ml bowl,10000,4.20,2.73,35.00,payment confirmation,standard
+SP-907,300ML,300 ml bowl,10000,6.31,4.09,35.18,payment confirmation,premium
+SP-907,500ML,500 ml bowl,10000,5.25,3.41,35.05,payment confirmation,standard
+SP-907,500ML,500 ml bowl,10000,7.88,5.12,35.03,payment confirmation,premium
+SP-907,750ML-TALL,750 ml bowl,10000,6.20,4.02,35.16,payment confirmation,standard
+SP-907,750ML-TALL,750 ml bowl,10000,9.30,6.04,35.05,payment confirmation,premium
+SP-907,600ML-FLAT,600 ml flat bowl,10000,6.10,3.96,35.08,payment confirmation,standard
+SP-907,600ML-FLAT,600 ml flat bowl,10000,9.14,5.93,35.12,payment confirmation,premium
+SP-907,750ML-FLAT,750 ml flat bowl,10000,6.83,4.43,35.14,payment confirmation,standard
+SP-907,750ML-FLAT,750 ml flat bowl,10000,10.24,6.65,35.06,payment confirmation,premium
+SP-907,1000ML,"1,000 ml flat bowl",10000,7.98,5.18,35.09,payment confirmation,standard
+SP-907,1000ML,"1,000 ml flat bowl",10000,11.97,7.77,35.09,payment confirmation,premium
+SP-907,1250ML,"1,250 ml flat bowl",10000,9.04,5.87,35.07,payment confirmation,standard
+SP-907,1250ML,"1,250 ml flat bowl",10000,13.55,8.80,35.06,payment confirmation,premium
+SP-909,250,250 x 250 mm,250,4.68,3.02,35.47,online checkout,standard
+SP-909,250,250 x 250 mm,250,7.02,4.53,35.47,online checkout,premium
+SP-909,300,300 x 300 mm,250,5.70,3.68,35.44,online checkout,standard
+SP-909,300,300 x 300 mm,250,8.56,5.52,35.51,online checkout,premium
+SP-909,400,400 x 400 mm,250,7.53,4.86,35.46,online checkout,standard
+SP-909,400,400 x 400 mm,250,11.29,7.29,35.43,online checkout,premium
+SP-909,250,250 x 250 mm,500,4.39,2.84,35.31,online checkout,standard
+SP-909,250,250 x 250 mm,500,6.59,4.26,35.36,online checkout,premium
+SP-909,300,300 x 300 mm,500,5.35,3.46,35.33,online checkout,standard
+SP-909,300,300 x 300 mm,500,8.03,5.19,35.37,online checkout,premium
+SP-909,400,400 x 400 mm,500,7.07,4.57,35.36,online checkout,standard
+SP-909,400,400 x 400 mm,500,10.60,6.85,35.38,online checkout,premium
+SP-909,250,250 x 250 mm,1000,4.10,2.66,35.12,online checkout,standard
+SP-909,250,250 x 250 mm,1000,6.15,3.99,35.12,online checkout,premium
+SP-909,300,300 x 300 mm,1000,5.00,3.24,35.20,online checkout,standard
+SP-909,300,300 x 300 mm,1000,7.50,4.86,35.20,online checkout,premium
+SP-909,400,400 x 400 mm,1000,6.60,4.28,35.15,online checkout,standard
+SP-909,400,400 x 400 mm,1000,9.90,6.42,35.15,online checkout,premium
+SP-909,250,250 x 250 mm,2500,3.28,2.13,35.06,online checkout,standard
+SP-909,250,250 x 250 mm,2500,4.93,3.20,35.09,online checkout,premium
+SP-909,300,300 x 300 mm,2500,4.00,2.60,35.00,online checkout,standard
+SP-909,300,300 x 300 mm,2500,6.00,3.90,35.00,online checkout,premium
+SP-909,400,400 x 400 mm,2500,5.28,3.43,35.04,online checkout,standard
+SP-909,400,400 x 400 mm,2500,7.93,5.15,35.06,online checkout,premium
+SP-909,250,250 x 250 mm,5000,2.63,1.69,35.74,online checkout,standard
+SP-909,250,250 x 250 mm,5000,3.94,2.53,35.79,online checkout,premium
+SP-909,300,300 x 300 mm,5000,3.20,2.06,35.63,online checkout,standard
+SP-909,300,300 x 300 mm,5000,4.81,3.09,35.76,online checkout,premium
+SP-909,400,400 x 400 mm,5000,4.23,2.72,35.70,online checkout,standard
+SP-909,400,400 x 400 mm,5000,6.34,4.08,35.65,online checkout,premium
+SP-909,250,250 x 250 mm,10000,2.14,1.38,35.51,online checkout,standard
+SP-909,250,250 x 250 mm,10000,3.20,2.07,35.31,online checkout,premium
+SP-909,300,300 x 300 mm,10000,2.60,1.68,35.38,online checkout,standard
+SP-909,300,300 x 300 mm,10000,3.91,2.52,35.55,online checkout,premium
+SP-909,400,400 x 400 mm,10000,3.44,2.22,35.47,online checkout,standard
+SP-909,400,400 x 400 mm,10000,5.15,3.33,35.34,payment confirmation,premium

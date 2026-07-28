@@ -35,7 +35,7 @@ export function PackagingDieline({ format, width, height, depth, artworkDataUrl 
             <text x="465" y="372">ARTWORK AREA</text>
           </g>
         )}
-        {format === "pouch" && (
+        {["pouch", "coffee"].includes(format) && (
           <g className="pw-dieline-net">
             <path className="dieline-cut" d="M220 90 H700 L740 560 Q460 620 180 560 Z" />
             {artworkDataUrl && <path d="M220 90 H700 L740 560 Q460 620 180 560 Z" fill="url(#artwork-pattern)" opacity=".65" />}

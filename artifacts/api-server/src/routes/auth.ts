@@ -1,10 +1,112 @@
 import { Router, type IRouter } from "express";
 import { sb } from "../lib/supabase";
-import { hashPassword, verifyPassword, isLegacyHash, generateToken, createSession, deleteSession, requireAuth, getSessionUserId } from "../lib/auth";
+import { assertAuthConfigured, hashPassword, verifyPassword, isLegacyHash, generateToken, createSession, deleteSession, requireAuth, getSessionUserId } from "../lib/auth";
 
 const router: IRouter = Router();
 
+router.post("/auth/signup", async (req, res): Promise<void> => {
+  try {
+    assertAuthConfigured();
+  } catch {
+    console.error("[auth/signup] JWT_SECRET is not configured");
+    res.status(503).json({ error: "Account access is temporarily unavailable. Please try again shortly." });
+    return;
+  }
+
+  const email = String(req.body?.email || "").trim().toLowerCase();
+  const password = String(req.body?.password || "");
+  const companyName = String(req.body?.company_name || "").trim();
+  const contactName = String(req.body?.contact_name || "").trim();
+  const phone = String(req.body?.phone || "").trim();
+
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    res.status(400).json({ error: "Enter a valid work email address" });
+    return;
+  }
+  if (password.length < 8 || password.length > 128) {
+    res.status(400).json({ error: "Password must be between 8 and 128 characters" });
+    return;
+  }
+  if (!contactName || contactName.length > 100 || !companyName || companyName.length > 160 || phone.length > 30) {
+    res.status(400).json({ error: "Name and company are required" });
+    return;
+  }
+
+  const { data: existing, error: lookupError } = await sb
+    .from("users_profile")
+    .select("id")
+    .eq("email", email)
+    .maybeSingle();
+
+  if (lookupError) {
+    console.error("[auth/signup] DB lookup error:", lookupError.message);
+    res.status(500).json({ error: "Could not create the account. Please try again." });
+    return;
+  }
+  if (existing) {
+    res.status(409).json({ error: "An account already exists for this email. Sign in instead." });
+    return;
+  }
+
+  let passwordHash: string;
+  try {
+    passwordHash = hashPassword(password);
+  } catch (error) {
+    console.error("[auth/signup] Password hashing error:", error);
+    res.status(500).json({ error: "Could not create the account. Please try again." });
+    return;
+  }
+
+  const { data: user, error } = await sb
+    .from("users_profile")
+    .insert({
+      email,
+      company_name: companyName,
+      contact_name: contactName,
+      phone: phone || null,
+      country: "India",
+      password_hash: passwordHash,
+      orders_completed: 0,
+      credit_eligible: false,
+      credit_limit: "0",
+      default_address: null,
+    })
+    .select("*")
+    .single();
+
+  if (error || !user) {
+    console.error("[auth/signup] DB insert error:", error?.message);
+    res.status(error?.code === "23505" ? 409 : 500).json({
+      error: error?.code === "23505"
+        ? "An account already exists for this email. Sign in instead."
+        : "Could not create the account. Please try again.",
+    });
+    return;
+  }
+
+  const token = generateToken(user.id);
+  await createSession(token, user.id);
+  const { password_hash: _passwordHash, ...userWithoutPassword } = user;
+
+  res.status(201).json({
+    access_token: token,
+    must_change_password: false,
+    user: {
+      ...userWithoutPassword,
+      credit_limit: Number(userWithoutPassword.credit_limit ?? 0),
+    },
+  });
+});
+
 router.post("/auth/login", async (req, res): Promise<void> => {
+  try {
+    assertAuthConfigured();
+  } catch {
+    console.error("[auth/login] JWT_SECRET is not configured");
+    res.status(503).json({ error: "Account access is temporarily unavailable. Please try again shortly." });
+    return;
+  }
+
   const { email, password } = req.body;
 
   if (!email || !password) {

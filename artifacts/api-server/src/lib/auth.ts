@@ -3,6 +3,7 @@ import crypto from "crypto";
 
 const SESSION_TTL_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
 const SCRYPT_N = 32768;
+const SCRYPT_MAXMEM = 64 * 1024 * 1024;
 const SCRYPT_PREFIX = "scrypt:";
 
 /**
@@ -11,7 +12,7 @@ const SCRYPT_PREFIX = "scrypt:";
  */
 export function hashPassword(password: string): string {
   const salt = crypto.randomBytes(16).toString("hex");
-  const hash = crypto.scryptSync(password, salt, 64, { N: SCRYPT_N }).toString("hex");
+  const hash = crypto.scryptSync(password, salt, 64, { N: SCRYPT_N, maxmem: SCRYPT_MAXMEM }).toString("hex");
   return `${SCRYPT_PREFIX}${salt}:${hash}`;
 }
 
@@ -28,7 +29,7 @@ export function verifyPassword(password: string, storedHash: string): boolean {
     const salt = rest.slice(0, colonIdx);
     const expectedHash = rest.slice(colonIdx + 1);
     try {
-      const hash = crypto.scryptSync(password, salt, 64, { N: SCRYPT_N }).toString("hex");
+      const hash = crypto.scryptSync(password, salt, 64, { N: SCRYPT_N, maxmem: SCRYPT_MAXMEM }).toString("hex");
       return crypto.timingSafeEqual(Buffer.from(hash, "hex"), Buffer.from(expectedHash, "hex"));
     } catch {
       return false;
@@ -74,6 +75,10 @@ function getJwtSecret(): string {
   const secret = process.env.JWT_SECRET;
   if (!secret) throw new Error("JWT_SECRET environment variable is not set");
   return secret;
+}
+
+export function assertAuthConfigured(): void {
+  getJwtSecret();
 }
 
 export function generateToken(userId: string): string {

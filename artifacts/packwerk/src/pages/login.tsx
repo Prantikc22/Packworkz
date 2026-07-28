@@ -71,7 +71,7 @@ export default function Login() {
               <div className="space-y-2">
                 <div className="flex justify-between items-center">
                   <Label htmlFor="password">Password</Label>
-                  <a href="#" className="text-sm font-medium text-blue hover:underline">Forgot password?</a>
+                  <Link href="/contact" className="text-sm font-medium text-blue hover:underline">Need help?</Link>
                 </div>
                 <Input 
                   id="password" 
@@ -90,7 +90,7 @@ export default function Login() {
             </form>
             
             <div className="mt-6 text-center text-sm text-muted">
-              Don't have an account? Contact sales to create one.
+              New to Packworkz? <Link href="/signup" className="font-black text-blue hover:underline">Create your account</Link>
             </div>
           </CardContent>
         </Card>

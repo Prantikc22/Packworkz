@@ -257,7 +257,7 @@ export default function SmartStock() {
             <span className="animated-border animated-border-white">
               <Link href="/smartstock/demo"><button className="btn-fill btn-amber px-8 py-3 text-sm pw-btn-transition">Open Interactive Demo →</button></Link>
             </span>
-            <Link href="/configure"><button className="btn-fill btn-outline-white px-8 py-3 text-sm pw-btn-transition">Get Pricing Plan</button></Link>
+            <Link href="/configure"><button className="btn-fill btn-outline-white px-8 py-3 text-sm pw-btn-transition">Get a Quote</button></Link>
           </div>
         </div>
       </section>
@@ -383,7 +383,7 @@ export default function SmartStock() {
           </p>
           <div style={{ display: "flex", gap: 14, justifyContent: "center", flexWrap: "wrap" }}>
             <span className="animated-border animated-border-white">
-              <Link href="/configure"><button className="btn-fill btn-amber px-8 py-3 text-sm pw-btn-transition">Get Pricing Plan →</button></Link>
+              <Link href="/configure"><button className="btn-fill btn-amber px-8 py-3 text-sm pw-btn-transition">Get a Quote →</button></Link>
             </span>
             <a href="https://wa.me/918208990366?text=Hi%2C%20I%27d%20like%20to%20know%20about%20SmartStock" target="_blank" rel="noopener noreferrer">
               <button className="btn-fill btn-outline-white px-8 py-3 text-sm pw-btn-transition">Talk to an Expert</button>

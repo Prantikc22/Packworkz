@@ -1,96 +1,121 @@
 # Packworkz Catalog and Commerce Audit
 
-Date: 18 July 2026
+Updated: 27 July 2026
 
-## Final decision
+## Launch decision
 
-Launch with **35 curated product families** across nine categories. Customers see only two buying paths:
+Launch with **49 focused product families** across nine categories. Customers see
+only two buying paths:
 
-1. **Instant buy** for repeatable standard specifications, visible quantity breaks, artwork upload, proof approval, payment, GST invoice and reorder.
-2. **Request quote** for rollstock, tooling, regulated formats, cold-chain, process validation and unusual enterprise requirements.
+1. **Instant buy** for a fixed production size and repeatable specification.
+   Quantity pricing, configuration effects, artwork, delivery, GST and payment
+   are handled in one Packworkz flow.
+2. **Request quote** for rollstock, line-applied formats, unusual print coverage,
+   custom dimensions, tooling, regulated packs, certifications and enterprise
+   thresholds.
 
-An instant product automatically changes to Request quote at its enterprise quantity threshold. This avoids a third customer-facing “estimate” mode while preserving internal pricing logic for configurable products.
+An instant product automatically becomes a managed quote when its quantity or
+configuration crosses a review threshold. Packworkz is the commerce system of
+record; Razorpay is only the payment gateway.
 
-The exact launch assortment, MOQ, tier prices, supplier route, specification fields and quote threshold are generated from the code in:
-
-- `artifacts/packwerk/docs/COMMERCE_CATALOG.md`
-- `artifacts/packwerk/docs/commerce-catalog.json`
-- `artifacts/packwerk/docs/commerce-catalog.csv`
-- `artifacts/packwerk/docs/shopify-products.csv`
-
-## Assortment shape
+## Assortment
 
 | Category | Public families |
 | --- | ---: |
 | Flexible packaging | 6 |
 | Bottles and containers | 6 |
 | Tubes and small packs | 1 |
-| Boxes and cartons | 2 |
+| Boxes and cartons | 8 |
 | E-commerce packaging | 7 |
 | Protective packaging | 2 |
 | Packaging rolls | 3 |
-| Labels and accessories | 5 |
+| Labels and brand extras | 13 |
 | Sustainable food-service | 3 |
-| **Total** | **35** |
+| **Total** | **49** |
 
-The storefront keeps the broad sourcing library behind the scenes but excludes 66 concepts from public navigation. The main cuts are duplicate structural names, industrial edge cases, standalone fitments and accessories that belong inside a configuration rather than on thin product pages.
+There are **41 online-priced families** and **8 quote-only families**. The broad
+supplier library remains internal so the storefront does not become a directory
+of duplicate or unvalidated edge cases.
 
-The seven public quote families are retort pouches, flow-wrap/pillow packs, custom inserts, printed flexible rollstock, lidding film, shrink film/rollstock and machine-applied shrink/wrap-around labels. Everything else is either a repeatable instant-buy family or enters through the general production brief instead of pretending to be a configured storefront product.
+## Labels and boxes
 
-Consolidated examples:
+The live catalog deliberately gives visually distinct label shapes and box
+structures their own pages. This is useful for first-time D2C buyers even when
+some products share a manufacturing route.
 
-- Auto-bottom, sleeve-and-tray and window structures are options under **Folding Cartons**.
-- Magnetic and collapsible constructions are options under **Rigid & Magnetic Boxes**.
-- PET jars are options under **Plastic Bottles & Jars**; glass jars sit under **Glass Bottles & Jars**.
-- Standard, compostable and dual-seal return mailers are options under **Courier & Return Mailers**.
-- Bubble wrap, air pillows, honeycomb paper and crinkle filler are options under **Protective Wrap & Void Fill**.
-- Sheet, roll, die-cut and tamper-evident formats are options under **Custom Labels & Stickers**.
-- BOPP and paper tape are options under **Custom Packaging Tape**.
+Public label families are round, square, rectangular, oval, custom die-cut,
+waterproof BOPP/vinyl, clear, shrink-sleeve/wrap-around, hang tags/inserts,
+printed tissue, packaging tape, machine-applied roll labels, and foil/special
+effects.
 
-## Stand-up pouch launch ladder
+Public box families are straight-tuck, reverse-tuck, auto-bottom, window,
+sleeve-and-tray, two-piece rigid, magnetic-closure, and collapsible rigid.
 
-The low-MOQ route is intentionally more expensive because the production method changes:
+Dimensions remain fixed for online checkout. A custom size, unusual board,
+structural engineering requirement, special application condition, or
+non-standard print coverage moves to a managed quote.
 
-| Quantity | Standard route | Ex-GST unit price |
+## Stand-up pouch ladder
+
+The low-MOQ tier uses a higher-cost production route:
+
+| Quantity | Base route | Ex-GST base unit price |
 | ---: | --- | ---: |
-| 250 | Stock zipper pouch with premium printed labels | Rs 32.00 |
-| 500 | Direct digital print entry | Rs 21.24 |
-| 1,000 | Direct print | Rs 15.80 |
-| 2,500 | Direct print | Rs 11.40 |
-| 5,000 | Direct print | Rs 8.90 |
+| 250 | Fixed-size short-run production | Rs 22.00 |
+| 500 | Fixed-size direct digital print | Rs 17.50 |
+| 1,000 | Direct print | Rs 13.50 |
+| 2,500 | Direct print | Rs 9.80 |
+| 5,000 | Direct print | Rs 7.80 |
 
-The 500-unit anchor matches Kraftix's currently published custom-printed pouch price. Packhelp's label-led pouch route starts at 250, while Kraftix's plain stock pouch starts at 100. Sources: [Kraftix printed stand-up pouch](https://www.kraftixdigital.in/standup-pouch), [Kraftix plain stand-up pouch](https://www.kraftixdigital.in/standuppouch-notprinted/), [Packhelp custom-label stand-up pouch](https://packhelp.com/p/stand-up-pouches/custom/?showMinimalPrices=0).
+Size, closure, material, finish and branding selections change the price.
+Coffee valves, premium films, soft-touch/foil effects and direct full-colour
+printing all carry configuration multipliers. Custom dimensions and technical
+specifications leave online checkout.
 
-## Margin controls
+## Pricing status
 
-Published prices are provisional launch hypotheses, not supplier cost truth. Before payment is enabled, every tier needs a matched specification and rate cards from at least two approved suppliers.
+The code applies an 8% landed-cost load for expected wastage/rejection, inward
+freight and production packing, then enforces a 35% product gross-margin floor.
+The commerce test suite sweeps every fixed tier, size and supported
+configuration.
+
+This is a **software control, not procurement certification**. Public Kraftix,
+Pepcom, TradeIndia, ExportersIndia and IndiaMART-linked pages establish retail
+or directory anchors. They do not establish Packworkz's exact landed cost.
+Before enabling live payment for a family, obtain at least two matched written
+supplier quotes with material, dimensions, print method/coverage, closure,
+tooling, packing, freight, rejection allowance and validity.
 
 Use gross margin, not markup:
 
-`sell price = landed cost / (1 - target gross margin)`
+`selling price = fully loaded landed cost / (1 - target gross margin)`
 
-Landed cost must include product, setup amortisation, print plates/cylinders/dies, QA, packing, inward and outward freight, payment cost, expected rejection and replacement allowance.
+Do not accept a supplier teaser rate that omits plates, cylinders, dies, white
+ink, closures, lids, freight, GST treatment or replacements.
 
-- Stock/plain products: target 32-38% gross margin
-- Digital customisation and short runs: 42-50%
-- Labels, cards and accessories: 45-55%
-- Standard printed boxes and pouches: 38-45%
-- Technical enterprise work: 28-35% plus a minimum gross-profit rupee floor
-- Never publish a tier below 25% post-freight contribution margin
+## Commerce controls
 
-## Shopify architecture
+- The server recalculates payable totals from the catalog source of truth.
+- The browser never supplies the final payable amount.
+- Eligible instant orders up to Rs 50,000 open Razorpay.
+- Larger totals and quote products create a managed payment confirmation task.
+- Payment success requires Razorpay signature or webhook verification.
+- Guest tracking uses order reference plus checkout email/mobile.
+- Account holders can see and claim verified orders and quotes in the dashboard.
+- GSTIN is optional unless the buyer requests a business tax invoice.
 
-Use Shopify as the **commerce and checkout engine**, not as the whole Packworkz product.
+## Launch blockers
 
-- Keep this React site, configurator, 3D studio, artwork versions, quote workflow, supplier operations and SmartStock in Packworkz.
-- Sync instant-buy variants, inventory, quantity prices and order status to Shopify.
-- Send Request quote submissions to the Packworkz backend; after commercial approval, create a Shopify Draft Order and send the secure checkout link.
-- Start without Shopify Plus. Add Plus only when company-specific catalogs, payment terms and multi-location B2B controls justify it.
+The configured Supabase REST endpoint is responding in the latest local
+readiness check. Account creation is still deliberately unavailable because
+`JWT_SECRET` is not present in the runtime environment. Add a strong,
+deployment-specific secret before enabling signup and login.
 
-## GST checkout
+Razorpay test mode is wired, but the configured test credentials currently
+receive an authentication failure from Razorpay. A dedicated
+`RAZORPAY_WEBHOOK_SECRET` is also absent. Replace or reactivate the test keys,
+register the webhook, and complete a successful payment-to-confirmed-order test
+before enabling live checkout.
 
-Use a **Buying as a business** toggle. When enabled, collect legal name, GSTIN, billing address, state/place of supply and optional PO reference. GSTIN is not required for browsing or for an unregistered startup buyer.
-
-## Landing-page result
-
-The homepage now follows: hero, trust, process, catalog, industries, interactive SmartStock, customer proof, Packworkz advantage, sustainability and final CTA. The older repetitive comparison and calculator blocks remain hidden. The remaining page is still substantial, but each visible section now has a distinct job rather than repeating the same sourcing claim.
+Every online family also remains commercially blocked until its provisional
+`LANDED_COSTS` entry is replaced by a matched, written supplier rate card.

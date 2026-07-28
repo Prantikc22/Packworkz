@@ -157,13 +157,49 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://packworkz.com/products/folding-carton</loc>
+    <loc>https://packworkz.com/products/straight-tuck-end-carton</loc>
     <lastmod>2026-07-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://packworkz.com/products/rigid-box</loc>
+    <loc>https://packworkz.com/products/reverse-tuck-end-carton</loc>
+    <lastmod>2026-07-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://packworkz.com/products/auto-bottom-carton</loc>
+    <lastmod>2026-07-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://packworkz.com/products/sleeve-tray-box</loc>
+    <lastmod>2026-07-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://packworkz.com/products/window-carton</loc>
+    <lastmod>2026-07-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://packworkz.com/products/two-piece-rigid-box</loc>
+    <lastmod>2026-07-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://packworkz.com/products/magnetic-closure-rigid-box</loc>
+    <lastmod>2026-07-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://packworkz.com/products/collapsible-rigid-box</loc>
     <lastmod>2026-07-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -211,7 +247,55 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://packworkz.com/products/labels</loc>
+    <loc>https://packworkz.com/products/round-paper-labels</loc>
+    <lastmod>2026-07-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://packworkz.com/products/square-paper-labels</loc>
+    <lastmod>2026-07-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://packworkz.com/products/rectangular-paper-labels</loc>
+    <lastmod>2026-07-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://packworkz.com/products/oval-paper-labels</loc>
+    <lastmod>2026-07-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://packworkz.com/products/custom-die-cut-stickers</loc>
+    <lastmod>2026-07-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://packworkz.com/products/waterproof-bopp-vinyl-labels</loc>
+    <lastmod>2026-07-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://packworkz.com/products/clear-transparent-labels</loc>
+    <lastmod>2026-07-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://packworkz.com/products/machine-applied-roll-labels</loc>
+    <lastmod>2026-07-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://packworkz.com/products/foil-special-effect-labels</loc>
     <lastmod>2026-07-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -295,7 +379,7 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://packworkz.com/products/paper-cup</loc>
+    <loc>https://packworkz.com/products/paper-bowls-food-containers</loc>
     <lastmod>2026-07-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>

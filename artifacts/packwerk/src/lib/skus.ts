@@ -1,4 +1,4 @@
-// ── Packworkz SKU Catalog — 32 SKUs across 9 categories ───────────────────────
+// ── Packworkz SKU Catalog — 49 public families across 9 categories ────────────
 // Each SKU has variants (decision-oriented options) and customization fields
 
 export type VariantGroup = {
@@ -60,11 +60,11 @@ export const CATEGORIES: Category[] = [
   { slug: "flexible",   label: "Flexible Packaging",    icon: "package_2",                 count: 6 },
   { slug: "bottles",    label: "Bottles & Containers",  icon: "local_drink",               count: 6 },
   { slug: "tubes",      label: "Tubes & Small Packs",   icon: "medication",                count: 1 },
-  { slug: "boxes",      label: "Boxes & Cartons",       icon: "inventory_2",               count: 2 },
+  { slug: "boxes",      label: "Boxes & Cartons",       icon: "inventory_2",               count: 8 },
   { slug: "ecommerce",  label: "E-commerce Packaging",  icon: "local_shipping",            count: 7 },
   { slug: "protective", label: "Protective Packaging",  icon: "shield",                    count: 2 },
   { slug: "rolls",      label: "Packaging Rolls",       icon: "density_medium",            count: 3 },
-  { slug: "labels",     label: "Labels & Accessories",  icon: "label",                     count: 5 },
+  { slug: "labels",     label: "Labels & Brand Extras", icon: "label",                     count: 13 },
   { slug: "sustainable",label: "Sustainable Foodservice",icon: "eco",                      count: 3 },
 ];
 
@@ -360,7 +360,7 @@ export const SKUS: Sku[] = [
     slug: "folding-carton",
     description: "Straight-line or reverse tuck-end folding carton in SBS or duplex board. Full color print with UV/aqueous options.",
     use_case: "FMCG, pharma, personal care, food, electronics retail",
-    price_min: 3.00, price_max: 18.00, moq: 500, moq_unit: "units",
+    price_min: 14.00, price_max: 52.00, moq: 25, moq_unit: "units",
     is_smartstock: true, is_eco: false, sample_tier: "standard", sample_price: 2999, delivery_days_india: 12,
     variants: [
       { key: "tuck_style", label: "Box Style", options: ["Straight Tuck End (STE)", "Reverse Tuck End (RTE)", "Auto-Lock Bottom"] },
@@ -383,7 +383,7 @@ export const SKUS: Sku[] = [
     slug: "rigid-box",
     description: "Chipboard-based rigid set-up box. Can be wrapped in paper, fabric, or leatherette with various interior finishing options.",
     use_case: "Premium gifting, electronics, watches, luxury goods, corporate packs",
-    price_min: 65.00, price_max: 350.00, moq: 100, moq_unit: "units",
+    price_min: 145.00, price_max: 340.00, moq: 50, moq_unit: "units",
     is_smartstock: false, is_eco: false, sample_tier: "premium", sample_price: 4999, delivery_days_india: 18,
     variants: [
       { key: "box_type", label: "Box Type", options: ["Lid & Base (Shoebox)", "Neck & Shoulder", "Clamshell", "Book Style"] },
@@ -405,7 +405,7 @@ export const SKUS: Sku[] = [
     slug: "magnetic-closure-box",
     description: "Premium collapsible magnetic-closure box. Flat-pack design reduces shipping costs. Ideal for D2C brand gifting.",
     use_case: "D2C gifting, subscription boxes, luxury retail, electronics unboxing",
-    price_min: 80.00, price_max: 400.00, moq: 100, moq_unit: "units",
+    price_min: 169.00, price_max: 395.00, moq: 50, moq_unit: "units",
     is_smartstock: false, is_eco: false, sample_tier: "premium", sample_price: 4999, delivery_days_india: 18,
     variants: [
       { key: "finish", label: "Outer Finish", options: ["Matte Lamination", "Glossy Lamination", "Soft-touch Velvet"] },
@@ -428,7 +428,7 @@ export const SKUS: Sku[] = [
     slug: "mailer-box",
     description: "Self-locking tuck-top mailer box in corrugated or rigid board. Premium unboxing experience for D2C brands.",
     use_case: "D2C shipping, subscription boxes, fashion, food kits, cosmetics",
-    price_min: 18.00, price_max: 75.00, moq: 200, moq_unit: "units",
+    price_min: 14.00, price_max: 34.00, moq: 50, moq_unit: "units",
     is_smartstock: true, is_eco: false, sample_tier: "standard", sample_price: 2999, delivery_days_india: 10,
     variants: [
       { key: "board", label: "Board Type", options: ["Corrugated (3-ply)", "Corrugated (5-ply)", "Rigid Grey Board"] },
@@ -766,9 +766,14 @@ export const SKU_IMAGES: Record<string, string> = {
   "TS-301": "/skus/cosmetictubes.jpg",
   "TS-302": "/skus/blisterpacks.jpg",
   // Boxes & Cartons
-  "BX-401": "/skus/foldingbox.jpg",
-  "BX-402": "/skus/rigidbox.jpg",
-  "BX-403": "/skus/magneticbox.jpg",
+  "BX-401": "/catalog/box-options/folding-straight.webp",
+  "BX-402": "/catalog/box-options/rigid-two-piece.webp",
+  "BX-403": "/catalog/box-options/rigid-magnetic.webp",
+  "BX-404": "/catalog/box-options/folding-auto-bottom.webp",
+  "BX-405": "/catalog/box-options/folding-sleeve-tray.webp",
+  "BX-406": "/catalog/box-options/folding-window.webp",
+  "BX-408": "/catalog/box-options/rigid-collapsible.webp",
+  "BX-412": "/catalog/box-options/folding-reverse.webp",
   // E-commerce
   "EC-501": "/skus/mailerbox.jpg",
   "EC-502": "/skus/corrugatedbox.jpg",
@@ -787,13 +792,22 @@ export const SKU_IMAGES: Record<string, string> = {
   "RL-704": "/shopify-products/RL-704.jpg",
   "RL-705": "/shopify-products/RL-705.jpg",
   // Labels & Closures
-  "LC-801": "/skus/labels.jpg",
+  "LC-801": "/catalog/labels-paper.webp",
   "LC-802": "/skus/closures.jpg",
   "LC-803": "/skus/zipper.jpg",
+  "LC-804": "/catalog/labels-waterproof.webp",
+  "LC-805": "/catalog/labels-clear.webp",
   "LC-806": "/shopify-products/LC-806.jpg",
   "LC-808": "/shopify-products/LC-808.jpg",
   "LC-810": "/shopify-products/LC-810.jpg",
   "LC-811": "/shopify-products/LC-811.jpg",
+  "LC-814": "/catalog/labels-roll.webp",
+  "LC-815": "/catalog/labels-premium.webp",
+  "LC-816": "/catalog/label-shapes/round-paper-labels.webp",
+  "LC-817": "/catalog/label-shapes/square-paper-labels.webp",
+  "LC-818": "/catalog/label-shapes/rectangular-paper-labels.webp",
+  "LC-819": "/catalog/label-shapes/oval-paper-labels.webp",
+  "LC-820": "/catalog/label-shapes/custom-die-cut-stickers.webp",
   // Sustainable Packaging
   "SP-901": "/skus/kraftpaperpacks.jpg",
   "SP-902": "/skus/compostablepacks.jpg",

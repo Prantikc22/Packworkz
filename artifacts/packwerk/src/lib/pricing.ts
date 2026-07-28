@@ -1,4 +1,7 @@
+import { calculateCommerceEstimate } from "@workspace/commerce";
+
 export type PricingSku = {
+  code?: string;
   moq: number;
   price_min: number;
   price_max: number;
@@ -15,8 +18,30 @@ export function calculateOrderEstimate(
   quantity: number,
   delivery: DeliverySpeed = "standard",
   artwork: ArtworkPath = "none",
+  sizeCode?: string,
+  configuration?: Record<string, string>,
 ) {
   if (!sku) return { low: 0, high: 0, material: 0, setup: 0, logistics: 0, artwork: 0, unit: 0 };
+
+  if (sku.code && sizeCode) {
+    const commerce = calculateCommerceEstimate({ skuCode: sku.code, quantity, sizeCode, delivery, artwork, configuration });
+    if (!commerce.reason || commerce.reason === "payment_limit") {
+      return {
+        low: commerce.total,
+        high: commerce.total,
+        material: commerce.material,
+        setup: commerce.setup,
+        logistics: commerce.logistics,
+        artwork: commerce.artwork,
+        unit: commerce.unitPrice,
+        subtotal: commerce.subtotal,
+        gst: commerce.gst,
+        total: commerce.total,
+        paymentEligible: commerce.eligible,
+        paymentReason: commerce.reason,
+      };
+    }
+  }
 
   const qty = Math.max(sku.moq, quantity || sku.moq);
   const tiers = [...(sku.price_tiers || [])].sort((a, b) => a.min_qty - b.min_qty);

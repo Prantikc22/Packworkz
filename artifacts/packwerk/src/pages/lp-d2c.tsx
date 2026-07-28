@@ -29,7 +29,7 @@ const INDUSTRIES = [
     headline: "Packaging that reflects your brand's prestige",
     desc: "Cosmetic tubes, airless pumps, magnetic closure boxes, and luxury rigid sets — tailored for skincare, makeup, and fragrance brands.",
     skus: ["Airless Pump Bottles", "Cosmetic Tubes", "Magnetic Closure Boxes", "Rigid Gift Sets", "Spray Pumps & Dispensers"],
-    brands: ["Plum", "Pilgrim", "Juicy Chemistry", "CosIQ"],
+    brands: ["Plum", "Pilgrim", "Happilo", "CosIQ"],
   },
   {
     key: "food",
@@ -100,7 +100,7 @@ const STEPS = [
 
 const STATS = [
   { value: "220+", label: "Brands served" },
-  { value: "35", label: "Focused product families" },
+  { value: "49", label: "Focused product families" },
   { value: "14",   label: "Days brief to door" },
   { value: "98.7%", label: "On-time delivery" },
 ];

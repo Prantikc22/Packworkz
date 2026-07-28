@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-18T06:48:01.047Z",
+  "generated_at": "2026-07-27T14:33:24.496Z",
   "currency": "INR",
   "prices_include_gst": false,
   "gst_note": "GST rate and HSN must be confirmed by the invoicing entity before go-live.",
@@ -19,25 +19,24 @@
       "price_tiers_ex_gst": [
         {
           "min_qty": 250,
-          "unit_price": 32,
-          "label": "Low-MOQ launch run"
+          "unit_price": 22.45,
+          "label": "Launch quantity"
         },
         {
           "min_qty": 500,
-          "unit_price": 21.24,
-          "label": "Direct-print entry"
+          "unit_price": 17.5
         },
         {
           "min_qty": 1000,
-          "unit_price": 15.8
+          "unit_price": 13.5
         },
         {
           "min_qty": 2500,
-          "unit_price": 11.4
+          "unit_price": 9.97
         },
         {
           "min_qty": 5000,
-          "unit_price": 8.9,
+          "unit_price": 7.99,
           "label": "Best online rate"
         }
       ],
@@ -146,21 +145,21 @@
       "price_tiers_ex_gst": [
         {
           "min_qty": 500,
-          "unit_price": 28,
+          "unit_price": 22,
           "label": "Launch quantity"
         },
         {
           "min_qty": 1000,
-          "unit_price": 21.84
+          "unit_price": 17.45
         },
         {
           "min_qty": 2500,
-          "unit_price": 16.24
+          "unit_price": 13.3
         },
         {
           "min_qty": 5000,
-          "unit_price": 12.6,
-          "label": "Best unit rate"
+          "unit_price": 10.31,
+          "label": "Best online rate"
         }
       ],
       "production_estimate_ex_gst": {
@@ -273,21 +272,25 @@
       "price_tiers_ex_gst": [
         {
           "min_qty": 500,
-          "unit_price": 32,
+          "unit_price": 19.13,
           "label": "Launch quantity"
         },
         {
           "min_qty": 1000,
-          "unit_price": 24.96
+          "unit_price": 14.97
         },
         {
           "min_qty": 2500,
-          "unit_price": 18.56
+          "unit_price": 11.64
         },
         {
           "min_qty": 5000,
-          "unit_price": 14.4,
-          "label": "Best unit rate"
+          "unit_price": 8.65
+        },
+        {
+          "min_qty": 10000,
+          "unit_price": 6.99,
+          "label": "Best online rate"
         }
       ],
       "production_estimate_ex_gst": {
@@ -368,7 +371,7 @@
       "category": "flexible",
       "purchase_mode": "instant",
       "public_buying_path": "instant",
-      "quote_threshold": 20000,
+      "quote_threshold": 100000,
       "use_case": "Sugar, salt, condiments, instant coffee, ORS, supplements",
       "standard_spec": "Confirm standard size and material before publishing",
       "moq": 5000,
@@ -376,21 +379,21 @@
       "price_tiers_ex_gst": [
         {
           "min_qty": 5000,
-          "unit_price": 4,
+          "unit_price": 2.4,
           "label": "Launch quantity"
         },
         {
           "min_qty": 10000,
-          "unit_price": 3.12
+          "unit_price": 1.85
         },
         {
           "min_qty": 25000,
-          "unit_price": 2.32
+          "unit_price": 1.35
         },
         {
           "min_qty": 50000,
-          "unit_price": 1.8,
-          "label": "Best unit rate"
+          "unit_price": 1.05,
+          "label": "Best online rate"
         }
       ],
       "production_estimate_ex_gst": null,
@@ -459,7 +462,7 @@
       "category": "bottles",
       "purchase_mode": "instant",
       "public_buying_path": "instant",
-      "quote_threshold": 25000,
+      "quote_threshold": 20000,
       "use_case": "Beverages, supplements, powders, sauces, personal care and home care",
       "standard_spec": "Confirm standard size and material before publishing",
       "moq": 500,
@@ -467,21 +470,21 @@
       "price_tiers_ex_gst": [
         {
           "min_qty": 500,
-          "unit_price": 45,
+          "unit_price": 24,
           "label": "Launch quantity"
         },
         {
           "min_qty": 1000,
-          "unit_price": 35.1
+          "unit_price": 18.5
         },
         {
           "min_qty": 2500,
-          "unit_price": 26.1
+          "unit_price": 14
         },
         {
           "min_qty": 5000,
-          "unit_price": 20.25,
-          "label": "Best unit rate"
+          "unit_price": 11,
+          "label": "Best online rate"
         }
       ],
       "production_estimate_ex_gst": null,
@@ -573,7 +576,7 @@
       "category": "bottles",
       "purchase_mode": "hybrid",
       "public_buying_path": "instant",
-      "quote_threshold": 25000,
+      "quote_threshold": 10000,
       "use_case": "Sauces, oils, beverages, preserves, candles and wellness products",
       "standard_spec": "Confirm standard size and material before publishing",
       "moq": 200,
@@ -581,21 +584,21 @@
       "price_tiers_ex_gst": [
         {
           "min_qty": 200,
-          "unit_price": 120,
+          "unit_price": 66.47,
           "label": "Launch quantity"
         },
         {
-          "min_qty": 400,
-          "unit_price": 93.6
+          "min_qty": 500,
+          "unit_price": 53.17
         },
         {
           "min_qty": 1000,
-          "unit_price": 69.6
+          "unit_price": 41.54
         },
         {
-          "min_qty": 2000,
-          "unit_price": 54,
-          "label": "Best unit rate"
+          "min_qty": 2500,
+          "unit_price": 34.9,
+          "label": "Best online rate"
         }
       ],
       "production_estimate_ex_gst": {
@@ -681,7 +684,7 @@
       "category": "bottles",
       "purchase_mode": "hybrid",
       "public_buying_path": "instant",
-      "quote_threshold": 25000,
+      "quote_threshold": 10000,
       "use_case": "Face cream, body butter, hair mask, serums, beard balm",
       "standard_spec": "Confirm standard size and material before publishing",
       "moq": 200,
@@ -689,21 +692,21 @@
       "price_tiers_ex_gst": [
         {
           "min_qty": 200,
-          "unit_price": 75,
+          "unit_price": 53.17,
           "label": "Launch quantity"
         },
         {
-          "min_qty": 400,
-          "unit_price": 58.5
+          "min_qty": 500,
+          "unit_price": 41.54
         },
         {
           "min_qty": 1000,
-          "unit_price": 43.5
+          "unit_price": 33.24
         },
         {
-          "min_qty": 2000,
-          "unit_price": 33.75,
-          "label": "Best unit rate"
+          "min_qty": 2500,
+          "unit_price": 26.59,
+          "label": "Best online rate"
         }
       ],
       "production_estimate_ex_gst": {
@@ -786,7 +789,7 @@
       "category": "bottles",
       "purchase_mode": "hybrid",
       "public_buying_path": "instant",
-      "quote_threshold": 25000,
+      "quote_threshold": 10000,
       "use_case": "Face serums, essential oils, CBD tinctures, eye drops, aromatherapy",
       "standard_spec": "Confirm standard size and material before publishing",
       "moq": 200,
@@ -794,21 +797,21 @@
       "price_tiers_ex_gst": [
         {
           "min_qty": 200,
-          "unit_price": 60,
+          "unit_price": 44.88,
           "label": "Launch quantity"
         },
         {
-          "min_qty": 400,
-          "unit_price": 46.8
+          "min_qty": 500,
+          "unit_price": 35
         },
         {
           "min_qty": 1000,
-          "unit_price": 34.8
+          "unit_price": 28.25
         },
         {
-          "min_qty": 2000,
-          "unit_price": 27,
-          "label": "Best unit rate"
+          "min_qty": 2500,
+          "unit_price": 23.27,
+          "label": "Best online rate"
         }
       ],
       "production_estimate_ex_gst": {
@@ -874,7 +877,7 @@
       "category": "bottles",
       "purchase_mode": "hybrid",
       "public_buying_path": "instant",
-      "quote_threshold": 25000,
+      "quote_threshold": 10000,
       "use_case": "Serums, moisturizers, foundations, sunscreens, anti-aging creams",
       "standard_spec": "Confirm standard size and material before publishing",
       "moq": 200,
@@ -882,21 +885,21 @@
       "price_tiers_ex_gst": [
         {
           "min_qty": 200,
-          "unit_price": 130,
+          "unit_price": 96.37,
           "label": "Launch quantity"
         },
         {
-          "min_qty": 400,
-          "unit_price": 101.4
+          "min_qty": 500,
+          "unit_price": 79.76
         },
         {
           "min_qty": 1000,
-          "unit_price": 75.4
+          "unit_price": 69.79
         },
         {
-          "min_qty": 2000,
-          "unit_price": 58.5,
-          "label": "Best unit rate"
+          "min_qty": 2500,
+          "unit_price": 58.17,
+          "label": "Best online rate"
         }
       ],
       "production_estimate_ex_gst": {
@@ -979,7 +982,7 @@
       "category": "tubes",
       "purchase_mode": "hybrid",
       "public_buying_path": "instant",
-      "quote_threshold": 20000,
+      "quote_threshold": 25000,
       "use_case": "Toothpaste, lotions, sunscreen, hair color, hand cream, pharma gels",
       "standard_spec": "Confirm standard size and material before publishing",
       "moq": 1000,
@@ -987,21 +990,21 @@
       "price_tiers_ex_gst": [
         {
           "min_qty": 1000,
-          "unit_price": 22,
+          "unit_price": 19.94,
           "label": "Launch quantity"
         },
         {
-          "min_qty": 2000,
-          "unit_price": 17.16
+          "min_qty": 2500,
+          "unit_price": 14.97
         },
         {
           "min_qty": 5000,
-          "unit_price": 12.76
+          "unit_price": 11.64
         },
         {
           "min_qty": 10000,
-          "unit_price": 9.9,
-          "label": "Best unit rate"
+          "unit_price": 9.2,
+          "label": "Best online rate"
         }
       ],
       "production_estimate_ex_gst": {
@@ -1100,39 +1103,47 @@
     },
     {
       "code": "BX-401",
-      "slug": "folding-carton",
-      "name": "Folding Cartons",
+      "slug": "straight-tuck-end-carton",
+      "name": "Straight Tuck End Carton",
       "category": "boxes",
       "purchase_mode": "hybrid",
       "public_buying_path": "instant",
-      "quote_threshold": 20000,
+      "quote_threshold": 10000,
       "use_case": "Beauty, supplements, food, electronics, pharma and retail products",
       "standard_spec": "Confirm standard size and material before publishing",
-      "moq": 500,
+      "moq": 100,
       "moq_unit": "units",
       "price_tiers_ex_gst": [
         {
-          "min_qty": 500,
-          "unit_price": 18,
+          "min_qty": 25,
+          "unit_price": 52,
           "label": "Launch quantity"
         },
         {
+          "min_qty": 50,
+          "unit_price": 45
+        },
+        {
+          "min_qty": 100,
+          "unit_price": 38
+        },
+        {
+          "min_qty": 250,
+          "unit_price": 25
+        },
+        {
+          "min_qty": 500,
+          "unit_price": 18
+        },
+        {
           "min_qty": 1000,
-          "unit_price": 14.04
-        },
-        {
-          "min_qty": 2500,
-          "unit_price": 10.44
-        },
-        {
-          "min_qty": 5000,
-          "unit_price": 8.1,
-          "label": "Best unit rate"
+          "unit_price": 14,
+          "label": "Best online rate"
         }
       ],
       "production_estimate_ex_gst": {
-        "unit_min": 3,
-        "unit_max": 18,
+        "unit_min": 14,
+        "unit_max": 52,
         "setup_min": 5000,
         "setup_max": 50000
       },
@@ -1154,17 +1165,6 @@
         "exports"
       ],
       "variant_groups": [
-        {
-          "key": "structure",
-          "label": "Structure",
-          "options": [
-            "Straight tuck end",
-            "Reverse tuck end",
-            "Auto-bottom",
-            "Sleeve and tray",
-            "Window carton"
-          ]
-        },
         {
           "key": "board",
           "label": "Board",
@@ -1222,34 +1222,38 @@
     },
     {
       "code": "BX-402",
-      "slug": "rigid-box",
-      "name": "Rigid & Magnetic Boxes",
+      "slug": "two-piece-rigid-box",
+      "name": "Two-piece Rigid Box",
       "category": "boxes",
       "purchase_mode": "instant",
       "public_buying_path": "instant",
-      "quote_threshold": 20000,
+      "quote_threshold": 5000,
       "use_case": "Gifting, jewellery, beauty, fashion, electronics and premium D2C kits",
       "standard_spec": "Confirm standard size and material before publishing",
-      "moq": 100,
+      "moq": 50,
       "moq_unit": "units",
       "price_tiers_ex_gst": [
         {
-          "min_qty": 100,
-          "unit_price": 350,
+          "min_qty": 50,
+          "unit_price": 340,
           "label": "Launch quantity"
         },
         {
-          "min_qty": 200,
-          "unit_price": 273
+          "min_qty": 100,
+          "unit_price": 275
+        },
+        {
+          "min_qty": 250,
+          "unit_price": 225
         },
         {
           "min_qty": 500,
-          "unit_price": 203
+          "unit_price": 178
         },
         {
           "min_qty": 1000,
-          "unit_price": 157.5,
-          "label": "Best unit rate"
+          "unit_price": 145,
+          "label": "Best online rate"
         }
       ],
       "production_estimate_ex_gst": null,
@@ -1271,15 +1275,6 @@
         "exports"
       ],
       "variant_groups": [
-        {
-          "key": "structure",
-          "label": "Structure",
-          "options": [
-            "Two-piece rigid box",
-            "Magnetic book-style box",
-            "Collapsible magnetic box"
-          ]
-        },
         {
           "key": "insert",
           "label": "Insert",
@@ -1326,35 +1321,152 @@
       ]
     },
     {
+      "code": "BX-403",
+      "slug": "magnetic-closure-box",
+      "name": "Magnetic Closure Box",
+      "category": "boxes",
+      "purchase_mode": "instant",
+      "public_buying_path": "instant",
+      "quote_threshold": 5000,
+      "use_case": "D2C gifting, subscription boxes, luxury retail, electronics unboxing",
+      "standard_spec": "Confirm standard size and material before publishing",
+      "moq": 50,
+      "moq_unit": "units",
+      "price_tiers_ex_gst": [
+        {
+          "min_qty": 50,
+          "unit_price": 395,
+          "label": "Launch quantity"
+        },
+        {
+          "min_qty": 100,
+          "unit_price": 325
+        },
+        {
+          "min_qty": 250,
+          "unit_price": 255
+        },
+        {
+          "min_qty": 500,
+          "unit_price": 205
+        },
+        {
+          "min_qty": 1000,
+          "unit_price": 169,
+          "label": "Best online rate"
+        }
+      ],
+      "production_estimate_ex_gst": null,
+      "delivery_days_india": 18,
+      "sample_tier": "premium",
+      "sample_price": 4999,
+      "materials": [],
+      "print_methods": [],
+      "sustainability_notes": [],
+      "supplier_route": "Packworkz supplier network",
+      "hsn_code": null,
+      "gst_rate_provisional": null,
+      "smartstock_eligible": false,
+      "industry_slugs": [
+        "d2c",
+        "fmcg",
+        "pharma",
+        "beauty",
+        "exports"
+      ],
+      "variant_groups": [
+        {
+          "key": "finish",
+          "label": "Outer Finish",
+          "options": [
+            "Matte Lamination",
+            "Glossy Lamination",
+            "Soft-touch Velvet"
+          ]
+        },
+        {
+          "key": "print",
+          "label": "Print Treatment",
+          "options": [
+            "Plain (Single Color)",
+            "Full Color",
+            "Foil Stamp",
+            "UV Spot + Foil"
+          ]
+        },
+        {
+          "key": "insert",
+          "label": "Interior Insert",
+          "options": [
+            "None",
+            "Foam Insert",
+            "Corrugated Insert",
+            "Satin Ribbon"
+          ]
+        }
+      ],
+      "specification_fields": [
+        {
+          "key": "length",
+          "label": "Length (mm)",
+          "type": "number",
+          "placeholder": "e.g. 250",
+          "unit": "mm"
+        },
+        {
+          "key": "width",
+          "label": "Width (mm)",
+          "type": "number",
+          "placeholder": "e.g. 200",
+          "unit": "mm"
+        },
+        {
+          "key": "height",
+          "label": "Height (mm)",
+          "type": "number",
+          "placeholder": "e.g. 100",
+          "unit": "mm"
+        }
+      ]
+    },
+    {
       "code": "EC-501",
       "slug": "mailer-box",
       "name": "Mailer Box",
       "category": "ecommerce",
       "purchase_mode": "instant",
       "public_buying_path": "instant",
-      "quote_threshold": 20000,
+      "quote_threshold": 10000,
       "use_case": "D2C shipping, subscription boxes, fashion, food kits, cosmetics",
       "standard_spec": "Confirm standard size and material before publishing",
-      "moq": 200,
+      "moq": 50,
       "moq_unit": "units",
       "price_tiers_ex_gst": [
         {
-          "min_qty": 200,
-          "unit_price": 75,
+          "min_qty": 50,
+          "unit_price": 34,
           "label": "Launch quantity"
         },
         {
-          "min_qty": 400,
-          "unit_price": 58.5
+          "min_qty": 100,
+          "unit_price": 29
+        },
+        {
+          "min_qty": 250,
+          "unit_price": 24
+        },
+        {
+          "min_qty": 500,
+          "unit_price": 20
         },
         {
           "min_qty": 1000,
-          "unit_price": 43.5
+          "unit_price": 17
         },
         {
-          "min_qty": 2000,
-          "unit_price": 33.75,
-          "label": "Best unit rate"
+          "min_qty": 2500,
+          "unit_price": 14,
+          "label": "Best online rate"
         }
       ],
       "production_estimate_ex_gst": null,
@@ -1440,21 +1552,21 @@
       "price_tiers_ex_gst": [
         {
           "min_qty": 500,
-          "unit_price": 35,
+          "unit_price": 29.93,
           "label": "Launch quantity"
         },
         {
           "min_qty": 1000,
-          "unit_price": 27.3
+          "unit_price": 24.94
         },
         {
           "min_qty": 2500,
-          "unit_price": 20.3
+          "unit_price": 19.94
         },
         {
           "min_qty": 5000,
-          "unit_price": 15.75,
-          "label": "Best unit rate"
+          "unit_price": 14.97,
+          "label": "Best online rate"
         }
       ],
       "production_estimate_ex_gst": {
@@ -1547,7 +1659,7 @@
       "category": "ecommerce",
       "purchase_mode": "hybrid",
       "public_buying_path": "instant",
-      "quote_threshold": 20000,
+      "quote_threshold": 10000,
       "use_case": "Cloud kitchens, QSR, tiffin services, meal kit delivery, bakeries",
       "standard_spec": "Confirm standard size and material before publishing",
       "moq": 200,
@@ -1555,21 +1667,21 @@
       "price_tiers_ex_gst": [
         {
           "min_qty": 200,
-          "unit_price": 40,
+          "unit_price": 29.93,
           "label": "Launch quantity"
         },
         {
-          "min_qty": 400,
-          "unit_price": 31.2
+          "min_qty": 500,
+          "unit_price": 23.27
         },
         {
           "min_qty": 1000,
-          "unit_price": 23.2
+          "unit_price": 18.28
         },
         {
-          "min_qty": 2000,
-          "unit_price": 18,
-          "label": "Best unit rate"
+          "min_qty": 2500,
+          "unit_price": 14.13,
+          "label": "Best online rate"
         }
       ],
       "production_estimate_ex_gst": {
@@ -1641,7 +1753,7 @@
       "category": "ecommerce",
       "purchase_mode": "instant",
       "public_buying_path": "instant",
-      "quote_threshold": 20000,
+      "quote_threshold": 25000,
       "use_case": "E-commerce courier shipping, clothing, documents, books",
       "standard_spec": "Confirm standard size and material before publishing",
       "moq": 1000,
@@ -1649,21 +1761,21 @@
       "price_tiers_ex_gst": [
         {
           "min_qty": 1000,
-          "unit_price": 10,
+          "unit_price": 7.5,
           "label": "Launch quantity"
         },
         {
-          "min_qty": 2000,
-          "unit_price": 7.8
+          "min_qty": 2500,
+          "unit_price": 5.99
         },
         {
           "min_qty": 5000,
-          "unit_price": 5.8
+          "unit_price": 4.67
         },
         {
           "min_qty": 10000,
-          "unit_price": 4.5,
-          "label": "Best unit rate"
+          "unit_price": 3.84,
+          "label": "Best online rate"
         }
       ],
       "production_estimate_ex_gst": null,
@@ -1731,7 +1843,7 @@
       "category": "protective",
       "purchase_mode": "instant",
       "public_buying_path": "instant",
-      "quote_threshold": 10000,
+      "quote_threshold": 100,
       "use_case": "E-commerce fulfilment, fragile goods, gifting, cosmetics and electronics",
       "standard_spec": "Confirm standard size and material before publishing",
       "moq": 1,
@@ -1739,21 +1851,21 @@
       "price_tiers_ex_gst": [
         {
           "min_qty": 1,
-          "unit_price": 5000,
+          "unit_price": 1495.4,
           "label": "Launch quantity"
         },
         {
-          "min_qty": 2,
-          "unit_price": 3900
-        },
-        {
           "min_qty": 5,
-          "unit_price": 2900
+          "unit_price": 1329.24
         },
         {
           "min_qty": 10,
-          "unit_price": 2250,
-          "label": "Best unit rate"
+          "unit_price": 1212.94
+        },
+        {
+          "min_qty": 25,
+          "unit_price": 1080,
+          "label": "Best online rate"
         }
       ],
       "production_estimate_ex_gst": null,
@@ -1978,116 +2090,6 @@
       ]
     },
     {
-      "code": "LC-801",
-      "slug": "labels",
-      "name": "Custom Labels & Stickers",
-      "category": "labels",
-      "purchase_mode": "instant",
-      "public_buying_path": "instant",
-      "quote_threshold": 100000,
-      "use_case": "Jars, bottles, pouches, boxes, seals and short-run product launches",
-      "standard_spec": "Confirm standard size and material before publishing",
-      "moq": 1000,
-      "moq_unit": "units",
-      "price_tiers_ex_gst": [
-        {
-          "min_qty": 1000,
-          "unit_price": 8,
-          "label": "Launch quantity"
-        },
-        {
-          "min_qty": 2000,
-          "unit_price": 6.24
-        },
-        {
-          "min_qty": 5000,
-          "unit_price": 4.64
-        },
-        {
-          "min_qty": 10000,
-          "unit_price": 3.6,
-          "label": "Best unit rate"
-        }
-      ],
-      "production_estimate_ex_gst": null,
-      "delivery_days_india": 10,
-      "sample_tier": "standard",
-      "sample_price": 1999,
-      "materials": [],
-      "print_methods": [],
-      "sustainability_notes": [],
-      "supplier_route": "Packworkz supplier network",
-      "hsn_code": null,
-      "gst_rate_provisional": null,
-      "smartstock_eligible": true,
-      "industry_slugs": [
-        "d2c",
-        "fmcg",
-        "pharma",
-        "beauty"
-      ],
-      "variant_groups": [
-        {
-          "key": "supply",
-          "label": "Supply format",
-          "options": [
-            "Labels on sheets",
-            "Labels on rolls",
-            "Individual die-cut stickers"
-          ]
-        },
-        {
-          "key": "material",
-          "label": "Material",
-          "options": [
-            "Paper",
-            "Water-resistant film",
-            "Clear film",
-            "Kraft paper",
-            "Tamper-evident VOID"
-          ]
-        },
-        {
-          "key": "finish",
-          "label": "Finish",
-          "options": [
-            "Matte",
-            "Gloss",
-            "Soft touch",
-            "Foil accent"
-          ]
-        }
-      ],
-      "specification_fields": [
-        {
-          "key": "width",
-          "label": "Width (mm)",
-          "type": "number",
-          "placeholder": "e.g. 70",
-          "unit": "mm"
-        },
-        {
-          "key": "height",
-          "label": "Height (mm)",
-          "type": "number",
-          "placeholder": "e.g. 110",
-          "unit": "mm"
-        },
-        {
-          "key": "print_colors",
-          "label": "Print Colors",
-          "type": "select",
-          "options": [
-            "1",
-            "2",
-            "4",
-            "6",
-            "8+"
-          ]
-        }
-      ]
-    },
-    {
       "code": "FP-110",
       "slug": "retort-pouch",
       "name": "Retort Pouch",
@@ -2253,7 +2255,7 @@
       "category": "bottles",
       "purchase_mode": "hybrid",
       "public_buying_path": "instant",
-      "quote_threshold": 25000,
+      "quote_threshold": 5000,
       "use_case": "Perfume, attar, essential oil and premium sampling",
       "standard_spec": "30 ml stock glass bottle with crimp pump",
       "moq": 100,
@@ -2261,21 +2263,21 @@
       "price_tiers_ex_gst": [
         {
           "min_qty": 100,
-          "unit_price": 88,
+          "unit_price": 74.77,
           "label": "Launch quantity"
         },
         {
           "min_qty": 250,
-          "unit_price": 69
+          "unit_price": 59.84
         },
         {
           "min_qty": 500,
-          "unit_price": 55
+          "unit_price": 49.87
         },
         {
           "min_qty": 1000,
-          "unit_price": 46,
-          "label": "Best unit rate"
+          "unit_price": 41.54,
+          "label": "Best online rate"
         }
       ],
       "production_estimate_ex_gst": {
@@ -2350,13 +2352,533 @@
       ]
     },
     {
+      "code": "BX-412",
+      "slug": "reverse-tuck-end-carton",
+      "name": "Reverse Tuck End Carton",
+      "category": "boxes",
+      "purchase_mode": "instant",
+      "public_buying_path": "instant",
+      "quote_threshold": 10000,
+      "use_case": "Skincare, supplements, food, pharma and lightweight retail products",
+      "standard_spec": "80 x 50 x 140 mm reverse tuck end, 4-color print, matte lamination",
+      "moq": 25,
+      "moq_unit": "units",
+      "price_tiers_ex_gst": [
+        {
+          "min_qty": 25,
+          "unit_price": 52,
+          "label": "Launch quantity"
+        },
+        {
+          "min_qty": 50,
+          "unit_price": 45
+        },
+        {
+          "min_qty": 100,
+          "unit_price": 38
+        },
+        {
+          "min_qty": 250,
+          "unit_price": 25
+        },
+        {
+          "min_qty": 500,
+          "unit_price": 18.5
+        },
+        {
+          "min_qty": 1000,
+          "unit_price": 14.2,
+          "label": "Best online rate"
+        }
+      ],
+      "production_estimate_ex_gst": null,
+      "delivery_days_india": 10,
+      "sample_tier": "standard",
+      "sample_price": 999,
+      "materials": [
+        "300-400 GSM SBS/FBB",
+        "Kraft board"
+      ],
+      "print_methods": [
+        "Digital",
+        "Flexographic"
+      ],
+      "sustainability_notes": [],
+      "supplier_route": "Digital folding-carton converter",
+      "hsn_code": "4819",
+      "gst_rate_provisional": 18,
+      "smartstock_eligible": false,
+      "industry_slugs": [
+        "d2c",
+        "fmcg",
+        "pharma",
+        "beauty",
+        "exports"
+      ],
+      "variant_groups": [
+        {
+          "key": "print",
+          "label": "Branding",
+          "options": [
+            "Plain",
+            "1-color print",
+            "Full-color print"
+          ]
+        },
+        {
+          "key": "finish",
+          "label": "Finish",
+          "options": [
+            "Natural / uncoated",
+            "Matte",
+            "Gloss"
+          ]
+        }
+      ],
+      "specification_fields": []
+    },
+    {
+      "code": "BX-404",
+      "slug": "auto-bottom-carton",
+      "name": "Auto-bottom Carton",
+      "category": "boxes",
+      "purchase_mode": "instant",
+      "public_buying_path": "instant",
+      "quote_threshold": 10000,
+      "use_case": "Cosmetics, supplements, electronics and heavier retail products",
+      "standard_spec": "80 x 50 x 140 mm, 4-color print, matte lamination",
+      "moq": 25,
+      "moq_unit": "units",
+      "price_tiers_ex_gst": [
+        {
+          "min_qty": 25,
+          "unit_price": 48.19,
+          "label": "Launch quantity"
+        },
+        {
+          "min_qty": 50,
+          "unit_price": 40
+        },
+        {
+          "min_qty": 100,
+          "unit_price": 34
+        },
+        {
+          "min_qty": 250,
+          "unit_price": 23
+        },
+        {
+          "min_qty": 500,
+          "unit_price": 16.8
+        },
+        {
+          "min_qty": 1000,
+          "unit_price": 12.9,
+          "label": "Best online rate"
+        }
+      ],
+      "production_estimate_ex_gst": null,
+      "delivery_days_india": 10,
+      "sample_tier": "standard",
+      "sample_price": 999,
+      "materials": [
+        "300-400 GSM SBS/FBB"
+      ],
+      "print_methods": [
+        "Digital",
+        "Flexographic"
+      ],
+      "sustainability_notes": [],
+      "supplier_route": "Digital folding-carton converter",
+      "hsn_code": "4819",
+      "gst_rate_provisional": 18,
+      "smartstock_eligible": true,
+      "industry_slugs": [
+        "d2c",
+        "fmcg",
+        "pharma",
+        "beauty",
+        "exports"
+      ],
+      "variant_groups": [
+        {
+          "key": "print",
+          "label": "Branding",
+          "options": [
+            "Plain",
+            "1-color print",
+            "Full-color print"
+          ]
+        },
+        {
+          "key": "finish",
+          "label": "Finish",
+          "options": [
+            "Natural / uncoated",
+            "Matte",
+            "Gloss"
+          ]
+        }
+      ],
+      "specification_fields": [
+        {
+          "key": "width",
+          "label": "Width",
+          "type": "number",
+          "unit": "mm",
+          "placeholder": "e.g. 150"
+        },
+        {
+          "key": "height",
+          "label": "Height",
+          "type": "number",
+          "unit": "mm",
+          "placeholder": "e.g. 220"
+        },
+        {
+          "key": "depth",
+          "label": "Depth / Gusset",
+          "type": "number",
+          "unit": "mm",
+          "placeholder": "e.g. 60"
+        }
+      ]
+    },
+    {
+      "code": "BX-405",
+      "slug": "sleeve-tray-box",
+      "name": "Sleeve and Tray Box",
+      "category": "boxes",
+      "purchase_mode": "instant",
+      "public_buying_path": "instant",
+      "quote_threshold": 5000,
+      "use_case": "Confectionery, skincare sets, candles and accessories",
+      "standard_spec": "120 x 80 x 35 mm, printed sleeve with plain tray",
+      "moq": 25,
+      "moq_unit": "units",
+      "price_tiers_ex_gst": [
+        {
+          "min_qty": 25,
+          "unit_price": 95,
+          "label": "Launch quantity"
+        },
+        {
+          "min_qty": 50,
+          "unit_price": 72
+        },
+        {
+          "min_qty": 100,
+          "unit_price": 51
+        },
+        {
+          "min_qty": 250,
+          "unit_price": 35
+        },
+        {
+          "min_qty": 500,
+          "unit_price": 27,
+          "label": "Best online rate"
+        }
+      ],
+      "production_estimate_ex_gst": null,
+      "delivery_days_india": 10,
+      "sample_tier": "standard",
+      "sample_price": 999,
+      "materials": [
+        "SBS/FBB",
+        "Kraft board"
+      ],
+      "print_methods": [
+        "Digital",
+        "Flexographic"
+      ],
+      "sustainability_notes": [],
+      "supplier_route": "Short-run carton converter",
+      "hsn_code": "4819",
+      "gst_rate_provisional": 18,
+      "smartstock_eligible": true,
+      "industry_slugs": [
+        "d2c",
+        "fmcg",
+        "pharma",
+        "beauty",
+        "exports"
+      ],
+      "variant_groups": [
+        {
+          "key": "print",
+          "label": "Branding",
+          "options": [
+            "Plain",
+            "1-color print",
+            "Full-color print"
+          ]
+        },
+        {
+          "key": "finish",
+          "label": "Finish",
+          "options": [
+            "Natural / uncoated",
+            "Matte",
+            "Gloss"
+          ]
+        }
+      ],
+      "specification_fields": [
+        {
+          "key": "width",
+          "label": "Width",
+          "type": "number",
+          "unit": "mm",
+          "placeholder": "e.g. 150"
+        },
+        {
+          "key": "height",
+          "label": "Height",
+          "type": "number",
+          "unit": "mm",
+          "placeholder": "e.g. 220"
+        },
+        {
+          "key": "depth",
+          "label": "Depth / Gusset",
+          "type": "number",
+          "unit": "mm",
+          "placeholder": "e.g. 60"
+        }
+      ]
+    },
+    {
+      "code": "BX-406",
+      "slug": "window-carton",
+      "name": "Window Carton",
+      "category": "boxes",
+      "purchase_mode": "hybrid",
+      "public_buying_path": "instant",
+      "quote_threshold": 10000,
+      "use_case": "Bakery, toys, cosmetics, gifting and visible-product retail",
+      "standard_spec": "Stock window profile, 4-color print",
+      "moq": 25,
+      "moq_unit": "units",
+      "price_tiers_ex_gst": [
+        {
+          "min_qty": 25,
+          "unit_price": 59,
+          "label": "Launch quantity"
+        },
+        {
+          "min_qty": 50,
+          "unit_price": 50
+        },
+        {
+          "min_qty": 100,
+          "unit_price": 42
+        },
+        {
+          "min_qty": 250,
+          "unit_price": 29
+        },
+        {
+          "min_qty": 500,
+          "unit_price": 21
+        },
+        {
+          "min_qty": 1000,
+          "unit_price": 16,
+          "label": "Best online rate"
+        }
+      ],
+      "production_estimate_ex_gst": {
+        "unit_min": 13,
+        "unit_max": 58,
+        "setup_min": 3500,
+        "setup_max": 16000
+      },
+      "delivery_days_india": 18,
+      "sample_tier": "premium",
+      "sample_price": 2999,
+      "materials": [
+        "Paperboard",
+        "Cellulose or PET window"
+      ],
+      "print_methods": [
+        "Digital",
+        "Flexographic"
+      ],
+      "sustainability_notes": [],
+      "supplier_route": "Carton converter with window patching",
+      "hsn_code": "4819",
+      "gst_rate_provisional": 18,
+      "smartstock_eligible": false,
+      "industry_slugs": [
+        "d2c",
+        "fmcg",
+        "pharma",
+        "beauty",
+        "exports"
+      ],
+      "variant_groups": [
+        {
+          "key": "print",
+          "label": "Branding",
+          "options": [
+            "Plain",
+            "1-color print",
+            "Full-color print"
+          ]
+        },
+        {
+          "key": "finish",
+          "label": "Finish",
+          "options": [
+            "Natural / uncoated",
+            "Matte",
+            "Gloss"
+          ]
+        }
+      ],
+      "specification_fields": [
+        {
+          "key": "width",
+          "label": "Width",
+          "type": "number",
+          "unit": "mm",
+          "placeholder": "e.g. 150"
+        },
+        {
+          "key": "height",
+          "label": "Height",
+          "type": "number",
+          "unit": "mm",
+          "placeholder": "e.g. 220"
+        },
+        {
+          "key": "depth",
+          "label": "Depth / Gusset",
+          "type": "number",
+          "unit": "mm",
+          "placeholder": "e.g. 60"
+        }
+      ]
+    },
+    {
+      "code": "BX-408",
+      "slug": "collapsible-rigid-box",
+      "name": "Collapsible Rigid Box",
+      "category": "boxes",
+      "purchase_mode": "hybrid",
+      "public_buying_path": "instant",
+      "quote_threshold": 5000,
+      "use_case": "Premium gifting, fashion, electronics and luxury D2C",
+      "standard_spec": "200 x 150 x 70 mm, wrapped, concealed magnets",
+      "moq": 50,
+      "moq_unit": "units",
+      "price_tiers_ex_gst": [
+        {
+          "min_qty": 50,
+          "unit_price": 345,
+          "label": "Launch quantity"
+        },
+        {
+          "min_qty": 100,
+          "unit_price": 285
+        },
+        {
+          "min_qty": 250,
+          "unit_price": 220
+        },
+        {
+          "min_qty": 500,
+          "unit_price": 178
+        },
+        {
+          "min_qty": 1000,
+          "unit_price": 149,
+          "label": "Best online rate"
+        }
+      ],
+      "production_estimate_ex_gst": {
+        "unit_min": 125,
+        "unit_max": 420,
+        "setup_min": 15000,
+        "setup_max": 90000
+      },
+      "delivery_days_india": 18,
+      "sample_tier": "premium",
+      "sample_price": 2999,
+      "materials": [
+        "Greyboard",
+        "Art paper",
+        "Recycled board option"
+      ],
+      "print_methods": [
+        "Digital",
+        "Flexographic"
+      ],
+      "sustainability_notes": [],
+      "supplier_route": "Premium rigid-box manufacturer",
+      "hsn_code": "4819",
+      "gst_rate_provisional": 18,
+      "smartstock_eligible": true,
+      "industry_slugs": [
+        "d2c",
+        "fmcg",
+        "pharma",
+        "beauty",
+        "exports"
+      ],
+      "variant_groups": [
+        {
+          "key": "print",
+          "label": "Branding",
+          "options": [
+            "Plain",
+            "1-color print",
+            "Full-color print"
+          ]
+        },
+        {
+          "key": "finish",
+          "label": "Finish",
+          "options": [
+            "Natural / uncoated",
+            "Matte",
+            "Gloss"
+          ]
+        }
+      ],
+      "specification_fields": [
+        {
+          "key": "width",
+          "label": "Width",
+          "type": "number",
+          "unit": "mm",
+          "placeholder": "e.g. 150"
+        },
+        {
+          "key": "height",
+          "label": "Height",
+          "type": "number",
+          "unit": "mm",
+          "placeholder": "e.g. 220"
+        },
+        {
+          "key": "depth",
+          "label": "Depth / Gusset",
+          "type": "number",
+          "unit": "mm",
+          "placeholder": "e.g. 60"
+        }
+      ]
+    },
+    {
       "code": "EC-505",
       "slug": "paper-shipping-mailer",
       "name": "Paper & Padded Mailers",
       "category": "ecommerce",
       "purchase_mode": "instant",
       "public_buying_path": "instant",
-      "quote_threshold": 20000,
+      "quote_threshold": 10000,
       "use_case": "Apparel, books, jewellery, beauty, accessories and small electronics",
       "standard_spec": "250 x 330 mm, peel-and-seal, one-color print",
       "moq": 100,
@@ -2364,21 +2886,21 @@
       "price_tiers_ex_gst": [
         {
           "min_qty": 100,
-          "unit_price": 24,
+          "unit_price": 20,
           "label": "Launch quantity"
         },
         {
           "min_qty": 250,
-          "unit_price": 17.5
+          "unit_price": 15
         },
         {
           "min_qty": 500,
-          "unit_price": 13.6
+          "unit_price": 11.8
         },
         {
           "min_qty": 1000,
-          "unit_price": 10.8,
-          "label": "Best unit rate"
+          "unit_price": 9.65,
+          "label": "Best online rate"
         }
       ],
       "production_estimate_ex_gst": null,
@@ -2399,7 +2921,7 @@
       "supplier_route": "Paper mailer bag converter",
       "hsn_code": "4819",
       "gst_rate_provisional": 18,
-      "smartstock_eligible": true,
+      "smartstock_eligible": false,
       "industry_slugs": [
         "d2c"
       ],
@@ -2463,7 +2985,7 @@
       "category": "ecommerce",
       "purchase_mode": "instant",
       "public_buying_path": "instant",
-      "quote_threshold": 20000,
+      "quote_threshold": 10000,
       "use_case": "Fashion, apparel, linens and premium inner packaging",
       "standard_spec": "300 x 400 mm, zipper, one-color print",
       "moq": 100,
@@ -2471,21 +2993,21 @@
       "price_tiers_ex_gst": [
         {
           "min_qty": 100,
-          "unit_price": 22,
+          "unit_price": 18.28,
           "label": "Launch quantity"
         },
         {
           "min_qty": 250,
-          "unit_price": 16
+          "unit_price": 13.8
         },
         {
           "min_qty": 500,
-          "unit_price": 12.5
+          "unit_price": 10.65
         },
         {
           "min_qty": 1000,
-          "unit_price": 10,
-          "label": "Best unit rate"
+          "unit_price": 8.5,
+          "label": "Best online rate"
         }
       ],
       "production_estimate_ex_gst": null,
@@ -2504,7 +3026,7 @@
       "supplier_route": "Garment polybag converter",
       "hsn_code": "4819",
       "gst_rate_provisional": 18,
-      "smartstock_eligible": false,
+      "smartstock_eligible": true,
       "industry_slugs": [
         "d2c"
       ],
@@ -2559,7 +3081,7 @@
       "category": "ecommerce",
       "purchase_mode": "instant",
       "public_buying_path": "instant",
-      "quote_threshold": 20000,
+      "quote_threshold": 5000,
       "use_case": "Retail, bakery, events, gifting and takeaway",
       "standard_spec": "Medium bag, twisted handle, one-color print",
       "moq": 50,
@@ -2567,21 +3089,21 @@
       "price_tiers_ex_gst": [
         {
           "min_qty": 50,
-          "unit_price": 24,
+          "unit_price": 20,
           "label": "Launch quantity"
         },
         {
           "min_qty": 100,
-          "unit_price": 17
+          "unit_price": 15
         },
         {
           "min_qty": 250,
-          "unit_price": 12
+          "unit_price": 10.65
         },
         {
           "min_qty": 500,
-          "unit_price": 9.5,
-          "label": "Best unit rate"
+          "unit_price": 8.31,
+          "label": "Best online rate"
         }
       ],
       "production_estimate_ex_gst": null,
@@ -2808,6 +3330,756 @@
       ]
     },
     {
+      "code": "LC-816",
+      "slug": "round-paper-labels",
+      "name": "Round Paper Labels",
+      "category": "labels",
+      "purchase_mode": "instant",
+      "public_buying_path": "instant",
+      "quote_threshold": 25000,
+      "use_case": "Jar lids, bottles, candles, seals, cups and circular brand marks",
+      "standard_spec": "60 mm round paper label, full-colour digital print, permanent adhesive",
+      "moq": 25,
+      "moq_unit": "units",
+      "price_tiers_ex_gst": [
+        {
+          "min_qty": 25,
+          "unit_price": 8.5,
+          "label": "Launch quantity"
+        },
+        {
+          "min_qty": 50,
+          "unit_price": 6.8
+        },
+        {
+          "min_qty": 100,
+          "unit_price": 5.8
+        },
+        {
+          "min_qty": 250,
+          "unit_price": 3.6
+        },
+        {
+          "min_qty": 500,
+          "unit_price": 2.6
+        },
+        {
+          "min_qty": 1000,
+          "unit_price": 1.95
+        },
+        {
+          "min_qty": 2500,
+          "unit_price": 1.4
+        },
+        {
+          "min_qty": 5000,
+          "unit_price": 1.05,
+          "label": "Best online rate"
+        }
+      ],
+      "production_estimate_ex_gst": null,
+      "delivery_days_india": 10,
+      "sample_tier": "standard",
+      "sample_price": 999,
+      "materials": [
+        "Coated white paper",
+        "Uncoated white paper",
+        "Natural kraft paper"
+      ],
+      "print_methods": [
+        "Digital",
+        "Flexographic"
+      ],
+      "sustainability_notes": [],
+      "supplier_route": "Digital sheet-label converter",
+      "hsn_code": "4821/3919",
+      "gst_rate_provisional": 18,
+      "smartstock_eligible": true,
+      "industry_slugs": [
+        "d2c",
+        "fmcg",
+        "pharma",
+        "beauty"
+      ],
+      "variant_groups": [
+        {
+          "key": "paper",
+          "label": "Paper",
+          "options": [
+            "Coated white",
+            "Uncoated white",
+            "Natural kraft"
+          ]
+        },
+        {
+          "key": "supply",
+          "label": "Supply format",
+          "options": [
+            "Labels on sheets",
+            "Individual die-cuts"
+          ]
+        },
+        {
+          "key": "finish",
+          "label": "Finish",
+          "options": [
+            "Unlaminated",
+            "Matte varnish",
+            "Gloss varnish"
+          ]
+        }
+      ],
+      "specification_fields": []
+    },
+    {
+      "code": "LC-817",
+      "slug": "square-paper-labels",
+      "name": "Square Paper Labels",
+      "category": "labels",
+      "purchase_mode": "instant",
+      "public_buying_path": "instant",
+      "quote_threshold": 25000,
+      "use_case": "Jars, pouches, cartons, bakery packs and compact front-panel branding",
+      "standard_spec": "60 x 60 mm square paper label, full-colour digital print, permanent adhesive",
+      "moq": 25,
+      "moq_unit": "units",
+      "price_tiers_ex_gst": [
+        {
+          "min_qty": 25,
+          "unit_price": 8.5,
+          "label": "Launch quantity"
+        },
+        {
+          "min_qty": 50,
+          "unit_price": 6.8
+        },
+        {
+          "min_qty": 100,
+          "unit_price": 5.8
+        },
+        {
+          "min_qty": 250,
+          "unit_price": 3.6
+        },
+        {
+          "min_qty": 500,
+          "unit_price": 2.6
+        },
+        {
+          "min_qty": 1000,
+          "unit_price": 1.95
+        },
+        {
+          "min_qty": 2500,
+          "unit_price": 1.4
+        },
+        {
+          "min_qty": 5000,
+          "unit_price": 1.05,
+          "label": "Best online rate"
+        }
+      ],
+      "production_estimate_ex_gst": null,
+      "delivery_days_india": 10,
+      "sample_tier": "standard",
+      "sample_price": 999,
+      "materials": [
+        "Coated white paper",
+        "Uncoated white paper",
+        "Natural kraft paper"
+      ],
+      "print_methods": [
+        "Digital",
+        "Flexographic"
+      ],
+      "sustainability_notes": [],
+      "supplier_route": "Digital sheet-label converter",
+      "hsn_code": "4821/3919",
+      "gst_rate_provisional": 18,
+      "smartstock_eligible": false,
+      "industry_slugs": [
+        "d2c",
+        "fmcg",
+        "pharma",
+        "beauty"
+      ],
+      "variant_groups": [
+        {
+          "key": "paper",
+          "label": "Paper",
+          "options": [
+            "Coated white",
+            "Uncoated white",
+            "Natural kraft"
+          ]
+        },
+        {
+          "key": "supply",
+          "label": "Supply format",
+          "options": [
+            "Labels on sheets",
+            "Individual die-cuts"
+          ]
+        },
+        {
+          "key": "finish",
+          "label": "Finish",
+          "options": [
+            "Unlaminated",
+            "Matte varnish",
+            "Gloss varnish"
+          ]
+        }
+      ],
+      "specification_fields": []
+    },
+    {
+      "code": "LC-818",
+      "slug": "rectangular-paper-labels",
+      "name": "Rectangular Paper Labels",
+      "category": "labels",
+      "purchase_mode": "instant",
+      "public_buying_path": "instant",
+      "quote_threshold": 25000,
+      "use_case": "Bottles, pouches, cartons, shipping packs and ingredient panels",
+      "standard_spec": "75 x 50 mm rectangular paper label, full-colour digital print, permanent adhesive",
+      "moq": 25,
+      "moq_unit": "units",
+      "price_tiers_ex_gst": [
+        {
+          "min_qty": 25,
+          "unit_price": 8.5,
+          "label": "Launch quantity"
+        },
+        {
+          "min_qty": 50,
+          "unit_price": 7.2
+        },
+        {
+          "min_qty": 100,
+          "unit_price": 6.4
+        },
+        {
+          "min_qty": 250,
+          "unit_price": 4
+        },
+        {
+          "min_qty": 500,
+          "unit_price": 2.9
+        },
+        {
+          "min_qty": 1000,
+          "unit_price": 2.2
+        },
+        {
+          "min_qty": 2500,
+          "unit_price": 1.58
+        },
+        {
+          "min_qty": 5000,
+          "unit_price": 1.18,
+          "label": "Best online rate"
+        }
+      ],
+      "production_estimate_ex_gst": null,
+      "delivery_days_india": 10,
+      "sample_tier": "standard",
+      "sample_price": 999,
+      "materials": [
+        "Coated white paper",
+        "Uncoated white paper",
+        "Natural kraft paper"
+      ],
+      "print_methods": [
+        "Digital",
+        "Flexographic"
+      ],
+      "sustainability_notes": [],
+      "supplier_route": "Digital sheet-label converter",
+      "hsn_code": "4821/3919",
+      "gst_rate_provisional": 18,
+      "smartstock_eligible": true,
+      "industry_slugs": [
+        "d2c",
+        "fmcg",
+        "pharma",
+        "beauty"
+      ],
+      "variant_groups": [
+        {
+          "key": "paper",
+          "label": "Paper",
+          "options": [
+            "Coated white",
+            "Uncoated white",
+            "Natural kraft"
+          ]
+        },
+        {
+          "key": "supply",
+          "label": "Supply format",
+          "options": [
+            "Labels on sheets",
+            "Individual die-cuts"
+          ]
+        },
+        {
+          "key": "finish",
+          "label": "Finish",
+          "options": [
+            "Unlaminated",
+            "Matte varnish",
+            "Gloss varnish"
+          ]
+        }
+      ],
+      "specification_fields": []
+    },
+    {
+      "code": "LC-819",
+      "slug": "oval-paper-labels",
+      "name": "Oval Paper Labels",
+      "category": "labels",
+      "purchase_mode": "instant",
+      "public_buying_path": "instant",
+      "quote_threshold": 25000,
+      "use_case": "Cosmetics, candles, gourmet jars, gifting and curved brand marks",
+      "standard_spec": "70 x 45 mm oval paper label, full-colour digital print, permanent adhesive",
+      "moq": 25,
+      "moq_unit": "units",
+      "price_tiers_ex_gst": [
+        {
+          "min_qty": 25,
+          "unit_price": 8.5,
+          "label": "Launch quantity"
+        },
+        {
+          "min_qty": 50,
+          "unit_price": 7.2
+        },
+        {
+          "min_qty": 100,
+          "unit_price": 6.4
+        },
+        {
+          "min_qty": 250,
+          "unit_price": 4
+        },
+        {
+          "min_qty": 500,
+          "unit_price": 2.9
+        },
+        {
+          "min_qty": 1000,
+          "unit_price": 2.2
+        },
+        {
+          "min_qty": 2500,
+          "unit_price": 1.58
+        },
+        {
+          "min_qty": 5000,
+          "unit_price": 1.18,
+          "label": "Best online rate"
+        }
+      ],
+      "production_estimate_ex_gst": null,
+      "delivery_days_india": 10,
+      "sample_tier": "standard",
+      "sample_price": 999,
+      "materials": [
+        "Coated white paper",
+        "Uncoated white paper",
+        "Natural kraft paper"
+      ],
+      "print_methods": [
+        "Digital",
+        "Flexographic"
+      ],
+      "sustainability_notes": [],
+      "supplier_route": "Digital sheet-label converter",
+      "hsn_code": "4821/3919",
+      "gst_rate_provisional": 18,
+      "smartstock_eligible": true,
+      "industry_slugs": [
+        "d2c",
+        "fmcg",
+        "pharma",
+        "beauty"
+      ],
+      "variant_groups": [
+        {
+          "key": "paper",
+          "label": "Paper",
+          "options": [
+            "Coated white",
+            "Uncoated white",
+            "Natural kraft"
+          ]
+        },
+        {
+          "key": "supply",
+          "label": "Supply format",
+          "options": [
+            "Labels on sheets",
+            "Individual die-cuts"
+          ]
+        },
+        {
+          "key": "finish",
+          "label": "Finish",
+          "options": [
+            "Unlaminated",
+            "Matte varnish",
+            "Gloss varnish"
+          ]
+        }
+      ],
+      "specification_fields": []
+    },
+    {
+      "code": "LC-820",
+      "slug": "custom-die-cut-stickers",
+      "name": "Custom Die-cut Stickers",
+      "category": "labels",
+      "purchase_mode": "instant",
+      "public_buying_path": "instant",
+      "quote_threshold": 10000,
+      "use_case": "Logo stickers, launch packs, seals, laptop stickers and expressive brand shapes",
+      "standard_spec": "Custom contour up to 75 x 75 mm, full-colour digital print, permanent adhesive",
+      "moq": 25,
+      "moq_unit": "units",
+      "price_tiers_ex_gst": [
+        {
+          "min_qty": 25,
+          "unit_price": 13.5,
+          "label": "Launch quantity"
+        },
+        {
+          "min_qty": 50,
+          "unit_price": 10.5
+        },
+        {
+          "min_qty": 100,
+          "unit_price": 8.5
+        },
+        {
+          "min_qty": 250,
+          "unit_price": 5.4
+        },
+        {
+          "min_qty": 500,
+          "unit_price": 3.8
+        },
+        {
+          "min_qty": 1000,
+          "unit_price": 2.8
+        },
+        {
+          "min_qty": 2500,
+          "unit_price": 2,
+          "label": "Best online rate"
+        }
+      ],
+      "production_estimate_ex_gst": null,
+      "delivery_days_india": 10,
+      "sample_tier": "standard",
+      "sample_price": 999,
+      "materials": [
+        "Coated paper",
+        "White BOPP"
+      ],
+      "print_methods": [
+        "Digital",
+        "Flexographic"
+      ],
+      "sustainability_notes": [],
+      "supplier_route": "Digital contour-cut sticker printer",
+      "hsn_code": "4821/3919",
+      "gst_rate_provisional": 18,
+      "smartstock_eligible": false,
+      "industry_slugs": [
+        "d2c",
+        "fmcg",
+        "pharma",
+        "beauty"
+      ],
+      "variant_groups": [
+        {
+          "key": "material",
+          "label": "Material",
+          "options": [
+            "Coated paper",
+            "White BOPP"
+          ]
+        },
+        {
+          "key": "supply",
+          "label": "Supply format",
+          "options": [
+            "Individual die-cuts",
+            "Kiss-cut sheets"
+          ]
+        },
+        {
+          "key": "finish",
+          "label": "Finish",
+          "options": [
+            "Unlaminated",
+            "Matte lamination",
+            "Gloss lamination"
+          ]
+        }
+      ],
+      "specification_fields": []
+    },
+    {
+      "code": "LC-804",
+      "slug": "waterproof-bopp-vinyl-labels",
+      "name": "Waterproof BOPP & Vinyl Labels",
+      "category": "labels",
+      "purchase_mode": "instant",
+      "public_buying_path": "instant",
+      "quote_threshold": 25000,
+      "use_case": "Chilled products, cosmetics, home care, bottles and packs exposed to moisture or handling",
+      "standard_spec": "60 mm circle or square, full-colour digital print, permanent adhesive",
+      "moq": 25,
+      "moq_unit": "units",
+      "price_tiers_ex_gst": [
+        {
+          "min_qty": 25,
+          "unit_price": 12,
+          "label": "Launch quantity"
+        },
+        {
+          "min_qty": 50,
+          "unit_price": 9.5
+        },
+        {
+          "min_qty": 100,
+          "unit_price": 8.2
+        },
+        {
+          "min_qty": 250,
+          "unit_price": 5.1
+        },
+        {
+          "min_qty": 500,
+          "unit_price": 3.65
+        },
+        {
+          "min_qty": 1000,
+          "unit_price": 2.65
+        },
+        {
+          "min_qty": 2500,
+          "unit_price": 1.85
+        },
+        {
+          "min_qty": 5000,
+          "unit_price": 1.35,
+          "label": "Best online rate"
+        }
+      ],
+      "production_estimate_ex_gst": null,
+      "delivery_days_india": 10,
+      "sample_tier": "standard",
+      "sample_price": 999,
+      "materials": [
+        "White BOPP",
+        "White vinyl",
+        "Freezer-grade film"
+      ],
+      "print_methods": [
+        "Digital",
+        "Flexographic"
+      ],
+      "sustainability_notes": [],
+      "supplier_route": "Digital film-label converter",
+      "hsn_code": "4821/3919",
+      "gst_rate_provisional": 18,
+      "smartstock_eligible": true,
+      "industry_slugs": [
+        "d2c",
+        "fmcg",
+        "pharma",
+        "beauty"
+      ],
+      "variant_groups": [
+        {
+          "key": "material",
+          "label": "Material",
+          "options": [
+            "White BOPP",
+            "White vinyl",
+            "Freezer-grade film"
+          ]
+        },
+        {
+          "key": "adhesive",
+          "label": "Adhesive",
+          "options": [
+            "Permanent",
+            "Removable",
+            "Freezer grade"
+          ]
+        },
+        {
+          "key": "finish",
+          "label": "Finish",
+          "options": [
+            "Matte",
+            "Gloss"
+          ]
+        }
+      ],
+      "specification_fields": [
+        {
+          "key": "width",
+          "label": "Width",
+          "type": "number",
+          "unit": "mm",
+          "placeholder": "e.g. 150"
+        },
+        {
+          "key": "height",
+          "label": "Height",
+          "type": "number",
+          "unit": "mm",
+          "placeholder": "e.g. 220"
+        },
+        {
+          "key": "depth",
+          "label": "Depth / Gusset",
+          "type": "number",
+          "unit": "mm",
+          "placeholder": "e.g. 60"
+        }
+      ]
+    },
+    {
+      "code": "LC-805",
+      "slug": "clear-transparent-labels",
+      "name": "Clear & Transparent Labels",
+      "category": "labels",
+      "purchase_mode": "instant",
+      "public_buying_path": "instant",
+      "quote_threshold": 25000,
+      "use_case": "Glass bottles, jars, cosmetics and premium products requiring a no-label look",
+      "standard_spec": "60 mm circle, square or rectangle, full-colour digital print; white ink is priced as a configured option",
+      "moq": 25,
+      "moq_unit": "units",
+      "price_tiers_ex_gst": [
+        {
+          "min_qty": 25,
+          "unit_price": 12.5,
+          "label": "Launch quantity"
+        },
+        {
+          "min_qty": 50,
+          "unit_price": 10.5
+        },
+        {
+          "min_qty": 100,
+          "unit_price": 9.2
+        },
+        {
+          "min_qty": 250,
+          "unit_price": 5.8
+        },
+        {
+          "min_qty": 500,
+          "unit_price": 4.1
+        },
+        {
+          "min_qty": 1000,
+          "unit_price": 3
+        },
+        {
+          "min_qty": 2500,
+          "unit_price": 2.1
+        },
+        {
+          "min_qty": 5000,
+          "unit_price": 1.5,
+          "label": "Best online rate"
+        }
+      ],
+      "production_estimate_ex_gst": null,
+      "delivery_days_india": 10,
+      "sample_tier": "standard",
+      "sample_price": 999,
+      "materials": [
+        "Clear BOPP",
+        "Clear PET"
+      ],
+      "print_methods": [
+        "Digital",
+        "Flexographic"
+      ],
+      "sustainability_notes": [],
+      "supplier_route": "Digital clear-label converter",
+      "hsn_code": "4821/3919",
+      "gst_rate_provisional": 18,
+      "smartstock_eligible": true,
+      "industry_slugs": [
+        "d2c",
+        "fmcg",
+        "pharma",
+        "beauty"
+      ],
+      "variant_groups": [
+        {
+          "key": "material",
+          "label": "Material",
+          "options": [
+            "Clear BOPP",
+            "Clear PET"
+          ]
+        },
+        {
+          "key": "white_ink",
+          "label": "White ink",
+          "options": [
+            "None",
+            "Spot white",
+            "Full white underprint"
+          ]
+        },
+        {
+          "key": "finish",
+          "label": "Finish",
+          "options": [
+            "Gloss",
+            "Matte"
+          ]
+        }
+      ],
+      "specification_fields": [
+        {
+          "key": "width",
+          "label": "Width",
+          "type": "number",
+          "unit": "mm",
+          "placeholder": "e.g. 150"
+        },
+        {
+          "key": "height",
+          "label": "Height",
+          "type": "number",
+          "unit": "mm",
+          "placeholder": "e.g. 220"
+        },
+        {
+          "key": "depth",
+          "label": "Depth / Gusset",
+          "type": "number",
+          "unit": "mm",
+          "placeholder": "e.g. 60"
+        }
+      ]
+    },
+    {
       "code": "LC-806",
       "slug": "shrink-sleeve-label",
       "name": "Shrink Sleeve & Wrap-around Labels",
@@ -2900,7 +4172,7 @@
       "category": "labels",
       "purchase_mode": "instant",
       "public_buying_path": "instant",
-      "quote_threshold": 100000,
+      "quote_threshold": 10000,
       "use_case": "Fashion, jewellery, beauty, gifting, product instructions and D2C unboxing",
       "standard_spec": "55 x 90 mm, 4-color, punched",
       "moq": 50,
@@ -2908,21 +4180,21 @@
       "price_tiers_ex_gst": [
         {
           "min_qty": 50,
-          "unit_price": 12,
+          "unit_price": 9.5,
           "label": "Launch quantity"
         },
         {
           "min_qty": 100,
-          "unit_price": 7.5
+          "unit_price": 6.33
         },
         {
           "min_qty": 250,
-          "unit_price": 4.4
+          "unit_price": 4
         },
         {
           "min_qty": 500,
-          "unit_price": 3.2,
-          "label": "Best unit rate"
+          "unit_price": 2.84,
+          "label": "Best online rate"
         }
       ],
       "production_estimate_ex_gst": null,
@@ -3004,7 +4276,7 @@
       "category": "labels",
       "purchase_mode": "hybrid",
       "public_buying_path": "instant",
-      "quote_threshold": 100000,
+      "quote_threshold": 10000,
       "use_case": "Fashion, gifting, beauty, jewellery and premium unboxing",
       "standard_spec": "500 x 750 mm sheet, one-color repeat print",
       "moq": 250,
@@ -3012,21 +4284,21 @@
       "price_tiers_ex_gst": [
         {
           "min_qty": 250,
-          "unit_price": 14,
+          "unit_price": 11.64,
           "label": "Launch quantity"
         },
         {
           "min_qty": 500,
-          "unit_price": 10.5
+          "unit_price": 9.14
         },
         {
           "min_qty": 1000,
-          "unit_price": 8.1
+          "unit_price": 7
         },
         {
           "min_qty": 2500,
-          "unit_price": 6.4,
-          "label": "Best unit rate"
+          "unit_price": 5.67,
+          "label": "Best online rate"
         }
       ],
       "production_estimate_ex_gst": {
@@ -3112,7 +4384,7 @@
       "category": "labels",
       "purchase_mode": "instant",
       "public_buying_path": "instant",
-      "quote_threshold": 100000,
+      "quote_threshold": 5000,
       "use_case": "Branded shipping cartons, tamper visibility and warehouse operations",
       "standard_spec": "48 mm x 65 m, one-color print",
       "moq": 72,
@@ -3120,21 +4392,21 @@
       "price_tiers_ex_gst": [
         {
           "min_qty": 72,
-          "unit_price": 92,
+          "unit_price": 124.62,
           "label": "Launch quantity"
         },
         {
           "min_qty": 144,
-          "unit_price": 78
+          "unit_price": 103.04
         },
         {
           "min_qty": 360,
-          "unit_price": 64
+          "unit_price": 83.08
         },
         {
           "min_qty": 720,
-          "unit_price": 56,
-          "label": "Best unit rate"
+          "unit_price": 69.79,
+          "label": "Best online rate"
         }
       ],
       "production_estimate_ex_gst": null,
@@ -3194,6 +4466,202 @@
       ]
     },
     {
+      "code": "LC-814",
+      "slug": "machine-applied-roll-labels",
+      "name": "Machine-applied Roll Labels",
+      "category": "labels",
+      "purchase_mode": "brief",
+      "public_buying_path": "quote",
+      "quote_threshold": null,
+      "use_case": "Automated labelling lines for food, beverage, cosmetics, pharma and FMCG",
+      "standard_spec": "Finished size, core, unwind direction, gap, roll diameter, adhesive and application speed required",
+      "moq": 5000,
+      "moq_unit": "units",
+      "price_tiers_ex_gst": [],
+      "production_estimate_ex_gst": {
+        "unit_min": 0.75,
+        "unit_max": 4.8,
+        "setup_min": 6500,
+        "setup_max": 38000
+      },
+      "delivery_days_india": 24,
+      "sample_tier": "complex",
+      "sample_price": 4999,
+      "materials": [
+        "Paper",
+        "White BOPP",
+        "Clear BOPP",
+        "Thermal-transfer stock"
+      ],
+      "print_methods": [
+        "Digital",
+        "Flexographic"
+      ],
+      "sustainability_notes": [],
+      "supplier_route": "Flexographic roll-label converter",
+      "hsn_code": "4821/3919",
+      "gst_rate_provisional": 18,
+      "smartstock_eligible": false,
+      "industry_slugs": [
+        "d2c",
+        "fmcg",
+        "pharma",
+        "beauty"
+      ],
+      "variant_groups": [
+        {
+          "key": "print",
+          "label": "Branding",
+          "options": [
+            "Plain",
+            "1-color print",
+            "Full-color print"
+          ]
+        },
+        {
+          "key": "finish",
+          "label": "Finish",
+          "options": [
+            "Natural / uncoated",
+            "Matte",
+            "Gloss"
+          ]
+        }
+      ],
+      "specification_fields": [
+        {
+          "key": "width",
+          "label": "Width",
+          "type": "number",
+          "unit": "mm",
+          "placeholder": "e.g. 150"
+        },
+        {
+          "key": "height",
+          "label": "Height",
+          "type": "number",
+          "unit": "mm",
+          "placeholder": "e.g. 220"
+        },
+        {
+          "key": "depth",
+          "label": "Depth / Gusset",
+          "type": "number",
+          "unit": "mm",
+          "placeholder": "e.g. 60"
+        }
+      ]
+    },
+    {
+      "code": "LC-815",
+      "slug": "foil-special-effect-labels",
+      "name": "Foil & Special-effect Labels",
+      "category": "labels",
+      "purchase_mode": "instant",
+      "public_buying_path": "instant",
+      "quote_threshold": 10000,
+      "use_case": "Premium food, beauty, gifting, spirits and limited-edition product launches",
+      "standard_spec": "60 mm label with one premium effect; foil, raised varnish or holographic stock",
+      "moq": 50,
+      "moq_unit": "units",
+      "price_tiers_ex_gst": [
+        {
+          "min_qty": 50,
+          "unit_price": 18,
+          "label": "Launch quantity"
+        },
+        {
+          "min_qty": 100,
+          "unit_price": 13.5
+        },
+        {
+          "min_qty": 250,
+          "unit_price": 8.9
+        },
+        {
+          "min_qty": 500,
+          "unit_price": 6.5
+        },
+        {
+          "min_qty": 1000,
+          "unit_price": 4.8
+        },
+        {
+          "min_qty": 2500,
+          "unit_price": 3.4,
+          "label": "Best online rate"
+        }
+      ],
+      "production_estimate_ex_gst": null,
+      "delivery_days_india": 10,
+      "sample_tier": "standard",
+      "sample_price": 999,
+      "materials": [
+        "Coated paper",
+        "White BOPP",
+        "Textured paper"
+      ],
+      "print_methods": [
+        "Digital",
+        "Flexographic"
+      ],
+      "sustainability_notes": [],
+      "supplier_route": "Digital embellishment label printer",
+      "hsn_code": "4821/3919",
+      "gst_rate_provisional": 18,
+      "smartstock_eligible": false,
+      "industry_slugs": [
+        "d2c",
+        "fmcg",
+        "pharma",
+        "beauty"
+      ],
+      "variant_groups": [
+        {
+          "key": "effect",
+          "label": "Premium effect",
+          "options": [
+            "Hot foil accent",
+            "Raised varnish",
+            "Holographic stock",
+            "Textured paper"
+          ]
+        },
+        {
+          "key": "material",
+          "label": "Base material",
+          "options": [
+            "Coated paper",
+            "White BOPP",
+            "Textured paper"
+          ]
+        }
+      ],
+      "specification_fields": [
+        {
+          "key": "width",
+          "label": "Width",
+          "type": "number",
+          "unit": "mm",
+          "placeholder": "e.g. 150"
+        },
+        {
+          "key": "height",
+          "label": "Height",
+          "type": "number",
+          "unit": "mm",
+          "placeholder": "e.g. 220"
+        },
+        {
+          "key": "depth",
+          "label": "Depth / Gusset",
+          "type": "number",
+          "unit": "mm",
+          "placeholder": "e.g. 60"
+        }
+      ]
+    },
+    {
       "code": "SP-905",
       "slug": "bagasse-clamshell",
       "name": "Bagasse Food Containers",
@@ -3203,26 +4671,34 @@
       "quote_threshold": 20000,
       "use_case": "QSR, cloud kitchens, events and hot takeaway food",
       "standard_spec": "9 x 6 inch, plain, single compartment",
-      "moq": 500,
+      "moq": 100,
       "moq_unit": "units",
       "price_tiers_ex_gst": [
         {
-          "min_qty": 500,
-          "unit_price": 9.8,
+          "min_qty": 100,
+          "unit_price": 18.5,
           "label": "Launch quantity"
         },
         {
+          "min_qty": 250,
+          "unit_price": 17.5
+        },
+        {
+          "min_qty": 500,
+          "unit_price": 16.75
+        },
+        {
           "min_qty": 1000,
-          "unit_price": 8.6
+          "unit_price": 13.65
         },
         {
           "min_qty": 2500,
-          "unit_price": 7.7
+          "unit_price": 11.35
         },
         {
           "min_qty": 5000,
-          "unit_price": 7,
-          "label": "Best unit rate"
+          "unit_price": 9.7,
+          "label": "Best online rate"
         }
       ],
       "production_estimate_ex_gst": null,
@@ -3286,39 +4762,51 @@
     },
     {
       "code": "SP-907",
-      "slug": "paper-cup",
-      "name": "Paper Cups, Bowls & Food Tubs",
+      "slug": "paper-bowls-food-containers",
+      "name": "Paper Bowls & Food Containers",
       "category": "sustainable",
       "purchase_mode": "hybrid",
       "public_buying_path": "instant",
-      "quote_threshold": 20000,
-      "use_case": "Beverages, salads, noodles, desserts, curries and takeaway",
-      "standard_spec": "250 ml, single wall, one-color print",
-      "moq": 1000,
+      "quote_threshold": 25000,
+      "use_case": "Curries, biryani, rice, noodles, salads, desserts, takeaway and cloud kitchens",
+      "standard_spec": "Fixed 200-1,250 ml bowl and food-container formats with matched lids",
+      "moq": 100,
       "moq_unit": "units",
       "price_tiers_ex_gst": [
         {
-          "min_qty": 1000,
-          "unit_price": 5.8,
+          "min_qty": 100,
+          "unit_price": 14.2,
           "label": "Launch quantity"
         },
         {
+          "min_qty": 250,
+          "unit_price": 12.5
+        },
+        {
+          "min_qty": 500,
+          "unit_price": 10.8
+        },
+        {
+          "min_qty": 1000,
+          "unit_price": 9.5
+        },
+        {
           "min_qty": 2500,
-          "unit_price": 4.7
+          "unit_price": 8
         },
         {
           "min_qty": 5000,
-          "unit_price": 4.1
+          "unit_price": 6.65
         },
         {
           "min_qty": 10000,
-          "unit_price": 3.6,
-          "label": "Best unit rate"
+          "unit_price": 5.25,
+          "label": "Best online rate"
         }
       ],
       "production_estimate_ex_gst": {
         "unit_min": 3.2,
-        "unit_max": 8.5,
+        "unit_max": 14.2,
         "setup_min": 6000,
         "setup_max": 28000
       },
@@ -3326,7 +4814,7 @@
       "sample_tier": "premium",
       "sample_price": 2999,
       "materials": [
-        "Food-grade paper",
+        "Food-grade paperboard",
         "Aqueous/PE lining"
       ],
       "print_methods": [
@@ -3337,10 +4825,10 @@
         "Lower-impact material option",
         "Claim documentation required before artwork approval"
       ],
-      "supplier_route": "Food-contact paper cup manufacturer",
+      "supplier_route": "Food-contact paper-container manufacturer",
       "hsn_code": "3923",
       "gst_rate_provisional": 18,
-      "smartstock_eligible": true,
+      "smartstock_eligible": false,
       "industry_slugs": [
         "d2c",
         "food-beverage",
@@ -3348,21 +4836,29 @@
       ],
       "variant_groups": [
         {
-          "key": "format",
-          "label": "Format",
+          "key": "paper",
+          "label": "Paper colour",
           "options": [
-            "Paper cup",
-            "Paper bowl",
-            "Food tub"
+            "White",
+            "Natural kraft"
           ]
         },
         {
-          "key": "lining",
-          "label": "Lining",
+          "key": "lid",
+          "label": "Lid",
           "options": [
-            "Aqueous barrier",
-            "PE lining",
-            "PLA lining"
+            "Paper lid",
+            "Clear recyclable lid",
+            "No lid"
+          ]
+        },
+        {
+          "key": "branding",
+          "label": "Branding",
+          "options": [
+            "Plain",
+            "Applied label",
+            "Custom printed"
           ]
         }
       ],
@@ -3397,29 +4893,37 @@
       "category": "sustainable",
       "purchase_mode": "instant",
       "public_buying_path": "instant",
-      "quote_threshold": 20000,
+      "quote_threshold": 50000,
       "use_case": "Burgers, bakery, deli, tray liners and QSR branding",
       "standard_spec": "300 x 300 mm sheet, one-color repeat print",
-      "moq": 1000,
+      "moq": 250,
       "moq_unit": "units",
       "price_tiers_ex_gst": [
         {
-          "min_qty": 1000,
-          "unit_price": 2.9,
+          "min_qty": 250,
+          "unit_price": 5.7,
           "label": "Launch quantity"
         },
         {
+          "min_qty": 500,
+          "unit_price": 5.35
+        },
+        {
+          "min_qty": 1000,
+          "unit_price": 5
+        },
+        {
           "min_qty": 2500,
-          "unit_price": 2.1
+          "unit_price": 4
         },
         {
           "min_qty": 5000,
-          "unit_price": 1.65
+          "unit_price": 3.2
         },
         {
           "min_qty": 10000,
-          "unit_price": 1.3,
-          "label": "Best unit rate"
+          "unit_price": 2.6,
+          "label": "Best online rate"
         }
       ],
       "production_estimate_ex_gst": null,
@@ -3440,7 +4944,7 @@
       "supplier_route": "Food-contact paper printer",
       "hsn_code": "3923",
       "gst_rate_provisional": 18,
-      "smartstock_eligible": false,
+      "smartstock_eligible": true,
       "industry_slugs": [
         "d2c",
         "food-beverage",

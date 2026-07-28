@@ -90,7 +90,7 @@ router.post("/quotes", async (req, res): Promise<void> => {
   // is terminated as soon as res.json() is called, so fire-and-forget tasks never complete.
   const slackPromise = notifySlack({
     source: "Configurator",
-    title: buying_mode === "assisted" ? "New assisted packaging request" : "New self-serve packaging plan",
+    title: buying_mode === "assisted" ? "New managed packaging quote" : "New instant-buy packaging plan",
     referenceId: quoteId,
     summary: itemSummary,
     fields: [
@@ -193,7 +193,7 @@ router.get("/quotes/:quoteId", async (req, res): Promise<void> => {
 
   const { data: quote } = await sb
     .from("quote_requests")
-    .select("*")
+    .select("quote_id, items, status")
     .eq("quote_id", quoteId)
     .maybeSingle();
 

@@ -1,19 +1,20 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Download, FileImage, ImagePlus, Pause, Play, Rotate3D, Ruler, ShoppingBag, Sparkles, Trash2 } from "lucide-react";
 import type * as THREE from "three";
-import { Link } from "wouter";
+import { Link, useSearch } from "wouter";
 import { PackagingDieline } from "@/components/mockup/PackagingDieline";
 import { PackagingMockupCanvas, type ArtworkFit, type MockupFormat } from "@/components/mockup/PackagingMockupCanvas";
 
-const FORMATS: Array<{ id: MockupFormat; label: string; sku: string }> = [
-  { id: "mailer", label: "Mailer box", sku: "EC-501" },
-  { id: "shipping", label: "Shipping box", sku: "EC-502" },
-  { id: "carton", label: "Retail carton", sku: "BX-401" },
-  { id: "rigid", label: "Rigid box", sku: "BX-402" },
-  { id: "pouch", label: "Stand-up pouch", sku: "FP-101" },
-  { id: "bottle", label: "Bottle", sku: "BC-201" },
-  { id: "jar", label: "Jar", sku: "BC-207" },
-  { id: "tube", label: "Cosmetic tube", sku: "TS-301" },
+const FORMATS: Array<{ id: MockupFormat; label: string; sku: string; dimensions: { width: number; height: number; depth: number } }> = [
+  { id: "mailer", label: "Mailer box", sku: "EC-501", dimensions: { width: 230, height: 80, depth: 160 } },
+  { id: "shipping", label: "Shipping box", sku: "EC-502", dimensions: { width: 300, height: 220, depth: 220 } },
+  { id: "carton", label: "Retail carton", sku: "BX-401", dimensions: { width: 75, height: 140, depth: 45 } },
+  { id: "rigid", label: "Rigid box", sku: "BX-402", dimensions: { width: 240, height: 75, depth: 190 } },
+  { id: "pouch", label: "Stand-up pouch", sku: "FP-101", dimensions: { width: 160, height: 230, depth: 80 } },
+  { id: "coffee", label: "Coffee valve bag", sku: "FP-103", dimensions: { width: 135, height: 320, depth: 80 } },
+  { id: "bottle", label: "Bottle", sku: "BC-201", dimensions: { width: 70, height: 190, depth: 70 } },
+  { id: "jar", label: "Jar", sku: "BC-207", dimensions: { width: 85, height: 95, depth: 85 } },
+  { id: "tube", label: "Cosmetic tube", sku: "TS-301", dimensions: { width: 55, height: 155, depth: 35 } },
 ];
 
 const COLORS = ["#0F4C5C", "#1F5A46", "#C7432B", "#D6A136", "#5A3C82", "#172A46", "#D6D0C4", "#171717"];
@@ -23,7 +24,10 @@ function slug(value: string) {
 }
 
 export default function MockupStudio() {
-  const [format, setFormat] = useState<MockupFormat>("mailer");
+  const search = useSearch();
+  const requestedFormat = new URLSearchParams(search).get("format") as MockupFormat | null;
+  const initialFormat = FORMATS.some((item) => item.id === requestedFormat) ? requestedFormat! : "mailer";
+  const [format, setFormat] = useState<MockupFormat>(initialFormat);
   const [view, setView] = useState<"preview" | "dieline">("preview");
   const [color, setColor] = useState("#0F4C5C");
   const [brandName, setBrandName] = useState("Northstar");
@@ -33,10 +37,22 @@ export default function MockupStudio() {
   const [logoDataUrl, setLogoDataUrl] = useState<string>();
   const [artworkDataUrl, setArtworkDataUrl] = useState<string>();
   const [uploadError, setUploadError] = useState("");
-  const [dimensions, setDimensions] = useState({ width: 220, height: 160, depth: 80 });
+  const [dimensions, setDimensions] = useState(() => FORMATS.find((item) => item.id === initialFormat)?.dimensions || FORMATS[0].dimensions);
   const rendererRef = useRef<THREE.WebGLRenderer | undefined>(undefined);
   const setRenderer = useCallback((renderer: THREE.WebGLRenderer) => { rendererRef.current = renderer; }, []);
   const selected = FORMATS.find((item) => item.id === format) || FORMATS[0];
+
+  useEffect(() => {
+    if (!requestedFormat || !FORMATS.some((item) => item.id === requestedFormat)) return;
+    setFormat(requestedFormat);
+    setDimensions(FORMATS.find((item) => item.id === requestedFormat)?.dimensions || FORMATS[0].dimensions);
+  }, [requestedFormat]);
+
+  const chooseFormat = (nextFormat: MockupFormat) => {
+    const next = FORMATS.find((item) => item.id === nextFormat) || FORMATS[0];
+    setFormat(nextFormat);
+    setDimensions(next.dimensions);
+  };
 
   const readImage = (file: File | undefined, setter: (value: string) => void) => {
     setUploadError("");
@@ -95,7 +111,7 @@ export default function MockupStudio() {
           <div className="pw-mockup-control-group">
             <span>1. Choose format</span>
             <div className="pw-mockup-format-grid" role="tablist" aria-label="Packaging format">
-              {FORMATS.map((item) => <button key={item.id} type="button" className={format === item.id ? "active" : ""} onClick={() => setFormat(item.id)}>{item.label}</button>)}
+              {FORMATS.map((item) => <button key={item.id} type="button" className={format === item.id ? "active" : ""} onClick={() => chooseFormat(item.id)}>{item.label}</button>)}
             </div>
           </div>
 

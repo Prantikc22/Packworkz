@@ -3,20 +3,22 @@ import { Link, useLocation } from "wouter";
 import {
   Package, Box, ShoppingBag, Layers, RotateCcw, Tag, Leaf, Gift,
   Zap, Factory, Pill, Sparkles, Cpu, UtensilsCrossed, Gem, Globe,
-  ChevronDown, BookOpen, Info, Network, Paintbrush, FlaskConical,
-  Users, Mail, Calculator, FileText, Lightbulb,
+  ChevronDown, BookOpen, Info, Network,
+  Users, Mail, Calculator, FileText, Lightbulb, Bot, Palette,
+  ClipboardCheck, Truck, ShieldCheck, MapPinned, MessageSquare,
 } from "lucide-react";
+import { CATALOG_SKUS } from "@/lib/catalog";
 
 // ── Per-page SEO metadata ────────────────────────────────────────────────────
 const PAGE_SEO: Record<string, { title: string; description: string; keywords: string }> = {
   "/": {
     title: "Packworkz — Packaging Manufacturer & Managed Platform India | D2C, FMCG, Pharma",
-    description: "Managed packaging for D2C, FMCG, pharma and enterprise teams. Browse 35 focused product families, see quantity pricing, create 3D previews and manage repeat orders in one workflow.",
+    description: "Managed packaging for D2C, FMCG, pharma and enterprise teams. Browse 49 focused product families, see quantity pricing, create 3D previews and manage repeat orders in one workflow.",
     keywords: "packaging manufacturer India, managed packaging platform, custom packaging India, D2C packaging manufacturer, FMCG packaging supplier India, packaging vendor India",
   },
   "/products": {
     title: "Packaging Products India | Pouches, Boxes, Bottles | Packworkz",
-    description: "Browse 35 focused packaging families including pouches, cartons, containers, mailers, labels, food-service packs and technical rollstock. See buying paths and quantity pricing online.",
+    description: "Browse 49 focused packaging families including pouches, cartons, containers, mailers, labels, food-service packs and technical rollstock. See buying paths and quantity pricing online.",
     keywords: "packaging manufacturer India, custom packaging manufacturer, stand-up pouch manufacturer India, corrugated box manufacturer, flexible packaging manufacturer India",
   },
   "/industries": {
@@ -54,6 +56,11 @@ const PAGE_SEO: Record<string, { title: string; description: string; keywords: s
     description: "Compare kraft, recycled board, mono-material, bagasse and compostable packaging by product protection, tradeoffs and the evidence required for the finished specification.",
     keywords: "sustainable packaging manufacturer India, eco-friendly packaging India, compostable packaging, EPR compliant packaging India, FSC certified packaging",
   },
+  "/sustainability": {
+    title: "Sustainable Packaging India | Verified Materials | Packworkz",
+    description: "Explore lower-impact packaging with material evidence, responsible sourcing, right-size foodservice formats, and practical end-of-life guidance.",
+    keywords: "sustainable packaging manufacturer India, eco-friendly packaging India, compostable packaging, EPR compliant packaging India",
+  },
   "/sustainable-catalog": {
     title: "Sustainable Packaging Catalog India | FSC, Compostable, Recycled | Packworkz",
     description: "Browse sustainable packaging SKUs with EPR documentation, FSC options, compostable mailers, recycled boxes, and food-safe eco packaging.",
@@ -61,7 +68,7 @@ const PAGE_SEO: Record<string, { title: string; description: string; keywords: s
   },
   "/design": {
     title: "Custom Packaging Design Service India | From ₹1,999 | Packworkz",
-    description: "Packaging design and 3D previews across 35 focused product families, with print-ready artwork, dieline handoff and design management.",
+    description: "Packaging design and 3D previews across 49 focused product families, with print-ready artwork, dieline handoff and design management.",
     keywords: "custom packaging design India, packaging design service, packaging artwork India, D2C packaging design, print-ready packaging",
   },
   "/mockup-studio": {
@@ -73,6 +80,21 @@ const PAGE_SEO: Record<string, { title: string; description: string; keywords: s
     title: "Contact Packworkz | Custom Packaging India | +91 82089 90366",
     description: "Contact Packworkz for custom packaging pricing, sample orders, technical specifications, design enquiries or order support. Call +91 82089 90366 or submit an enquiry online.",
     keywords: "contact Packworkz, packaging manufacturer contact India, packaging enquiry India",
+  },
+  "/track-order": {
+    title: "Track Packaging Order or Quote | Packworkz",
+    description: "Track a Packworkz order or quote securely using its reference and the email address or mobile number used during checkout. No account is required.",
+    keywords: "track Packworkz order, packaging order tracking India, track packaging quote",
+  },
+  "/signup": {
+    title: "Create Your Packworkz Account | Orders, Quotes & Reorders",
+    description: "Create a Packworkz account to view packaging orders and quotes, link earlier purchases, follow production milestones and start accurate repeat orders.",
+    keywords: "Packworkz account, packaging order dashboard, packaging reorder portal",
+  },
+  "/login": {
+    title: "Packworkz Account Login | Orders & Quotes",
+    description: "Sign in to your Packworkz account to view orders, quotes, production status and repeat-order specifications.",
+    keywords: "Packworkz login, packaging order dashboard login, packaging quotes account",
   },
   "/network": {
     title: "Packworkz Packaging Manufacturer Network India",
@@ -146,15 +168,34 @@ const PAGE_SEO: Record<string, { title: string; description: string; keywords: s
   },
 };
 
-const PRODUCT_CATS = [
-  { icon: Package,      label: "Flexible Packaging",   desc: "Pouches, films & wraps",           href: "/products?category=flexible" },
-  { icon: Box,          label: "Bottles & Containers",  desc: "Jars, bottles & dispensing packs", href: "/products?category=bottles" },
-  { icon: ShoppingBag,  label: "Boxes & Cartons",       desc: "Folding, rigid & gift boxes",       href: "/products?category=boxes" },
-  { icon: Layers,       label: "E-commerce Packaging",  desc: "Mailers, corrugated & carrier bags", href: "/products?category=ecommerce" },
-  { icon: RotateCcw,    label: "Packaging Rolls",       desc: "Rollstock, lidding & shrink films", href: "/products?category=rolls" },
-  { icon: Tag,          label: "Labels & Accessories",  desc: "Labels, cards, tissue & tape",      href: "/products?category=labels" },
-  { icon: Leaf,         label: "Sustainable Foodservice", desc: "Bagasse, paper cups & food wraps", href: "/products?category=sustainable" },
-  { icon: Gift,         label: "Protective Packaging",  desc: "Void fill, wrap & custom inserts",  href: "/products?category=protective" },
+const PRODUCT_GROUPS = [
+  {
+    eyebrow: "PRIMARY PACKAGING",
+    description: "The pack customers see, hold and open.",
+    items: [
+      { icon: Package, label: "Flexible Packaging", desc: "Pouches and printed flexible packs", href: "/products?category=flexible" },
+      { icon: Box, label: "Bottles & Containers", desc: "Bottles, jars, pumps and closures", href: "/products?category=bottles" },
+      { icon: Pill, label: "Tubes & Small Packs", desc: "Cosmetic tubes and compact formats", href: "/products?category=tubes" },
+    ],
+  },
+  {
+    eyebrow: "SHIP & PROTECT",
+    description: "Retail-ready packs through final delivery.",
+    items: [
+      { icon: ShoppingBag, label: "Boxes & Cartons", desc: "Folding cartons and premium boxes", href: "/products?category=boxes" },
+      { icon: Layers, label: "E-commerce Packaging", desc: "Mailers, courier bags and shippers", href: "/products?category=ecommerce" },
+      { icon: Gift, label: "Protective Packaging", desc: "Wrap, void fill and protective inserts", href: "/products?category=protective" },
+    ],
+  },
+  {
+    eyebrow: "FINISH & SCALE",
+    description: "Brand details and high-volume production.",
+    items: [
+      { icon: Tag, label: "Labels & Accessories", desc: "Labels, inserts, tissue and tape", href: "/products?category=labels" },
+      { icon: Leaf, label: "Sustainable Foodservice", desc: "Bagasse, paper containers and wraps", href: "/products?category=sustainable" },
+      { icon: RotateCcw, label: "Packaging Rolls", desc: "Managed rollstock and technical films", href: "/products?category=rolls" },
+    ],
+  },
 ];
 
 // ── Industry mega-menu data ───────────────────────────────────────────────────
@@ -298,6 +339,74 @@ const GLOBAL_STYLES = `
     transform: translateX(-101%);
     transition: transform 0.3s ease;
   }
+  .po-mega-panel {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: #FFFFFF;
+    border: 1px solid #D9E2EC;
+    border-top: 0;
+    box-shadow: 0 24px 60px rgba(13, 27, 42, 0.18);
+    color: #0D1B2A;
+    animation: dropIn 0.18s ease forwards;
+    z-index: 100;
+  }
+  .po-mega-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .po-mega-column {
+    min-width: 0;
+    padding: 28px 30px 24px;
+  }
+  .po-mega-column + .po-mega-column {
+    border-left: 1px solid #D9E2EC;
+  }
+  .po-mega-link {
+    display: grid;
+    grid-template-columns: 38px minmax(0, 1fr) 18px;
+    align-items: center;
+    gap: 12px;
+    min-height: 62px;
+    padding: 8px 0;
+    color: #0D1B2A;
+    text-decoration: none;
+    border-bottom: 1px solid #EDF2F7;
+    transition: color 0.16s ease, transform 0.16s ease;
+  }
+  .po-mega-link:last-child { border-bottom: 0; }
+  .po-mega-link:hover { color: #1B6CA8; transform: translateX(3px); }
+  .po-mega-link:hover .po-mega-arrow { opacity: 1; transform: translateX(0); }
+  .po-mega-arrow {
+    color: #1B6CA8;
+    opacity: 0;
+    transform: translateX(-4px);
+    transition: opacity 0.16s ease, transform 0.16s ease;
+  }
+  .po-mega-footer {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr 1fr 1fr;
+    border-top: 1px solid #D9E2EC;
+    background: #F7F9FC;
+  }
+  .po-mega-footer-link {
+    min-width: 0;
+    padding: 17px 24px;
+    color: #0D1B2A;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    border-right: 1px solid #D9E2EC;
+    transition: background 0.16s ease, color 0.16s ease;
+  }
+  .po-mega-footer-link:last-child { border-right: 0; }
+  .po-mega-footer-link:hover { background: #0D1B2A; color: #FFFFFF; }
+  @media (max-width: 1180px) {
+    .po-mega-column { padding-left: 20px; padding-right: 20px; }
+    .po-mega-footer-link { padding-left: 16px; padding-right: 16px; }
+  }
   .po-cta-btn:hover { color: #0D1B2A; }
   .po-cta-btn:hover::before { transform: translateX(0); }
   .po-cta-btn span { position: relative; z-index: 1; }
@@ -320,71 +429,30 @@ function IconBox({ Icon }: { Icon: React.ElementType }) {
 // ── Products mega-menu ────────────────────────────────────────────────────────
 function ProductsMenu() {
   return (
-    <div style={{
-      position: "absolute", top: "100%", left: 0,
-      background: "white",
-      border: "1px solid #E2EAF4",
-      borderRadius: "0 0 16px 16px",
-      boxShadow: "0 16px 48px rgba(13,27,42,0.12)",
-      padding: "28px 32px",
-      width: 740,
-      animation: "dropIn 0.2s ease forwards",
-      zIndex: 100,
-    }}>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 220px", gap: 24 }}>
-        {/* Left: categories 2-col */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 4 }}>
-          {PRODUCT_CATS.map(cat => (
-            <Link key={cat.href} href={cat.href} className="po-menu-item">
-              <IconBox Icon={cat.icon} />
-              <div>
-                <div style={{ color: "#0D1B2A", fontSize: 14, fontWeight: 600, lineHeight: 1.3 }}>{cat.label}</div>
-                <div style={{ color: "#64748B", fontSize: 12, lineHeight: 1.4, marginTop: 2 }}>{cat.desc}</div>
-              </div>
-            </Link>
-          ))}
-        </div>
-
-        {/* Right: SmartStock feature card */}
-        <div style={{
-          background: "linear-gradient(135deg, #0D1B2A 0%, #1B3A5C 100%)",
-          borderRadius: 12, padding: "20px 18px",
-          display: "flex", flexDirection: "column", justifyContent: "space-between",
-        }}>
-          <div>
-            <div style={{ color: "#E8A838", fontSize: 10, fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", marginBottom: 10 }}>FEATURED</div>
-            <div style={{ color: "white", fontSize: 16, fontWeight: 700, lineHeight: 1.3, marginBottom: 8 }}>SmartStock™<br />AI Inventory</div>
-            <div style={{ color: "rgba(255,255,255,0.55)", fontSize: 12, lineHeight: 1.5 }}>
-              Model reorder timing before packaging stock becomes urgent.
-            </div>
-          </div>
-          <Link href="/smartstock" style={{
-            display: "inline-block", marginTop: 16,
-            background: "#E8A838", color: "#0D1B2A",
-            padding: "8px 14px", borderRadius: 6,
-            fontSize: 12, fontWeight: 700, textDecoration: "none",
-          }}>
-            Learn more →
-          </Link>
-        </div>
+    <div className="po-mega-panel" aria-label="Products menu">
+      <div className="po-mega-grid">
+        {PRODUCT_GROUPS.map(group => (
+          <section key={group.eyebrow} className="po-mega-column">
+            <div style={{ color: "#1B6CA8", fontSize: 11, fontWeight: 800, letterSpacing: "0.13em" }}>{group.eyebrow}</div>
+            <p style={{ color: "#718096", fontSize: 12, lineHeight: 1.5, margin: "5px 0 12px" }}>{group.description}</p>
+            {group.items.map(item => (
+              <Link key={item.href} href={item.href} className="po-mega-link">
+                <IconBox Icon={item.icon} />
+                <span style={{ minWidth: 0 }}>
+                  <strong style={{ display: "block", fontSize: 14, lineHeight: 1.3 }}>{item.label}</strong>
+                  <small style={{ display: "block", color: "#718096", fontSize: 11, lineHeight: 1.45, marginTop: 3 }}>{item.desc}</small>
+                </span>
+                <span className="po-mega-arrow" aria-hidden="true">→</span>
+              </Link>
+            ))}
+          </section>
+        ))}
       </div>
-
-      {/* Quick access: Sample + Design — with coloured bg */}
-      <div style={{ borderTop: "1px solid #E2EAF4", paddingTop: 14, marginTop: 14, display: "flex", gap: 8 }}>
-        <Link href="/samples" className="po-menu-item" style={{ flex: 1, background: "rgba(27,108,168,0.08)", border: "1px solid rgba(27,108,168,0.18)", borderRadius: 8 }}>
-          <IconBox Icon={FlaskConical} />
-          <div>
-            <div style={{ color: "#1B6CA8", fontSize: 13, fontWeight: 700 }}>Order a Sample</div>
-            <div style={{ color: "#64748B", fontSize: 11, marginTop: 2 }}>From ₹2,999 · Any SKU</div>
-          </div>
-        </Link>
-        <Link href="/design" className="po-menu-item" style={{ flex: 1, background: "rgba(232,168,56,0.10)", border: "1px solid rgba(232,168,56,0.25)", borderRadius: 8 }}>
-          <IconBox Icon={Paintbrush} />
-          <div>
-            <div style={{ color: "#B87A10", fontSize: 13, fontWeight: 700 }}>Design Service</div>
-            <div style={{ color: "#64748B", fontSize: 11, marginTop: 2 }}>Print-ready artwork · ₹1,999</div>
-          </div>
-        </Link>
+      <div className="po-mega-footer">
+        <Link href="/products" className="po-mega-footer-link">BROWSE ALL 49 PRODUCTS →</Link>
+        <Link href="/mockup-studio" className="po-mega-footer-link">OPEN 3D STUDIO →</Link>
+        <Link href="/pack-ai" className="po-mega-footer-link">ASK PACKWORKZ AI →</Link>
+        <Link href="/smartstock" className="po-mega-footer-link">EXPLORE SMARTSTOCK →</Link>
       </div>
     </div>
   );
@@ -393,52 +461,44 @@ function ProductsMenu() {
 // ── Industries mega-menu ──────────────────────────────────────────────────────
 function IndustriesMenu() {
   return (
-    <div style={{
-      position: "absolute", top: "100%", left: 0,
-      background: "white",
-      border: "1px solid #E2EAF4",
-      borderRadius: "0 0 16px 16px",
-      boxShadow: "0 16px 48px rgba(13,27,42,0.12)",
-      padding: "28px 32px",
-      width: 620,
-      animation: "dropIn 0.2s ease forwards",
-      zIndex: 100,
-    }}>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 200px", gap: 24 }}>
-        {/* Left: 8 industries */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 4 }}>
-          {INDUSTRIES.map(ind => (
-            <Link key={ind.href} href={ind.href} className="po-menu-item" style={{ alignItems: "center" }}>
-              <IconBox Icon={ind.icon} />
-              <div style={{ color: "#0D1B2A", fontSize: 14, fontWeight: 600 }}>{ind.label}</div>
+    <div className="po-mega-panel" aria-label="Industries menu">
+      <div className="po-mega-grid">
+        <section className="po-mega-column">
+          <div style={{ color: "#1B6CA8", fontSize: 11, fontWeight: 800, letterSpacing: "0.13em" }}>BUILD & LAUNCH</div>
+          <p style={{ color: "#718096", fontSize: 12, lineHeight: 1.5, margin: "5px 0 12px" }}>Low-MOQ packs for brands building repeat demand.</p>
+          {INDUSTRIES.slice(0, 3).map(ind => (
+            <Link key={ind.href} href={ind.href} className="po-mega-link">
+              <IconBox Icon={ind.icon} /><strong style={{ fontSize: 14 }}>{ind.label}</strong><span className="po-mega-arrow">→</span>
             </Link>
           ))}
-        </div>
-
-        {/* Right: New to Packworkz card */}
-        <div style={{
-          background: "#F8F9FC", borderRadius: 12,
-          border: "1px solid #E2EAF4",
-          padding: "20px 18px",
-          display: "flex", flexDirection: "column", justifyContent: "space-between",
-        }}>
-          <div>
-            <div style={{ color: "#1B6CA8", fontSize: 10, fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", marginBottom: 10 }}>NEW TO PACKWORKZ?</div>
-            <div style={{ color: "#0D1B2A", fontSize: 14, fontWeight: 700, lineHeight: 1.4, marginBottom: 8 }}>See how it works in 3 minutes</div>
-            <div style={{ color: "#64748B", fontSize: 12, lineHeight: 1.5 }}>
-              Platform walkthrough for brand owners and procurement teams.
-            </div>
-          </div>
-          <Link href="/how-it-works"
-            style={{
-              display: "inline-block", marginTop: 16,
-              background: "#1B6CA8", color: "white",
-              padding: "8px 14px", borderRadius: 6,
-              fontSize: 12, fontWeight: 700, textDecoration: "none",
-            }}>
-            How it works →
+        </section>
+        <section className="po-mega-column">
+          <div style={{ color: "#1B6CA8", fontSize: 11, fontWeight: 800, letterSpacing: "0.13em" }}>SCALE OPERATIONS</div>
+          <p style={{ color: "#718096", fontSize: 12, lineHeight: 1.5, margin: "5px 0 12px" }}>Managed formats for growing and regulated teams.</p>
+          {INDUSTRIES.slice(3, 6).map(ind => (
+            <Link key={ind.href} href={ind.href} className="po-mega-link">
+              <IconBox Icon={ind.icon} /><strong style={{ fontSize: 14 }}>{ind.label}</strong><span className="po-mega-arrow">→</span>
+            </Link>
+          ))}
+        </section>
+        <section className="po-mega-column">
+          <div style={{ color: "#B8780A", fontSize: 11, fontWeight: 800, letterSpacing: "0.13em" }}>PREMIUM & GLOBAL</div>
+          <p style={{ color: "#718096", fontSize: 12, lineHeight: 1.5, margin: "5px 0 12px" }}>Presentation-led and export-ready buying paths.</p>
+          {INDUSTRIES.slice(6).map(ind => (
+            <Link key={ind.href} href={ind.href} className="po-mega-link">
+              <IconBox Icon={ind.icon} /><strong style={{ fontSize: 14 }}>{ind.label}</strong><span className="po-mega-arrow">→</span>
+            </Link>
+          ))}
+          <Link href="/configure" className="po-mega-link">
+            <IconBox Icon={Sparkles} /><span><strong style={{ display: "block", fontSize: 14 }}>Not sure where to start?</strong><small style={{ color: "#718096", fontSize: 11 }}>Build a packaging plan</small></span><span className="po-mega-arrow">→</span>
           </Link>
-        </div>
+        </section>
+      </div>
+      <div className="po-mega-footer">
+        <Link href="/industries" className="po-mega-footer-link">VIEW ALL INDUSTRIES →</Link>
+        <Link href="/how-it-works" className="po-mega-footer-link">HOW PACKWORKZ WORKS →</Link>
+        <Link href="/samples" className="po-mega-footer-link">ORDER A SAMPLE →</Link>
+        <Link href="/contact" className="po-mega-footer-link">TALK TO A SPECIALIST →</Link>
       </div>
     </div>
   );
@@ -446,72 +506,147 @@ function IndustriesMenu() {
 
 function ResourcesMenu() {
   return (
-    <div style={{
-      position: "absolute", top: "100%", left: "50%", transform: "translateX(-50%)",
-      background: "white", border: "1px solid #E2EAF4", borderRadius: "0 0 12px 12px",
-      boxShadow: "0 18px 52px rgba(13,27,42,0.15)", padding: "24px", width: 590,
-      animation: "dropIn 0.2s ease forwards", zIndex: 100,
-    }}>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
-        {RESOURCE_ITEMS.map(item => (
-          <Link key={item.label} href={item.href} className="po-menu-item">
-            <IconBox Icon={item.icon} />
-            <div>
-              <div style={{ color: "#0D1B2A", fontSize: 14, fontWeight: 700 }}>{item.label}</div>
-              <div style={{ color: "#64748B", fontSize: 11, lineHeight: 1.45, marginTop: 3 }}>{item.desc}</div>
-            </div>
-          </Link>
-        ))}
+    <div className="po-mega-panel" aria-label="Resources menu">
+      <div className="po-mega-grid">
+        <section className="po-mega-column">
+          <div style={{ color: "#1B6CA8", fontSize: 11, fontWeight: 800, letterSpacing: "0.13em" }}>LEARN PACKAGING</div>
+          <p style={{ color: "#718096", fontSize: 12, lineHeight: 1.5, margin: "5px 0 12px" }}>Clear answers for materials, formats and buying decisions.</p>
+          {RESOURCE_ITEMS.filter((item) => ["Packaging Guides", "Packaging Insights", "Case Studies"].includes(item.label)).map(item => (
+            <Link key={item.label} href={item.href} className="po-mega-link">
+              <IconBox Icon={item.icon} />
+              <span><strong style={{ display: "block", fontSize: 14 }}>{item.label}</strong><small style={{ color: "#718096", fontSize: 11 }}>{item.desc}</small></span>
+              <span className="po-mega-arrow">→</span>
+            </Link>
+          ))}
+        </section>
+        <section className="po-mega-column">
+          <div style={{ color: "#1B6CA8", fontSize: 11, fontWeight: 800, letterSpacing: "0.13em" }}>PLAN YOUR PACK</div>
+          <p style={{ color: "#718096", fontSize: 12, lineHeight: 1.5, margin: "5px 0 12px" }}>Tools that turn an idea into a usable specification.</p>
+          {[
+            { icon: Calculator, label: "Savings Calculator", desc: "Model packaging and sourcing savings", href: "/#savings-calculator" },
+            { icon: Palette, label: "3D Mockup Studio", desc: "See artwork on a pack before production", href: "/mockup-studio" },
+            { icon: Bot, label: "Ask Packworkz AI", desc: "Get a practical packaging shortlist", href: "/pack-ai" },
+          ].map(item => (
+            <Link key={item.label} href={item.href} className="po-mega-link">
+              <IconBox Icon={item.icon} />
+              <span><strong style={{ display: "block", fontSize: 14 }}>{item.label}</strong><small style={{ color: "#718096", fontSize: 11 }}>{item.desc}</small></span>
+              <span className="po-mega-arrow">→</span>
+            </Link>
+          ))}
+        </section>
+        <section className="po-mega-column">
+          <div style={{ color: "#B8780A", fontSize: 11, fontWeight: 800, letterSpacing: "0.13em" }}>BUY WITH CONFIDENCE</div>
+          <p style={{ color: "#718096", fontSize: 12, lineHeight: 1.5, margin: "5px 0 12px" }}>Proof, support and status after you choose a format.</p>
+          {[
+            { icon: ClipboardCheck, label: "Order Samples", desc: "Compare materials and print in hand", href: "/samples" },
+            { icon: Truck, label: "Track an Order", desc: "Check production and delivery status", href: "/track-order" },
+            { icon: MessageSquare, label: "Packaging Support", desc: "Talk through a specific requirement", href: "/contact" },
+          ].map(item => (
+            <Link key={item.label} href={item.href} className="po-mega-link">
+              <IconBox Icon={item.icon} />
+              <span><strong style={{ display: "block", fontSize: 14 }}>{item.label}</strong><small style={{ color: "#718096", fontSize: 11 }}>{item.desc}</small></span>
+              <span className="po-mega-arrow">→</span>
+            </Link>
+          ))}
+        </section>
       </div>
-      <div style={{ marginTop: 14, paddingTop: 14, borderTop: "1px solid #E2EAF4", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 18 }}>
-        <span style={{ color: "#64748B", fontSize: 12 }}>Need a specific packaging answer?</span>
-        <Link href="/pack-ai" style={{ color: "#0D1B2A", fontSize: 12, fontWeight: 800, textDecoration: "none" }}>Ask Packworkz AI →</Link>
+      <div className="po-mega-footer">
+        <Link href="/resources" className="po-mega-footer-link">VIEW ALL RESOURCES →</Link>
+        <Link href="/mockup-studio" className="po-mega-footer-link">OPEN 3D STUDIO →</Link>
+        <Link href="/pack-ai" className="po-mega-footer-link">ASK PACKWORKZ AI →</Link>
+        <Link href="/contact" className="po-mega-footer-link">GET PACKAGING HELP →</Link>
       </div>
     </div>
   );
 }
 
-// ── About mini-menu ───────────────────────────────────────────────────────────
 function AboutMenu() {
   return (
-    <div style={{
-      position: "absolute", top: "100%", right: 0,
-      background: "white",
-      border: "1px solid #E2EAF4",
-      borderRadius: "0 0 12px 12px",
-      boxShadow: "0 16px 48px rgba(13,27,42,0.12)",
-      padding: "24px",
-      width: 480,
-      animation: "dropIn 0.2s ease forwards",
-      zIndex: 100,
-    }}>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
-        {ABOUT_ITEMS.map(item => (
-          <Link key={item.href} href={item.href} className="po-menu-item" style={{ alignItems: "center" }}>
-            <IconBox Icon={item.icon} />
-            <div style={{ color: "#0D1B2A", fontSize: 14, fontWeight: 700 }}>{item.label}</div>
-          </Link>
-        ))}
+    <div className="po-mega-panel" aria-label="About Packworkz menu">
+      <div className="po-mega-grid">
+        <section className="po-mega-column">
+          <div style={{ color: "#1B6CA8", fontSize: 11, fontWeight: 800, letterSpacing: "0.13em" }}>PACKWORKZ</div>
+          <p style={{ color: "#718096", fontSize: 12, lineHeight: 1.5, margin: "5px 0 12px" }}>Why we are building a simpler packaging operating system.</p>
+          {ABOUT_ITEMS.filter((item) => ["Our Story", "How It Works", "Careers"].includes(item.label)).map(item => (
+            <Link key={item.href} href={item.href} className="po-mega-link">
+              <IconBox Icon={item.icon} /><strong style={{ fontSize: 14 }}>{item.label}</strong><span className="po-mega-arrow">→</span>
+            </Link>
+          ))}
+        </section>
+        <section className="po-mega-column">
+          <div style={{ color: "#1B6CA8", fontSize: 11, fontWeight: 800, letterSpacing: "0.13em" }}>HOW WE DELIVER</div>
+          <p style={{ color: "#718096", fontSize: 12, lineHeight: 1.5, margin: "5px 0 12px" }}>The production network and systems behind each order.</p>
+          {[
+            { icon: Network, label: "Factory Network", desc: "Production routes matched to your spec", href: "/network" },
+            { icon: ShieldCheck, label: "Quality Workflow", desc: "Documented checkpoints before dispatch", href: "/how-it-works" },
+            { icon: Zap, label: "SmartStock", desc: "Plan repeat orders before stock becomes urgent", href: "/smartstock" },
+          ].map(item => (
+            <Link key={item.label} href={item.href} className="po-mega-link">
+              <IconBox Icon={item.icon} />
+              <span><strong style={{ display: "block", fontSize: 14 }}>{item.label}</strong><small style={{ color: "#718096", fontSize: 11 }}>{item.desc}</small></span>
+              <span className="po-mega-arrow">→</span>
+            </Link>
+          ))}
+        </section>
+        <section className="po-mega-column">
+          <div style={{ color: "#B8780A", fontSize: 11, fontWeight: 800, letterSpacing: "0.13em" }}>WORK WITH US</div>
+          <p style={{ color: "#718096", fontSize: 12, lineHeight: 1.5, margin: "5px 0 12px" }}>Start, support or follow a Packworkz relationship.</p>
+          {[
+            { icon: Mail, label: "Contact Us", desc: "Sales, support and partnerships", href: "/contact" },
+            { icon: MapPinned, label: "Track an Order", desc: "Guest and account order tracking", href: "/track-order" },
+            { icon: Users, label: "Customer Dashboard", desc: "Orders, quotes and repeat buying", href: "/dashboard" },
+          ].map(item => (
+            <Link key={item.label} href={item.href} className="po-mega-link">
+              <IconBox Icon={item.icon} />
+              <span><strong style={{ display: "block", fontSize: 14 }}>{item.label}</strong><small style={{ color: "#718096", fontSize: 11 }}>{item.desc}</small></span>
+              <span className="po-mega-arrow">→</span>
+            </Link>
+          ))}
+        </section>
       </div>
-      <Link href="/contact" style={{ marginTop: 14, padding: "15px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", background: "#0D1B2A", color: "white", textDecoration: "none" }}>
-        <span><strong style={{ display: "block", fontSize: 13 }}>Talk to a packaging specialist</strong><small style={{ color: "#9FB0C2", fontSize: 10 }}>Usually answered within one business day</small></span>
-        <span aria-hidden="true">→</span>
-      </Link>
+      <div className="po-mega-footer">
+        <Link href="/about" className="po-mega-footer-link">ABOUT PACKWORKZ →</Link>
+        <Link href="/how-it-works" className="po-mega-footer-link">SEE HOW IT WORKS →</Link>
+        <Link href="/network" className="po-mega-footer-link">EXPLORE THE NETWORK →</Link>
+        <Link href="/contact" className="po-mega-footer-link">TALK TO THE TEAM →</Link>
+      </div>
     </div>
   );
 }
 
 // ── NavItem with optional dropdown ───────────────────────────────────────────
 function NavItem({
-  label, children, href, active,
+  label, children, href, active, mega = false,
 }: {
   label: string;
   children?: React.ReactNode;
   href?: string;
   active?: boolean;
+  mega?: boolean;
 }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const cancelClose = () => {
+    if (closeTimer.current) {
+      clearTimeout(closeTimer.current);
+      closeTimer.current = null;
+    }
+  };
+
+  const openMenu = () => {
+    cancelClose();
+    setOpen(true);
+  };
+
+  const scheduleClose = () => {
+    cancelClose();
+    closeTimer.current = setTimeout(() => {
+      setOpen(false);
+      closeTimer.current = null;
+    }, 320);
+  };
 
   useEffect(() => {
     if (!open) return;
@@ -521,6 +656,8 @@ function NavItem({
     document.addEventListener("mousedown", close);
     return () => document.removeEventListener("mousedown", close);
   }, [open]);
+
+  useEffect(() => () => cancelClose(), []);
 
   if (href && !children) {
     return (
@@ -533,9 +670,22 @@ function NavItem({
   return (
     <div
       ref={ref}
-      style={{ position: "relative" }}
-      onMouseEnter={() => setOpen(true)}
-      onMouseLeave={() => setOpen(false)}
+      style={{
+        position: mega ? "static" : "relative",
+        alignSelf: "stretch",
+        display: "flex",
+        alignItems: "center",
+      }}
+      onMouseEnter={openMenu}
+      onMouseLeave={scheduleClose}
+      onFocus={openMenu}
+      onKeyDown={(event) => {
+        if (event.key === "Escape") {
+          cancelClose();
+          setOpen(false);
+          ref.current?.querySelector("button")?.focus();
+        }
+      }}
     >
       <button
         onClick={() => setOpen(o => !o)}
@@ -867,6 +1017,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
   const [location] = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobileAboutOpen, setMobileAboutOpen] = useState(false);
+  const [mobileResourcesOpen, setMobileResourcesOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(() => !!localStorage.getItem("packwerk_access_token"));
 
@@ -886,7 +1037,18 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
     const canonicalUrl = `https://packworkz.com${location === "/" ? "" : location}`;
 
     // Resolve SEO: exact match → longest prefix → homepage fallback
-    const seo = PAGE_SEO[location] ??
+    const productSlug = location.match(/^\/products\/([^/?#]+)/)?.[1];
+    const product = productSlug
+      ? CATALOG_SKUS.find((item) => item.slug === decodeURIComponent(productSlug))
+      : undefined;
+    const productSeo = product
+      ? {
+          title: `${product.name} Packaging India | Packworkz`,
+          description: `${product.description} Review standard sizes, configuration options, quantity pricing and the correct buying path with Packworkz.`,
+          keywords: `${product.name} India, custom ${product.name}, packaging supplier India, Packworkz`,
+        }
+      : undefined;
+    const seo = productSeo ?? PAGE_SEO[location] ??
       (Object.entries(PAGE_SEO)
         .filter(([k]) => k !== "/" && location.startsWith(k))
         .sort((a, b) => b[0].length - a[0].length)[0]?.[1]) ??
@@ -936,8 +1098,9 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
 
       {/* ── NAV ── */}
       <header
-        className={`fixed z-50 flex items-center justify-between px-6 md:px-10 h-[68px] ${navSolid ? "pw-nav-floating" : "pw-nav-top"}`}
+        className={`fixed flex items-center justify-between px-6 md:px-10 h-[68px] ${navSolid ? "pw-nav-floating" : "pw-nav-top"}`}
         style={{
+          zIndex: 1000,
           top: navFloating ? 12 : 0,
           left: "50%",
           width: navFloating ? "min(1180px, calc(100% - 32px))" : "100%",
@@ -962,18 +1125,18 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
         </Link>
 
         {/* Centre navigation */}
-        <nav className="hidden lg:flex items-center gap-2">
-          <NavItem label="Products" active={location.startsWith("/products")}>
+        <nav className="hidden lg:flex h-full items-center gap-2">
+          <NavItem label="Products" active={location.startsWith("/products")} mega>
             <ProductsMenu />
           </NavItem>
-          <NavItem label="Industries" active={location.startsWith("/industries")}>
+          <NavItem label="Industries" active={location.startsWith("/industries")} mega>
             <IndustriesMenu />
           </NavItem>
           <NavItem label="Sustainability" href="/sustainable" active={location.startsWith("/sustainable")} />
-          <NavItem label="Resources" active={location.startsWith("/resources")}>
+          <NavItem label="Resources" active={location.startsWith("/resources")} mega>
             <ResourcesMenu />
           </NavItem>
-          <NavItem label="About" active={location.startsWith("/about") || location.startsWith("/how-it-works") || location.startsWith("/network") || location.startsWith("/careers") || location.startsWith("/contact")}>
+          <NavItem label="About" active={location.startsWith("/about") || location.startsWith("/how-it-works") || location.startsWith("/network") || location.startsWith("/careers") || location.startsWith("/contact")} mega>
             <AboutMenu />
           </NavItem>
         </nav>
@@ -1013,13 +1176,41 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
               { label: "Products", href: "/products" },
               { label: "Industries", href: "/industries" },
               { label: "Sustainability", href: "/sustainable" },
-              { label: "Resources", href: "/resources" },
             ].map(item => (
               <Link key={item.href} href={item.href} onClick={() => setMobileOpen(false)}
                 style={{ fontSize: 22, fontWeight: 900, textTransform: "uppercase", color: "white", textDecoration: "none", padding: "10px 0", borderBottom: "1px solid rgba(255,255,255,0.07)" }}>
                 {item.label}
               </Link>
             ))}
+
+            <button
+              onClick={() => setMobileResourcesOpen(o => !o)}
+              style={{
+                display: "flex", alignItems: "center", justifyContent: "space-between",
+                fontSize: 22, fontWeight: 900, textTransform: "uppercase", color: "white",
+                background: "none", border: "none", borderBottom: "1px solid rgba(255,255,255,0.07)",
+                padding: "10px 0", cursor: "pointer", width: "100%", textAlign: "left",
+              }}
+            >
+              Resources
+              <ChevronDown size={18} color="rgba(255,255,255,0.5)" style={{ transition: "transform 0.2s", transform: mobileResourcesOpen ? "rotate(180deg)" : "rotate(0deg)", flexShrink: 0 }} />
+            </button>
+            {mobileResourcesOpen && (
+              <div style={{ paddingLeft: 8, paddingBottom: 4, borderBottom: "1px solid rgba(255,255,255,0.07)" }}>
+                {[
+                  ...RESOURCE_ITEMS,
+                  { icon: Palette, label: "3D Mockup Studio", desc: "", href: "/mockup-studio" },
+                  { icon: Bot, label: "Ask Packworkz AI", desc: "", href: "/pack-ai" },
+                  { icon: Truck, label: "Track an Order", desc: "", href: "/track-order" },
+                ].map(item => (
+                  <Link key={`${item.label}-${item.href}`} href={item.href} onClick={() => { setMobileOpen(false); setMobileResourcesOpen(false); }}
+                    style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 4px", fontSize: 15, fontWeight: 700, color: "rgba(255,255,255,0.7)", textDecoration: "none" }}>
+                    <item.icon size={16} color="#E8A838" />
+                    {item.label}
+                  </Link>
+                ))}
+              </div>
+            )}
 
             {/* About accordion */}
             <button
@@ -1050,6 +1241,10 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
               <Link href="/design" onClick={() => setMobileOpen(false)}
                 style={{ fontSize: 16, fontWeight: 700, color: "rgba(255,255,255,0.55)", textDecoration: "none" }}>
                 Design Service
+              </Link>
+              <Link href="/mockup-studio" onClick={() => setMobileOpen(false)}
+                style={{ fontSize: 16, fontWeight: 700, color: "rgba(255,255,255,0.55)", textDecoration: "none" }}>
+                3D Mockup Studio
               </Link>
               <Link href="/samples" onClick={() => setMobileOpen(false)}
                 style={{ fontSize: 16, fontWeight: 700, color: "rgba(255,255,255,0.55)", textDecoration: "none" }}>
@@ -1172,7 +1367,9 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
             {[
               { label: "Order a Sample", href: "/samples" },
               { label: "Design Service", href: "/design" },
-              { label: "Get Pricing Plan", href: "/configure" },
+              { label: "3D Mockup Studio", href: "/mockup-studio" },
+              { label: "Track an Order", href: "/track-order" },
+              { label: "Get a Quote", href: "/configure" },
               { label: "WhatsApp Us", href: "https://wa.me/918208990366" },
               { label: "Dashboard Login", href: "/login" },
             ].map(l => (

@@ -16,6 +16,9 @@
   },
   "references": [
     {
+      "path": "../../lib/commerce"
+    },
+    {
       "path": "../../lib/api-client-react"
     }
   ]

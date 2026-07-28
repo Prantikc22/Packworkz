@@ -4,7 +4,7 @@ import { Link } from "wouter";
 const METRICS = [
   { value: "220+", label: "brands served" },
   { value: "20+", label: "countries reached" },
-  { value: "35", label: "focused product families" },
+  { value: "49", label: "focused product families" },
   { value: "2", label: "clear buying paths" },
 ];
 
@@ -15,6 +15,7 @@ const STORIES = [
     name: "Anand Kumar",
     role: "Founder, Artisan Chai Co.",
     result: "Low-MOQ launch to repeat order",
+    logo: "",
   },
   {
     type: "ENTERPRISE PROCUREMENT",
@@ -22,7 +23,15 @@ const STORIES = [
     name: "Rohan Mehta",
     role: "Supply Chain, Happilo",
     result: "One owner across the packaging workflow",
+    logo: "/images/logos/happilo-official.png",
   },
+];
+
+const CUSTOMER_LOGOS = [
+  { name: "Plum", src: "/images/logos/plum-official.svg" },
+  { name: "Happilo", src: "/images/logos/happilo-official.png" },
+  { name: "Bodycraft", src: "/images/logos/bodycraft-official.svg" },
+  { name: "Oliva", src: "/images/logos/oliva-official.svg" },
 ];
 
 export default function TestimonialsSection() {
@@ -42,16 +51,24 @@ export default function TestimonialsSection() {
         <div className="pw-proof-stories">
           {STORIES.map((story) => (
             <article key={story.type}>
-              <div className="pw-proof-story-top"><span>{story.type}</span><Quote size={25} /></div>
+              <div className="pw-proof-story-top">
+                <span>{story.type}</span>
+                {story.logo ? <div className="pw-proof-story-logo"><img src={story.logo} alt="Happilo" /></div> : <Quote size={25} />}
+              </div>
               <blockquote>{story.quote}</blockquote>
-              <div className="pw-proof-person"><div><strong>{story.name}</strong><span>{story.role}</span></div><p><CheckCircle2 size={15} /> {story.result}</p></div>
+              <div className="pw-proof-person">
+                <div className="pw-proof-identity">
+                  <div><strong>{story.name}</strong><span>{story.role}</span></div>
+                </div>
+                <p><CheckCircle2 size={15} /> {story.result}</p>
+              </div>
             </article>
           ))}
         </div>
 
         <div className="pw-proof-brands">
           <span>Packaging workflows used across</span>
-          <div><b>PLUM</b><b>HAPPILO</b><b>BODYCRAFT</b><b>OLIVA</b></div>
+          <div>{CUSTOMER_LOGOS.map((logo) => <div key={logo.name} className={`pw-proof-logo pw-proof-logo-${logo.name.toLowerCase()}`}><img src={logo.src} alt={logo.name} loading="lazy" /></div>)}</div>
           <Link href="/contact">Talk to the team <ArrowRight size={16} /></Link>
         </div>
       </div>

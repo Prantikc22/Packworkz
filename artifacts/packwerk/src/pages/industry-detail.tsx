@@ -308,7 +308,7 @@ export default function IndustryDetail() {
   } as Record<string, string>)[slug || ""] || slug || "food-beverage";
   const industry = INDUSTRY_DATA[detailSlug] || INDUSTRY_DATA["food-beverage"];
 
-  const mono: React.CSSProperties = { fontFamily: "'Manrope', sans-serif", fontWeight: 700 };
+  const mono: React.CSSProperties = { fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700 };
 
   return (
     <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>

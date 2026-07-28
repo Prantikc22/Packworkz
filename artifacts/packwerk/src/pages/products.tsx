@@ -20,6 +20,17 @@ const FILTERS: Array<{ key: PublicPath | "all"; label: string; hint: string; ico
   { key: "quote", label: "Request quote", hint: "Technical or high-volume", icon: "precision_manufacturing" },
 ];
 
+const MOCKUP_FORMAT_BY_SKU: Record<string, string> = {
+  "EC-501": "mailer",
+  "EC-502": "shipping",
+  "BX-401": "carton",
+  "BX-402": "rigid",
+  "FP-101": "pouch",
+  "BC-201": "bottle",
+  "BC-207": "jar",
+  "TS-301": "tube",
+};
+
 export default function Products() {
   const searchStr = useSearch();
   const params = new URLSearchParams(searchStr);
@@ -66,11 +77,11 @@ export default function Products() {
         <div className="absolute inset-0 pointer-events-none opacity-70" style={{
           background: "linear-gradient(120deg, rgba(27,108,168,0.08), transparent 38%), radial-gradient(circle at 80% 10%, rgba(232,168,56,0.18), transparent 28%)",
         }} />
-        <div className="relative max-w-7xl mx-auto px-6 md:px-8 py-12 md:py-16">
+        <div className="relative max-w-7xl mx-auto px-6 md:px-8 pt-28 pb-12 md:pt-32 md:pb-16">
           <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-8 items-end">
             <div>
               <p className="text-xs font-black uppercase tracking-[0.22em] mb-3" style={{ color: "#1B6CA8" }}>
-                Self-serve packaging catalog
+                Instant-buy packaging catalog
               </p>
               <h1 className="text-4xl md:text-5xl font-black leading-tight" style={{ fontFamily: "'Space Grotesk', sans-serif", color: "#0D1B2A" }}>
                 Configure standard SKUs online. Get expert pricing where specs need it.
@@ -86,6 +97,12 @@ export default function Products() {
                 ].map((item) => (
                   <span key={item} className="px-3 py-2 rounded-full bg-slate-100 text-xs font-bold" style={{ color: "#334155" }}>{item}</span>
                 ))}
+              </div>
+              <div className="mt-7 flex flex-wrap gap-3">
+                <Link href="/mockup-studio" className="pw-catalog-studio-cta">
+                  <MS icon="view_in_ar" className="text-xl" /> Design in 3D <MS icon="arrow_forward" className="text-base" />
+                </Link>
+                <Link href="/configure" className="pw-catalog-brief-cta">Start a packaging plan</Link>
               </div>
             </div>
             <div className="bg-slate-950 text-white rounded-lg p-5 shadow-xl">
@@ -193,6 +210,11 @@ export default function Products() {
                     Industry catalog <MS icon="arrow_forward" className="text-sm" />
                   </button>
                 </Link>
+                <Link href="/mockup-studio">
+                  <button className="w-full flex items-center justify-between rounded border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-bold" style={{ color: "#8A5700" }}>
+                    3D mockup studio <MS icon="view_in_ar" className="text-sm" />
+                  </button>
+                </Link>
               </div>
             </div>
           </div>
@@ -223,56 +245,52 @@ export default function Products() {
               <p className="text-sm text-slate-500">Try clearing filters or browse by industry.</p>
             </div>
           ) : (
-            <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-5">
-              {visibleSkus.map((sku, index) => (
-                <Link key={sku.id} href={`/products/${sku.slug}`}>
-                  <div
-                    className="pw-sku-card group bg-white border border-slate-200 rounded-lg overflow-hidden transition-all cursor-pointer h-full flex flex-col pw-reveal"
-                    style={{ animationDelay: `${Math.min(index, 8) * 40}ms` }}
-                  >
-                    <div className="pw-sku-image h-44 overflow-hidden relative bg-slate-100">
-                      <img src={getCatalogImage(sku)} alt={sku.name} className="w-full h-full object-cover group-hover:scale-105 transition-all duration-500" />
-                      <div className="absolute top-3 left-3 flex flex-col gap-1.5">
-                        <span className="px-2 py-0.5 rounded text-xs font-black" style={{ background: sku.publicBuyingPath === "instant" ? "#E8A838" : "#0D1B2A", color: sku.publicBuyingPath === "instant" ? "#0F1C2C" : "white" }}>
-                          {sku.publicBuyingPath === "instant" ? "Instant buy" : "Request quote"}
-                        </span>
-                        {sku.is_eco && <span className="px-2 py-0.5 rounded text-xs font-black bg-green-500 text-white">Eco</span>}
+            <div className="pw-catalog-card-grid">
+              {visibleSkus.map((sku, index) => {
+                const mockupFormat = MOCKUP_FORMAT_BY_SKU[sku.code];
+                return (
+                  <article key={sku.id} className="pw-catalog-card pw-reveal" style={{ animationDelay: `${Math.min(index, 8) * 40}ms` }}>
+                    <Link href={`/products/${sku.slug}`} className="pw-catalog-card-media" aria-label={`View ${sku.name}`}>
+                      <img src={getCatalogImage(sku)} alt={sku.name} loading="lazy" />
+                      <span className="pw-catalog-card-index">{String(index + 1).padStart(2, "0")}</span>
+                      <div className="pw-catalog-card-badges">
+                        <span className={sku.publicBuyingPath === "instant" ? "instant" : "quote"}>{sku.publicBuyingPath === "instant" ? "Instant buy" : "Managed quote"}</span>
+                        {sku.is_eco && <span className="eco">Eco option</span>}
                       </div>
-                      <span className="absolute top-3 right-3 px-2 py-0.5 rounded text-xs font-mono font-bold" style={{ background: "rgba(13,27,42,0.7)", color: "white" }}>{sku.code}</span>
-                    </div>
-                    <div className="p-5 flex flex-col flex-1">
-                      <p className="text-xs font-bold uppercase tracking-wider mb-1.5" style={{ color: "#1B6CA8" }}>{getCategoryLabel(sku.category)}</p>
-                      <h3 className="font-bold text-base mb-1.5 line-clamp-2" style={{ color: "#0D1B2A", fontFamily: "'Space Grotesk', sans-serif" }}>{sku.name}</h3>
-                      <p className="text-xs line-clamp-2 mb-4" style={{ color: "#74777d" }}>{sku.use_case}</p>
-                      <div className="grid grid-cols-2 gap-2 text-xs mb-4">
-                        <div className="pw-sku-metric rounded bg-slate-50 p-2">
-                          <p className="text-slate-400">MOQ</p>
-                          <p className="font-black text-slate-800">{sku.moq.toLocaleString("en-IN")} {sku.moq_unit}</p>
-                        </div>
-                        <div className="pw-sku-metric rounded bg-slate-50 p-2">
-                          <p className="text-slate-400">Lead time</p>
-                          <p className="font-black text-slate-800">{sku.speedLabel}</p>
-                        </div>
+                    </Link>
+
+                    <div className="pw-catalog-card-body">
+                      <div className="pw-catalog-card-heading">
+                        <div><span>{getCategoryLabel(sku.category)}</span><small>{sku.code}</small></div>
+                        <Link href={`/products/${sku.slug}`} aria-label={`View ${sku.name}`}><MS icon="north_east" /></Link>
                       </div>
-                      <div className="mt-auto flex items-center justify-between pt-4 border-t border-slate-100">
+                      <h3>{sku.name}</h3>
+                      <p>{sku.use_case}</p>
+
+                      <div className="pw-catalog-card-facts">
+                        <span><small>Minimum</small><b>{sku.moq.toLocaleString("en-IN")} {sku.moq_unit}</b></span>
+                        <span><small>Production</small><b>{sku.speedLabel}</b></span>
+                      </div>
+
+                      <div className="pw-catalog-card-commerce">
                         <div>
-                          <p className="text-xs" style={{ color: "#74777d" }}>{sku.publicBuyingPath === "quote" ? "Indicative range" : `From ${sku.moq.toLocaleString("en-IN")} ${sku.moq_unit}`}</p>
-                          <p className="font-black text-sm" style={{ fontFamily: "'Manrope', sans-serif", color: "#0D1B2A" }}>
-                            {sku.publicBuyingPath === "quote" ? `${formatINR(sku.price_min)} - ${formatINR(sku.price_max)}` : `${formatINR(sku.price_tiers?.[0]?.unit_price ?? sku.price_max)} / ${sku.moq_unit.replace(/s$/, "")}`}
-                          </p>
+                          <small>{sku.publicBuyingPath === "quote" ? "Indicative unit range" : "Starting unit price"}</small>
+                          <strong>{sku.publicBuyingPath === "quote" ? `${formatINR(sku.price_min)} - ${formatINR(sku.price_max)}` : `${formatINR(sku.price_tiers?.[0]?.unit_price ?? sku.price_max)} / ${sku.moq_unit.replace(/s$/, "")}`}</strong>
                         </div>
-                        <button
-                          onClick={(event) => { event.preventDefault(); window.location.href = getConfigureHref(sku); }}
-                          className="px-4 py-2 rounded text-xs font-black text-white hover:opacity-90 transition-all"
-                          style={{ background: sku.publicBuyingPath === "instant" ? "#0D1B2A" : "#1B6CA8" }}
-                        >
-                          {sku.publicBuyingPath === "instant" ? "Configure" : "Request quote"}
-                        </button>
+                        <Link href={getConfigureHref(sku)} className="pw-catalog-card-primary">
+                          {sku.publicBuyingPath === "instant" ? "Configure" : "Request pricing"} <MS icon="arrow_forward" />
+                        </Link>
                       </div>
+
+                      {mockupFormat && (
+                        <Link href={`/mockup-studio?format=${mockupFormat}&sku=${sku.code}`} className="pw-catalog-card-mockup">
+                          <MS icon="view_in_ar" /> Preview this format in 3D
+                        </Link>
+                      )}
                     </div>
-                  </div>
-                </Link>
-              ))}
+                  </article>
+                );
+              })}
             </div>
           )}
           {visibleCount < filteredSkus.length && (

@@ -81,7 +81,7 @@ export default function Resources() {
             Ready to optimise your packaging?
           </h2>
           <p style={{ color: "rgba(255,255,255,0.55)", fontSize: 16, lineHeight: 1.7, marginBottom: 32 }}>
-            Browse 35 focused packaging families, request a managed quote, or order a sample before committing to a run.
+            Browse 49 focused packaging families, request a managed quote, or order a sample before committing to a run.
           </p>
           <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
             <Link href="/products" style={{
@@ -97,7 +97,7 @@ export default function Resources() {
               padding: "14px 28px", fontWeight: 600, fontSize: 14,
               textDecoration: "none",
             }}>
-              Get Pricing Plan
+              Get a Quote
             </Link>
           </div>
         </div>

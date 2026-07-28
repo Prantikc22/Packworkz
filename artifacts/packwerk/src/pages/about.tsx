@@ -19,14 +19,14 @@ const VALUES = [
 
 const STATS = [
   { val: "30+", label: "Years Manufacturing" },
-  { val: "35", label: "Product families" },
+  { val: "49", label: "Product families" },
   { val: "500+", label: "Factory Partners" },
   { val: "220+", label: "Brands Served" },
 ];
 
 const MISSION_STATS = [
   { num: "18–35%", label: "Cost Savings vs. Traditional" },
-  { num: "35", label: "Product families" },
+  { num: "49", label: "Product families" },
   { num: "0", label: "Stockouts on SmartStock" },
   { num: "48hr", label: "Pricing Turnaround" },
 ];
@@ -52,7 +52,7 @@ export default function About() {
           </p>
           <div className="pw-reveal pw-d3" style={{ display: "flex", gap: 14, justifyContent: "center", flexWrap: "wrap" }}>
             <span className="animated-border animated-border-white">
-              <Link href="/configure"><button className="btn-fill btn-amber px-8 py-3 text-sm pw-btn-transition">Get Pricing Plan →</button></Link>
+              <Link href="/configure"><button className="btn-fill btn-amber px-8 py-3 text-sm pw-btn-transition">Get a Quote →</button></Link>
             </span>
             <Link href="/how-it-works"><button className="btn-fill btn-outline-white px-8 py-3 text-sm pw-btn-transition">How It Works</button></Link>
           </div>
@@ -141,7 +141,7 @@ export default function About() {
               Packworkz collapses those layers. We connect brands directly to a curated network of 500+ verified factories — backed by our own 30-year manufacturing lens — and manage the entire journey: quoting, procurement, QC, logistics, and reorders. One platform. Zero guesswork.
             </p>
             <span className="animated-border animated-border-white" style={{ display: "inline-block" }}>
-              <Link href="/configure"><button className="btn-fill btn-amber px-8 py-3 text-sm pw-btn-transition">Get Pricing Plan →</button></Link>
+              <Link href="/configure"><button className="btn-fill btn-amber px-8 py-3 text-sm pw-btn-transition">Get a Quote →</button></Link>
             </span>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
@@ -235,7 +235,7 @@ export default function About() {
           </p>
           <div style={{ display: "flex", gap: 14, justifyContent: "center", flexWrap: "wrap" }}>
             <span className="animated-border animated-border-white">
-              <Link href="/configure"><button className="btn-fill btn-amber px-8 py-3 text-sm pw-btn-transition">Get Pricing Plan →</button></Link>
+              <Link href="/configure"><button className="btn-fill btn-amber px-8 py-3 text-sm pw-btn-transition">Get a Quote →</button></Link>
             </span>
             <a href="https://wa.me/918208990366" target="_blank" rel="noreferrer">
               <button className="btn-fill btn-outline-white px-8 py-3 text-sm pw-btn-transition">WhatsApp Us</button>

@@ -19,6 +19,7 @@ import Design from "@/pages/design";
 const MockupStudio = lazy(() => import("@/pages/mockup-studio"));
 import Samples from "@/pages/samples";
 import Login from "@/pages/login";
+import Signup from "@/pages/signup";
 import ChangePassword from "@/pages/change-password";
 import Industries from "@/pages/industries";
 import IndustryDetail from "@/pages/industry-detail";
@@ -37,6 +38,7 @@ import Network from "@/pages/network";
 import Privacy from "@/pages/privacy";
 import Terms from "@/pages/terms";
 import Refund from "@/pages/refund";
+import TrackOrder from "@/pages/track-order";
 
 // Dashboard Pages
 import DashboardOverview from "@/pages/dashboard/overview";
@@ -113,11 +115,13 @@ function Router() {
       <PublicRoute path="/mockup-studio" component={MockupStudio} layout={PublicLayout} />
       <PublicRoute path="/samples" component={Samples} layout={PublicLayout} />
       <PublicRoute path="/login" component={Login} layout={PublicLayout} />
+      <PublicRoute path="/signup" component={Signup} layout={PublicLayout} />
       <ProtectedRoute path="/change-password" component={ChangePassword} layout={PublicLayout} />
       <PublicRoute path="/industries" component={Industries} layout={PublicLayout} />
       <PublicRoute path="/industries/:slug" component={IndustryDetail} layout={PublicLayout} />
       <PublicRoute path="/how-it-works" component={HowItWorks} layout={PublicLayout} />
       <PublicRoute path="/sustainable" component={Sustainable} layout={PublicLayout} />
+      <Route path="/sustainability"><Redirect to="/sustainable" /></Route>
       <PublicRoute path="/sustainable-catalog" component={Sustainable} layout={PublicLayout} />
       <PublicRoute path="/about" component={About} layout={PublicLayout} />
       <PublicRoute path="/resources" component={Resources} layout={PublicLayout} />
@@ -132,6 +136,7 @@ function Router() {
       <PublicRoute path="/privacy" component={Privacy} layout={PublicLayout} />
       <PublicRoute path="/terms" component={Terms} layout={PublicLayout} />
       <PublicRoute path="/refund" component={Refund} layout={PublicLayout} />
+      <PublicRoute path="/track-order" component={TrackOrder} layout={PublicLayout} />
 
       {/* Ad landing page — not linked from nav/footer */}
       <Route path="/lp/d2c" component={LpD2c} />

@@ -110,7 +110,7 @@ export default function Samples() {
               { n: "03", nColor: "#0D1B2A", title: "Approve", desc: "Receive your physical sample. If you&rsquo;re happy, hit 'Produce' in your dashboard. The sample cost is deducted from the total.", cta: "→ FINAL PRODUCTION", href: "/dashboard" },
             ].map(step => (
               <div key={step.n}>
-                <div className="w-10 h-10 rounded flex items-center justify-center font-bold text-white mb-5 text-sm" style={{ background: step.nColor, fontFamily: "'Manrope', sans-serif" }}>{step.n}</div>
+                <div className="w-10 h-10 rounded flex items-center justify-center font-bold text-white mb-5 text-sm" style={{ background: step.nColor, fontFamily: "'Space Grotesk', sans-serif" }}>{step.n}</div>
                 <h3 className="text-xl font-bold mb-3" style={{ color: "#0D1B2A" }}>{step.title}</h3>
                 <p className="text-sm leading-relaxed mb-4" style={{ color: "#44474c" }} dangerouslySetInnerHTML={{ __html: step.desc }} />
                 <Link href={step.href}>
@@ -146,7 +146,7 @@ export default function Samples() {
                 <div className={`mb-6 ${tier.badge ? "pt-4" : ""}`}>
                   <h3 className="text-2xl font-bold mb-1" style={{ color: tier.dark ? "white" : "#0D1B2A" }}>{tier.name}</h3>
                   <div className="flex items-baseline gap-1">
-                    <span className="text-4xl font-black" style={{ fontFamily: "'Manrope', sans-serif", color: tier.dark ? "#E8A838" : "#1B6CA8" }}>{tier.price}</span>
+                    <span className="text-4xl font-black" style={{ fontFamily: "'Space Grotesk', sans-serif", color: tier.dark ? "#E8A838" : "#1B6CA8" }}>{tier.price}</span>
                     <span className="text-sm" style={{ color: tier.dark ? "rgba(255,255,255,0.5)" : "#74777d" }}>{tier.sub}</span>
                   </div>
                 </div>

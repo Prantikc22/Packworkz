@@ -55,7 +55,7 @@ export default function Network() {
           </p>
           <div className="pw-reveal pw-d3" style={{ display: "flex", gap: 14, justifyContent: "center", flexWrap: "wrap" }}>
             <span className="animated-border animated-border-white">
-              <Link href="/configure"><button className="btn-fill btn-amber px-8 py-3 text-sm pw-btn-transition">Get Pricing Plan →</button></Link>
+              <Link href="/configure"><button className="btn-fill btn-amber px-8 py-3 text-sm pw-btn-transition">Get a Quote →</button></Link>
             </span>
             <Link href="/products"><button className="btn-fill btn-outline-white px-8 py-3 text-sm pw-btn-transition">Browse Products</button></Link>
           </div>
@@ -107,7 +107,7 @@ export default function Network() {
           <div className="pw-reveal" style={{ textAlign: "center", marginBottom: 56 }}>
             <p style={{ color: "#60a5fa", fontSize: 11, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", marginBottom: 14 }}>CATEGORY COVERAGE</p>
             <h2 style={{ color: "white", fontSize: "clamp(2rem,4vw,2.8rem)", fontWeight: 800, lineHeight: 1.1, letterSpacing: "-1px" }}>
-              35 focused product families. One connected network.
+              49 focused product families. One connected network.
             </h2>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 10 }}>
@@ -152,9 +152,9 @@ export default function Network() {
           </p>
           <div style={{ display: "flex", gap: 14, justifyContent: "center", flexWrap: "wrap" }}>
             <span className="animated-border animated-border-white">
-              <Link href="/configure"><button className="btn-fill btn-amber px-8 py-3 text-sm pw-btn-transition">Get Pricing Plan →</button></Link>
+              <Link href="/configure"><button className="btn-fill btn-amber px-8 py-3 text-sm pw-btn-transition">Get a Quote →</button></Link>
             </span>
-            <Link href="/products"><button className="btn-fill btn-outline-white px-8 py-3 text-sm pw-btn-transition">Browse 35 product families</button></Link>
+            <Link href="/products"><button className="btn-fill btn-outline-white px-8 py-3 text-sm pw-btn-transition">Browse 49 product families</button></Link>
           </div>
           <p style={{ color: "rgba(255,255,255,0.28)", fontSize: 12, marginTop: 14, letterSpacing: "0.2px" }}>
             No minimum for samples · MOQ from 500 units for bulk

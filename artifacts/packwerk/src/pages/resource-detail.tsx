@@ -213,7 +213,7 @@ function ArticleBody({ sections }: { sections: ResourceSection[] }) {
                 textDecoration: "none", borderRadius: 4,
                 letterSpacing: "0.02em",
               }}>
-                {section.ctaText ?? "Get Pricing Plan →"}
+                {section.ctaText ?? "Get a Quote →"}
               </Link>
             </div>
           );

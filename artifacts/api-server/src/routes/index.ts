@@ -11,6 +11,7 @@ import paymentsRouter from "./payments";
 import packAiRouter from "./pack_ai";
 import uploadRouter from "./upload";
 import leadsRouter from "./leads";
+import guestTrackingRouter from "./guest_tracking";
 
 const router: IRouter = Router();
 
@@ -26,5 +27,6 @@ router.use(paymentsRouter);
 router.use(packAiRouter);
 router.use(uploadRouter);
 router.use(leadsRouter);
+router.use(guestTrackingRouter);
 
 export default router;

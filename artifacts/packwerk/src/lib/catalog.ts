@@ -1,5 +1,6 @@
 import { SKUS, SKU_IMAGES, CATEGORIES, type Sku } from "./skus";
 import { EXPANDED_SKUS, type PurchaseMode } from "./catalog-expansion";
+import { COMMERCE_PRODUCTS, getEffectiveCommerceTiers } from "@workspace/commerce";
 
 export type BuyingMode = "self_serve" | "assisted";
 
@@ -42,7 +43,7 @@ export const INDUSTRY_CATALOGS: IndustryCatalog[] = [
     outcome: "Launch with branded SKUs, predictable MOQs, and a sample-first flow.",
     categories: ["ecommerce", "boxes", "sustainable", "labels"],
     icon: "local_shipping",
-    featuredSkuCodes: ["EC-501", "EC-504", "EC-505", "EC-509", "LC-801"],
+    featuredSkuCodes: ["EC-501", "EC-504", "EC-505", "EC-509", "LC-816"],
   },
   {
     slug: "food-beverage",
@@ -62,7 +63,7 @@ export const INDUSTRY_CATALOGS: IndustryCatalog[] = [
     outcome: "Standardize pouches, cartons, labels, and managed rollstock.",
     categories: ["flexible", "boxes", "labels", "rolls"],
     icon: "shopping_cart",
-    featuredSkuCodes: ["BX-401", "RL-701", "LC-801", "FP-103", "EC-502"],
+    featuredSkuCodes: ["BX-401", "RL-701", "LC-816", "FP-103", "EC-502"],
   },
   {
     slug: "pharma",
@@ -72,7 +73,7 @@ export const INDUSTRY_CATALOGS: IndustryCatalog[] = [
     outcome: "Configure bottles, cartons, labels, and protective inserts.",
     categories: ["bottles", "tubes", "boxes", "labels", "protective"],
     icon: "medical_services",
-    featuredSkuCodes: ["BC-201", "BX-401", "LC-801", "PR-602"],
+    featuredSkuCodes: ["BC-201", "BX-401", "LC-816", "PR-602"],
   },
   {
     slug: "beauty",
@@ -141,19 +142,20 @@ const STOREFRONT_EXCLUSIONS = new Set([
   // Keep cosmetic tubes public; specialist pharma and paper tubes enter via
   // the general production brief when needed.
   "TS-302", "TS-303", "TS-304", "TS-305",
-  // Carton structures are configuration choices, not separate storefront
-  // products. Rigid and magnetic structures share one buying family.
-  "BX-403", "BX-404", "BX-405", "BX-406", "BX-407", "BX-408", "BX-409", "BX-410", "BX-411",
+  // Specialist carton structures stay managed; common constructions are
+  // pictured and sold as separate storefront products.
+  "BX-407", "BX-409", "BX-410", "BX-411",
   // Mailer material and return-strip choices are merged into two mailer pages.
   "EC-506", "EC-507", "EC-508", "EC-511", "EC-512", "EC-513",
   // Protective consumables and inserts become options within two clear jobs.
   "PR-603", "PR-604", "PR-605", "PR-606", "PR-607", "PR-608", "PR-609", "PR-610", "PR-611",
   // Flexible rollstock is one enterprise brief with material choices.
   "RL-702", "RL-703", "RL-706", "RL-707", "RL-708", "RL-709", "RL-710", "RL-711",
-  // Labels, stickers and tapes are grouped by production workflow.
-  "LC-802", "LC-803", "LC-804", "LC-805", "LC-807", "LC-809", "LC-812", "LC-813",
+  // Closures and fitments stay as component options. The legacy all-in-one
+  // paper-label family is replaced by pictured shape-specific SKUs.
+  "LC-801", "LC-802", "LC-803", "LC-807", "LC-809", "LC-812", "LC-813",
   // Food-service variants are merged by material and converting process.
-  "SP-901", "SP-902", "SP-903", "SP-904", "SP-906", "SP-908", "SP-910", "SP-911",
+  "SP-901", "SP-902", "SP-903", "SP-904", "SP-906", "SP-910", "SP-911",
 ]);
 
 const STOREFRONT_OVERRIDES: Record<string, Partial<Sku>> = {
@@ -211,21 +213,22 @@ const STOREFRONT_OVERRIDES: Record<string, Partial<Sku>> = {
     ],
   },
   "BX-401": {
-    name: "Folding Cartons",
-    description: "One carton workflow covering the most useful retail structures, with dimensions, board, inserts and finishing configured together.",
+    name: "Straight Tuck End Carton",
+    slug: "straight-tuck-end-carton",
+    moq: 100,
+    description: "The familiar retail carton with both tuck flaps closing in the same direction, shown and priced as its own production-ready format.",
     use_case: "Beauty, supplements, food, electronics, pharma and retail products",
     variants: [
-      { key: "structure", label: "Structure", options: ["Straight tuck end", "Reverse tuck end", "Auto-bottom", "Sleeve and tray", "Window carton"] },
       { key: "board", label: "Board", options: ["SBS/FBB", "Natural kraft", "Recycled board"] },
       { key: "finish", label: "Finish", options: ["Uncoated", "Matte lamination", "Gloss lamination", "Soft touch"] },
     ],
   },
   "BX-402": {
-    name: "Rigid & Magnetic Boxes",
-    description: "Premium wrapped boxes configured as two-piece, magnetic book-style or collapsible structures with optional inserts.",
+    name: "Two-piece Rigid Box",
+    slug: "two-piece-rigid-box",
+    description: "A classic lift-off lid and base box for premium presentation, shown and priced separately from magnetic and collapsible constructions.",
     use_case: "Gifting, jewellery, beauty, fashion, electronics and premium D2C kits",
     variants: [
-      { key: "structure", label: "Structure", options: ["Two-piece rigid box", "Magnetic book-style box", "Collapsible magnetic box"] },
       { key: "insert", label: "Insert", options: ["None", "Paperboard", "EVA foam", "Moulded pulp"] },
       { key: "finish", label: "Finish", options: ["Matte paper wrap", "Textured paper wrap", "Soft touch", "Foil accent"] },
     ],
@@ -274,14 +277,27 @@ const STOREFRONT_OVERRIDES: Record<string, Partial<Sku>> = {
       { key: "print", label: "Print process", options: ["Flexographic", "Rotogravure", "Digital"] },
     ],
   },
-  "LC-801": {
-    name: "Custom Labels & Stickers",
-    description: "One self-serve label family covering sheets, rolls, custom shapes and tamper-evident materials.",
-    use_case: "Jars, bottles, pouches, boxes, seals and short-run product launches",
+  "LC-804": {
     variants: [
-      { key: "supply", label: "Supply format", options: ["Labels on sheets", "Labels on rolls", "Individual die-cut stickers"] },
-      { key: "material", label: "Material", options: ["Paper", "Water-resistant film", "Clear film", "Kraft paper", "Tamper-evident VOID"] },
-      { key: "finish", label: "Finish", options: ["Matte", "Gloss", "Soft touch", "Foil accent"] },
+      { key: "material", label: "Material", options: ["White BOPP", "White vinyl", "Freezer-grade film"] },
+      { key: "adhesive", label: "Adhesive", options: ["Permanent", "Removable", "Freezer grade"] },
+      { key: "finish", label: "Finish", options: ["Matte", "Gloss"] },
+    ],
+  },
+  "LC-805": {
+    variants: [
+      { key: "material", label: "Material", options: ["Clear BOPP", "Clear PET"] },
+      { key: "white_ink", label: "White ink", options: ["None", "Spot white", "Full white underprint"] },
+      { key: "finish", label: "Finish", options: ["Gloss", "Matte"] },
+    ],
+  },
+  "LC-814": {
+    description: "Production roll labels engineered for the applicator, container and line speed. The detailed brief prevents wrong unwind, core and adhesive specifications.",
+  },
+  "LC-815": {
+    variants: [
+      { key: "effect", label: "Premium effect", options: ["Hot foil accent", "Raised varnish", "Holographic stock", "Textured paper"] },
+      { key: "material", label: "Base material", options: ["Coated paper", "White BOPP", "Textured paper"] },
     ],
   },
   "LC-806": {
@@ -313,12 +329,13 @@ const STOREFRONT_OVERRIDES: Record<string, Partial<Sku>> = {
     ],
   },
   "SP-907": {
-    name: "Paper Cups, Bowls & Food Tubs",
-    description: "Food-contact paper containers configured by shape, lining, lid and print coverage.",
-    use_case: "Beverages, salads, noodles, desserts, curries and takeaway",
+    name: "Paper Bowls & Food Containers",
+    description: "Food-safe white or kraft paper bowls in eight fixed capacities, including tall and flat formats with shared 116 mm or 148 mm lids.",
+    use_case: "Curries, biryani, rice, noodles, salads, desserts, takeaway and cloud kitchens",
     variants: [
-      { key: "format", label: "Format", options: ["Paper cup", "Paper bowl", "Food tub"] },
-      { key: "lining", label: "Lining", options: ["Aqueous barrier", "PE lining", "PLA lining"] },
+      { key: "paper", label: "Paper colour", options: ["White", "Natural kraft"] },
+      { key: "lid", label: "Lid", options: ["Paper lid", "Clear recyclable lid", "No lid"] },
+      { key: "branding", label: "Branding", options: ["Plain", "Applied label", "Custom printed"] },
     ],
   },
 };
@@ -335,11 +352,22 @@ function defaultQuoteThreshold(sku: Sku): number | undefined {
 export const CATALOG_SKUS: CatalogSku[] = ALL_CATALOG_SKUS.filter((sku) => !STOREFRONT_EXCLUSIONS.has(sku.code)).map((sourceSku) => {
   const sku: Sku = { ...sourceSku, ...STOREFRONT_OVERRIDES[sourceSku.code] };
   const purchaseMode = resolveMode(sku);
+  const commerceProduct = COMMERCE_PRODUCTS[sku.code];
+  const commerceTiers = commerceProduct ? getEffectiveCommerceTiers(sku.code) : [];
+  const resolvedTiers = commerceProduct
+    ? commerceTiers.map((tier, index) => ({
+        min_qty: tier.minQty,
+        unit_price: tier.unitPrice,
+        label: index === 0 ? "Launch quantity" : index === commerceTiers.length - 1 ? "Best online rate" : undefined,
+      }))
+    : purchaseMode === "brief" ? sku.price_tiers : defaultTiers(sku);
   return {
     ...sku,
+    price_min: resolvedTiers?.length ? resolvedTiers[resolvedTiers.length - 1].unit_price : sku.price_min,
+    price_max: resolvedTiers?.length ? resolvedTiers[0].unit_price : sku.price_max,
     purchase_mode: purchaseMode,
     purchaseMode,
-    price_tiers: purchaseMode === "brief" ? sku.price_tiers : defaultTiers(sku),
+    price_tiers: resolvedTiers,
     estimate_band: sku.estimate_band ?? (purchaseMode !== "instant"
       ? { unit_min: sku.price_min, unit_max: sku.price_max, setup_min: 5000, setup_max: 50000 }
       : undefined),
@@ -352,7 +380,7 @@ export const CATALOG_SKUS: CatalogSku[] = ALL_CATALOG_SKUS.filter((sku) => !STOR
       : undefined,
     speedLabel: purchaseMode === "brief" ? "Production brief" : sku.is_smartstock ? "Fast dispatch" : `${sku.delivery_days_india} day lead time`,
     publicBuyingPath: purchaseMode === "brief" ? "quote" : "instant",
-    quote_threshold: defaultQuoteThreshold(sku),
+    quote_threshold: commerceProduct?.quoteThreshold ?? defaultQuoteThreshold(sku),
   };
 });
 

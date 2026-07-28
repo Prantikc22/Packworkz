@@ -26,6 +26,7 @@ import Network from "@/pages/network";
 import Privacy from "@/pages/privacy";
 import Terms from "@/pages/terms";
 import Refund from "@/pages/refund";
+import TrackOrder from "@/pages/track-order";
 
 function makeStaticHook(path: string) {
   return () => [path, (_: string) => {}] as [string, (to: string) => void];
@@ -124,6 +125,9 @@ function SSRApp({ url }: { url: string }) {
             </Route>
             <Route path="/refund">
               <PublicLayout><Refund /></PublicLayout>
+            </Route>
+            <Route path="/track-order">
+              <PublicLayout><TrackOrder /></PublicLayout>
             </Route>
           </Switch>
         </Router>

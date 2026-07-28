@@ -88,7 +88,7 @@ export default function Design() {
                 <span style={{ color: "#E8A838" }}>designed right.</span>
               </h1>
               <p className="text-slate-400 text-lg mb-8">
-                <strong className="text-white" style={{ fontFamily: "'Manrope', sans-serif" }}>₹1,999.</strong>{" "}
+                <strong className="text-white" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>₹1,999.</strong>{" "}
                 Print-ready files in 5 days, adjusted against order.
               </p>
               <div className="flex gap-4 flex-wrap">
@@ -282,7 +282,7 @@ export default function Design() {
                   )}
                   <div className="flex justify-between pt-3 border-t border-slate-200 font-bold text-base">
                     <span>TOTAL DUE</span>
-                    <span style={{ fontFamily: "'Manrope', sans-serif" }}>₹{amount.toLocaleString("en-IN")}</span>
+                    <span style={{ fontFamily: "'Space Grotesk', sans-serif" }}>₹{amount.toLocaleString("en-IN")}</span>
                   </div>
                 </div>
               </div>
