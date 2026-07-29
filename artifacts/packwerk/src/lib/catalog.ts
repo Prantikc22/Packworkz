@@ -252,6 +252,16 @@ const STOREFRONT_OVERRIDES: Record<string, Partial<Sku>> = {
       { key: "print", label: "Branding", options: ["Plain", "1-colour print", "Full-colour print"] },
     ],
   },
+  "EC-510": {
+    name: "Custom Printed Paper Carry Bags",
+    description: "Retail-ready paper carry bags with your brand printed on natural or white kraft, available in fixed, production-priced sizes.",
+    use_case: "Bakery, cafes, retail, gifting, events, takeaway and D2C stores",
+    variants: [
+      { key: "paper", label: "Paper", options: ["Natural kraft", "White kraft", "Recycled kraft"] },
+      { key: "handle", label: "Handle", options: ["Twisted paper", "Flat paper", "Cotton rope"] },
+      { key: "branding", label: "Branding", options: ["1-colour print", "Full-colour print"] },
+    ],
+  },
   "PR-601": {
     name: "Protective Wrap & Void Fill",
     description: "A single fulfilment family for cushioning and void fill, selected by fragility, presentation and plastic-reduction target.",
@@ -323,9 +333,10 @@ const STOREFRONT_OVERRIDES: Record<string, Partial<Sku>> = {
   },
   "SP-905": {
     name: "Bagasse Food Containers",
-    description: "Plant-fibre takeaway packaging configured as clamshells or lidded meal trays for hot and cold food.",
+    description: "Plant-fibre takeaway packaging configured as clamshells or lidded meal trays, with removable branded sleeves or labels for a polished customer handoff.",
     variants: [
       { key: "format", label: "Format", options: ["Clamshell", "Meal tray with lid", "Compartment tray"] },
+      { key: "branding", label: "Branding", options: ["Plain", "Custom branded sleeve", "Applied brand label"] },
     ],
   },
   "SP-907": {

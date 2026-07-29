@@ -10,7 +10,7 @@ import { calculateOrderEstimate } from "@/lib/pricing";
 import { COMMERCE_PRODUCTS, RAZORPAY_PAYMENT_LIMIT_RUPEES } from "@workspace/commerce";
 import {
   Loader2, CheckCircle2, ChevronDown, ChevronUp,
-  Upload, Palette, X, Truck, Zap, Warehouse, ArrowRight, Shield,
+  Upload, Palette, X, Truck, Zap, Warehouse, ArrowRight, Shield, Search,
 } from "lucide-react";
 
 // ── Types ──────────────────────────────────────────────────────────────────
@@ -21,6 +21,23 @@ type DeliveryOption = "standard" | "blitz" | "warehouse";
 const STEP_LABELS = ["Product & Qty", "Design & Delivery", "Sample", "Contact", "Review"];
 const TOTAL_STEPS = 5;
 const isAssistedSku = (sku: Sku | undefined) => sku?.purchase_mode === "brief";
+
+function customisationNote(sku: Sku | undefined) {
+  if (!sku) return "";
+  if (sku.category === "labels") {
+    return "Customised to your brand. Upload your logo or finished artwork in the design step.";
+  }
+  if (sku.code === "SP-905") {
+    return "Customise the outer sleeve or applied label while keeping the food-contact container production-safe.";
+  }
+  if (sku.code === "SP-907") {
+    return "Add your brand with direct print or an applied label. The preview shows the intended finished presentation.";
+  }
+  if (sku.code === "EC-510") {
+    return "Printed to your brand in a fixed, production-ready bag size. Upload artwork in the next step.";
+  }
+  return "";
+}
 
 // ── Draft persistence helpers ──────────────────────────────────────────────
 const DRAFT_KEY = "packwerk_configure_draft";
@@ -184,7 +201,7 @@ function OrderSummary({
               className="w-full py-3 rounded font-black uppercase tracking-widest text-sm transition-all hover:opacity-90 active:scale-95 flex items-center justify-center gap-2 mt-2"
               style={{ background: "#E8A838", color: "#0F1C2C" }}
             >
-              {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <>{buyingMode === "assisted" ? "REQUEST MANAGED QUOTE" : paymentEligible ? "SAVE & CONTINUE TO PAYMENT" : "SUBMIT FOR PAYMENT CONFIRMATION"} <ArrowRight className="w-4 h-4" /></>}
+              {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <>{buyingMode === "assisted" ? "REQUEST MANAGED QUOTE" : paymentEligible ? "SAVE & PAY SECURELY" : "SUBMIT FOR PAYMENT CONFIRMATION"} <ArrowRight className="w-4 h-4" /></>}
             </button>
 
             <div className="mt-4 pt-4 border-t" style={{ borderColor: "rgba(255,255,255,0.08)" }}>
@@ -512,6 +529,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
   // ── SKU selection ────────────────────────────────────────────────────────
   const [selectedCategory, setSelectedCategory] = useState<string>(() => loadDraft().selectedCategory || CATEGORIES[0].slug);
   const [ecoFilter, setEcoFilter] = useState<boolean>(() => loadDraft().ecoFilter ?? false);
+  const [catalogQuery, setCatalogQuery] = useState("");
   const [selectedSkuId, setSelectedSkuId] = useState<string>(() => {
     const savedSkuId = loadDraft().selectedSkuId;
     if (savedSkuId === "LC-801") return SKUS.find((sku) => sku.code === "LC-816")?.id || SKUS[0].id;
@@ -576,6 +594,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
   const [sampleOption, setSampleOption] = useState<"express" | "standard" | "none">(() => loadDraft().sampleOption || "none");
   const [samplePaid, setSamplePaid] = useState<boolean>(() => loadDraft().samplePaid ?? false);
   const [notes, setNotes] = useState<string>(() => loadDraft().notes || "");
+  const [checkoutLaunching, setCheckoutLaunching] = useState(false);
 
   const submitMutation = useSubmitQuote();
 
@@ -647,10 +666,22 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
     stepNum > 1 ? setLocation(`/configure/step/${stepNum - 1}`) : setLocation("/");
   };
 
-  const currentCatSkus = useMemo(() =>
-    getSkusByCategory(selectedCategory).filter(s => ecoFilter ? s.is_eco : true),
-    [selectedCategory, ecoFilter]
-  );
+  const normalizedCatalogQuery = catalogQuery.trim().toLowerCase();
+  const currentCatSkus = useMemo(() => {
+    const source = normalizedCatalogQuery ? SKUS : getSkusByCategory(selectedCategory);
+    return source.filter((sku) => {
+      if (ecoFilter && !sku.is_eco) return false;
+      if (!normalizedCatalogQuery) return true;
+      const category = CATEGORIES.find((item) => item.slug === sku.category)?.label || "";
+      return [
+        sku.name,
+        sku.code,
+        sku.description,
+        sku.use_case,
+        category,
+      ].join(" ").toLowerCase().includes(normalizedCatalogQuery);
+    });
+  }, [ecoFilter, normalizedCatalogQuery, selectedCategory]);
 
   const selectedSku = useMemo(() => SKUS.find(s => s.id === selectedSkuId), [selectedSkuId]);
   const selectedSkuMoq = selectedSku?.moq || 500;
@@ -686,6 +717,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
     setSelectedSkuId(skuId);
     const sku = SKUS.find(s => s.id === skuId);
     if (sku) {
+      setSelectedCategory(sku.category);
       initVariants(sku);
       setSelectedSizeCode(COMMERCE_PRODUCTS[sku.code]?.sizes[0]?.code || "");
       if (qtyUnit === "pieces") setQty(prev => Math.max(prev, sku.moq));
@@ -693,6 +725,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
   };
 
   const handleSelectCategory = (slug: string) => {
+    setCatalogQuery("");
     setSelectedCategory(slug);
     const first = getSkusByCategory(slug)[0];
     if (first) {
@@ -744,9 +777,56 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
         buying_mode: selectedSkuBuyingMode,
       } as any
     }, {
-      onSuccess: (res) => {
+      onSuccess: async (res) => {
         clearDraft();
-        setLocation(`/configure/confirmed/${res.quote_id}?mode=${selectedSkuBuyingMode}`);
+        const confirmationPath = `/configure/confirmed/${res.quote_id}?mode=${selectedSkuBuyingMode}`;
+        if (selectedSkuBuyingMode === "assisted") {
+          setLocation(confirmationPath);
+          return;
+        }
+
+        setCheckoutLaunching(true);
+        try {
+          const prepared = await prepareOrderPayment(res.quote_id);
+          if (prepared.status !== "ready") {
+            setCheckoutLaunching(false);
+            setLocation(confirmationPath);
+            return;
+          }
+
+          await openOrderPayment({
+            prepared,
+            name: contactName,
+            email,
+            contact: phone,
+            description: `${selectedSku?.name || "Packaging order"} · ${res.quote_id}`,
+            onSuccess: () => {
+              setCheckoutLaunching(false);
+              setLocation(confirmationPath);
+            },
+            onDismiss: () => {
+              setCheckoutLaunching(false);
+              setLocation(confirmationPath);
+            },
+            onError: (message) => {
+              setCheckoutLaunching(false);
+              toast({
+                variant: "destructive",
+                title: "Payment was not completed",
+                description: `${message} Your order plan is saved and can be paid safely from the next screen.`,
+              });
+              setLocation(confirmationPath);
+            },
+          });
+        } catch (error) {
+          setCheckoutLaunching(false);
+          toast({
+            variant: "destructive",
+            title: "Secure checkout could not open",
+            description: "Your order plan is saved. Retry payment safely from the next screen.",
+          });
+          setLocation(confirmationPath);
+        }
       },
       onError: () => toast({ variant: "destructive", title: "Submission Failed", description: "Please try again." })
     });
@@ -861,6 +941,27 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                         style={{ background: ecoFilter ? "#16A34A" : "#F1F5F9", color: ecoFilter ? "white" : "#64748B" }}>🌿 Eco</button>
                     </div>
                   </div>
+                  <div className="relative mb-4">
+                    <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+                    <input
+                      type="search"
+                      value={catalogQuery}
+                      onChange={(event) => setCatalogQuery(event.target.value)}
+                      placeholder="Search pouches, labels, paper bags, bowls…"
+                      aria-label="Search packaging products"
+                      className="w-full h-11 border border-slate-300 bg-slate-50 pl-10 pr-11 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-blue focus:bg-white"
+                    />
+                    {catalogQuery && (
+                      <button
+                        type="button"
+                        onClick={() => setCatalogQuery("")}
+                        aria-label="Clear product search"
+                        className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center text-slate-400 hover:text-navy"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    )}
+                  </div>
                   <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
                     {CATEGORIES.map(cat => (
                       <button key={cat.slug}
@@ -882,8 +983,8 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                 <div className="bg-white rounded-none border border-slate-200 p-5">
                   <div className="flex items-center justify-between gap-4 mb-4">
                     <div className="font-bold text-slate-800 text-sm" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
-                      {catalogOpen ? "Choose a product" : "Your selected product"}
-                      {catalogOpen && <span className="font-normal text-slate-400"> — {CATEGORIES.find(c => c.slug === selectedCategory)?.label}</span>}
+                      {catalogOpen ? (normalizedCatalogQuery ? "Search results" : "Choose a product") : "Your selected product"}
+                      {catalogOpen && !normalizedCatalogQuery && <span className="font-normal text-slate-400"> — {CATEGORIES.find(c => c.slug === selectedCategory)?.label}</span>}
                     </div>
                     {!catalogOpen && (
                       <button type="button" onClick={() => setCatalogOpen(true)} className="text-xs font-bold text-blue hover:text-navy">
@@ -891,6 +992,39 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                       </button>
                     )}
                   </div>
+                  {selectedSku && (
+                    <div className="mb-5 grid md:grid-cols-[minmax(0,1.2fr)_minmax(250px,0.8fr)] border border-slate-200 bg-slate-50">
+                      <div className="relative aspect-[4/3] md:aspect-auto md:min-h-[310px] overflow-hidden bg-white border-b md:border-b-0 md:border-r border-slate-200">
+                        <img
+                          src={getCatalogImage(selectedSku)}
+                          alt={`${selectedSku.name} customised packaging example`}
+                          className="absolute inset-0 w-full h-full object-cover"
+                        />
+                        <span className="absolute left-4 top-4 bg-navy px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.14em] text-white">
+                          Selected · {selectedSku.code}
+                        </span>
+                      </div>
+                      <div className="p-5 md:p-6 flex flex-col justify-center">
+                        <div className="flex flex-wrap gap-2 mb-3">
+                          {selectedSku.is_eco && <span className="text-[10px] px-2 py-1 font-black uppercase tracking-wider" style={{ background: "rgba(22,163,74,0.1)", color: "#15803D" }}>Lower impact</span>}
+                          <span className="text-[10px] px-2 py-1 font-black uppercase tracking-wider" style={{ background: isAssistedSku(selectedSku) ? "rgba(232,168,56,0.14)" : "rgba(27,108,168,0.10)", color: isAssistedSku(selectedSku) ? "#92600A" : "#1B6CA8" }}>
+                            {isAssistedSku(selectedSku) ? "Managed quote" : "Instant buy"}
+                          </span>
+                        </div>
+                        <h3 className="text-xl md:text-2xl font-black text-navy leading-tight" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>{selectedSku.name}</h3>
+                        <p className="mt-3 text-sm leading-relaxed text-slate-600">{selectedSku.description}</p>
+                        {customisationNote(selectedSku) && (
+                          <div className="mt-4 border-l-4 border-gold bg-white px-4 py-3">
+                            <p className="text-xs font-black uppercase tracking-[0.12em] text-navy mb-1">Customised as per your brand</p>
+                            <p className="text-xs leading-relaxed text-slate-600">{customisationNote(selectedSku)}</p>
+                          </div>
+                        )}
+                        <div className="mt-5 pt-4 border-t border-slate-200 text-xs font-bold text-slate-600">
+                          MOQ {selectedSku.moq.toLocaleString()} {selectedSku.moq_unit} · ₹{selectedSku.price_min.toFixed(2)}-₹{selectedSku.price_max.toFixed(2)}/unit
+                        </div>
+                      </div>
+                    </div>
+                  )}
                   <div className="mb-4 rounded-none border px-4 py-3" style={{ background: selectedSkuBuyingMode === "assisted" ? "#FFF7E6" : "#F1F8FF", borderColor: selectedSkuBuyingMode === "assisted" ? "#F2D89C" : "#CFE4F5" }}>
                     <p className="text-xs leading-relaxed" style={{ color: selectedSkuBuyingMode === "assisted" ? "#8A5A00" : "#1B5F94" }}>
                       <strong>{selectedSkuBuyingMode === "assisted" ? "Managed quote:" : "Instant buy:"}</strong>{" "}
@@ -899,42 +1033,44 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                         : "Configure the standard format and quantity now. You will see an indicative order value before sharing contact details."}
                     </p>
                   </div>
-                  {(catalogOpen ? currentCatSkus : selectedSku ? [selectedSku] : []).length === 0 ? (
-                    <p className="text-sm text-slate-400 py-4 text-center">No eco-friendly SKUs in this category.</p>
-                  ) : (
+                  {catalogOpen && currentCatSkus.length === 0 ? (
+                    <p className="text-sm text-slate-500 py-8 text-center">
+                      {normalizedCatalogQuery ? <>No packaging products match “{catalogQuery.trim()}”.</> : "No lower-impact products are available in this category yet."}
+                    </p>
+                  ) : catalogOpen ? (
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      {(catalogOpen ? currentCatSkus : selectedSku ? [selectedSku] : []).map(sku => (
+                      {currentCatSkus.map(sku => (
                         <button key={sku.id} onClick={() => handleSelectSku(sku.id)}
-                          className="flex items-start gap-3 p-4 rounded-none border-2 text-left transition-all"
+                          className="group flex flex-col overflow-hidden rounded-none border-2 text-left transition-colors"
                           style={{ borderColor: selectedSkuId === sku.id ? "#1B6CA8" : "#E2E8F0", background: selectedSkuId === sku.id ? "rgba(27,108,168,0.04)" : "white" }}
                         >
-                          <div className="w-14 h-14 rounded-none bg-slate-100 shrink-0 overflow-hidden">
-                            <img src={getCatalogImage(sku)} alt={sku.name} className="w-full h-full object-cover" />
+                          <div className="relative w-full aspect-[4/3] bg-slate-100 shrink-0 overflow-hidden border-b border-slate-200">
+                            <img src={getCatalogImage(sku)} alt={`${sku.name} packaging example`} loading="lazy" className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.025]" />
+                            <span className="absolute left-3 top-3 bg-white/95 px-2 py-1 font-black text-[10px] text-slate-600">{sku.code}</span>
+                            {selectedSkuId === sku.id && (
+                              <div className="absolute right-3 top-3 w-7 h-7 flex items-center justify-center" style={{ background: "#1B6CA8" }}>
+                                <svg className="w-4 h-4" viewBox="0 0 12 12" fill="none"><path d="M10 3L5 8.5 2 5.5" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                              </div>
+                            )}
                           </div>
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2 mb-0.5">
-                              <span className="font-black text-xs text-slate-400">{sku.code}</span>
-                              {sku.is_eco && <span className="text-xs px-1.5 py-0.5 rounded font-bold" style={{ background: "rgba(22,163,74,0.1)", color: "#16A34A" }}>ECO</span>}
-                              {sku.is_smartstock && <span className="text-xs px-1.5 py-0.5 rounded font-bold" style={{ background: "rgba(232,168,56,0.12)", color: "#E8A838" }}>SmartStock</span>}
-                              <span className="text-xs px-1.5 py-0.5 rounded font-bold" style={{ background: isAssistedSku(sku) ? "rgba(232,168,56,0.14)" : "rgba(27,108,168,0.10)", color: isAssistedSku(sku) ? "#92600A" : "#1B6CA8" }}>
+                          <div className="p-4 flex-1 min-w-0 w-full">
+                            <div className="flex flex-wrap items-center gap-2 mb-2">
+                              {sku.is_eco && <span className="text-[10px] px-1.5 py-0.5 font-bold" style={{ background: "rgba(22,163,74,0.1)", color: "#16A34A" }}>ECO</span>}
+                              {sku.is_smartstock && <span className="text-[10px] px-1.5 py-0.5 font-bold" style={{ background: "rgba(232,168,56,0.12)", color: "#B77608" }}>SmartStock</span>}
+                              <span className="text-[10px] px-1.5 py-0.5 font-bold" style={{ background: isAssistedSku(sku) ? "rgba(232,168,56,0.14)" : "rgba(27,108,168,0.10)", color: isAssistedSku(sku) ? "#92600A" : "#1B6CA8" }}>
                                 {isAssistedSku(sku) ? "Managed quote" : "Instant buy"}
                               </span>
                             </div>
-                            <div className="font-bold text-slate-800 text-sm mb-0.5">{sku.name}</div>
-                            <div className="text-xs text-slate-400 leading-snug line-clamp-2">{sku.description}</div>
+                            <div className="font-black text-navy text-base mb-1">{sku.name}</div>
+                            <div className="text-xs text-slate-500 leading-relaxed line-clamp-2">{sku.description}</div>
                             <div className="text-xs font-bold mt-2" style={{ color: "#64748B" }}>
                               MOQ {sku.moq.toLocaleString()} {sku.moq_unit} · ₹{sku.price_min.toFixed(2)}-₹{sku.price_max.toFixed(2)}/unit
                             </div>
                           </div>
-                          {selectedSkuId === sku.id && (
-                            <div className="w-5 h-5 rounded-full flex items-center justify-center shrink-0" style={{ background: "#1B6CA8" }}>
-                              <svg className="w-3 h-3" viewBox="0 0 12 12" fill="none"><path d="M10 3L5 8.5 2 5.5" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                            </div>
-                          )}
                         </button>
                       ))}
                     </div>
-                  )}
+                  ) : null}
                 </div>
 
                 {/* Variant selectors */}
@@ -1474,10 +1610,10 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                   Continue →
                 </button>
               ) : (
-                <button onClick={handleSubmit} disabled={submitMutation.isPending || artworkUploading}
+                <button onClick={handleSubmit} disabled={submitMutation.isPending || artworkUploading || checkoutLaunching}
                   className="px-5 sm:px-8 py-2.5 rounded-lg text-sm font-black uppercase tracking-wider transition-all hover:opacity-90 flex items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed min-w-0"
                   style={{ background: "#E8A838", color: "#0F1C2C" }}>
-                  {artworkUploading ? <><Loader2 className="w-4 h-4 animate-spin" /> Uploading artwork…</> : submitMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <>{selectedSkuBuyingMode === "assisted" ? "Request managed quote" : "Save and continue to payment"} <ArrowRight className="w-4 h-4" /></>}
+                  {artworkUploading ? <><Loader2 className="w-4 h-4 animate-spin" /> Uploading artwork…</> : submitMutation.isPending ? <><Loader2 className="w-4 h-4 animate-spin" /> Saving order…</> : checkoutLaunching ? <><Loader2 className="w-4 h-4 animate-spin" /> Opening secure payment…</> : <>{selectedSkuBuyingMode === "assisted" ? "Request managed quote" : "Save and pay securely"} <ArrowRight className="w-4 h-4" /></>}
                 </button>
               )}
             </div>
@@ -1494,7 +1630,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
               configuration={variantSelections}
               buyingMode={selectedSkuBuyingMode}
               onSubmit={isLastStep ? handleSubmit : undefined}
-              submitting={submitMutation.isPending}
+              submitting={submitMutation.isPending || checkoutLaunching}
             />
           </aside>
         </div>
