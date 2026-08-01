@@ -54,7 +54,7 @@ See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and pa
 | `ADMIN_KEY` | Admin panel access key (default: `packwerk-admin-2024`) |
 | `VITE_ADMIN_KEY` | Frontend admin key (same value) |
 | `WHATSAPP_WEBHOOK_URL` | Optional webhook for WhatsApp notifications |
-| `RAZORPAY_KEY_ID` | Razorpay API key ID (test: rzp_test_SgvQEkLJbWTRYs) |
+| `RAZORPAY_KEY_ID` | Razorpay API key ID (test: ${RAZORPAY_KEY_ID}) |
 | `RAZORPAY_KEY_SECRET` | Razorpay secret key (test) |
 | `VITE_RAZORPAY_KEY_ID` | Frontend Razorpay key (same as KEY_ID) |
 | `SUPABASE_URL` / `SUPABASE_ANON_KEY` | Supabase credentials (stored but using Replit DB) |

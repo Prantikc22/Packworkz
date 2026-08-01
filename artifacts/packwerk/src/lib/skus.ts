@@ -762,9 +762,11 @@ export const SKU_IMAGES: Record<string, string> = {
   "BC-205": "/skus/dropperbottle.jpg",
   "BC-206": "/skus/airlesspumpbottles.jpg",
   "BC-213": "/shopify-products/BC-213.jpg",
+  "BC-214": "/skus/shampoo-lotion-bottles-v2.png",
   // Tubes & Small Packs
   "TS-301": "/skus/cosmetictubes.jpg",
   "TS-302": "/skus/blisterpacks.jpg",
+  "TS-306": "/skus/sustainable-cosmetic-tubes-v2.png",
   // Boxes & Cartons
   "BX-401": "/catalog/box-options/folding-straight.webp",
   "BX-402": "/catalog/box-options/rigid-two-piece.webp",

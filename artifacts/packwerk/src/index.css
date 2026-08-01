@@ -820,6 +820,7 @@
 .pw-catalog-card-badges { position: absolute; z-index: 1; left: 14px; bottom: 14px; display: flex; flex-wrap: wrap; gap: 6px; }
 .pw-catalog-card-badges span { min-height: 27px; padding: 0 9px; display: inline-flex; align-items: center; background: #0d1b2a; color: #fff; font-size: 9px; font-weight: 900; letter-spacing: .7px; text-transform: uppercase; }
 .pw-catalog-card-badges .instant { background: #e8a838; color: #0d1b2a; }
+.pw-catalog-card-badges .custom { background: #fff; color: #0d1b2a; border: 1px solid rgba(13,27,42,.18); }
 .pw-catalog-card-badges .eco { background: #17835a; }
 .pw-catalog-card-body { padding: 22px; display: flex; flex: 1; flex-direction: column; }
 .pw-catalog-card-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; }

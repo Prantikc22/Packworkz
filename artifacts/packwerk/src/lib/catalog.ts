@@ -142,9 +142,9 @@ const STOREFRONT_EXCLUSIONS = new Set([
   // Keep cosmetic tubes public; specialist pharma and paper tubes enter via
   // the general production brief when needed.
   "TS-302", "TS-303", "TS-304", "TS-305",
-  // Specialist carton structures stay managed; common constructions are
-  // pictured and sold as separate storefront products.
-  "BX-407", "BX-409", "BX-410", "BX-411",
+  // Keep three immediately understandable box families in the storefront:
+  // folding cartons, two-piece rigid boxes and magnetic-closure rigid boxes.
+  "BX-404", "BX-405", "BX-406", "BX-407", "BX-408", "BX-409", "BX-410", "BX-411", "BX-412",
   // Mailer material and return-strip choices are merged into two mailer pages.
   "EC-506", "EC-507", "EC-508", "EC-511", "EC-512", "EC-513",
   // Protective consumables and inserts become options within two clear jobs.
@@ -407,8 +407,16 @@ export function getCatalogSkuById(value: string): CatalogSku | undefined {
   return CATALOG_SKUS.find((sku) => sku.id === value || sku.code === value || sku.slug === value);
 }
 
+const CATEGORY_CROSS_LISTINGS: Record<string, Set<string>> = {
+  ecommerce: new Set(["SP-905", "SP-907"]),
+};
+
+export function isCatalogSkuInCategory(sku: CatalogSku, category: string): boolean {
+  return sku.category === category || CATEGORY_CROSS_LISTINGS[category]?.has(sku.code) === true;
+}
+
 export function getCatalogSkusByCategory(category: string): CatalogSku[] {
-  return CATALOG_SKUS.filter((sku) => sku.category === category);
+  return CATALOG_SKUS.filter((sku) => isCatalogSkuInCategory(sku, category));
 }
 
 export function getCatalogImage(sku: CatalogSku | Sku): string {
@@ -416,7 +424,7 @@ export function getCatalogImage(sku: CatalogSku | Sku): string {
     flexible: "/categories/flexiblepacks.webp",
     bottles: "/categories/liquid.webp",
     tubes: "/categories/tubes.webp",
-    boxes: "/categories/rigidpacks.webp",
+    boxes: "/categories/boxes-cartons-v2.png",
     ecommerce: "/categories/ecom.webp",
     protective: "/categories/protectivepacks.webp",
     rolls: "/categories/printedrolls.webp",

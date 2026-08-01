@@ -88,6 +88,7 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
               <Badge className={product.publicBuyingPath === "instant" ? "bg-amber text-navy font-bold" : "bg-blue text-white font-bold"}>
                 {product.publicBuyingPath === "instant" ? "Instant buy" : "Request quote"}
               </Badge>
+              <Badge className="bg-navy text-white font-bold">Custom printed</Badge>
               {product.is_smartstock && <Badge className="bg-amber text-navy font-bold">SmartStock</Badge>}
               {product.is_eco && <Badge className="bg-success text-white font-bold">Eco Friendly</Badge>}
             </div>

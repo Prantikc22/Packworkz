@@ -1010,6 +1010,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                           <span className="text-[10px] px-2 py-1 font-black uppercase tracking-wider" style={{ background: isAssistedSku(selectedSku) ? "rgba(232,168,56,0.14)" : "rgba(27,108,168,0.10)", color: isAssistedSku(selectedSku) ? "#92600A" : "#1B6CA8" }}>
                             {isAssistedSku(selectedSku) ? "Managed quote" : "Instant buy"}
                           </span>
+                          <span className="text-[10px] px-2 py-1 font-black uppercase tracking-wider" style={{ background: "#0D1B2A", color: "#FFFFFF" }}>Custom printed</span>
                         </div>
                         <h3 className="text-xl md:text-2xl font-black text-navy leading-tight" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>{selectedSku.name}</h3>
                         <p className="mt-3 text-sm leading-relaxed text-slate-600">{selectedSku.description}</p>
@@ -1060,6 +1061,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                               <span className="text-[10px] px-1.5 py-0.5 font-bold" style={{ background: isAssistedSku(sku) ? "rgba(232,168,56,0.14)" : "rgba(27,108,168,0.10)", color: isAssistedSku(sku) ? "#92600A" : "#1B6CA8" }}>
                                 {isAssistedSku(sku) ? "Managed quote" : "Instant buy"}
                               </span>
+                              <span className="text-[10px] px-1.5 py-0.5 font-bold" style={{ background: "#0D1B2A", color: "#FFFFFF" }}>Custom printed</span>
                             </div>
                             <div className="font-black text-navy text-base mb-1">{sku.name}</div>
                             <div className="text-xs text-slate-500 leading-relaxed line-clamp-2">{sku.description}</div>

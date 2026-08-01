@@ -8,6 +8,7 @@ type Seed = {
   category: string;
   slug: string;
   use: string;
+  description?: string;
   mode: PurchaseMode;
   moq: number;
   moqUnit?: string;
@@ -57,7 +58,7 @@ function buildSku(seed: Seed, index: number): Sku {
     name: seed.name,
     category: seed.category,
     slug: seed.slug,
-    description: `${seed.name} configured for Indian D2C and enterprise procurement, with material, print, quantity and delivery choices captured in one production-ready specification.`,
+    description: seed.description ?? `${seed.name} configured for Indian D2C and enterprise procurement, with material, print, quantity and delivery choices captured in one production-ready specification.`,
     use_case: seed.use,
     price_min: lowestTier ?? estimate?.[0] ?? 1,
     price_max: highestTier ?? estimate?.[1] ?? 1,
@@ -105,8 +106,18 @@ const SEEDS: Seed[] = [
   { code: "BC-211", name: "HDPE Jerrycan", category: "bottles", slug: "hdpe-jerrycan", use: "Chemicals, lubricants, agro inputs, home care and institutional liquids", mode: "brief", moq: 500, estimate: [42, 240, 15000, 80000], materials: ["UN-grade HDPE option"], spec: "1-20 L; chemical compatibility and closure test required", supplier: "Industrial blow-moulding manufacturer" },
   { code: "BC-212", name: "Trigger Spray Bottle", category: "bottles", slug: "trigger-spray-bottle", use: "Home cleaning, garden care, detailing and salon products", mode: "instant", moq: 250, tiers: [[250, 39], [500, 31], [1000, 25], [3000, 20.5]], materials: ["HDPE", "PET"], spec: "500 ml stock bottle with trigger sprayer", supplier: "Stock bottle and closure distributor" },
   { code: "BC-213", name: "Perfume and Attar Bottle", category: "bottles", slug: "perfume-bottle", use: "Perfume, attar, essential oil and premium sampling", mode: "hybrid", moq: 100, tiers: [[100, 88], [250, 69], [500, 55], [1000, 46]], estimate: [38, 250, 5000, 70000], materials: ["Glass", "Aluminium closure"], spec: "30 ml stock glass bottle with crimp pump", supplier: "Fragrance bottle and pump importer" },
+  { code: "BC-214", name: "Custom Printed Shampoo & Lotion Bottles", category: "bottles", slug: "custom-printed-shampoo-lotion-bottles", use: "Shampoo, conditioner, body wash, lotion and salon products", description: "Custom-printed stock shampoo and lotion bottles in 250 ml, 500 ml and 1 litre sizes, paired with flip-top, disc-top or pump closures.", mode: "instant", moq: 250, tiers: [[250, 54], [500, 43], [1000, 34], [2500, 27]], materials: ["HDPE", "PET", "PCR-content option"], spec: "250 ml, 500 ml or 1 litre stock bottle with flip-top or lotion pump and full-colour custom branding", supplier: "Personal-care bottle and closure manufacturer", variants: [
+    { key: "closure", label: "Closure", options: ["Flip-top cap", "Disc-top cap", "Lotion pump"] },
+    { key: "finish", label: "Bottle finish", options: ["Opaque white", "Natural", "Amber", "Custom colour"] },
+    { key: "branding", label: "Custom print", options: ["Pressure-sensitive label", "Screen print", "Full-sleeve artwork"] },
+  ], fields: [] },
 
   // Tubes and dose packs
+  { code: "TS-306", name: "Custom Printed Mono-material & PCR Cosmetic Tubes", category: "tubes", slug: "custom-printed-sustainable-cosmetic-tubes", use: "Sunscreen, cleanser, conditioner, lotion and hair care", description: "Custom-printed squeeze tubes in four launch-ready capacities, with mono-material or PCR-content PE and flip-top or screw-cap closures.", mode: "instant", moq: 500, tiers: [[500, 30], [1000, 24], [2500, 18], [5000, 14.5]], materials: ["Mono-material PE", "PCR-content PE option"], eco: true, spec: "50 ml, 100 ml, 150 ml or 200 ml stock-diameter tube with flip-top cap and full-colour custom print", supplier: "Cosmetic tube manufacturer with offset and silk-screen printing", variants: [
+    { key: "closure", label: "Closure", options: ["Flip-top cap", "Screw cap"] },
+    { key: "material", label: "Tube material", options: ["Mono-material PE", "PCR-content PE"] },
+    { key: "finish", label: "Custom print finish", options: ["Matte", "Gloss", "Soft touch"] },
+  ], fields: [] },
   { code: "TS-303", name: "Aluminium Collapsible Tube", category: "tubes", slug: "aluminium-collapsible-tube", use: "Pharma ointments, adhesives, pigments and premium creams", mode: "brief", moq: 10000, estimate: [8.5, 32, 30000, 110000], materials: ["Aluminium"], eco: true, spec: "Custom diameter, nozzle, lacquer and crimp specification", supplier: "Pharma-grade aluminium tube manufacturer" },
   { code: "TS-304", name: "Paper Tube", category: "tubes", slug: "paper-tube", use: "Tea, snacks, cosmetics, posters, candles and gift sets", mode: "hybrid", moq: 100, tiers: [[100, 110], [250, 82], [500, 63], [1000, 51]], estimate: [45, 190, 8000, 45000], materials: ["Recycled paperboard", "FSC paper option"], eco: true, spec: "75 x 150 mm, paper ends, label or full wrap", supplier: "Spiral-wound paper tube maker" },
   { code: "TS-305", name: "Vial, Ampoule and Small-dose Pack", category: "tubes", slug: "vial-ampoule-dose-pack", use: "Diagnostics, skincare actives, nutraceutical shots and pharma", mode: "brief", moq: 1000, estimate: [6, 85, 10000, 90000], materials: ["Type I/III glass", "Medical-grade polymer"], spec: "Regulatory, sterilisation and closure system brief required", supplier: "Primary pharma packaging specialist" },

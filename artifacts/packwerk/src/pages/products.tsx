@@ -7,6 +7,7 @@ import {
   getCatalogImage,
   getCategoryLabel,
   getConfigureHref,
+  isCatalogSkuInCategory,
 } from "@/lib/catalog";
 type PublicPath = "instant" | "quote";
 
@@ -53,7 +54,7 @@ export default function Products() {
     const term = search.trim().toLowerCase();
 
     return CATALOG_SKUS.filter((sku) => {
-      if (category && sku.category !== category) return false;
+      if (category && !isCatalogSkuInCategory(sku, category)) return false;
       if (industry && !sku.industrySlugs.includes(industry)) return false;
       if (mode !== "all" && sku.publicBuyingPath !== mode) return false;
       if (ecoOnly && !sku.is_eco && sku.category !== "sustainable") return false;
@@ -193,7 +194,7 @@ export default function Products() {
                   style={category === cat.slug ? { background: "#0D1B2A", color: "white" } : { color: "#44474c" }}
                 >
                   <span className="font-medium truncate text-xs">{cat.label}</span>
-                  <span className="text-xs opacity-60 shrink-0">{CATALOG_SKUS.filter((sku) => sku.category === cat.slug).length}</span>
+                  <span className="text-xs opacity-60 shrink-0">{CATALOG_SKUS.filter((sku) => isCatalogSkuInCategory(sku, cat.slug)).length}</span>
                 </button>
               ))}
             </div>
@@ -255,6 +256,7 @@ export default function Products() {
                       <span className="pw-catalog-card-index">{String(index + 1).padStart(2, "0")}</span>
                       <div className="pw-catalog-card-badges">
                         <span className={sku.publicBuyingPath === "instant" ? "instant" : "quote"}>{sku.publicBuyingPath === "instant" ? "Instant buy" : "Managed quote"}</span>
+                        <span className="custom">Custom printed</span>
                         {sku.is_eco && <span className="eco">Eco option</span>}
                       </div>
                     </Link>

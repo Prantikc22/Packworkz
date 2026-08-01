@@ -6,7 +6,7 @@ import ComparisonSection from "@/components/home/ComparisonSection";
 import { SmartStockDemo } from "@/pages/smartstock";
 import { PackagingProcessSection, SustainabilityProofSection } from "@/components/home/CommerceExperienceSections";
 import TestimonialsSection from "@/components/home/TestimonialsSection";
-import { CATALOG_SKUS } from "@/lib/catalog";
+import { CATALOG_SKUS, isCatalogSkuInCategory } from "@/lib/catalog";
 import {
   Search, GitBranch, ShieldCheck, Truck,
   Leaf, Droplets, FileCheck, ArrowRight, ArrowLeft,
@@ -46,7 +46,7 @@ const LOGO_ROW_2 = [
   { name: "Pilgrim",          file: "/images/logos/pilgrim.png" },
 ];
 
-const catalogCount = (category: string) => CATALOG_SKUS.filter((sku) => sku.category === category).length;
+const catalogCount = (category: string) => CATALOG_SKUS.filter((sku) => isCatalogSkuInCategory(sku, category)).length;
 
 const HERO_CARDS = [
   {
@@ -91,8 +91,8 @@ const CATEGORIES = [
   { title: "Flexible Packaging",    sub: "Pouches, sachets, refill and high-barrier formats", cat: "flexible",    skus: catalogCount("flexible") },
   { title: "Bottles & Containers",  sub: "Plastic, glass, aluminium, jars and dispensers",     cat: "bottles",     skus: catalogCount("bottles") },
   { title: "Cosmetic Tubes",        sub: "Squeeze tubes for skincare, haircare and personal care", cat: "tubes",       skus: catalogCount("tubes") },
-  { title: "Boxes & Cartons",       sub: "Folding, corrugated, rigid and luxury structures",      cat: "boxes",       skus: catalogCount("boxes") },
-  { title: "E-commerce Packaging",  sub: "Mailers, carrier bags and return-ready fulfilment",     cat: "ecommerce",   skus: catalogCount("ecommerce") },
+  { title: "Boxes & Cartons",       sub: "Folding cartons, two-piece rigid and magnetic gift boxes", cat: "boxes",       skus: catalogCount("boxes") },
+  { title: "E-commerce Packaging",  sub: "Mailers, paper bags and food-service containers",         cat: "ecommerce",   skus: catalogCount("ecommerce") },
   { title: "Protective Packaging",  sub: "Cushioning, void fill and custom protective inserts",     cat: "protective",  skus: catalogCount("protective") },
   { title: "Packaging Rolls",       sub: "Printed films, lidding and shrink rollstock",              cat: "rolls",       skus: catalogCount("rolls") },
   { title: "Labels & Brand Extras", sub: "Labels, sleeves, tape, cards and printed tissue",          cat: "labels",      skus: catalogCount("labels") },
@@ -103,7 +103,7 @@ const CAT_IMAGES: Record<string, string> = {
   flexible:    "/categories/flexiblepacks.jpg",
   bottles:     "/categories/rigidpacks.jpg",
   tubes:       "/categories/tubes.jpg",
-  boxes:       "/categories/rigidpacks.jpg",
+  boxes:       "/categories/boxes-cartons-v2.png",
   ecommerce:   "/categories/ecom.jpg",
   protective:  "/categories/protectivepacks.jpg",
   rolls:       "/categories/printedrolls.jpg",
