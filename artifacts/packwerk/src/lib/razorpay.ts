@@ -77,6 +77,8 @@ export type PreparedOrderPayment = {
   key_id?: string;
   amount?: number;
   amount_rupees: number;
+  discount_rupees?: number;
+  promotion_code?: string;
   currency?: string;
   message?: string;
 };

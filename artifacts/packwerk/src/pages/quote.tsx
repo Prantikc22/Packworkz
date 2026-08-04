@@ -7,7 +7,13 @@ import type { Sku, VariantGroup } from "@/lib/skus";
 import { CATALOG_SKUS as SKUS, getCatalogImage, getCatalogSkusByCategory as getSkusByCategory, requiresQuote } from "@/lib/catalog";
 import { openOrderPayment, openRazorpay, prepareOrderPayment, type PreparedOrderPayment } from "@/lib/razorpay";
 import { calculateOrderEstimate } from "@/lib/pricing";
-import { COMMERCE_PRODUCTS, RAZORPAY_PAYMENT_LIMIT_RUPEES } from "@workspace/commerce";
+import {
+  COMMERCE_PRODUCTS,
+  LAUNCH_PROMOTION_CODE,
+  RAZORPAY_PAYMENT_LIMIT_RUPEES,
+  formatMeasurementInCm,
+  getMinimumQuantityForConfiguration,
+} from "@workspace/commerce";
 import {
   Loader2, CheckCircle2, ChevronDown, ChevronUp,
   Upload, Palette, X, Truck, Zap, Warehouse, ArrowRight, Shield, Search,
@@ -17,9 +23,17 @@ import {
 type ArtworkOption = "upload" | "design" | "none";
 type DeliveryOption = "standard" | "blitz" | "warehouse";
 
-// ── Step labels — now 5 steps (removed redundant artwork step) ─────────────
-const STEP_LABELS = ["Product & Qty", "Design & Delivery", "Sample", "Contact", "Review"];
-const TOTAL_STEPS = 5;
+const STEP_LABELS = ["Choose", "Brand & delivery", "Your details", "Review & pay"];
+const TOTAL_STEPS = 4;
+
+const MOBILE_SHOPPING_INTENTS = [
+  { label: "Food, coffee or supplements", help: "Pouches, sachets and jars", category: "flexible", icon: "restaurant" },
+  { label: "Skincare or personal care", help: "Bottles, jars and cosmetic tubes", category: "bottles", icon: "spa" },
+  { label: "Shipping online orders", help: "Mailer boxes, courier bags and protection", category: "ecommerce", icon: "local_shipping" },
+  { label: "Labels or stickers", help: "Paper, waterproof and clear labels", category: "labels", icon: "sell" },
+  { label: "Takeaway food", help: "Bowls, containers, bags and wraps", category: "sustainable", icon: "takeout_dining" },
+  { label: "I know the exact format", help: "Open the complete packaging catalog", category: "all", icon: "view_module" },
+] as const;
 const isAssistedSku = (sku: Sku | undefined) => sku?.purchase_mode === "brief";
 
 function customisationNote(sku: Sku | undefined) {
@@ -65,6 +79,8 @@ function calcPrice(sku: Sku | undefined, qty: number, delivery: DeliveryOption, 
     setup: result.setup,
     logistics: result.logistics,
     artAdd: result.artwork,
+    discount: "discount" in result ? result.discount : 0,
+    promotionCode: "promotionCode" in result ? result.promotionCode : undefined,
     perPiece: result.unit,
     subtotal: "subtotal" in result ? result.subtotal : result.low,
     gst: "gst" in result ? result.gst : 0,
@@ -106,12 +122,13 @@ const MS = ({ icon, className = "", style }: { icon: string; className?: string;
 
 // ── Order Summary Sidebar ──────────────────────────────────────────────────
 function OrderSummary({
-  sku, qty, delivery, artworkOption, sizeCode, configuration, buyingMode, onSubmit, submitting
+  sku, qty, delivery, artworkOption, designPaid, sizeCode, configuration, buyingMode, onSubmit, submitting
 }: {
   sku: Sku | undefined; qty: number; delivery: DeliveryOption;
-  artworkOption: ArtworkOption; sizeCode?: string; configuration?: Record<string, string>; buyingMode: "self" | "assisted"; onSubmit?: () => void; submitting?: boolean;
+  artworkOption: ArtworkOption; designPaid?: boolean; sizeCode?: string; configuration?: Record<string, string>; buyingMode: "self" | "assisted"; onSubmit?: () => void; submitting?: boolean;
 }) {
-  const { low, high, mat, setup, logistics, artAdd, gst, total, paymentEligible } = calcPrice(sku, qty, delivery, artworkOption, sizeCode, configuration);
+  const pricedArtwork = artworkOption === "design" && designPaid ? "upload" : artworkOption;
+  const { low, high, mat, setup, logistics, artAdd, discount, promotionCode, gst, total, paymentEligible, perPiece } = calcPrice(sku, qty, delivery, pricedArtwork, sizeCode, configuration);
   const selectedSize = sku ? COMMERCE_PRODUCTS[sku.code]?.sizes.find((item) => item.code === sizeCode) : undefined;
 
   return (
@@ -124,7 +141,7 @@ function OrderSummary({
           <div>
             <div className="text-xs text-slate-500 uppercase tracking-wider mb-1">Product</div>
             <div className="text-white font-bold text-sm leading-snug">{sku?.name || "—"}</div>
-            {selectedSize && <div className="text-xs mt-1" style={{ color: "#7CB5E4" }}>{selectedSize.label} · {selectedSize.detail}</div>}
+            {selectedSize && <div className="text-xs mt-1" style={{ color: "#7CB5E4" }}>{formatMeasurementInCm(selectedSize.label)} · {formatMeasurementInCm(selectedSize.detail)}</div>}
             {sku && <div className="text-xs text-slate-500 mt-0.5 font-mono">{(sku as any).specs?.code || (sku as any).code || ""}</div>}
           </div>
           <div className="text-right">
@@ -147,6 +164,12 @@ function OrderSummary({
               <div className="flex justify-between text-sm">
                 <span className="text-slate-400">Design Service</span>
                 <span className="text-white font-medium" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>₹{fmt(artAdd)}</span>
+              </div>
+            )}
+            {discount > 0 && (
+              <div className="flex justify-between text-sm" style={{ color: "#62D39B" }}>
+                <span>Launch saving · {promotionCode}</span>
+                <span className="font-bold">−₹{fmt(discount)}</span>
               </div>
             )}
             <div className="flex justify-between text-sm">
@@ -172,7 +195,7 @@ function OrderSummary({
               <div className="flex items-center gap-1.5 mt-2 px-2 py-1.5 rounded" style={{ background: "rgba(27,108,168,0.12)" }}>
                 <span className="text-xs font-bold" style={{ color: "#60a5fa" }}>
                   {buyingMode === "self"
-                    ? `₹${fmt((total ?? low) / qty)} effective per piece, including GST`
+                    ? `₹${fmt(perPiece)} packaging rate per piece, before GST and delivery`
                     : `₹${fmt(low / qty)} – ₹${fmt(high / qty)} estimated per piece`}
                 </span>
               </div>
@@ -181,7 +204,7 @@ function OrderSummary({
                   ✓ Volume discount applied — order more, pay less per piece
                 </div>
               )}
-              <div className="text-xs text-slate-500 mt-1.5">{buyingMode === "self" ? "Includes GST and the delivery shown above." : "Excludes GST. Final pricing follows engineering and artwork review."}</div>
+              <div className="text-xs text-slate-500 mt-1.5">{buyingMode === "self" ? "Payable total includes GST, setup and the delivery shown above. The product rate is shown separately for a fair comparison." : "Excludes GST. Final pricing follows engineering and artwork review."}</div>
               {buyingMode === "self" && !paymentEligible && (
                 <div className="mt-3 p-3 text-xs leading-relaxed" style={{ color: "#FBD38D", background: "rgba(232,168,56,0.12)", border: "1px solid rgba(232,168,56,0.28)" }}>
                   Online payment is currently available up to ₹{RAZORPAY_PAYMENT_LIMIT_RUPEES.toLocaleString("en-IN")}. Submit this order plan and our team will confirm the payment route and production slot.
@@ -214,7 +237,7 @@ function OrderSummary({
                 ] : [
                   { n: "1", text: "Your specification is saved to the Packworkz order record" },
                   { n: "2", text: paymentEligible ? "Pay securely with Razorpay without leaving Packworkz" : "Packworkz confirms the payment route for totals above ₹50,000" },
-                  { n: "3", text: "Artwork is checked before production and SmartStock tracking begins" },
+                  { n: "3", text: "Track as a guest, or create an account after payment to keep every order and quote together" },
                 ]).map(({ n, text }) => (
                   <div key={n} className="flex items-start gap-2.5">
                     <span className="w-5 h-5 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-black mt-0.5"
@@ -460,7 +483,7 @@ function ConfirmationScreen({ quoteId, buyingMode }: { quoteId: string; buyingMo
               <div>
                 <span className="block text-[10px] uppercase tracking-[0.16em] mb-1" style={{ color: "#71859A" }}>Order plan</span>
                 <strong className="text-sm sm:text-base">{item?.product_name || (loading ? "Loading…" : "Packaging")}</strong>
-                {size && <span className="block text-xs mt-1" style={{ color: "#8CA0B4" }}>{size.label} · {size.detail}</span>}
+                {size && <span className="block text-xs mt-1" style={{ color: "#8CA0B4" }}>{formatMeasurementInCm(size.label)} · {formatMeasurementInCm(size.detail)}</span>}
               </div>
             </div>
 
@@ -470,6 +493,11 @@ function ConfirmationScreen({ quoteId, buyingMode }: { quoteId: string; buyingMo
                   <span className="block text-[10px] uppercase tracking-[0.16em] mb-1" style={{ color: "#71859A" }}>{isPaid ? "Amount paid" : requiresConfirmation ? "Order value" : "Secure payment"}</span>
                   <strong className="text-3xl font-black">₹{prepared.amount_rupees.toLocaleString("en-IN", { maximumFractionDigits: 2 })}</strong>
                   <span className="block text-xs mt-1" style={{ color: "#71859A" }}>GST and listed delivery included</span>
+                  {!!prepared.discount_rupees && (
+                    <span className="inline-flex mt-3 px-3 py-1.5 text-xs font-black" style={{ background: "rgba(98,211,155,0.12)", color: "#62D39B", border: "1px solid rgba(98,211,155,0.3)" }}>
+                      {prepared.promotion_code || LAUNCH_PROMOTION_CODE} saved ₹{prepared.discount_rupees.toLocaleString("en-IN", { maximumFractionDigits: 2 })}
+                    </span>
+                  )}
                 </div>
               </div>
             ) : null}
@@ -499,8 +527,13 @@ function ConfirmationScreen({ quoteId, buyingMode }: { quoteId: string; buyingMo
             <div className="mt-9 flex flex-col sm:flex-row lg:flex-col gap-3">
               <a href={`https://wa.me/918208990366?text=${waMsg}`} target="_blank" rel="noopener noreferrer" className="px-5 py-3.5 text-center font-bold text-sm border" style={{ borderColor: "rgba(255,255,255,0.24)", color: "white" }}>Message order desk</a>
               <Link href={isPaid ? `/track-order?reference=${encodeURIComponent(orderId || quoteId)}` : "/products"} className="px-5 py-3.5 text-center font-bold text-sm" style={{ background: "#18344A", color: "#D7E5F0" }}>{isPaid ? "Track without an account" : "Browse products"}</Link>
+              {isPaid && (
+                <Link href={`/signup?claim=${encodeURIComponent(orderId || quoteId)}`} className="px-5 py-3.5 text-center font-bold text-sm border" style={{ borderColor: "#E8A838", color: "#E8A838" }}>
+                  Create account and save this order
+                </Link>
+              )}
             </div>
-            {isPaid && <p className="mt-4 text-xs leading-relaxed" style={{ color: "#71859A" }}>Use this order ID and the email or mobile submitted at checkout. No account is required.</p>}
+            {isPaid && <p className="mt-4 text-xs leading-relaxed" style={{ color: "#71859A" }}>Track as a guest with this order ID and the checkout email or mobile, or create an account to keep orders, quotes and reorders together.</p>}
           </aside>
         </div>
       </div>
@@ -540,12 +573,19 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
     const search = new URLSearchParams(window.location.search);
     return !search.get("sku") && !search.get("product");
   });
+  const [mobileIntentChosen, setMobileIntentChosen] = useState<boolean>(() => {
+    if (typeof window === "undefined") return false;
+    const search = new URLSearchParams(window.location.search);
+    return Boolean(search.get("sku") || search.get("product"));
+  });
+  const [mobileBrowseAll, setMobileBrowseAll] = useState(false);
+  const [mobileShowAllResults, setMobileShowAllResults] = useState(false);
   const [qty, setQty] = useState<number>(() => loadDraft().qty || SKUS[0].moq);
   const [qtyUnit, setQtyUnit] = useState<'pieces' | 'kg'>(() => loadDraft().qtyUnit || 'pieces');
   const [variantSelections, setVariantSelections] = useState<Record<string, string>>(() => loadDraft().variantSelections || {});
   const [customFieldValues, setCustomFieldValues] = useState<Record<string, string>>(() => loadDraft().customFieldValues || {});
   const [selectedSizeCode, setSelectedSizeCode] = useState<string>(() => loadDraft().selectedSizeCode || COMMERCE_PRODUCTS[SKUS[0].code]?.sizes[0]?.code || "");
-  const [dimUnit, setDimUnit] = useState<"mm"|"cm"|"in">("mm");
+  const [dimUnit, setDimUnit] = useState<"mm"|"cm"|"in">("cm");
   const [weightUnit, setWeightUnit] = useState<"g"|"kg"|"t">("g");
 
   // ── Artwork / Design ─────────────────────────────────────────────────────
@@ -641,9 +681,9 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
   // ── Navigation with save ──────────────────────────────────────────────────
   const handleNext = () => {
     if (stepNum === 1 && !selectedSku) {
-      toast({ variant: "destructive", title: "Choose a format", description: "Select a packaging SKU before continuing." }); return;
+      toast({ variant: "destructive", title: "Choose a product", description: "Select the packaging you want before continuing." }); return;
     }
-    if (stepNum === 4) {
+    if (stepNum === 3) {
       if (!contactName.trim()) { toast({ variant: "destructive", title: "Required field missing", description: "Please enter your contact name." }); return; }
       if (!company.trim()) { toast({ variant: "destructive", title: "Required field missing", description: "Please enter your company name." }); return; }
       if (!email.trim() || !email.includes("@")) { toast({ variant: "destructive", title: "Required field missing", description: "Please enter a valid business email." }); return; }
@@ -668,7 +708,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
 
   const normalizedCatalogQuery = catalogQuery.trim().toLowerCase();
   const currentCatSkus = useMemo(() => {
-    const source = normalizedCatalogQuery ? SKUS : getSkusByCategory(selectedCategory);
+    const source = normalizedCatalogQuery || mobileBrowseAll ? SKUS : getSkusByCategory(selectedCategory);
     return source.filter((sku) => {
       if (ecoFilter && !sku.is_eco) return false;
       if (!normalizedCatalogQuery) return true;
@@ -681,23 +721,26 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
         category,
       ].join(" ").toLowerCase().includes(normalizedCatalogQuery);
     });
-  }, [ecoFilter, normalizedCatalogQuery, selectedCategory]);
+  }, [ecoFilter, mobileBrowseAll, normalizedCatalogQuery, selectedCategory]);
 
   const selectedSku = useMemo(() => SKUS.find(s => s.id === selectedSkuId), [selectedSkuId]);
-  const selectedSkuMoq = selectedSku?.moq || 500;
+  const selectedSkuMoq = selectedSku
+    ? getMinimumQuantityForConfiguration(selectedSku.code, variantSelections) || selectedSku.moq
+    : 500;
   const commerceProduct = selectedSku ? COMMERCE_PRODUCTS[selectedSku.code] : undefined;
   const selectedSkuBuyingMode = selectedSku && !isAssistedSku(selectedSku) && !requiresQuote(selectedSku, qty) ? "self" : "assisted";
   const quantityPresets = useMemo(() => {
     if (!selectedSku || qtyUnit !== "pieces") return [50, 100, 250, 500, 1000];
     const tierQuantities = (selectedSku.price_tiers || [])
       .map((tier) => tier.min_qty)
+      .filter((quantity) => quantity >= selectedSkuMoq)
       .filter((quantity) => !selectedSku.quote_threshold || quantity < selectedSku.quote_threshold);
     return tierQuantities.length ? tierQuantities : [selectedSkuMoq, selectedSkuMoq * 2, selectedSkuMoq * 5];
   }, [qtyUnit, selectedSku, selectedSkuMoq]);
 
   useEffect(() => {
-    if (qtyUnit === "pieces" && selectedSku && qty < selectedSku.moq) setQty(selectedSku.moq);
-  }, [qty, qtyUnit, selectedSku]);
+    if (qtyUnit === "pieces" && selectedSku && qty < selectedSkuMoq) setQty(selectedSkuMoq);
+  }, [qty, qtyUnit, selectedSku, selectedSkuMoq]);
 
   useEffect(() => {
     if (!commerceProduct) return;
@@ -711,6 +754,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
     const defaults: Record<string, string> = {};
     sku.variants.forEach(g => { defaults[g.key] = g.options[0]; });
     setVariantSelections(defaults);
+    return defaults;
   };
 
   const handleSelectSku = (skuId: string) => {
@@ -718,9 +762,13 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
     const sku = SKUS.find(s => s.id === skuId);
     if (sku) {
       setSelectedCategory(sku.category);
-      initVariants(sku);
+      const defaults = initVariants(sku);
       setSelectedSizeCode(COMMERCE_PRODUCTS[sku.code]?.sizes[0]?.code || "");
-      if (qtyUnit === "pieces") setQty(prev => Math.max(prev, sku.moq));
+      if (qtyUnit === "pieces") setQty(prev => Math.max(prev, getMinimumQuantityForConfiguration(sku.code, defaults)));
+    }
+    if (typeof window !== "undefined" && window.innerWidth < 640) {
+      setCatalogOpen(false);
+      window.requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: "smooth" }));
     }
   };
 
@@ -730,14 +778,28 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
     const first = getSkusByCategory(slug)[0];
     if (first) {
       setSelectedSkuId(first.id);
-      initVariants(first);
+      const defaults = initVariants(first);
       setSelectedSizeCode(COMMERCE_PRODUCTS[first.code]?.sizes[0]?.code || "");
-      if (qtyUnit === "pieces") setQty(first.moq);
+      if (qtyUnit === "pieces") setQty(getMinimumQuantityForConfiguration(first.code, defaults));
     }
   };
 
+  const handleMobileIntent = (category: string) => {
+    setMobileIntentChosen(true);
+    setCatalogOpen(true);
+    setMobileBrowseAll(category === "all");
+    setMobileShowAllResults(category === "all");
+    if (category === "all") return;
+    handleSelectCategory(category);
+  };
+
+  useEffect(() => {
+    if (stepNum > TOTAL_STEPS && stepNum !== 99) setLocation(`/configure/step/${TOTAL_STEPS}`);
+  }, [setLocation, stepNum]);
+
   const handleSubmit = () => {
-    const { low, high } = calcPrice(selectedSku, qty, deliveryOption, artworkOption, selectedSizeCode, variantSelections);
+    const pricedArtwork = artworkOption === "design" && designPaid ? "upload" : artworkOption;
+    const { low, high } = calcPrice(selectedSku, qty, deliveryOption, pricedArtwork, selectedSizeCode, variantSelections);
     submitMutation.mutate({
       data: {
         contact_name: contactName, company_name: company, email, phone,
@@ -760,7 +822,10 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
           quantity: qty, quantity_unit: qtyUnit,
           artwork_status: artworkOption,
           artwork_file_url: artworkFileUrl || undefined,
-          variant_selections: Object.keys(variantSelections).length ? variantSelections : undefined,
+          variant_selections: {
+            ...variantSelections,
+            promotion_code: LAUNCH_PROMOTION_CODE,
+          },
           custom_specs: {
             ...(Object.keys(customFieldValues).length ? customFieldValues : {}),
             ...(selectedSizeCode ? { standard_size: selectedSizeCode } : {}),
@@ -845,7 +910,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
   const isLastStep = stepNum === TOTAL_STEPS;
 
   return (
-    <div className="min-h-screen" style={{ background: "#F8F9FC", fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+    <div className="min-h-screen pt-[104px] md:pt-[108px]" style={{ background: "#F8F9FC", fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
       {/* ── Progress strip ── */}
       <div className="bg-white border-b border-slate-100 px-4 md:px-8 py-3">
         <div className="max-w-6xl mx-auto flex items-center gap-0">
@@ -876,10 +941,10 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
           {/* ── Left panel ── */}
           <div className="lg:col-span-2 space-y-6">
 
-            {/* ── STEP 4: Contact Info ── */}
-            {stepNum === 4 && (
+            {/* ── STEP 3: Contact Info ── */}
+            {stepNum === 3 && (
               <>
-                <StepHeader step={4} total={TOTAL_STEPS} title="Where should we send the plan?" subtitle="Your specification is ready. Add the contact details for this project." />
+                <StepHeader step={3} total={TOTAL_STEPS} title="Where should we send updates?" subtitle="Checkout works without an account. Add the contact details for this order." />
                 <div className="bg-white rounded-lg border border-slate-200 p-6">
                   <div className="grid md:grid-cols-2 gap-5">
                     {[
@@ -926,10 +991,51 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
             {/* ── STEP 1: Product & Quantity ── */}
             {stepNum === 1 && (
               <>
-                <StepHeader step={1} total={TOTAL_STEPS} title="Build your packaging plan" subtitle="Start with the format and quantity. No contact details required yet." />
+                <StepHeader step={1} total={TOTAL_STEPS} title="What are you packaging?" subtitle="Tell us what you sell and we will narrow the catalog for you." />
+
+                <div className="sm:hidden bg-white border border-slate-200 p-4">
+                  <div className="flex items-start justify-between gap-3 mb-4">
+                    <div>
+                      <p className="text-sm font-black text-slate-900">Choose the closest match</p>
+                      <p className="mt-1 text-xs leading-relaxed text-slate-500">We will show the most relevant products first.</p>
+                    </div>
+                    {mobileIntentChosen && (
+                      <button type="button" onClick={() => setMobileIntentChosen(false)} className="text-xs font-bold text-blue-700 shrink-0">Change</button>
+                    )}
+                  </div>
+                  {!mobileIntentChosen ? (
+                    <div className="space-y-2">
+                      {MOBILE_SHOPPING_INTENTS.map((intent) => (
+                        <button
+                          key={intent.label}
+                          type="button"
+                          onClick={() => handleMobileIntent(intent.category)}
+                          className="w-full min-h-[68px] border border-slate-200 bg-white px-3 py-2.5 flex items-center gap-3 text-left active:bg-slate-50"
+                        >
+                          <span className="w-10 h-10 bg-slate-100 flex items-center justify-center shrink-0">
+                            <MS icon={intent.icon} className="text-xl text-slate-700" />
+                          </span>
+                          <span className="min-w-0 flex-1">
+                            <strong className="block text-sm text-slate-900 leading-tight">{intent.label}</strong>
+                            <span className="block mt-1 text-xs text-slate-500 leading-tight">{intent.help}</span>
+                          </span>
+                          <ArrowRight className="w-4 h-4 text-slate-400 shrink-0" />
+                        </button>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-3 border-l-4 border-blue-600 bg-blue-50 px-3 py-3">
+                      <CheckCircle2 className="w-5 h-5 text-blue-700 shrink-0" />
+                      <div>
+                        <strong className="block text-sm text-slate-900">Recommended formats ready</strong>
+                        <span className="block text-xs text-slate-500">Pick one below, then choose a standard size and quantity.</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
 
                 {/* Category grid */}
-                {catalogOpen && <div className="bg-white rounded-none border border-slate-200 p-5">
+                {catalogOpen && <div className="hidden sm:block bg-white rounded-none border border-slate-200 p-5">
                   <div className="flex justify-between items-center mb-4">
                     <span className="font-bold text-slate-800 text-sm" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>Product Category</span>
                     <div className="flex gap-2">
@@ -980,7 +1086,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                 </div>}
 
                 {/* SKU cards */}
-                <div className="bg-white rounded-none border border-slate-200 p-5">
+                <div className={`${catalogOpen && !mobileIntentChosen ? "hidden sm:block" : "block"} bg-white rounded-none border border-slate-200 p-4 sm:p-5`}>
                   <div className="flex items-center justify-between gap-4 mb-4">
                     <div className="font-bold text-slate-800 text-sm" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
                       {catalogOpen ? (normalizedCatalogQuery ? "Search results" : "Choose a product") : "Your selected product"}
@@ -1030,8 +1136,8 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                     <p className="text-xs leading-relaxed" style={{ color: selectedSkuBuyingMode === "assisted" ? "#8A5A00" : "#1B5F94" }}>
                       <strong>{selectedSkuBuyingMode === "assisted" ? "Managed quote:" : "Instant buy:"}</strong>{" "}
                       {selectedSkuBuyingMode === "assisted"
-                        ? "This structure needs compatibility, tooling, or barrier review. Complete the technical brief for a production-ready quote."
-                        : "Configure the standard format and quantity now. You will see an indicative order value before sharing contact details."}
+                        ? "This product needs a quick expert check before we confirm price and production timing."
+                        : "Choose a standard size and quantity now. You will see the current order value before sharing contact details."}
                     </p>
                   </div>
                   {catalogOpen && currentCatSkus.length === 0 ? (
@@ -1040,9 +1146,9 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                     </p>
                   ) : catalogOpen ? (
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      {currentCatSkus.map(sku => (
+                      {currentCatSkus.map((sku, index) => (
                         <button key={sku.id} onClick={() => handleSelectSku(sku.id)}
-                          className="group flex flex-col overflow-hidden rounded-none border-2 text-left transition-colors"
+                          className={`${index >= 4 && !normalizedCatalogQuery && !mobileShowAllResults ? "hidden sm:flex" : "flex"} group flex-col overflow-hidden rounded-none border-2 text-left transition-colors`}
                           style={{ borderColor: selectedSkuId === sku.id ? "#1B6CA8" : "#E2E8F0", background: selectedSkuId === sku.id ? "rgba(27,108,168,0.04)" : "white" }}
                         >
                           <div className="relative w-full aspect-[4/3] bg-slate-100 shrink-0 overflow-hidden border-b border-slate-200">
@@ -1073,23 +1179,59 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                       ))}
                     </div>
                   ) : null}
+                  {catalogOpen && currentCatSkus.length > 4 && !normalizedCatalogQuery && !mobileShowAllResults && (
+                    <button type="button" onClick={() => setMobileShowAllResults(true)} className="sm:hidden mt-3 w-full border border-slate-300 bg-white py-3 text-sm font-bold text-slate-800">
+                      Show all {currentCatSkus.length} formats
+                    </button>
+                  )}
                 </div>
 
                 {/* Variant selectors */}
                 {selectedSku && selectedSku.variants.length > 0 && (
-                  <div className="bg-white rounded-lg border border-slate-200 p-5">
-                    <div className="font-bold text-slate-800 text-sm mb-4" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
-                      Configure — {selectedSku.name}
-                    </div>
-                    <div className="space-y-4">
-                      {selectedSku.variants.map(group => {
-                        return (
+                  <>
+                    <div className="hidden sm:block bg-white rounded-lg border border-slate-200 p-5">
+                      <div className="font-bold text-slate-800 text-sm mb-4" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+                        Material and finish — {selectedSku.name}
+                      </div>
+                      <div className="space-y-4">
+                        {selectedSku.variants.map(group => (
                           <VariantSelector key={group.key} group={group}
                             selected={variantSelections[group.key] || group.options[0]}
                             onSelect={v => setVariantSelections(prev => ({ ...prev, [group.key]: v }))} />
-                        );
-                      })}
+                        ))}
+                      </div>
                     </div>
+                    <details className="sm:hidden bg-white border border-slate-200">
+                      <summary className="min-h-[56px] px-4 py-3 flex items-center justify-between gap-3 cursor-pointer list-none">
+                        <span>
+                          <strong className="block text-sm text-slate-900">Material and finish</strong>
+                          <small className="block mt-0.5 text-slate-500">Recommended choices are already selected</small>
+                        </span>
+                        <ChevronDown className="w-5 h-5 text-slate-400 shrink-0" />
+                      </summary>
+                      <div className="px-4 pb-4 pt-2 border-t border-slate-100 space-y-4">
+                        {selectedSku.variants.map(group => (
+                          <VariantSelector key={group.key} group={group}
+                            selected={variantSelections[group.key] || group.options[0]}
+                            onSelect={v => setVariantSelections(prev => ({ ...prev, [group.key]: v }))} />
+                        ))}
+                      </div>
+                    </details>
+                  </>
+                )}
+
+                {selectedSku?.code === "SP-907" && (
+                  <div className="border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-slate-700">
+                    <strong className="block text-slate-900">
+                      {(variantSelections.branding || "Plain stock") === "Custom printed"
+                        ? "Direct custom print starts at 10,000 units"
+                        : (variantSelections.branding || "Plain stock") === "Applied label"
+                          ? "Branded short runs start at 500 units"
+                          : "Plain stock starts at 300 units"}
+                    </strong>
+                    <span className="mt-1 block text-xs leading-relaxed text-slate-600">
+                      Plain stock is best for trials. Applied labels suit smaller branded launches. Direct printing uses a production run with plate and colour setup.
+                    </span>
                   </div>
                 )}
 
@@ -1098,8 +1240,8 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                   <div className="bg-white border border-slate-200 p-5">
                     <div className="flex items-start justify-between gap-4 mb-4">
                       <div>
-                        <div className="font-bold text-slate-800 text-sm" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>Choose a production size</div>
-                        <p className="text-xs text-slate-500 mt-1">Every option is pre-engineered and linked to its exact quantity pricing. Custom dimensions move to a managed quote.</p>
+                        <div className="font-bold text-slate-800 text-sm" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>Choose a standard size</div>
+                        <p className="text-xs text-slate-500 mt-1">These sizes are ready to order with clear pricing. Need a different size? We will confirm it for you.</p>
                       </div>
                       <span className="text-[10px] font-black uppercase tracking-wider px-2 py-1" style={{ color: "#17613C", background: "#EAF8F0" }}>Price locked</span>
                     </div>
@@ -1114,8 +1256,8 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                             className="text-left p-3 border transition-colors"
                             style={{ borderColor: active ? "#1B6CA8" : "#DCE4EE", background: active ? "#EEF6FC" : "#FFFFFF" }}
                           >
-                            <span className="block text-sm font-black" style={{ color: active ? "#155A8C" : "#0D1B2A" }}>{item.label}</span>
-                            <span className="block text-[11px] mt-1 leading-snug text-slate-500">{item.detail}</span>
+                            <span className="block text-sm font-black" style={{ color: active ? "#155A8C" : "#0D1B2A" }}>{formatMeasurementInCm(item.label)}</span>
+                            <span className="block text-[11px] mt-1 leading-snug text-slate-500">{formatMeasurementInCm(item.detail)}</span>
                           </button>
                         );
                       })}
@@ -1234,7 +1376,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                     <p className="text-xs text-slate-400">
                       {selectedSkuBuyingMode === "self"
                         ? "Choose one of the production quantities above. Larger or custom runs move to a managed volume quote."
-                        : qtyUnit === "pieces" ? `Minimum: ${selectedSkuMoq.toLocaleString()} pieces for ${selectedSku?.name || "this SKU"}` : "Minimum: 50 kg of packaging film"}
+                        : qtyUnit === "pieces" ? `Minimum: ${selectedSkuMoq.toLocaleString()} pieces for ${selectedSku?.name || "this product"}` : "Minimum: 50 kg of packaging film"}
                     </p>
                     {selectedSkuBuyingMode === "assisted" && (
                       <div className="flex items-start gap-2 p-3 rounded-lg" style={{ background: "#FFF7E6", border: "1px solid #F2D89C" }}>
@@ -1260,13 +1402,13 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
             {/* ── STEP 2: Design & Delivery (consolidated) ── */}
             {stepNum === 2 && (
               <>
-                <StepHeader step={2} total={TOTAL_STEPS} title="Design & Delivery" subtitle="How should we print it, and where should the finished packaging go?" />
+                <StepHeader step={2} total={TOTAL_STEPS} title="Brand and delivery" subtitle="Add your design, choose delivery, and decide whether you need a sample first." />
 
                 {/* Artwork section */}
                 <div className="bg-white rounded-lg border border-slate-200 p-6">
                   <div className="font-bold text-slate-800 text-sm mb-1" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>Artwork &amp; Dieline</div>
                   <div className="text-xs text-slate-400 mb-5">Upload your artwork or dieline file, or let us design it.</div>
-                  <div className="grid grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
                     {([
                       { id: "upload" as ArtworkOption, icon: <Upload className="w-8 h-8" />, label: "Upload My File", sub: "PDF, AI, CDR, SVG — artwork or dieline", badge: null },
                       { id: "design" as ArtworkOption, icon: <Palette className="w-8 h-8" />, label: "Design It For Me", sub: "Expert design + dieline", badge: "+₹1,999" },
@@ -1367,7 +1509,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                 <div className="bg-white rounded-lg border border-slate-200 p-5">
                   <div className="font-bold text-slate-800 text-sm mb-1" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>Delivery</div>
                   <div className="text-xs text-slate-400 mb-5">How fast do you need it?</div>
-                  <div className="grid grid-cols-3 gap-4 mb-5">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-5">
                     {([
                       { id: "standard" as DeliveryOption, icon: <Truck className="w-7 h-7" />, label: "Standard Pro", time: `${selectedSku?.delivery_days_india || 12}–${(selectedSku?.delivery_days_india || 12) + 2} Days`, price: "Free", recommended: true },
                       { id: "blitz" as DeliveryOption, icon: <Zap className="w-7 h-7" />, label: "Blitz Logistics", time: "5–7 Days", price: "+₹1,200" },
@@ -1409,11 +1551,34 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                     </div>
                   </div>
                 </div>
+
+                <div className="bg-white border border-slate-200 p-5">
+                  <div className="font-bold text-slate-800 text-sm mb-1" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>Do you need a sample first?</div>
+                  <p className="text-xs text-slate-500 mb-4">Most repeat orders skip this. First-time or high-risk packs can request a physical sample before bulk production.</p>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                    {([
+                      { id: "none" as const, title: "No, continue", body: "Go directly to artwork review and production." },
+                      { id: "standard" as const, title: "Yes, standard", body: "We confirm format, timing and the ₹2,999 sample fee." },
+                      { id: "express" as const, title: "Yes, priority", body: "We confirm the fastest available sample route and ₹4,999 fee." },
+                    ]).map((option) => (
+                      <button
+                        key={option.id}
+                        type="button"
+                        onClick={() => { setSampleOption(option.id); setSamplePaid(false); }}
+                        className="min-h-[78px] border p-3 text-left transition-colors"
+                        style={{ borderColor: sampleOption === option.id ? "#1B6CA8" : "#DCE4EE", background: sampleOption === option.id ? "#EEF6FC" : "#FFFFFF" }}
+                      >
+                        <strong className="block text-sm text-slate-900">{option.title}</strong>
+                        <span className="block mt-1 text-xs leading-relaxed text-slate-500">{option.body}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
               </>
             )}
 
-            {/* ── STEP 3: Sample ── */}
-            {stepNum === 3 && (
+            {/* Sampling now lives inside Brand & delivery; keep this retired screen unreachable. */}
+            {false && (
               <>
                 <StepHeader step={3} total={TOTAL_STEPS} title="Sample Request" subtitle="Validate structure and print before bulk production." />
                 <div className="bg-white rounded-lg border border-slate-200 p-6">
@@ -1510,10 +1675,10 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
               </>
             )}
 
-            {/* ── STEP 5: Review ── */}
-            {stepNum === 5 && (
+            {/* ── STEP 4: Review ── */}
+            {stepNum === 4 && (
               <>
-                <StepHeader step={5} total={TOTAL_STEPS} title={selectedSkuBuyingMode === "assisted" ? "Review technical request" : "Review order plan"} subtitle="Double-check the specification before it is saved." />
+                <StepHeader step={4} total={TOTAL_STEPS} title={selectedSkuBuyingMode === "assisted" ? "Review your request" : "Review your order"} subtitle="Check the essentials before saving your request." />
                 <div className="bg-white rounded-lg border border-slate-200 p-6 space-y-5">
                   <div>
                     <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Additional Notes / Special Requirements</label>
@@ -1535,14 +1700,16 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                         ["SKU", selectedSku?.name || "—"],
                         ["SKU Code", selectedSku?.code || "—"],
                         ["Quantity", `${qty.toLocaleString()} ${qtyUnit}`],
-                        ...(selectedSkuBuyingMode === "self" && commerceProduct ? [["Production size", commerceProduct.sizes.find((item) => item.code === selectedSizeCode)?.label || selectedSizeCode]] : []),
+                        ...(selectedSkuBuyingMode === "self" && commerceProduct ? [["Production size", formatMeasurementInCm(commerceProduct.sizes.find((item) => item.code === selectedSizeCode)?.label || selectedSizeCode)]] : []),
                         ...Object.entries(variantSelections).map(([k, v]) => {
                           const group = selectedSku?.variants.find(g => g.key === k);
                           return [group?.label || k, v];
                         }),
                         ...Object.entries(customFieldValues).filter(([, v]) => v).map(([k, v]) => {
                           const field = selectedSku?.customization_fields.find(f => f.key === k);
-                          return [(field?.label || k), field?.unit ? `${v} ${field.unit}` : v];
+                          const displayValue = field ? toDisplay(v, field.unit, dimUnit, weightUnit) : v;
+                          const displayUnit = field ? fieldDisplayUnit(field.unit, dimUnit, weightUnit) : "";
+                          return [(field?.label || k), displayUnit ? `${displayValue} ${displayUnit}` : displayValue];
                         }),
                         ["Artwork", artworkOption === "upload"
                           ? (artworkUploading ? "⏳ Uploading…" : artworkFileUrl && !artworkFileUrl.startsWith("local:") ? `✓ ${artworkFileUrl.split("/").pop()?.substring(0, 28) || "File uploaded"}` : artworkFile ? `⚠ ${artworkFile.name} (not uploaded)` : "Upload ready-to-print file")
@@ -1566,10 +1733,35 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                       <span className="text-slate-500"> you can pay now or we'll follow up before starting design.</span>
                     </div>
                   )}
-                  {(sampleOption === "express" && !samplePaid) && (
+                  {(sampleOption !== "none" && !samplePaid) && (
                     <div className="p-4 rounded-lg text-sm" style={{ background: "rgba(232,168,56,0.08)", border: "1px solid rgba(232,168,56,0.3)" }}>
-                      <span className="font-bold" style={{ color: "#92600A" }}>Express sample payment pending —</span>
-                      <span className="text-slate-500"> your slot will be held for 48 hrs after submission.</span>
+                      <span className="font-bold" style={{ color: "#92600A" }}>Sample confirmation pending —</span>
+                      <span className="text-slate-500"> we will confirm availability, timing and the fee before production.</span>
+                    </div>
+                  )}
+
+                  {selectedSkuBuyingMode === "self" && (
+                    <div className="border border-slate-200 bg-slate-50 p-5">
+                      <p className="text-[10px] font-black uppercase tracking-[0.18em] text-slate-500">Useful additions</p>
+                      <h2 className="mt-1 text-base font-black text-slate-900">Add only what helps this order</h2>
+                      <div className="mt-4 grid sm:grid-cols-3 gap-2">
+                        <button type="button" onClick={() => { setArtworkOption("design"); setDesignPaid(false); }} className="min-h-20 border border-slate-300 bg-white p-3 text-left hover:border-blue-500">
+                          <strong className="block text-sm text-slate-900">Artwork support</strong>
+                          <span className="mt-1 block text-xs leading-relaxed text-slate-500">₹1,999, added once at checkout</span>
+                        </button>
+                        <button type="button" onClick={() => {
+                          setSampleOption("standard");
+                          setSamplePaid(false);
+                          toast({ title: "Sample requested", description: "We will confirm availability and timing before production." });
+                        }} className="min-h-20 border border-slate-300 bg-white p-3 text-left hover:border-blue-500">
+                          <strong className="block text-sm text-slate-900">Review a sample</strong>
+                          <span className="mt-1 block text-xs leading-relaxed text-slate-500">Compare sample routes before bulk production</span>
+                        </button>
+                        <a href="/configure?sku=LC-816" target="_blank" rel="noopener noreferrer" className="min-h-20 border border-slate-300 bg-white p-3 text-left hover:border-blue-500">
+                          <strong className="block text-sm text-slate-900">Matching labels</strong>
+                          <span className="mt-1 block text-xs leading-relaxed text-slate-500">Open a separate label order without losing this one</span>
+                        </a>
+                      </div>
                     </div>
                   )}
 
@@ -1580,7 +1772,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                       {(selectedSkuBuyingMode === "self" ? [
                         { n: "1", title: "Save the Packworkz specification", body: "The exact SKU, quantity, artwork route, and delivery choice are attached to the order.", color: "#1B6CA8" },
                         { n: "2", title: "Complete secure payment", body: "Razorpay collects payment on Packworkz without asking you to configure the product again.", color: "#E8A838" },
-                        { n: "3", title: "Artwork check and production", body: "Nothing enters production until the artwork and specification pass prepress review.", color: "#22C55E" },
+                        { n: "3", title: "Track now, create an account when useful", body: "Checkout works as a guest. Track with your reference and contact detail, or create an account after payment to keep orders and quotes together.", color: "#22C55E" },
                       ] : [
                         { n: "1", title: "We review your spec", body: "Same day — our team checks SKU, quantity, and delivery requirements.", color: "#1B6CA8" },
                         { n: "2", title: "You receive an itemised pricing plan", body: "Within 48 hours via WhatsApp and email — line-item breakdown, no surprises.", color: "#E8A838" },
@@ -1602,14 +1794,27 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
               </>
             )}
 
+            {!isLastStep && selectedSku && (
+              <div className="lg:hidden border border-slate-200 bg-white px-4 py-3 flex items-center justify-between gap-4">
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-bold text-slate-900">{selectedSku.name}</p>
+                  <p className="text-xs text-slate-500">{qty.toLocaleString("en-IN")} {qtyUnit}</p>
+                </div>
+                <div className="shrink-0 text-right">
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Current total</p>
+                  <p className="text-base font-black text-slate-900">₹{fmt(calculateOrderEstimate(selectedSku, qty, deliveryOption, artworkOption, selectedSizeCode, variantSelections).total || 0)}</p>
+                </div>
+              </div>
+            )}
+
             {/* ── Navigation ── */}
             <div className="flex items-center justify-between gap-3 pt-4">
               <button onClick={handleBack} className="px-4 sm:px-6 py-2.5 rounded-lg border border-slate-200 text-sm font-bold text-slate-600 hover:border-slate-400 transition-colors shrink-0">
                 ← Back
               </button>
               {!isLastStep ? (
-                <button onClick={handleNext} className="px-5 sm:px-8 py-2.5 rounded-lg text-sm font-black uppercase tracking-wider text-white transition-all hover:opacity-90 min-w-0" style={{ background: "#0D1B2A" }}>
-                  Continue →
+                <button onClick={handleNext} className="flex-1 sm:flex-none px-4 sm:px-8 py-3 text-sm font-black text-white transition-all hover:opacity-90 min-w-0" style={{ background: "#0D1B2A" }}>
+                  {stepNum === 1 ? "Continue to brand & delivery" : stepNum === 2 ? "Continue to your details" : "Review order"} →
                 </button>
               ) : (
                 <button onClick={handleSubmit} disabled={submitMutation.isPending || artworkUploading || checkoutLaunching}
@@ -1622,12 +1827,13 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
           </div>
 
           {/* ── Right: Order Summary ── */}
-          <aside className="lg:col-span-1 lg:self-start lg:sticky lg:top-24 pw-order-summary-rail" aria-label="Live order summary">
+          <aside className="hidden lg:block lg:col-span-1 lg:self-start lg:sticky lg:top-28 pw-order-summary-rail" aria-label="Live order summary">
             <OrderSummary
               sku={selectedSku}
               qty={qty}
               delivery={deliveryOption}
               artworkOption={artworkOption}
+              designPaid={designPaid}
               sizeCode={selectedSizeCode}
               configuration={variantSelections}
               buyingMode={selectedSkuBuyingMode}

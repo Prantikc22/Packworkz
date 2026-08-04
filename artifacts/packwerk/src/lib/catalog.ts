@@ -341,7 +341,7 @@ const STOREFRONT_OVERRIDES: Record<string, Partial<Sku>> = {
   },
   "SP-907": {
     name: "Paper Bowls & Food Containers",
-    description: "Food-safe white or kraft paper bowls in eight fixed capacities, including tall and flat formats with shared 116 mm or 148 mm lids.",
+    description: "Food-safe white or kraft paper bowls in eight fixed capacities, including tall and flat formats with shared 11.6 cm or 14.8 cm lids.",
     use_case: "Curries, biryani, rice, noodles, salads, desserts, takeaway and cloud kitchens",
     variants: [
       { key: "paper", label: "Paper colour", options: ["White", "Natural kraft"] },

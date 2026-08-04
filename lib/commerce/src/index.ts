@@ -1,6 +1,9 @@
 export const RAZORPAY_PAYMENT_LIMIT_RUPEES = 50_000;
 export const GST_RATE = 0.18;
 export const TARGET_PRODUCT_GROSS_MARGIN = 0.35;
+export const LAUNCH_PROMOTION_CODE = "PACK7";
+export const LAUNCH_PROMOTION_RATE = 0.07;
+export const LAUNCH_PROMOTION_MONTHLY_LIMIT = 100;
 // Supplier quotes are loaded with expected rejection/wastage (3%), inward
 // freight (3%) and production packing/handling (2%) before margin is tested.
 export const LANDED_COST_LOAD_RATE = 0.08;
@@ -79,14 +82,14 @@ export const COMMERCE_PRODUCTS: Record<string, CommerceProduct> = {
   "EC-503": { code: "EC-503", sizes: [size("S", "Snack / burger", "120 x 120 x 70 mm", 0.8), size("M", "Meal", "180 x 120 x 65 mm"), size("L", "Family meal", "250 x 180 x 70 mm", 1.38)], tiers: tiers([200, 29], [500, 23], [1_000, 18], [2_500, 14]), quoteThreshold: 10_000, ...shared },
   "EC-504": { code: "EC-504", sizes: [size("S", "Small", "8 x 10 in", 0.78), size("M", "Medium", "10 x 12 in"), size("L", "Large", "12 x 16 in", 1.3), size("XL", "Extra large", "14 x 18 in", 1.55)], tiers: tiers([1_000, 7.5], [2_500, 5.9], [5_000, 4.6], [10_000, 3.8]), quoteThreshold: 25_000, ...shared },
   "PR-601": { code: "PR-601", sizes: [size("HONEYCOMB", "Honeycomb paper", "500 mm x 50 m roll"), size("BUBBLE", "Bubble wrap", "1 m x 50 m roll", 0.82), size("AIR", "Air pillows", "200 x 100 mm, 1,000 pillows", 0.9), size("CRINKLE", "Crinkle paper", "10 kg carton", 1.35)], tiers: tiers([1, 1_450], [5, 1_290], [10, 1_180], [25, 1_060]), quoteThreshold: 100, ...shared, setupFee: 0, shippingPerUnit: 40, shippingCap: 4_500 },
-  "LC-804": { code: "LC-804", sizes: [size("40MM", "40 mm", "Circle / square", 0.72), size("60MM", "60 mm", "Circle / square"), size("90MM", "90 mm", "Circle / square", 1.45), size("100X150", "100 x 150 mm", "Rectangle", 1.95)], tiers: tiers([25, 12], [50, 9.5], [100, 8.2], [250, 5.1], [500, 3.65], [1_000, 2.65], [2_500, 1.85], [5_000, 1.35]), quoteThreshold: 25_000, ...shared, setupFee: 0, shippingBase: 149, shippingPerUnit: 0.02, shippingCap: 999 },
-  "LC-805": { code: "LC-805", sizes: [size("40MM", "40 mm", "Circle / square", 0.72), size("60MM", "60 mm", "Circle / square"), size("90MM", "90 mm", "Circle / square", 1.45), size("100X150", "100 x 150 mm", "Rectangle", 1.95)], tiers: tiers([25, 12.5], [50, 10.5], [100, 9.2], [250, 5.8], [500, 4.1], [1_000, 3], [2_500, 2.1], [5_000, 1.5]), quoteThreshold: 25_000, ...shared, setupFee: 0, shippingBase: 149, shippingPerUnit: 0.02, shippingCap: 999 },
-  "LC-815": { code: "LC-815", sizes: [size("40MM", "40 mm", "Circle / square", 0.72), size("60MM", "60 mm", "Circle / square"), size("90MM", "90 mm", "Circle / square", 1.45), size("100X150", "100 x 150 mm", "Rectangle", 1.95)], tiers: tiers([50, 18], [100, 13.5], [250, 8.9], [500, 6.5], [1_000, 4.8], [2_500, 3.4]), quoteThreshold: 10_000, ...shared, setupFee: 599, shippingBase: 149, shippingPerUnit: 0.02, shippingCap: 999 },
-  "LC-816": { code: "LC-816", sizes: [size("40R", "40 mm round", "Round"), size("60R", "60 mm round", "Round", 1.35), size("90R", "90 mm round", "Round", 2.05)], tiers: tiers([25, 8.5], [50, 6.8], [100, 5.8], [250, 3.6], [500, 2.6], [1_000, 1.95], [2_500, 1.4], [5_000, 1.05]), quoteThreshold: 25_000, ...shared, setupFee: 0, shippingBase: 149, shippingPerUnit: 0.02, shippingCap: 999 },
-  "LC-817": { code: "LC-817", sizes: [size("40S", "40 x 40 mm", "Square"), size("60S", "60 x 60 mm", "Square", 1.35), size("90S", "90 x 90 mm", "Square", 2.05)], tiers: tiers([25, 8.5], [50, 6.8], [100, 5.8], [250, 3.6], [500, 2.6], [1_000, 1.95], [2_500, 1.4], [5_000, 1.05]), quoteThreshold: 25_000, ...shared, setupFee: 0, shippingBase: 149, shippingPerUnit: 0.02, shippingCap: 999 },
-  "LC-818": { code: "LC-818", sizes: [size("50X30", "50 x 30 mm", "Rectangle", 0.78), size("75X50", "75 x 50 mm", "Rectangle"), size("100X150", "100 x 150 mm", "Rectangle", 2.15)], tiers: tiers([25, 8.5], [50, 7.2], [100, 6.4], [250, 4], [500, 2.9], [1_000, 2.2], [2_500, 1.58], [5_000, 1.18]), quoteThreshold: 25_000, ...shared, setupFee: 0, shippingBase: 149, shippingPerUnit: 0.02, shippingCap: 999 },
-  "LC-819": { code: "LC-819", sizes: [size("50X30", "50 x 30 mm", "Oval", 0.78), size("70X45", "70 x 45 mm", "Oval"), size("90X60", "90 x 60 mm", "Oval", 1.42)], tiers: tiers([25, 8.5], [50, 7.2], [100, 6.4], [250, 4], [500, 2.9], [1_000, 2.2], [2_500, 1.58], [5_000, 1.18]), quoteThreshold: 25_000, ...shared, setupFee: 0, shippingBase: 149, shippingPerUnit: 0.02, shippingCap: 999 },
-  "LC-820": { code: "LC-820", sizes: [size("50MAX", "Up to 50 x 50 mm", "Custom contour", 0.78), size("75MAX", "Up to 75 x 75 mm", "Custom contour"), size("100MAX", "Up to 100 x 100 mm", "Custom contour", 1.42)], tiers: tiers([25, 13.5], [50, 10.5], [100, 8.5], [250, 5.4], [500, 3.8], [1_000, 2.8], [2_500, 2]), quoteThreshold: 10_000, ...shared, setupFee: 399, shippingBase: 149, shippingPerUnit: 0.02, shippingCap: 999 },
+  "LC-804": { code: "LC-804", sizes: [size("40MM", "4 cm", "Circle / square", 0.72), size("60MM", "6 cm", "Circle / square"), size("90MM", "9 cm", "Circle / square", 1.45), size("100X150", "10 x 15 cm", "Rectangle", 1.95)], tiers: tiers([25, 12], [50, 9.5], [100, 8.2], [250, 5.1], [500, 3.65], [1_000, 2.65], [2_500, 1.85], [5_000, 1.35]), quoteThreshold: 25_000, ...shared, setupFee: 0, shippingBase: 49, shippingPerUnit: 0.02, shippingCap: 999 },
+  "LC-805": { code: "LC-805", sizes: [size("40MM", "4 cm", "Circle / square", 0.72), size("60MM", "6 cm", "Circle / square"), size("90MM", "9 cm", "Circle / square", 1.45), size("100X150", "10 x 15 cm", "Rectangle", 1.95)], tiers: tiers([25, 8.5], [50, 7.2], [100, 6.2], [250, 4.8], [500, 3.5], [1_000, 2.6], [2_500, 1.85], [5_000, 1.35]), quoteThreshold: 25_000, ...shared, setupFee: 0, shippingBase: 49, shippingPerUnit: 0.02, shippingCap: 999 },
+  "LC-815": { code: "LC-815", sizes: [size("40MM", "4 cm", "Circle / square", 0.72), size("60MM", "6 cm", "Circle / square"), size("90MM", "9 cm", "Circle / square", 1.45), size("100X150", "10 x 15 cm", "Rectangle", 1.95)], tiers: tiers([50, 18], [100, 13.5], [250, 8.9], [500, 6.5], [1_000, 4.8], [2_500, 3.4]), quoteThreshold: 10_000, ...shared, setupFee: 599, shippingBase: 49, shippingPerUnit: 0.02, shippingCap: 999 },
+  "LC-816": { code: "LC-816", sizes: [size("40R", "4 cm round", "Round", 0.72), size("60R", "6 cm round", "Round"), size("90R", "9 cm round", "Round", 1.52)], tiers: tiers([25, 8.5], [50, 6.8], [100, 5.8], [250, 3.6], [500, 2.6], [1_000, 1.95], [2_500, 1.4], [5_000, 1.05]), quoteThreshold: 25_000, ...shared, setupFee: 0, shippingBase: 49, shippingPerUnit: 0.02, shippingCap: 999 },
+  "LC-817": { code: "LC-817", sizes: [size("40S", "4 x 4 cm", "Square", 0.72), size("60S", "6 x 6 cm", "Square"), size("90S", "9 x 9 cm", "Square", 1.52)], tiers: tiers([25, 7.9], [50, 6.5], [100, 5.6], [250, 3.5], [500, 2.55], [1_000, 1.9], [2_500, 1.35], [5_000, 1]), quoteThreshold: 25_000, ...shared, setupFee: 0, shippingBase: 49, shippingPerUnit: 0.02, shippingCap: 999 },
+  "LC-818": { code: "LC-818", sizes: [size("50X30", "5 x 3 cm", "Rectangle", 0.78), size("75X50", "7.5 x 5 cm", "Rectangle"), size("100X150", "10 x 15 cm", "Rectangle", 2.15)], tiers: tiers([25, 8.2], [50, 6.9], [100, 6], [250, 3.85], [500, 2.8], [1_000, 2.1], [2_500, 1.5], [5_000, 1.12]), quoteThreshold: 25_000, ...shared, setupFee: 0, shippingBase: 49, shippingPerUnit: 0.02, shippingCap: 999 },
+  "LC-819": { code: "LC-819", sizes: [size("50X30", "5 x 3 cm", "Oval", 0.78), size("70X45", "7 x 4.5 cm", "Oval"), size("90X60", "9 x 6 cm", "Oval", 1.42)], tiers: tiers([25, 7.9], [50, 6.7], [100, 5.8], [250, 3.75], [500, 2.7], [1_000, 2.05], [2_500, 1.45], [5_000, 1.08]), quoteThreshold: 25_000, ...shared, setupFee: 0, shippingBase: 49, shippingPerUnit: 0.02, shippingCap: 999 },
+  "LC-820": { code: "LC-820", sizes: [size("50MAX", "Up to 5 x 5 cm", "Custom contour", 0.78), size("75MAX", "Up to 7.5 x 7.5 cm", "Custom contour"), size("100MAX", "Up to 10 x 10 cm", "Custom contour", 1.42)], tiers: tiers([25, 13.5], [50, 10.5], [100, 8.5], [250, 5.4], [500, 3.8], [1_000, 2.8], [2_500, 2]), quoteThreshold: 10_000, ...shared, setupFee: 399, shippingBase: 49, shippingPerUnit: 0.02, shippingCap: 999 },
   "BC-213": { code: "BC-213", sizes: [size("10ML", "10 ml attar", "Roll-on / screw cap", 0.78), size("30ML", "30 ml perfume", "Crimp / spray"), size("50ML", "50 ml perfume", "Crimp / spray", 1.22), size("100ML", "100 ml perfume", "Crimp / spray", 1.48)], tiers: tiers([100, 72], [250, 58], [500, 48], [1_000, 40]), quoteThreshold: 5_000, ...shared },
   "EC-505": { code: "EC-505", sizes: [size("S", "Small", "150 x 220 mm", 0.78), size("M", "Medium", "180 x 260 mm"), size("L", "Large", "250 x 330 mm", 1.28), size("XL", "Extra large", "300 x 400 mm", 1.52)], tiers: tiers([100, 20], [250, 15], [500, 11.8], [1_000, 9.5]), quoteThreshold: 10_000, ...shared },
   "EC-509": { code: "EC-509", sizes: [size("S", "Accessories", "200 x 280 mm", 0.78), size("M", "T-shirt", "300 x 400 mm"), size("L", "Sweatshirt", "350 x 450 mm", 1.25), size("XL", "Bulk apparel", "450 x 550 mm", 1.52)], tiers: tiers([100, 18], [250, 13.5], [500, 10.5], [1_000, 8.5]), quoteThreshold: 10_000, ...shared },
@@ -95,8 +98,8 @@ export const COMMERCE_PRODUCTS: Record<string, CommerceProduct> = {
   "LC-810": { code: "LC-810", sizes: [size("HALF", "Half sheet", "375 x 500 mm", 0.72), size("FULL", "Full sheet", "500 x 750 mm"), size("XL", "Extra large", "750 x 1000 mm", 1.42)], tiers: tiers([250, 11.5], [500, 9], [1_000, 7], [2_500, 5.6]), quoteThreshold: 10_000, ...shared },
   "LC-811": { code: "LC-811", sizes: [size("48X50", "48 mm x 50 m", "Standard carton tape", 0.88), size("48X65", "48 mm x 65 m", "Standard carton tape"), size("72X65", "72 mm x 65 m", "Wide carton tape", 1.38)], tiers: tiers([72, 82], [144, 70], [360, 58], [720, 49]), quoteThreshold: 5_000, ...shared },
   "SP-905": { code: "SP-905", sizes: [size("6X6", "6 x 6 in", "Snack clamshell", 0.75), size("9X6", "9 x 6 in", "Meal clamshell"), size("9X9", "9 x 9 in", "Large / 3-compartment", 1.35)], tiers: tiers([100, 18.5], [250, 17.5], [500, 16.75], [1_000, 13.65], [2_500, 11.35], [5_000, 9.7]), quoteThreshold: 20_000, ...shared },
-  "SP-907": { code: "SP-907", sizes: [size("200ML", "200 ml bowl", "116 mm lid", 0.72), size("300ML", "300 ml bowl", "116 mm lid", 0.8), size("500ML", "500 ml bowl", "116 mm lid"), size("750ML-TALL", "750 ml bowl", "116 mm lid", 1.18), size("600ML-FLAT", "600 ml flat bowl", "148 mm lid", 1.16), size("750ML-FLAT", "750 ml flat bowl", "148 mm lid", 1.3), size("1000ML", "1,000 ml flat bowl", "148 mm lid", 1.52), size("1250ML", "1,250 ml flat bowl", "148 mm lid", 1.72)], tiers: tiers([100, 14.2], [250, 12.5], [500, 10.8], [1_000, 9.5], [2_500, 8], [5_000, 6.65], [10_000, 5.25]), quoteThreshold: 25_000, ...shared },
-  "SP-909": { code: "SP-909", sizes: [size("250", "250 x 250 mm", "Snack / bakery wrap", 0.82), size("300", "300 x 300 mm", "Burger / deli wrap"), size("400", "400 x 400 mm", "Tray liner / large wrap", 1.32)], tiers: tiers([250, 5.7], [500, 5.35], [1_000, 5], [2_500, 4], [5_000, 3.2], [10_000, 2.6]), quoteThreshold: 50_000, ...shared },
+  "SP-907": { code: "SP-907", sizes: [size("200ML", "200 ml bowl", "11.6 cm lid", 0.72), size("300ML", "300 ml bowl", "11.6 cm lid", 0.8), size("500ML", "500 ml bowl", "11.6 cm lid"), size("750ML-TALL", "750 ml bowl", "11.6 cm lid", 1.18), size("600ML-FLAT", "600 ml flat bowl", "14.8 cm lid", 1.16), size("750ML-FLAT", "750 ml flat bowl", "14.8 cm lid", 1.3), size("1000ML", "1,000 ml flat bowl", "14.8 cm lid", 1.52), size("1250ML", "1,250 ml flat bowl", "14.8 cm lid", 1.72)], tiers: tiers([300, 8.5], [500, 8.1], [1_000, 7.5], [2_500, 6.7], [5_000, 5.8], [10_000, 4.95]), quoteThreshold: 25_000, ...shared, setupFee: 0 },
+  "SP-909": { code: "SP-909", sizes: [size("250", "25 x 25 cm", "Snack / bakery wrap", 0.82), size("300", "30 x 30 cm", "Burger / deli wrap"), size("400", "40 x 40 cm", "Tray liner / large wrap", 1.32)], tiers: tiers([5_000, 3.2], [10_000, 2.6], [25_000, 2.15]), quoteThreshold: 50_000, ...shared },
 };
 
 // Conservative pre-GST landed-cost assumptions. These are a checkout guard, not
@@ -128,12 +131,12 @@ const LANDED_COSTS: Record<string, LandedCostTier[]> = {
   "EC-504": costs([1_000, 4.5], [2_500, 3.6], [5_000, 2.8], [10_000, 2.3]),
   "PR-601": costs([1, 900], [5, 800], [10, 730], [25, 650]),
   "LC-804": costs([25, 7.2], [50, 5.7], [100, 4.85], [250, 3.02], [500, 2.16], [1_000, 1.57], [2_500, 1.09], [5_000, 0.79]),
-  "LC-805": costs([25, 7.5], [50, 6.2], [100, 5.45], [250, 3.42], [500, 2.42], [1_000, 1.77], [2_500, 1.24], [5_000, 0.88]),
+  "LC-805": costs([25, 5.1], [50, 4.3], [100, 3.7], [250, 2.85], [500, 2.05], [1_000, 1.52], [2_500, 1.08], [5_000, 0.78]),
   "LC-815": costs([50, 10.8], [100, 8], [250, 5.25], [500, 3.82], [1_000, 2.82], [2_500, 2]),
   "LC-816": costs([25, 5.1], [50, 4.05], [100, 3.45], [250, 2.15], [500, 1.55], [1_000, 1.16], [2_500, 0.83], [5_000, 0.62]),
-  "LC-817": costs([25, 5.1], [50, 4.05], [100, 3.45], [250, 2.15], [500, 1.55], [1_000, 1.16], [2_500, 0.83], [5_000, 0.62]),
-  "LC-818": costs([25, 5.1], [50, 4.3], [100, 3.8], [250, 2.38], [500, 1.72], [1_000, 1.3], [2_500, 0.94], [5_000, 0.7]),
-  "LC-819": costs([25, 5.1], [50, 4.3], [100, 3.8], [250, 2.38], [500, 1.72], [1_000, 1.3], [2_500, 0.94], [5_000, 0.7]),
+  "LC-817": costs([25, 4.7], [50, 3.85], [100, 3.3], [250, 2.05], [500, 1.48], [1_000, 1.11], [2_500, 0.79], [5_000, 0.59]),
+  "LC-818": costs([25, 4.9], [50, 4.1], [100, 3.58], [250, 2.28], [500, 1.66], [1_000, 1.24], [2_500, 0.9], [5_000, 0.67]),
+  "LC-819": costs([25, 4.7], [50, 3.98], [100, 3.45], [250, 2.22], [500, 1.6], [1_000, 1.2], [2_500, 0.86], [5_000, 0.64]),
   "LC-820": costs([25, 8.1], [50, 6.3], [100, 5], [250, 3.2], [500, 2.25], [1_000, 1.65], [2_500, 1.18]),
   "BC-213": costs([100, 45], [250, 36], [500, 30], [1_000, 25]),
   "EC-505": costs([100, 12], [250, 9], [500, 7], [1_000, 5.8]),
@@ -143,8 +146,8 @@ const LANDED_COSTS: Record<string, LandedCostTier[]> = {
   "LC-810": costs([250, 7], [500, 5.5], [1_000, 4.2], [2_500, 3.4]),
   "LC-811": costs([72, 75], [144, 62], [360, 50], [720, 42]),
   "SP-905": costs([100, 11], [250, 10.5], [500, 10.07], [1_000, 8.2], [2_500, 6.8], [5_000, 5.8]),
-  "SP-907": costs([100, 8.5], [250, 7.5], [500, 6.5], [1_000, 5.7], [2_500, 4.8], [5_000, 4], [10_000, 3.15]),
-  "SP-909": costs([250, 3.4], [500, 3.2], [1_000, 3], [2_500, 2.4], [5_000, 1.9], [10_000, 1.55]),
+  "SP-907": costs([300, 5], [500, 4.8], [1_000, 4.35], [2_500, 3.9], [5_000, 3.35], [10_000, 2.85]),
+  "SP-909": costs([5_000, 1.9], [10_000, 1.55], [25_000, 1.27]),
 };
 
 function roundUpCurrency(value: number): number {
@@ -161,8 +164,12 @@ function costAtQuantity(skuCode: string, quantity: number): number | undefined {
 
 export type CommerceConfiguration = Record<string, string>;
 
-function configurationCostMultiplier(configuration: CommerceConfiguration = {}): number {
+function configurationCostMultiplier(skuCode: string, configuration: CommerceConfiguration = {}): number {
   let multiplier = 1;
+  if (skuCode === "SP-907") {
+    if (/no lid/i.test(configuration.lid || "")) multiplier *= 0.8;
+    else if (/clear recyclable lid/i.test(configuration.lid || "")) multiplier *= 1.06;
+  }
   for (const value of Object.values(configuration)) {
     const option = String(value).toLowerCase();
     if (/coffee valve/.test(option)) multiplier *= 1.18;
@@ -173,6 +180,44 @@ function configurationCostMultiplier(configuration: CommerceConfiguration = {}):
     if (/direct digital|custom printed|full.?colour/.test(option)) multiplier *= 1.10;
   }
   return Math.min(multiplier, 1.5);
+}
+
+function configurationSetupFee(skuCode: string, configuration: CommerceConfiguration = {}): number {
+  const branding = String(configuration.branding || "").toLowerCase();
+  if (skuCode === "SP-907") {
+    if (branding === "custom printed") return 1_499;
+    if (branding === "applied label") return 499;
+    return 0;
+  }
+  if (skuCode === "SP-905") return branding === "plain" ? 0 : 499;
+  return COMMERCE_PRODUCTS[skuCode]?.setupFee ?? 0;
+}
+
+export function getMinimumQuantityForConfiguration(
+  skuCode: string,
+  configuration: CommerceConfiguration = {},
+): number {
+  const product = COMMERCE_PRODUCTS[skuCode];
+  if (!product) return 0;
+  const branding = String(configuration.branding || "").toLowerCase();
+  if (skuCode === "SP-905") return !branding || branding === "plain" ? 100 : 500;
+  if (skuCode === "SP-907") {
+    if (branding === "custom printed") return 10_000;
+    if (branding === "applied label") return 500;
+    return 300;
+  }
+  if (skuCode === "SP-909") return 5_000;
+  return product.tiers[0].minQty;
+}
+
+export function formatMeasurementInCm(value: string): string {
+  return value.replace(/(\d+(?:\.\d+)?(?:\s*[x×+]\s*\d+(?:\.\d+)?)*)\s*mm\b/gi, (match, dimensions: string) => {
+    const converted = dimensions.replace(/\d+(?:\.\d+)?/g, (part) => {
+      const cm = Number(part) / 10;
+      return Number.isInteger(cm) ? String(cm) : String(Number(cm.toFixed(2)));
+    });
+    return `${converted} cm`;
+  });
 }
 
 function requiresManagedReview(configuration: CommerceConfiguration = {}): boolean {
@@ -197,6 +242,7 @@ export type CommerceEstimateInput = {
   artwork: "upload" | "design" | "none";
   delivery: "standard" | "blitz" | "warehouse";
   configuration?: CommerceConfiguration;
+  promotionCode?: string;
 };
 
 export type CommerceEstimate = {
@@ -204,6 +250,8 @@ export type CommerceEstimate = {
   reason?: "unknown_product" | "invalid_quantity" | "invalid_size" | "managed_quote" | "payment_limit";
   unitPrice: number;
   material: number;
+  discount: number;
+  promotionCode?: string;
   setup: number;
   artwork: number;
   logistics: number;
@@ -223,9 +271,10 @@ export function getCommerceProduct(skuCode: string): CommerceProduct | undefined
 
 export function calculateCommerceEstimate(input: CommerceEstimateInput): CommerceEstimate {
   const product = getCommerceProduct(input.skuCode);
-  const empty = { unitPrice: 0, material: 0, setup: 0, artwork: 0, logistics: 0, subtotal: 0, gst: 0, total: 0, amountPaise: 0 };
+  const empty = { unitPrice: 0, material: 0, discount: 0, setup: 0, artwork: 0, logistics: 0, subtotal: 0, gst: 0, total: 0, amountPaise: 0 };
   if (!product) return { eligible: false, reason: "unknown_product", ...empty };
-  if (!Number.isInteger(input.quantity) || input.quantity < product.tiers[0].minQty) {
+  const minimumQuantity = getMinimumQuantityForConfiguration(input.skuCode, input.configuration);
+  if (!Number.isInteger(input.quantity) || input.quantity < minimumQuantity) {
     return { eligible: false, reason: "invalid_quantity", ...empty };
   }
   if (input.quantity >= product.quoteThreshold) {
@@ -244,21 +293,28 @@ export function calculateCommerceEstimate(input: CommerceEstimateInput): Commerc
   }
 
   const landedUnitCost = costAtQuantity(input.skuCode, input.quantity);
-  const configurationMultiplier = configurationCostMultiplier(input.configuration);
+  const configurationMultiplier = configurationCostMultiplier(input.skuCode, input.configuration);
   const sizedLandedUnitCost = landedUnitCost === undefined ? undefined : Number((landedUnitCost * selectedSize.priceMultiplier * configurationMultiplier).toFixed(2));
   const sizedTierPrice = tier.unitPrice * selectedSize.priceMultiplier * configurationMultiplier;
+  const promotionCode = input.promotionCode?.toUpperCase() === LAUNCH_PROMOTION_CODE
+    ? LAUNCH_PROMOTION_CODE
+    : undefined;
+  const promotionRate = promotionCode ? LAUNCH_PROMOTION_RATE : 0;
   const sizedMarginFloor = sizedLandedUnitCost === undefined
     ? sizedTierPrice
-    : sizedLandedUnitCost / (1 - TARGET_PRODUCT_GROSS_MARGIN);
+    : sizedLandedUnitCost / ((1 - promotionRate) * (1 - TARGET_PRODUCT_GROSS_MARGIN));
   const unitPrice = roundUpCurrency(Math.max(sizedTierPrice, sizedMarginFloor));
-  const rawTier = product.tiers.find((candidate) => candidate.minQty === tier.minQty) ?? product.tiers[0];
-  const grossMarginRate = sizedLandedUnitCost === undefined ? undefined : Number(((unitPrice - sizedLandedUnitCost) / unitPrice).toFixed(4));
+  const netUnitRevenue = unitPrice * (1 - promotionRate);
+  const grossMarginRate = sizedLandedUnitCost === undefined ? undefined : Number(((netUnitRevenue - sizedLandedUnitCost) / netUnitRevenue).toFixed(4));
   const material = Number((unitPrice * input.quantity).toFixed(2));
-  const setup = input.artwork === "none" ? 0 : product.setupFee;
+  const discount = promotionCode ? Number((material * LAUNCH_PROMOTION_RATE).toFixed(2)) : 0;
+  const foodserviceBranding = String(input.configuration?.branding || "plain").toLowerCase();
+  const requiresBrandingSetup = ["SP-905", "SP-907"].includes(input.skuCode) && foodserviceBranding !== "plain";
+  const setup = input.artwork === "none" && !requiresBrandingSetup ? 0 : configurationSetupFee(input.skuCode, input.configuration);
   const artwork = input.artwork === "design" ? 1_999 : 0;
   const deliveryAdd = input.delivery === "blitz" ? 1_200 : input.delivery === "warehouse" ? 300 : 0;
   const logistics = Number((Math.min(product.shippingCap, product.shippingBase + input.quantity * product.shippingPerUnit) + deliveryAdd).toFixed(2));
-  const subtotal = Number((material + setup + artwork + logistics).toFixed(2));
+  const subtotal = Number((material - discount + setup + artwork + logistics).toFixed(2));
   const gst = Number((subtotal * GST_RATE).toFixed(2));
   const total = Number((subtotal + gst).toFixed(2));
   const amountPaise = Math.round(total * 100);
@@ -268,6 +324,8 @@ export function calculateCommerceEstimate(input: CommerceEstimateInput): Commerc
     reason: total > RAZORPAY_PAYMENT_LIMIT_RUPEES ? "payment_limit" : undefined,
     unitPrice,
     material,
+    discount,
+    promotionCode,
     setup,
     artwork,
     logistics,
@@ -277,7 +335,7 @@ export function calculateCommerceEstimate(input: CommerceEstimateInput): Commerc
     amountPaise,
     landedUnitCost: sizedLandedUnitCost,
     grossMarginRate,
-    marginFloorApplied: tier.unitPrice > rawTier.unitPrice,
+    marginFloorApplied: unitPrice > sizedTierPrice,
     size: selectedSize,
   };
 }

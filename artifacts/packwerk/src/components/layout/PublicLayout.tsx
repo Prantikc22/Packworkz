@@ -8,6 +8,7 @@ import {
   ClipboardCheck, Truck, ShieldCheck, MapPinned, MessageSquare,
 } from "lucide-react";
 import { CATALOG_SKUS } from "@/lib/catalog";
+import { LAUNCH_PROMOTION_CODE, LAUNCH_PROMOTION_MONTHLY_LIMIT, LAUNCH_PROMOTION_RATE } from "@workspace/commerce";
 
 // ── Per-page SEO metadata ────────────────────────────────────────────────────
 const PAGE_SEO: Record<string, { title: string; description: string; keywords: string }> = {
@@ -1096,12 +1097,25 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
     <div className="min-h-screen flex flex-col" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
       <style>{GLOBAL_STYLES}</style>
 
+      <Link
+        href="/configure"
+        className="fixed inset-x-0 top-0 h-9 flex items-center justify-center px-3 text-center no-underline"
+        style={{ zIndex: 1002, background: "#E8A838", color: "#071522" }}
+        aria-label={`Claim ${Math.round(LAUNCH_PROMOTION_RATE * 100)}% launch saving on your order`}
+      >
+        <span className="text-[10px] sm:text-xs font-black uppercase tracking-[0.08em] sm:tracking-[0.14em]">
+          {Math.round(LAUNCH_PROMOTION_RATE * 100)}% off your first order
+          <span className="hidden sm:inline"> · first {LAUNCH_PROMOTION_MONTHLY_LIMIT} orders this month</span>
+          <span className="ml-2 underline underline-offset-2">Code {LAUNCH_PROMOTION_CODE}</span>
+        </span>
+      </Link>
+
       {/* ── NAV ── */}
       <header
         className={`fixed flex items-center justify-between px-6 md:px-10 h-[68px] ${navSolid ? "pw-nav-floating" : "pw-nav-top"}`}
         style={{
           zIndex: 1000,
-          top: navFloating ? 12 : 0,
+          top: navFloating ? 48 : 36,
           left: "50%",
           width: navFloating ? "min(1180px, calc(100% - 32px))" : "100%",
           transform: "translateX(-50%)",
@@ -1156,7 +1170,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
             )}
             <span style={{ marginLeft: 8 }}>
               <Link href="/configure" className="po-cta-btn">
-                <span>START CONFIGURATION</span>
+                <span>START YOUR ORDER</span>
               </Link>
             </span>
           </div>
@@ -1170,7 +1184,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
 
       {/* Mobile drawer */}
       {mobileOpen && (
-        <div className="fixed inset-0 z-40 pt-[68px] overflow-y-auto" style={{ background: "#020617" }}>
+        <div className="fixed inset-0 z-40 pt-[104px] overflow-y-auto" style={{ background: "#020617" }}>
           <nav className="flex flex-col px-8 py-8 gap-1">
             {[
               { label: "Products", href: "/products" },
@@ -1263,7 +1277,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
               )}
               <Link href="/configure" onClick={() => setMobileOpen(false)}
                 style={{ display: "inline-block", marginTop: 8, padding: "14px 28px", background: "#E8A838", color: "#0D1B2A", fontWeight: 800, fontSize: 14, textDecoration: "none", borderRadius: 8, textTransform: "uppercase", letterSpacing: "0.05em", textAlign: "center" }}>
-                Start Configuration →
+                Start your order →
               </Link>
             </div>
           </nav>
@@ -1294,7 +1308,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
               </a>
             ))}
             <Link href="/configure" className="po-cta-btn">
-              <span>START CONFIGURATION →</span>
+              <span>START YOUR ORDER →</span>
             </Link>
           </div>
         </div>

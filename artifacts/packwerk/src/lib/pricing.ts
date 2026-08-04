@@ -1,4 +1,4 @@
-import { calculateCommerceEstimate } from "@workspace/commerce";
+import { calculateCommerceEstimate, LAUNCH_PROMOTION_CODE } from "@workspace/commerce";
 
 export type PricingSku = {
   code?: string;
@@ -21,10 +21,18 @@ export function calculateOrderEstimate(
   sizeCode?: string,
   configuration?: Record<string, string>,
 ) {
-  if (!sku) return { low: 0, high: 0, material: 0, setup: 0, logistics: 0, artwork: 0, unit: 0 };
+  if (!sku) return { low: 0, high: 0, material: 0, setup: 0, logistics: 0, artwork: 0, unit: 0, discount: 0 };
 
   if (sku.code && sizeCode) {
-    const commerce = calculateCommerceEstimate({ skuCode: sku.code, quantity, sizeCode, delivery, artwork, configuration });
+    const commerce = calculateCommerceEstimate({
+      skuCode: sku.code,
+      quantity,
+      sizeCode,
+      delivery,
+      artwork,
+      configuration,
+      promotionCode: LAUNCH_PROMOTION_CODE,
+    });
     if (!commerce.reason || commerce.reason === "payment_limit") {
       return {
         low: commerce.total,
@@ -33,12 +41,15 @@ export function calculateOrderEstimate(
         setup: commerce.setup,
         logistics: commerce.logistics,
         artwork: commerce.artwork,
+        discount: commerce.discount,
+        promotionCode: commerce.promotionCode,
         unit: commerce.unitPrice,
         subtotal: commerce.subtotal,
         gst: commerce.gst,
         total: commerce.total,
         paymentEligible: commerce.eligible,
         paymentReason: commerce.reason,
+        grossMarginRate: commerce.grossMarginRate,
       };
     }
   }
@@ -75,6 +86,7 @@ export function calculateOrderEstimate(
     setup,
     logistics,
     artwork: artworkCost,
+    discount: 0,
     unit,
   };
 }

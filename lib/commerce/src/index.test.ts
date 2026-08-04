@@ -2,9 +2,12 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import {
   COMMERCE_PRODUCTS,
+  LAUNCH_PROMOTION_CODE,
   RAZORPAY_PAYMENT_LIMIT_RUPEES,
   TARGET_PRODUCT_GROSS_MARGIN,
   calculateCommerceEstimate,
+  formatMeasurementInCm,
+  getMinimumQuantityForConfiguration,
 } from "./index.ts";
 
 const configurationScenarios = [
@@ -20,18 +23,24 @@ test("every self-serve tier, size and configuration preserves the product margin
     for (const tier of product.tiers.filter((candidate) => candidate.minQty < product.quoteThreshold)) {
       for (const productSize of product.sizes) {
         for (const configuration of configurationScenarios) {
+          const quantity = Math.max(
+            tier.minQty,
+            getMinimumQuantityForConfiguration(product.code, configuration),
+          );
+          if (quantity >= product.quoteThreshold) continue;
           const estimate = calculateCommerceEstimate({
             skuCode: product.code,
-            quantity: tier.minQty,
+            quantity,
             sizeCode: productSize.code,
             artwork: "upload",
             delivery: "standard",
             configuration,
+            promotionCode: LAUNCH_PROMOTION_CODE,
           });
           assert.notEqual(estimate.reason, "managed_quote");
           assert.ok(
             (estimate.grossMarginRate ?? 0) >= TARGET_PRODUCT_GROSS_MARGIN,
-            `${product.code}/${productSize.code}/${tier.minQty} returned ${estimate.grossMarginRate}`,
+            `${product.code}/${productSize.code}/${quantity} returned ${estimate.grossMarginRate}`,
           );
           checked += 1;
         }
@@ -47,9 +56,66 @@ test("configuration changes the effective price without weakening margin", () =>
   const configured = calculateCommerceEstimate({
     ...input,
     configuration: { closure: "Zipper + coffee valve", finish: "Soft touch", material: "Metallised barrier film", branding: "Direct digital print" },
+    promotionCode: LAUNCH_PROMOTION_CODE,
   });
   assert.ok(configured.unitPrice > base.unitPrice);
   assert.ok((configured.grossMarginRate ?? 0) >= TARGET_PRODUCT_GROSS_MARGIN);
+});
+
+test("the launch offer is applied while preserving product margin", () => {
+  const estimate = calculateCommerceEstimate({
+    skuCode: "LC-816",
+    quantity: 25,
+    sizeCode: "40R",
+    artwork: "upload",
+    delivery: "standard",
+    promotionCode: LAUNCH_PROMOTION_CODE,
+  });
+  assert.equal(estimate.promotionCode, LAUNCH_PROMOTION_CODE);
+  assert.ok(estimate.discount > 0);
+  assert.ok((estimate.grossMarginRate ?? 0) >= TARGET_PRODUCT_GROSS_MARGIN);
+  assert.ok(estimate.total < 260, `Expected a competitive 25-label checkout, got ${estimate.total}`);
+});
+
+test("foodservice branding uses honest production minimums", () => {
+  const plain = calculateCommerceEstimate({
+    skuCode: "SP-907",
+    quantity: 300,
+    sizeCode: "500ML",
+    artwork: "upload",
+    delivery: "standard",
+    configuration: { branding: "Plain stock" },
+    promotionCode: LAUNCH_PROMOTION_CODE,
+  });
+  assert.notEqual(plain.reason, "invalid_quantity");
+
+  const shortCustomRun = calculateCommerceEstimate({
+    skuCode: "SP-907",
+    quantity: 5_000,
+    sizeCode: "500ML",
+    artwork: "upload",
+    delivery: "standard",
+    configuration: { branding: "Custom printed" },
+    promotionCode: LAUNCH_PROMOTION_CODE,
+  });
+  assert.equal(shortCustomRun.reason, "invalid_quantity");
+
+  const productionRun = calculateCommerceEstimate({
+    skuCode: "SP-907",
+    quantity: 10_000,
+    sizeCode: "500ML",
+    artwork: "upload",
+    delivery: "standard",
+    configuration: { branding: "Custom printed" },
+    promotionCode: LAUNCH_PROMOTION_CODE,
+  });
+  assert.notEqual(productionRun.reason, "invalid_quantity");
+  assert.ok((productionRun.grossMarginRate ?? 0) >= TARGET_PRODUCT_GROSS_MARGIN);
+});
+
+test("metric dimensions are presented in centimetres", () => {
+  assert.equal(formatMeasurementInCm("40 mm round"), "4 cm round");
+  assert.equal(formatMeasurementInCm("100 x 150 mm"), "10 x 15 cm");
 });
 
 test("custom and regulated specifications are routed to managed quote", () => {
