@@ -2,7 +2,7 @@ import { createClient } from "@supabase/supabase-js";
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
-const SUPABASE_REQUEST_TIMEOUT_MS = 8_000;
+const SUPABASE_REQUEST_TIMEOUT_MS = 3_000;
 
 if (!SUPABASE_URL || !SUPABASE_KEY) {
   throw new Error("SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are required");

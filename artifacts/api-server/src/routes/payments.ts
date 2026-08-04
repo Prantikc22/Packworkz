@@ -10,6 +10,7 @@ import {
 import { sb } from "../lib/supabase";
 import { generateId } from "../lib/generateId";
 import { notifySlack } from "../lib/slack";
+import { createRecoveryReference, readRecoveryCheckoutToken } from "../lib/checkoutToken";
 
 function getRazorpay(): Razorpay | null {
   const keyId = process.env.RAZORPAY_KEY_ID;
@@ -104,6 +105,32 @@ async function finalizeCommerceOrder(gatewayOrderId: string, paymentId?: string)
   return order;
 }
 
+async function finalizeRecoveryOrder(gatewayOrderId: string, paymentId?: string) {
+  const razorpay = getRazorpay();
+  if (!razorpay) return null;
+  try {
+    const gatewayOrder = await razorpay.orders.fetch(gatewayOrderId);
+    const notes = (gatewayOrder.notes || {}) as Record<string, string>;
+    if (notes.storage_mode !== "recovery" || !notes.recovery_order_id) return null;
+    await notifySlack({
+      source: "Razorpay",
+      title: "RECOVERY ORDER PAID - database sync required",
+      referenceId: notes.recovery_order_id,
+      summary: `Payment captured for recovery checkout ${notes.quote_id || ""}`.trim(),
+      fields: [
+        { label: "Payment", value: paymentId },
+        { label: "Razorpay order", value: gatewayOrderId },
+        { label: "Amount", value: `₹${(Number(gatewayOrder.amount) / 100).toLocaleString("en-IN")}` },
+        { label: "Customer email", value: notes.contact_email },
+      ],
+    });
+    return { order_id: notes.recovery_order_id };
+  } catch (error) {
+    console.error("[payments/recovery] Could not inspect Razorpay order", error);
+    return null;
+  }
+}
+
 router.post("/payments/prepare-order", async (req, res): Promise<void> => {
   const quoteId = String(req.body?.quote_id || "").trim();
   if (!quoteId) {
@@ -111,14 +138,34 @@ router.post("/payments/prepare-order", async (req, res): Promise<void> => {
     return;
   }
 
-  const { data: quote, error } = await sb.from("quote_requests").select("*").eq("quote_id", quoteId).maybeSingle();
-  if (error || !quote) {
+  const suppliedRecoveryToken = req.body?.checkout_token;
+  const recovery = readRecoveryCheckoutToken(suppliedRecoveryToken);
+  if (suppliedRecoveryToken && recovery?.quote_id !== quoteId) {
+    res.status(400).json({ error: "This recovery checkout has expired or is invalid" });
+    return;
+  }
+
+  let quote: any = recovery?.quote || null;
+  const recoveryMode = Boolean(recovery);
+  if (!quote) {
+    const result = await sb.from("quote_requests").select("*").eq("quote_id", quoteId).maybeSingle();
+    if (result.error) {
+      console.error("[payments/prepare-order] database error", { code: result.error.code, message: result.error.message });
+      res.status(503).json({ error: "Order storage is temporarily unavailable. Please retry from your saved checkout." });
+      return;
+    }
+    quote = result.data;
+  }
+  if (!quote) {
     res.status(404).json({ error: "Order plan not found" });
     return;
   }
 
   const parsed = parseQuoteForCommerce(quote);
-  const { data: existingOrder } = await sb.from("orders").select("*").eq("quote_request_id", quote.id).maybeSingle();
+  const existingOrderResult = recoveryMode
+    ? { data: null as any }
+    : await sb.from("orders").select("*").eq("quote_request_id", quote.id).maybeSingle();
+  const existingOrder = existingOrderResult.data;
   if (existingOrder?.status === "confirmed" || existingOrder?.status === "in_production") {
     const existingDiscount = Number(existingOrder.discount_applied || 0);
     res.json({
@@ -133,7 +180,7 @@ router.post("/payments/prepare-order", async (req, res): Promise<void> => {
   }
 
   const promotionRequested = parsed.promotionCode === LAUNCH_PROMOTION_CODE;
-  const promotionCode = promotionRequested && (Number(existingOrder?.discount_applied || 0) > 0 || await launchPromotionAvailable())
+  const promotionCode = promotionRequested && (recoveryMode || Number(existingOrder?.discount_applied || 0) > 0 || await launchPromotionAvailable())
     ? LAUNCH_PROMOTION_CODE
     : undefined;
   const estimate = calculateCommerceEstimate({
@@ -157,10 +204,12 @@ router.post("/payments/prepare-order", async (req, res): Promise<void> => {
   }
 
   if (estimate.total > RAZORPAY_PAYMENT_LIMIT_RUPEES) {
-    await sb.from("quote_requests").update({
-      status: "payment_confirmation_required",
-      admin_notes: `Online payment ceiling exceeded. Confirm payment route for ₹${estimate.total}.`,
-    }).eq("id", quote.id);
+    if (!recoveryMode) {
+      await sb.from("quote_requests").update({
+        status: "payment_confirmation_required",
+        admin_notes: `Online payment ceiling exceeded. Confirm payment route for ₹${estimate.total}.`,
+      }).eq("id", quote.id);
+    }
     res.json({
       status: "manual_confirmation",
       quote_id: quoteId,
@@ -185,13 +234,25 @@ router.post("/payments/prepare-order", async (req, res): Promise<void> => {
   let razorpayOrderId = existingOrder?.payment_link as string | undefined;
   const totalChanged = existingOrder ? Math.abs(Number(existingOrder.total_price) - estimate.total) > 0.01 : false;
   if (!existingOrder || !razorpayOrderId?.startsWith("order_") || totalChanged) {
+    packworkzOrderId = packworkzOrderId || (recoveryMode
+      ? createRecoveryReference("ORD")
+      : await generateId("ORD", "orders", "order_id"));
     let gatewayOrder;
     try {
       gatewayOrder = await razorpay.orders.create({
         amount: estimate.amountPaise,
         currency: "INR",
         receipt: quoteId.slice(0, 40),
-        notes: { quote_id: quoteId, sku_code: parsed.skuCode, size_code: parsed.sizeCode },
+        notes: {
+          quote_id: quoteId,
+          sku_code: parsed.skuCode,
+          size_code: parsed.sizeCode,
+          ...(recoveryMode ? {
+            storage_mode: "recovery",
+            recovery_order_id: packworkzOrderId,
+            contact_email: String(quote.email || "").slice(0, 240),
+          } : {}),
+        },
       });
     } catch (error) {
       console.error("[payments/prepare-order] Razorpay order creation failed", error);
@@ -200,10 +261,23 @@ router.post("/payments/prepare-order", async (req, res): Promise<void> => {
       });
       return;
     }
-    packworkzOrderId = packworkzOrderId || await generateId("ORD", "orders", "order_id");
     razorpayOrderId = gatewayOrder.id;
 
-    if (existingOrder) {
+    if (recoveryMode) {
+      await notifySlack({
+        source: "Razorpay",
+        title: "Recovery checkout opened",
+        referenceId: packworkzOrderId,
+        summary: `${quoteId} is proceeding to Razorpay while database persistence is unavailable.`,
+        fields: [
+          { label: "Customer", value: quote.contact_name },
+          { label: "Email", value: quote.email },
+          { label: "Product", value: parsed.item?.product_name },
+          { label: "Quantity", value: parsed.quantity },
+          { label: "Amount", value: `₹${estimate.total.toLocaleString("en-IN")}` },
+        ],
+      });
+    } else if (existingOrder) {
       await sb.from("orders").update({
         total_price: String(estimate.total),
         discount_applied: String(estimate.discount),
@@ -242,6 +316,7 @@ router.post("/payments/prepare-order", async (req, res): Promise<void> => {
     discount_rupees: estimate.discount,
     promotion_code: estimate.promotionCode,
     currency: "INR",
+    recovery_mode: recoveryMode,
   });
 });
 
@@ -286,6 +361,12 @@ router.post("/payments/verify", async (req, res): Promise<void> => {
       return;
     }
 
+    const recoveryOrder = await finalizeRecoveryOrder(razorpay_order_id, razorpay_payment_id);
+    if (recoveryOrder) {
+      res.json({ success: true, order_id: recoveryOrder.order_id, payment_id: razorpay_payment_id, recovery_mode: true });
+      return;
+    }
+
     const order = await finalizeCommerceOrder(razorpay_order_id, razorpay_payment_id);
     if (!order) {
       // A valid fixed-price design/sample payment has no commerce order record.
@@ -315,7 +396,8 @@ router.post("/payments/webhook", async (req, res): Promise<void> => {
   const gatewayOrderId = req.body?.payload?.payment?.entity?.order_id || req.body?.payload?.order?.entity?.id;
   const paymentId = req.body?.payload?.payment?.entity?.id;
   if ((event === "payment.captured" || event === "order.paid") && gatewayOrderId) {
-    await finalizeCommerceOrder(gatewayOrderId, paymentId);
+    const recoveryOrder = await finalizeRecoveryOrder(gatewayOrderId, paymentId);
+    if (!recoveryOrder) await finalizeCommerceOrder(gatewayOrderId, paymentId);
   }
   res.json({ received: true });
 });

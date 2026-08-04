@@ -1,11 +1,11 @@
 import { Router, type IRouter } from "express";
 import { sb } from "../lib/supabase";
-import { generateId } from "../lib/generateId";
 import { sendWhatsApp } from "../lib/whatsapp";
 import { sendQuoteConfirmation, sendAdminQuoteNotification } from "../lib/email";
 import { getSessionUserId } from "../lib/auth";
 import { pushToSheetDB } from "../lib/sheetdb";
 import { notifySlack } from "../lib/slack";
+import { createRecoveryCheckoutToken, createRecoveryReference, readRecoveryCheckoutToken } from "../lib/checkoutToken";
 
 const router: IRouter = Router();
 
@@ -45,7 +45,7 @@ router.post("/quotes", async (req, res): Promise<void> => {
     userId = await getSessionUserId(authHeader.slice(7));
   }
 
-  const quoteId = await generateId("PKG", "quote_requests", "quote_id");
+  let quoteId = createRecoveryReference("PKG");
 
   const firstItem = Array.isArray(items) ? items[0] : null;
   console.log("[quotes/post] firstItem artwork_file_url:", firstItem?.artwork_file_url, "| items count:", Array.isArray(items) ? items.length : 0);
@@ -56,35 +56,46 @@ router.post("/quotes", async (req, res): Promise<void> => {
   const resolvedArtwork = artwork_option || firstItem?.artwork_status || "none";
   const resolvedSample = sample_option || (firstItem?.sample_requested ? firstItem?.sample_tier : "none");
 
-  const { data: quote, error } = await sb
-    .from("quote_requests")
-    .insert({
-      quote_id: quoteId,
-      contact_name,
-      company_name,
-      email: email.toLowerCase().trim(),
-      phone,
-      items,
-      delivery_country,
-      delivery_pincode,
-      preferred_timeline: preferred_timeline || "standard",
-      notes,
-      total_estimated_min: total_estimated_min?.toString() ?? null,
-      total_estimated_max: total_estimated_max?.toString() ?? null,
-      artwork_option: resolvedArtwork,
-      ...(firstItem?.artwork_file_url ? { artwork_file_url: firstItem.artwork_file_url } : {}),
-      sample_option: resolvedSample,
-      status: "submitted",
-      ...(userId ? { user_id: userId } : {}),
-    })
-    .select()
-    .single();
+  const quotePayload = {
+    quote_id: quoteId,
+    contact_name,
+    company_name,
+    email: email.toLowerCase().trim(),
+    phone,
+    items,
+    delivery_country,
+    delivery_pincode,
+    preferred_timeline: preferred_timeline || "standard",
+    notes,
+    total_estimated_min: total_estimated_min?.toString() ?? null,
+    total_estimated_max: total_estimated_max?.toString() ?? null,
+    artwork_option: resolvedArtwork,
+    ...(firstItem?.artwork_file_url ? { artwork_file_url: firstItem.artwork_file_url } : {}),
+    sample_option: resolvedSample,
+    status: "submitted",
+    ...(userId ? { user_id: userId } : {}),
+  };
 
-  if (error || !quote) {
-    console.error("[quotes/post] insert error:", error?.message);
-    res.status(500).json({ error: "Failed to create quote" });
-    return;
+  let quote: Record<string, any> | null = null;
+  let insertError: any = null;
+  try {
+    const result = await sb.from("quote_requests").insert(quotePayload).select().single();
+    quote = result.data;
+    insertError = result.error;
+  } catch (cause) {
+    insertError = cause;
   }
+
+  const databaseSaved = Boolean(quote && !insertError);
+  if (!databaseSaved) {
+    console.error("[quotes/post] database unavailable; using signed recovery checkout", {
+      code: insertError?.code,
+      message: insertError?.message || String(insertError || "no row returned"),
+      details: insertError?.details,
+    });
+  }
+
+  const checkoutToken = databaseSaved ? null : createRecoveryCheckoutToken(quoteId, quotePayload);
 
   // Await all side-effects before responding — in Vercel serverless the function
   // is terminated as soon as res.json() is called, so fire-and-forget tasks never complete.
@@ -103,6 +114,7 @@ router.post("/quotes", async (req, res): Promise<void> => {
       { label: "Timeline", value: preferred_timeline || "standard" },
       { label: "Artwork", value: resolvedArtwork },
       { label: "Sample", value: resolvedSample },
+      { label: "Persistence", value: databaseSaved ? "Database saved" : "RECOVERY MODE - restore from this notification" },
     ],
   });
 
@@ -174,16 +186,18 @@ router.post("/quotes", async (req, res): Promise<void> => {
   ]);
 
   const slackResult = await slackPromise;
-  if (!slackResult.delivered) {
+  if (databaseSaved && !slackResult.delivered) {
     await sb.from("quote_requests")
       .update({ admin_notes: `Slack pending: ${slackResult.reason}` })
-      .eq("id", quote.id);
+      .eq("id", quote!.id);
   }
 
-  res.status(201).json({
-    quote_id: quote.quote_id,
-    id: quote.id,
-    saved: true,
+  res.status(databaseSaved ? 201 : 202).json({
+    quote_id: quoteId,
+    id: databaseSaved ? quote!.id : quoteId,
+    saved: databaseSaved,
+    degraded: !databaseSaved,
+    checkout_token: checkoutToken || undefined,
     slack_delivered: slackResult.delivered,
   });
 });
@@ -191,11 +205,23 @@ router.post("/quotes", async (req, res): Promise<void> => {
 router.get("/quotes/:quoteId", async (req, res): Promise<void> => {
   const quoteId = Array.isArray(req.params.quoteId) ? req.params.quoteId[0] : req.params.quoteId;
 
-  const { data: quote } = await sb
+  const recovery = readRecoveryCheckoutToken(req.headers["x-packworkz-checkout-token"]);
+  if (recovery && recovery.quote_id === quoteId) {
+    res.json(recovery.quote);
+    return;
+  }
+
+  const { data: quote, error } = await sb
     .from("quote_requests")
-    .select("quote_id, items, status")
+    .select("quote_id, contact_name, company_name, email, phone, items, status")
     .eq("quote_id", quoteId)
     .maybeSingle();
+
+  if (error) {
+    console.error("[quotes/get] database error", { code: error.code, message: error.message });
+    res.status(503).json({ error: "Order storage is temporarily unavailable" });
+    return;
+  }
 
   if (!quote) {
     res.status(404).json({ error: "Quote not found" });

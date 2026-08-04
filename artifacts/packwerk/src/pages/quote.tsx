@@ -358,25 +358,58 @@ type ConfirmationQuote = {
   items?: Array<{ product_name?: string; sku_code?: string; quantity?: number; custom_specs?: { standard_size?: string } }>;
 };
 
+const recoveryTokenKey = (quoteId: string) => `packworkz_checkout_${quoteId}`;
+const paidOrderKey = (quoteId: string) => `packworkz_paid_${quoteId}`;
+
+function readRecoveryToken(quoteId: string) {
+  if (typeof window === "undefined") return null;
+  return window.sessionStorage.getItem(recoveryTokenKey(quoteId));
+}
+
+function saveRecoveryToken(quoteId: string, token?: string) {
+  if (typeof window === "undefined" || !token) return;
+  window.sessionStorage.setItem(recoveryTokenKey(quoteId), token);
+}
+
+function readPaidOrder(quoteId: string): { orderId: string; recoveryMode: boolean } | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const value = JSON.parse(window.sessionStorage.getItem(paidOrderKey(quoteId)) || "null");
+    return value?.orderId ? value : null;
+  } catch {
+    return null;
+  }
+}
+
+function savePaidOrder(quoteId: string, orderId: string, recoveryMode = false) {
+  if (typeof window === "undefined" || !orderId) return;
+  window.sessionStorage.setItem(paidOrderKey(quoteId), JSON.stringify({ orderId, recoveryMode }));
+}
+
 function ConfirmationScreen({ quoteId, buyingMode }: { quoteId: string; buyingMode: "self" | "assisted" }) {
+  const paidOrder = readPaidOrder(quoteId);
   const [quote, setQuote] = useState<ConfirmationQuote | null>(null);
   const [prepared, setPrepared] = useState<PreparedOrderPayment | null>(null);
   const [loading, setLoading] = useState(true);
   const [paying, setPaying] = useState(false);
-  const [orderId, setOrderId] = useState("");
+  const [orderId, setOrderId] = useState(paidOrder?.orderId || "");
+  const [recoveryPaid, setRecoveryPaid] = useState(Boolean(paidOrder?.recoveryMode));
   const [error, setError] = useState("");
 
   useEffect(() => {
     let active = true;
     const load = async () => {
       try {
-        const quoteResponse = await fetch(`/api/quotes/${encodeURIComponent(quoteId)}`);
+        const checkoutToken = readRecoveryToken(quoteId);
+        const quoteResponse = await fetch(`/api/quotes/${encodeURIComponent(quoteId)}`, {
+          headers: checkoutToken ? { "x-packworkz-checkout-token": checkoutToken } : undefined,
+        });
         if (!quoteResponse.ok) throw new Error("We could not load this order plan.");
         const quoteData = await quoteResponse.json();
         if (!active) return;
         setQuote(quoteData);
-        if (buyingMode === "self") {
-          const payment = await prepareOrderPayment(quoteId);
+        if (buyingMode === "self" && !paidOrder?.orderId) {
+          const payment = await prepareOrderPayment(quoteId, checkoutToken);
           if (!active) return;
           setPrepared(payment);
           if (payment.status === "already_paid" && payment.order_id) setOrderId(payment.order_id);
@@ -418,7 +451,9 @@ function ConfirmationScreen({ quoteId, buyingMode }: { quoteId: string; buyingMo
           setError(message);
         },
         onSuccess: (result) => {
+          savePaidOrder(quoteId, result.order_id, Boolean(prepared.recovery_mode));
           setOrderId(result.order_id);
+          setRecoveryPaid(Boolean(prepared.recovery_mode));
           setPaying(false);
         },
       });
@@ -431,14 +466,20 @@ function ConfirmationScreen({ quoteId, buyingMode }: { quoteId: string; buyingMo
   const eyebrow = isPaid ? "PAYMENT VERIFIED" : isQuote ? "PRODUCTION BRIEF RECEIVED" : gatewayPending ? "ONLINE CHECKOUT PENDING" : requiresConfirmation ? "ORDER PLAN RECEIVED" : "SPECIFICATION LOCKED";
   const title = isPaid ? "Your order is confirmed." : isQuote ? "Your packaging brief is with our engineers." : gatewayPending ? "Online checkout is not active yet." : requiresConfirmation ? "We’ll confirm your payment route." : "One secure step remains.";
   const body = isPaid
-    ? "Payment is verified and the prepress review is queued. Nothing enters production until your artwork and specification pass the final check."
+    ? recoveryPaid
+      ? "Payment is verified and your order is with the Packworkz order desk. We will send the production and tracking update to your checkout email and mobile."
+      : "Payment is verified and the prepress review is queued. Nothing enters production until your artwork and specification pass the final check."
     : isQuote
       ? "Compatibility, tooling, supplier capacity and the production rate will be reviewed before we send an itemised commercial plan."
       : requiresConfirmation
         ? prepared?.message || "Your specification is saved. Our team will confirm payment and the production slot directly."
         : "Your size, quantity, artwork route, delivery and GST are already attached. Pay without configuring anything again.";
 
-  const steps = isPaid ? [
+  const steps = isPaid && recoveryPaid ? [
+    ["01", "Payment verified", "Your payment and specification are tied to this Packworkz reference."],
+    ["02", "Order desk sync", "Our team restores the order record and confirms the production slot."],
+    ["03", "Production updates", "Tracking updates are sent to your checkout email and mobile."],
+  ] : isPaid ? [
     ["01", "Payment verified", "Your payment and specification are tied to one Packworkz order."],
     ["02", "Artwork preflight", "We check dimensions, bleed, colour and print readiness before production."],
     ["03", "Production + SmartStock", "Track production now and get an earlier reorder signal after delivery."],
@@ -526,14 +567,14 @@ function ConfirmationScreen({ quoteId, buyingMode }: { quoteId: string; buyingMo
             </div>
             <div className="mt-9 flex flex-col sm:flex-row lg:flex-col gap-3">
               <a href={`https://wa.me/918208990366?text=${waMsg}`} target="_blank" rel="noopener noreferrer" className="px-5 py-3.5 text-center font-bold text-sm border" style={{ borderColor: "rgba(255,255,255,0.24)", color: "white" }}>Message order desk</a>
-              <Link href={isPaid ? `/track-order?reference=${encodeURIComponent(orderId || quoteId)}` : "/products"} className="px-5 py-3.5 text-center font-bold text-sm" style={{ background: "#18344A", color: "#D7E5F0" }}>{isPaid ? "Track without an account" : "Browse products"}</Link>
-              {isPaid && (
+              <Link href={isPaid && !recoveryPaid ? `/track-order?reference=${encodeURIComponent(orderId || quoteId)}` : "/products"} className="px-5 py-3.5 text-center font-bold text-sm" style={{ background: "#18344A", color: "#D7E5F0" }}>{isPaid && !recoveryPaid ? "Track without an account" : "Browse products"}</Link>
+              {isPaid && !recoveryPaid && (
                 <Link href={`/signup?claim=${encodeURIComponent(orderId || quoteId)}`} className="px-5 py-3.5 text-center font-bold text-sm border" style={{ borderColor: "#E8A838", color: "#E8A838" }}>
                   Create account and save this order
                 </Link>
               )}
             </div>
-            {isPaid && <p className="mt-4 text-xs leading-relaxed" style={{ color: "#71859A" }}>Track as a guest with this order ID and the checkout email or mobile, or create an account to keep orders, quotes and reorders together.</p>}
+            {isPaid && <p className="mt-4 text-xs leading-relaxed" style={{ color: "#71859A" }}>{recoveryPaid ? "Keep this reference. The order desk will send the next update to the checkout email and mobile." : "Track as a guest with this order ID and the checkout email or mobile, or create an account to keep orders, quotes and reorders together."}</p>}
           </aside>
         </div>
       </div>
@@ -843,8 +884,10 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
       } as any
     }, {
       onSuccess: async (res) => {
+        const response = res as typeof res & { checkout_token?: string };
+        saveRecoveryToken(response.quote_id, response.checkout_token);
         clearDraft();
-        const confirmationPath = `/configure/confirmed/${res.quote_id}?mode=${selectedSkuBuyingMode}`;
+        const confirmationPath = `/configure/confirmed/${response.quote_id}?mode=${selectedSkuBuyingMode}`;
         if (selectedSkuBuyingMode === "assisted") {
           setLocation(confirmationPath);
           return;
@@ -852,7 +895,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
 
         setCheckoutLaunching(true);
         try {
-          const prepared = await prepareOrderPayment(res.quote_id);
+          const prepared = await prepareOrderPayment(response.quote_id, response.checkout_token);
           if (prepared.status !== "ready") {
             setCheckoutLaunching(false);
             setLocation(confirmationPath);
@@ -864,8 +907,9 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
             name: contactName,
             email,
             contact: phone,
-            description: `${selectedSku?.name || "Packaging order"} · ${res.quote_id}`,
-            onSuccess: () => {
+            description: `${selectedSku?.name || "Packaging order"} · ${response.quote_id}`,
+            onSuccess: (result) => {
+              savePaidOrder(response.quote_id, result.order_id, Boolean(prepared.recovery_mode));
               setCheckoutLaunching(false);
               setLocation(confirmationPath);
             },

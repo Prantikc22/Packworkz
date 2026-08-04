@@ -81,13 +81,14 @@ export type PreparedOrderPayment = {
   promotion_code?: string;
   currency?: string;
   message?: string;
+  recovery_mode?: boolean;
 };
 
-export async function prepareOrderPayment(quoteId: string): Promise<PreparedOrderPayment> {
+export async function prepareOrderPayment(quoteId: string, checkoutToken?: string | null): Promise<PreparedOrderPayment> {
   const response = await fetch(`${API}/api/payments/prepare-order`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ quote_id: quoteId }),
+    body: JSON.stringify({ quote_id: quoteId, checkout_token: checkoutToken || undefined }),
   });
   const data = await response.json().catch(() => ({}));
   if (!response.ok) throw new Error(data.error || "Could not prepare payment");
