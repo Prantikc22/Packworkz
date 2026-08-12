@@ -768,7 +768,7 @@ export default function Home() {
               <span style={{
                 display: "inline-flex", alignItems: "center", justifyContent: "center",
                 width: 18, height: 18, borderRadius: "50%",
-                background: "rgba(232,168,56,0.15)", border: "1px solid rgba(232,168,56,0.45)",
+                background: "transparent", border: "1px solid rgba(232,168,56,0.65)",
                 flexShrink: 0,
               }}>
                 <span className="material-symbols-outlined" style={{ fontSize: 11, color: "#E8A838", fontVariationSettings: "'FILL' 1, 'wght' 700" }}>verified</span>
@@ -1533,14 +1533,14 @@ export default function Home() {
                     key={i}
                     onClick={() => { setActiveCase(i); startCaseRotation(); }}
                     style={{
-                      background: isActive ? "#EFF6FF" : "white",
+                      background: "white",
                       border: `1px solid ${isActive ? "#1B6CA8" : "#E2EAF4"}`,
                       padding: "22px 24px",
                       cursor: "pointer",
                       position: "relative",
                       overflow: "hidden",
                       transition: "all 0.3s ease",
-                      boxShadow: isActive ? "0 4px 20px rgba(27,108,168,0.12)" : "none",
+                      boxShadow: "none",
                     }}
                   >
                     {isActive && (
@@ -1557,7 +1557,7 @@ export default function Home() {
                     </div>
                     <p style={{ color: "#0D1B2A", fontSize: 15, fontWeight: 700, marginBottom: 3 }}>{cs.company}</p>
                     <p style={{ color: "#64748B", fontSize: 12 }}>{cs.industry}</p>
-                    <div style={{ display: "inline-block", marginTop: 10, background: "rgba(27,108,168,0.08)", border: "1px solid rgba(27,108,168,0.2)", padding: "4px 12px" }}>
+                    <div style={{ display: "inline-block", marginTop: 10, background: "transparent", borderTop: "1px solid #CBD5E1", padding: "7px 0 0" }}>
                       <span style={{ color: "#1B6CA8", fontSize: 12, fontWeight: 600 }}>{cs.metric}</span>
                     </div>
 

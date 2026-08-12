@@ -202,17 +202,17 @@ export default function Products() {
               <p className="text-xs font-black uppercase tracking-widest mb-3" style={{ color: "#74777d" }}>Shortcut catalogs</p>
               <div className="grid gap-2">
                 <Link href="/sustainable">
-                  <button className="w-full flex items-center justify-between rounded border border-green-200 bg-green-50 px-3 py-2 text-xs font-bold text-green-800">
+                  <button className="w-full flex items-center justify-between border border-slate-300 border-l-2 border-l-green-600 bg-white px-3 py-2 text-xs font-bold text-slate-900 transition hover:border-slate-900">
                     Sustainable catalog <MS icon="arrow_forward" className="text-sm" />
                   </button>
                 </Link>
                 <Link href="/industries">
-                  <button className="w-full flex items-center justify-between rounded border border-blue-100 bg-blue-50 px-3 py-2 text-xs font-bold" style={{ color: "#1B6CA8" }}>
+                  <button className="w-full flex items-center justify-between border border-slate-300 border-l-2 border-l-blue-600 bg-white px-3 py-2 text-xs font-bold text-slate-900 transition hover:border-slate-900">
                     Industry catalog <MS icon="arrow_forward" className="text-sm" />
                   </button>
                 </Link>
                 <Link href="/mockup-studio">
-                  <button className="w-full flex items-center justify-between rounded border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-bold" style={{ color: "#8A5700" }}>
+                  <button className="w-full flex items-center justify-between border border-slate-300 border-l-2 border-l-amber-500 bg-white px-3 py-2 text-xs font-bold text-slate-900 transition hover:border-slate-900">
                     3D mockup studio <MS icon="view_in_ar" className="text-sm" />
                   </button>
                 </Link>

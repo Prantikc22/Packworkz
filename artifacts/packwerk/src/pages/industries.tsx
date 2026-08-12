@@ -63,11 +63,11 @@ export default function Industries() {
                   </div>
                   <div className="p-5">
                     <h2 className="font-black text-lg mb-2" style={{ color: "#0D1B2A", fontFamily: "'Space Grotesk', sans-serif" }}>{industry.headline}</h2>
-                    <div className="rounded bg-red-50 border border-red-100 p-3 mb-3">
+                    <div className="mb-3 border border-slate-200 border-l-2 border-l-red-600 bg-white p-3">
                       <p className="text-[11px] font-black text-red-600 uppercase tracking-widest">Avoid</p>
                       <p className="text-xs text-red-900 leading-relaxed">{industry.pain}</p>
                     </div>
-                    <div className="rounded bg-green-50 border border-green-100 p-3 mb-4">
+                    <div className="mb-4 border border-slate-200 border-l-2 border-l-green-600 bg-white p-3">
                       <p className="text-[11px] font-black text-green-700 uppercase tracking-widest">Outcome</p>
                       <p className="text-xs text-green-900 leading-relaxed">{industry.outcome}</p>
                     </div>

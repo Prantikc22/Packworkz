@@ -203,7 +203,7 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
               </div>
 
               {product.quote_threshold && currentQty >= product.quote_threshold && product.publicBuyingPath === "instant" && (
-                <div className="border border-amber-300 bg-amber-50 p-4 text-sm text-navy">
+                <div className="border border-slate-300 border-l-[3px] border-l-amber-500 bg-white p-4 text-sm text-navy">
                   <p className="font-black">Enterprise quantity detected</p>
                   <p className="mt-1 text-xs text-slate-600">At {product.quote_threshold.toLocaleString("en-IN")}+ units we check production capacity, freight and a sharper bulk rate before confirming.</p>
                 </div>

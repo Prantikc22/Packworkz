@@ -715,21 +715,27 @@
 }
 .dark .pw-sector-solution p { color: #a8b3c4; }
 .pw-sector-best-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0;
   margin-top: 14px;
+  border-top: 1px solid #d9e2ec;
+  border-bottom: 1px solid #d9e2ec;
 }
 .pw-sector-best-row span {
-  background: #edf4fb;
-  color: #1b6ca8;
-  border: 1px solid #d7e6f4;
+  background: transparent;
+  color: #26384a;
+  border: 0;
+  border-right: 1px solid #d9e2ec;
   border-radius: 0;
-  padding: 7px 12px;
-  font-size: 12px;
-  font-weight: 800;
+  padding: 10px 12px;
+  font-size: 11px;
+  font-weight: 750;
+  line-height: 1.35;
 }
-.dark .pw-sector-best-row span { background: rgba(27,108,168,0.18); border-color: rgba(96,165,250,0.20); color: #93c5fd; }
+.pw-sector-best-row span:last-child { border-right: 0; }
+.dark .pw-sector-best-row { border-color: rgba(255,255,255,0.16); }
+.dark .pw-sector-best-row span { background: transparent; border-color: rgba(255,255,255,0.16); color: #d8e0e9; }
 .pw-convo-inner {
   max-width: 1180px;
   margin: 0 auto;
@@ -857,6 +863,9 @@
   .pw-sector-card-content { padding: 24px; }
   .pw-sector-proof { flex-direction: column; align-items: flex-start; }
   .pw-sector-proof strong { width: 100%; justify-content: space-between; }
+  .pw-sector-best-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .pw-sector-best-row span:nth-child(2) { border-right: 0; }
+  .pw-sector-best-row span:nth-child(-n+2) { border-bottom: 1px solid #d9e2ec; }
   .pw-sector-tab-header { align-items: flex-end; flex-direction: row; gap: 12px; }
   .pw-sector-tab-controls { display: flex; }
   .pw-sector-tabs {
@@ -993,15 +1002,16 @@
   gap: 9px;
   width: fit-content;
   color: #0d1b2a;
-  background: #fff4dc;
-  border: 1px solid #f0cc83;
-  border-radius: 7px;
-  padding: 10px 12px;
-  margin-bottom: 12px;
+  background: transparent;
+  border: 0;
+  border-left: 3px solid #e8a838;
+  border-radius: 0;
+  padding: 4px 0 4px 11px;
+  margin-bottom: 16px;
   font-size: 12px;
   font-weight: 800;
 }
-.smartstock-try-hint .material-symbols-outlined { color: #b57400; font-size: 18px; }
+.smartstock-try-hint .material-symbols-outlined { color: #7b5610; font-size: 18px; }
 .smartstock-control-card {
   position: relative;
   background: #ffffff;
@@ -2451,7 +2461,7 @@ body, html {
 .pw-dimension-inputs input { min-width: 0; width: 100%; border: 0; outline: 0; color: #0d1b2a; font-weight: 800; }
 .pw-dimension-inputs em { color: #94a3b8; font-size: 9px; font-style: normal; }
 .pw-artwork-actions { display: grid; grid-template-columns: 1fr auto; gap: 7px; }
-.pw-artwork-actions .primary { grid-row: span 2; min-height: 78px; flex-direction: column; align-items: flex-start; padding: 14px; background: #eff6fb; border-color: #8bbce0; }
+.pw-artwork-actions .primary { grid-row: span 2; min-height: 78px; flex-direction: column; align-items: flex-start; padding: 14px; background: #fff; border-color: #0d1b2a; box-shadow: inset 0 -3px 0 #1b6ca8; }
 .pw-artwork-actions .primary b { font-size: 12px; }
 .pw-artwork-actions .primary small { color: #718297; font-size: 9px; }
 .pw-clear-artwork { border: 1px solid #cbd5e1; background: #fff; color: #64748b; font-size: 10px; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; gap: 5px; cursor: pointer; }
@@ -2647,7 +2657,7 @@ body, html {
 .pw-order-price-options { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; margin-top: 12px; }
 .pw-order-price-options button { position: relative; min-height: 76px; padding: 10px 7px; border: 1px solid #cbd5e1; background: #fff; color: #0d1b2a; cursor: pointer; transition: border-color .2s ease, background .2s ease, transform .2s ease; }
 .pw-order-price-options button:hover { border-color: #0d1b2a; transform: translateY(-2px); }
-.pw-order-price-options button.active { border: 2px solid #0d1b2a; background: #edf3f7; }
+.pw-order-price-options button.active { border: 2px solid #0d1b2a; background: #fff; box-shadow: inset 0 -3px 0 #f0aa2b; }
 .pw-order-price-options button > span,
 .pw-order-price-options button > b { display: block; }
 .pw-order-price-options button > span { font-size: 12px; font-weight: 900; }

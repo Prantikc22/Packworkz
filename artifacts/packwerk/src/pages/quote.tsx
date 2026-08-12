@@ -192,7 +192,7 @@ function OrderSummary({
               <div className="font-black text-white leading-none" style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: "clamp(1.2rem,2.2vw,1.6rem)" }}>
                 {buyingMode === "self" ? `₹${fmt(total ?? low)}` : <>₹{fmt(low)} <span className="text-slate-400 font-bold text-base">–</span> ₹{fmt(high)}</>}
               </div>
-              <div className="flex items-center gap-1.5 mt-2 px-2 py-1.5 rounded" style={{ background: "rgba(27,108,168,0.12)" }}>
+              <div className="mt-3 flex items-center gap-1.5 border-t px-0 pt-2" style={{ borderColor: "rgba(255,255,255,0.16)" }}>
                 <span className="text-xs font-bold" style={{ color: "#60a5fa" }}>
                   {buyingMode === "self"
                     ? `₹${fmt(perPiece)} packaging rate per piece, before GST and delivery`
@@ -200,13 +200,13 @@ function OrderSummary({
                 </span>
               </div>
               {qty >= ((sku as any).moq || 500) * 3 && (
-                <div className="text-xs mt-1.5 px-2 py-1" style={{ color: "#4ade80", background: "rgba(74,222,128,0.07)", borderRadius: 4 }}>
+                <div className="mt-2 border-l-2 border-emerald-400 pl-2 text-xs" style={{ color: "#86efac" }}>
                   ✓ Volume discount applied — order more, pay less per piece
                 </div>
               )}
               <div className="text-xs text-slate-500 mt-1.5">{buyingMode === "self" ? "Payable total includes GST, setup and the delivery shown above. The product rate is shown separately for a fair comparison." : "Excludes GST. Final pricing follows engineering and artwork review."}</div>
               {buyingMode === "self" && !paymentEligible && (
-                <div className="mt-3 p-3 text-xs leading-relaxed" style={{ color: "#FBD38D", background: "rgba(232,168,56,0.12)", border: "1px solid rgba(232,168,56,0.28)" }}>
+                <div className="mt-3 border border-slate-600 border-l-[3px] border-l-amber-400 bg-transparent p-3 text-xs leading-relaxed" style={{ color: "#FBD38D" }}>
                   Online payment is currently available up to ₹{RAZORPAY_PAYMENT_LIMIT_RUPEES.toLocaleString("en-IN")}. Submit this order plan and our team will confirm the payment route and production slot.
                 </div>
               )}
@@ -240,8 +240,8 @@ function OrderSummary({
                   { n: "3", text: "Track as a guest, or create an account after payment to keep every order and quote together" },
                 ]).map(({ n, text }) => (
                   <div key={n} className="flex items-start gap-2.5">
-                    <span className="w-5 h-5 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-black mt-0.5"
-                      style={{ background: "rgba(27,108,168,0.18)", color: "#1B6CA8" }}>
+                    <span className="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center border border-slate-600 text-xs font-black"
+                      style={{ background: "transparent", color: "#7dd3fc" }}>
                       {n}
                     </span>
                     <p className="text-xs leading-relaxed" style={{ color: "#94A3B8" }}>{text}</p>
@@ -295,11 +295,12 @@ function VariantSelector({ group, selected, onSelect }: {
           <button
             key={opt}
             onClick={() => onSelect(opt)}
-            className="px-3 py-1.5 rounded-lg border text-xs font-bold transition-all"
+            className="px-3 py-1.5 border text-xs font-bold transition-all"
             style={{
-              borderColor: selected === opt ? "#1B6CA8" : "#E2E8F0",
-              background: selected === opt ? "rgba(27,108,168,0.08)" : "white",
-              color: selected === opt ? "#1B6CA8" : "#64748B"
+              borderColor: selected === opt ? "#0D1B2A" : "#D5DEE7",
+              background: "#FFFFFF",
+              color: selected === opt ? "#0D1B2A" : "#64748B",
+              boxShadow: selected === opt ? "inset 0 -3px 0 #1B6CA8" : "none"
             }}
           >{opt}</button>
         ))}
@@ -1269,7 +1270,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                 )}
 
                 {selectedSku?.code === "SP-907" && (
-                  <div className="border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-slate-700">
+                  <div className="border border-slate-300 border-l-[3px] border-l-amber-500 bg-white px-4 py-3 text-sm text-slate-700">
                     <strong className="block text-slate-900">
                       {(variantSelections.branding || "Plain stock") === "Custom printed"
                         ? "Direct custom print starts at 10,000 units"
@@ -1291,7 +1292,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                         <div className="font-bold text-slate-800 text-sm" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>Choose a standard size</div>
                         <p className="text-xs text-slate-500 mt-1">These sizes are ready to order with clear pricing. Need a different size? We will confirm it for you.</p>
                       </div>
-                      <span className="text-[10px] font-black uppercase tracking-wider px-2 py-1" style={{ color: "#17613C", background: "#EAF8F0" }}>Price locked</span>
+                      <span className="border border-emerald-700 bg-white px-2 py-1 text-[10px] font-black uppercase tracking-wider text-emerald-800">Price locked</span>
                     </div>
                     <div className="grid grid-cols-2 gap-2">
                       {commerceProduct.sizes.map((item) => {
@@ -1302,7 +1303,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                             type="button"
                             onClick={() => setSelectedSizeCode(item.code)}
                             className="text-left p-3 border transition-colors"
-                            style={{ borderColor: active ? "#1B6CA8" : "#DCE4EE", background: active ? "#EEF6FC" : "#FFFFFF" }}
+                            style={{ borderColor: active ? "#0D1B2A" : "#DCE4EE", background: "#FFFFFF", boxShadow: active ? "inset 0 -3px 0 #1B6CA8" : "none" }}
                           >
                             <span className="block text-sm font-black" style={{ color: active ? "#155A8C" : "#0D1B2A" }}>{formatMeasurementInCm(item.label)}</span>
                             <span className="block text-[11px] mt-1 leading-snug text-slate-500">{formatMeasurementInCm(item.detail)}</span>
@@ -1410,8 +1411,8 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                     <div className="flex gap-2 flex-wrap">
                       {quantityPresets.map(q => (
                         <button key={q} onClick={() => setQty(q)}
-                          className="px-4 py-2 rounded-lg border text-sm font-bold transition-all"
-                          style={{ borderColor: qty === q ? "#1B6CA8" : "#E2E8F0", background: qty === q ? "rgba(27,108,168,0.08)" : "white", color: qty === q ? "#1B6CA8" : "#64748B" }}>
+                          className="px-4 py-2 border text-sm font-bold transition-all"
+                          style={{ borderColor: qty === q ? "#0D1B2A" : "#E2E8F0", background: "white", color: qty === q ? "#0D1B2A" : "#64748B", boxShadow: qty === q ? "inset 0 -3px 0 #1B6CA8" : "none" }}>
                           {q.toLocaleString()}
                         </button>
                       ))}
@@ -1427,7 +1428,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                         : qtyUnit === "pieces" ? `Minimum: ${selectedSkuMoq.toLocaleString()} pieces for ${selectedSku?.name || "this product"}` : "Minimum: 50 kg of packaging film"}
                     </p>
                     {selectedSkuBuyingMode === "assisted" && (
-                      <div className="flex items-start gap-2 p-3 rounded-lg" style={{ background: "#FFF7E6", border: "1px solid #F2D89C" }}>
+                      <div className="flex items-start gap-2 border border-slate-300 border-l-[3px] border-l-amber-500 bg-white p-3">
                         <span className="text-amber-500 text-base leading-none mt-0.5">ⓘ</span>
                         <p className="text-xs leading-snug" style={{ color: "#8A5A00" }}>
                           <strong>Managed quote needed.</strong> This format, custom quantity, or enterprise volume needs a reviewed production rate. Submit the same specification and our team will price it manually.
@@ -1435,7 +1436,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                       </div>
                     )}
                     {qtyUnit === "pieces" && qty <= 1000 && (
-                      <div className="flex items-start gap-2 p-3 rounded-lg bg-amber-50 border border-amber-200">
+                      <div className="flex items-start gap-2 border border-slate-300 border-l-[3px] border-l-amber-500 bg-white p-3">
                         <span className="text-amber-500 text-base leading-none mt-0.5">⚠️</span>
                         <p className="text-xs text-amber-800 leading-snug">
                           <strong>Prices are higher at low quantities.</strong> Increasing quantity generally lowers the unit rate by spreading setup and print costs. Compare quantities in this step; the final rate is confirmed after specification and artwork review.
@@ -1464,8 +1465,8 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                       { id: "none" as ArtworkOption, icon: <X className="w-8 h-8" />, label: "Plain / Unprinted", sub: "No artwork needed", badge: null },
                     ]).map(opt => (
                       <button key={opt.id} onClick={() => setArtworkOption(opt.id)}
-                        className="relative flex flex-col items-center gap-3 p-5 rounded-lg border-2 transition-all"
-                        style={{ borderColor: artworkOption === opt.id ? "#1B6CA8" : "#E2E8F0", background: artworkOption === opt.id ? "rgba(27,108,168,0.06)" : "white", color: artworkOption === opt.id ? "#1B6CA8" : "#94A3B8" }}>
+                        className="relative flex flex-col items-center gap-3 border-2 bg-white p-5 transition-all"
+                        style={{ borderColor: artworkOption === opt.id ? "#0D1B2A" : "#E2E8F0", color: artworkOption === opt.id ? "#1B6CA8" : "#94A3B8", boxShadow: artworkOption === opt.id ? "inset 0 -3px 0 #1B6CA8" : "none" }}>
                         {opt.badge && (
                           <span className="absolute -top-2 -right-2 text-xs font-black px-2 py-0.5 rounded" style={{ background: "#E8A838", color: "#0D1B2A" }}>{opt.badge}</span>
                         )}
@@ -1480,8 +1481,8 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
 
                   {artworkOption === "upload" && (
                     <div
-                      className="mt-5 border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors"
-                      style={{ borderColor: artworkFile ? "#1B6CA8" : "#CBD5E1", background: artworkFile ? "rgba(27,108,168,0.04)" : "white" }}
+                      className="mt-5 cursor-pointer border-2 border-dashed bg-white p-8 text-center transition-colors"
+                      style={{ borderColor: artworkFile ? "#0D1B2A" : "#CBD5E1" }}
                       onClick={() => fileInputRef.current?.click()}
                       onDragOver={e => { e.preventDefault(); e.stopPropagation(); }}
                       onDrop={e => {
@@ -1519,7 +1520,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                   )}
 
                   {artworkOption === "design" && (
-                    <div className="mt-5 p-5 rounded-lg" style={{ background: "rgba(27,108,168,0.05)", border: "1px solid rgba(27,108,168,0.15)" }}>
+                    <div className="mt-5 border border-slate-300 border-l-[3px] border-l-blue-700 bg-white p-5">
                       {designPaid ? (
                         <div className="flex items-center gap-3">
                           <CheckCircle2 className="w-6 h-6 shrink-0" style={{ color: "#16a34a" }} />
@@ -1565,8 +1566,8 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                       { id: "warehouse" as DeliveryOption, icon: <Warehouse className="w-7 h-7" />, label: "Warehouse Hold", time: "Up to 30 days", price: "+₹300 handling" },
                     ]).map(opt => (
                       <button key={opt.id} onClick={() => setDeliveryOption(opt.id)}
-                        className="relative flex flex-col items-start gap-2 p-4 rounded-lg border-2 text-left transition-all"
-                        style={{ borderColor: deliveryOption === opt.id ? "#1B6CA8" : "#E2E8F0", background: deliveryOption === opt.id ? "rgba(27,108,168,0.04)" : "white" }}>
+                        className="relative flex flex-col items-start gap-2 border-2 bg-white p-4 text-left transition-all"
+                        style={{ borderColor: deliveryOption === opt.id ? "#0D1B2A" : "#E2E8F0", boxShadow: deliveryOption === opt.id ? "inset 0 -3px 0 #1B6CA8" : "none" }}>
                         {opt.recommended && <span className="absolute -top-2.5 left-3 px-2 py-0.5 rounded text-xs font-black" style={{ background: "#1B6CA8", color: "white" }}>RECOMMENDED</span>}
                         <div style={{ color: deliveryOption === opt.id ? "#1B6CA8" : "#94A3B8" }}>{opt.icon}</div>
                         <div>
@@ -1615,7 +1616,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                         type="button"
                         onClick={() => { setSampleOption(option.id); setSamplePaid(false); }}
                         className="min-h-[78px] border p-3 text-left transition-colors"
-                        style={{ borderColor: sampleOption === option.id ? "#1B6CA8" : "#DCE4EE", background: sampleOption === option.id ? "#EEF6FC" : "#FFFFFF" }}
+                        style={{ borderColor: sampleOption === option.id ? "#0D1B2A" : "#DCE4EE", background: "#FFFFFF", boxShadow: sampleOption === option.id ? "inset 0 -3px 0 #1B6CA8" : "none" }}
                       >
                         <strong className="block text-sm text-slate-900">{option.title}</strong>
                         <span className="block mt-1 text-xs leading-relaxed text-slate-500">{option.body}</span>
@@ -1636,7 +1637,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                     {/* Card A: Express */}
                     <div
                       className="p-5 rounded-xl border-2 cursor-pointer transition-all"
-                      style={{ borderColor: sampleOption === "express" ? "#E8A838" : "#E2E8F0", background: sampleOption === "express" ? "rgba(232,168,56,0.04)" : "white" }}
+                      style={{ borderColor: sampleOption === "express" ? "#0D1B2A" : "#E2E8F0", background: "white", boxShadow: sampleOption === "express" ? "inset 0 -3px 0 #E8A838" : "none" }}
                       onClick={() => { setSampleOption("express"); setSamplePaid(false); }}
                     >
                       <div className="flex items-start justify-between mb-3">
@@ -1674,11 +1675,11 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                     {/* Card B: Standard */}
                     <div
                       className="p-5 rounded-xl border-2 cursor-pointer transition-all"
-                      style={{ borderColor: sampleOption === "standard" ? "#1B6CA8" : "#E2E8F0", background: sampleOption === "standard" ? "rgba(27,108,168,0.04)" : "white" }}
+                      style={{ borderColor: sampleOption === "standard" ? "#0D1B2A" : "#E2E8F0", background: "white", boxShadow: sampleOption === "standard" ? "inset 0 -3px 0 #1B6CA8" : "none" }}
                       onClick={() => { setSampleOption("standard"); setSamplePaid(false); }}
                     >
                       <div className="flex items-start justify-between mb-3">
-                        <span className="text-xs font-black uppercase tracking-wider px-2 py-1 rounded" style={{ background: "rgba(27,108,168,0.12)", color: "#1B6CA8" }}>STANDARD</span>
+                        <span className="border border-blue-700 bg-white px-2 py-1 text-xs font-black uppercase tracking-wider text-blue-800">STANDARD</span>
                         {sampleOption === "standard" && <CheckCircle2 className="w-5 h-5" style={{ color: "#1B6CA8" }} />}
                       </div>
                       <p className="font-black text-slate-800 mb-1">Standard Sample</p>
@@ -1777,13 +1778,13 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
 
                   {/* Pending payment notices */}
                   {(artworkOption === "design" && !designPaid) && (
-                    <div className="p-4 rounded-lg text-sm" style={{ background: "rgba(232,168,56,0.08)", border: "1px solid rgba(232,168,56,0.3)" }}>
+                    <div className="border border-slate-300 border-l-[3px] border-l-amber-500 bg-white p-4 text-sm">
                       <span className="font-bold" style={{ color: "#92600A" }}>Design payment pending —</span>
                       <span className="text-slate-500"> you can pay now or we'll follow up before starting design.</span>
                     </div>
                   )}
                   {(sampleOption !== "none" && !samplePaid) && (
-                    <div className="p-4 rounded-lg text-sm" style={{ background: "rgba(232,168,56,0.08)", border: "1px solid rgba(232,168,56,0.3)" }}>
+                    <div className="border border-slate-300 border-l-[3px] border-l-amber-500 bg-white p-4 text-sm">
                       <span className="font-bold" style={{ color: "#92600A" }}>Sample confirmation pending —</span>
                       <span className="text-slate-500"> we will confirm availability, timing and the fee before production.</span>
                     </div>
