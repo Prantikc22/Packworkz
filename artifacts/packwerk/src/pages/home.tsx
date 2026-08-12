@@ -6,7 +6,7 @@ import ComparisonSection from "@/components/home/ComparisonSection";
 import { SmartStockDemo } from "@/pages/smartstock";
 import { PackagingProcessSection, SustainabilityProofSection } from "@/components/home/CommerceExperienceSections";
 import TestimonialsSection from "@/components/home/TestimonialsSection";
-import { CATALOG_SKUS, isCatalogSkuInCategory } from "@/lib/catalog";
+import { CATALOG_SKUS, getCatalogImage, isCatalogSkuInCategory } from "@/lib/catalog";
 import {
   Search, GitBranch, ShieldCheck, Truck,
   Leaf, Droplets, FileCheck, ArrowRight, ArrowLeft,
@@ -111,6 +111,11 @@ const CAT_IMAGES: Record<string, string> = {
   sustainable: "/images/foodservice-containers-premium.jpg",
   premium:     "/skus/magneticbox.jpg",
 };
+
+const STARTER_SKU_CODES = ["FP-101", "EC-501", "LC-816", "SP-907", "RL-701"];
+const STARTER_SKUS = STARTER_SKU_CODES
+  .map((code) => CATALOG_SKUS.find((sku) => sku.code === code))
+  .filter((sku): sku is (typeof CATALOG_SKUS)[number] => Boolean(sku));
 
 const INDUSTRIES = [
   { slug: "food-beverage", label: "Food & Beverage",    icon: "restaurant",               img: INDUSTRY_IMAGES.food },
@@ -796,10 +801,9 @@ export default function Home() {
             </div>
 
             {/* Stats badges — locked inside left column */}
-            <div className="flex flex-wrap gap-x-7 gap-y-3 pt-7 border-t border-white/15">
+            <div className="pw-hero-proof-row pt-7 border-t border-white/15">
               {[
                 { icon: "inventory_2",       value: String(CATALOG_SKUS.length), label: "Configured SKU Families" },
-                { icon: "workspace_premium", value: "Multi", label: "Category Coverage" },
                 { icon: "public",            value: "India", label: "Delivery Network" },
                 { icon: "verified",          value: "QC", label: "Documented Checkpoints" },
               ].map((s) => (
@@ -810,6 +814,69 @@ export default function Home() {
                 </div>
               ))}
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Familiar starting points for founders who do not know packaging terminology. */}
+      <section id="products" className="pw-starter-section" aria-labelledby="starter-products-title">
+        <div className="pw-starter-inner">
+          <div className="pw-starter-heading">
+            <div>
+              <span>PACKAGING CATALOG</span>
+              <h2 id="starter-products-title">Start with something familiar.</h2>
+              <p>Choose a common format below, or browse by packaging type. We will guide the technical details.</p>
+            </div>
+            <Link href="/products" className="pw-starter-all">See every product <ArrowRight size={17} /></Link>
+          </div>
+          <div className="pw-starter-grid">
+            {STARTER_SKUS.map((sku) => (
+              <Link key={sku.code} href={`/configure?sku=${sku.code}`} className="pw-starter-card">
+                <div className="pw-starter-image">
+                  <img src={getCatalogImage(sku)} alt={`${sku.name} custom printed packaging`} loading="eager" />
+                </div>
+                <div className="pw-starter-copy">
+                  <small>{sku.purchase_mode === "brief" ? "Specialist confirmed" : "Buy online"}</small>
+                  <h3>{sku.name}</h3>
+                  <p>{sku.use_case}</p>
+                  <div><strong>MOQ {sku.moq.toLocaleString()} {sku.moq_unit}</strong><ArrowRight size={17} /></div>
+                </div>
+              </Link>
+            ))}
+          </div>
+
+          <div className="pw-family-directory" aria-label="Browse all packaging families">
+            <div className="pw-family-directory-heading">
+              <strong>Explore all packaging types</strong>
+              <span>For founders who know the pack they need</span>
+            </div>
+            <div className="pw-family-directory-grid">
+              {CATEGORIES.map((cat) => (
+                <Link key={cat.cat} href={`/products?category=${cat.cat}`} className="pw-family-directory-link">
+                  <span className="pw-family-directory-image">
+                    <img src={CAT_IMAGES[cat.cat]} alt={`${cat.title} examples`} loading="lazy" />
+                  </span>
+                  <span className="pw-family-directory-copy">
+                    <strong>{cat.title}</strong>
+                    <em>{cat.sub}</em>
+                    <small>{cat.skus} product families <ArrowRight size={14} /></small>
+                  </span>
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          <div className="pw-ai-entry">
+            <div className="pw-ai-entry-icon"><MS icon="auto_awesome" /></div>
+            <div>
+              <strong>Not sure what packaging fits?</strong>
+              <span>Tell Packworkz AI what you sell. It will suggest a practical format, MOQ, and sampling plan.</span>
+            </div>
+            <Link href="/pack-ai">
+              <button className="btn-fill btn-amber px-6 py-3 text-sm pw-btn-transition">
+                <span>Help me choose</span><MS icon="arrow_forward" className="text-base" />
+              </button>
+            </Link>
           </div>
         </div>
       </section>
@@ -1060,66 +1127,6 @@ export default function Home() {
               })}
             </div>
 
-          </div>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════════════════════ */}
-      {/*  SECTION 8 — PRODUCT CATEGORIES                           */}
-      {/* ══════════════════════════════════════════════════════════ */}
-      <section id="products" className="pw-product-section pw-theme-surface" style={{ background: "white", padding: "100px 0" }}>
-        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 40px" }}>
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 gap-4">
-            <div>
-              <span className="scroll-animate" style={{ color: "#1B6CA8", fontSize: 11, fontWeight: 600, letterSpacing: "2px", textTransform: "uppercase", display: "block", marginBottom: 14 }}>
-                PRODUCTS
-              </span>
-              <h2 className="clash-display text-4xl scroll-animate scroll-animate-delay-1" style={{ color: "#0D1B2A" }}>Packaging, organized around the job.</h2>
-              <p className="mt-2 text-lg scroll-animate scroll-animate-delay-2" style={{ color: "#64748B" }}>Start with a format, then configure the details that affect performance and cost.</p>
-            </div>
-            <Link href="/products">
-              <button className="font-bold flex items-center gap-2 hover:underline" style={{ color: "#1B6CA8" }}>
-                View full catalog <MS icon="chevron_right" />
-              </button>
-            </Link>
-          </div>
-
-          <div className="pw-category-grid" style={{ alignItems: "stretch" }}>
-            {CATEGORIES.map((cat, ci) => (
-              <Link href={`/products?category=${cat.cat}`} key={cat.title} style={{ display: "flex", flexDirection: "column" }}>
-                <article className={`pw-category-card group scroll-animate scroll-animate-delay-${Math.min(ci % 4 + 1, 4)}`}>
-                  <div className="pw-category-image">
-                    <img
-                      src={CAT_IMAGES[cat.cat]}
-                      alt={cat.title}
-                      className="w-full h-full object-cover transition-all duration-500"
-                    />
-                    <span className="pw-category-index">{String(ci + 1).padStart(2, "0")}</span>
-                  </div>
-                  <div className="pw-category-body">
-                    <h4>{cat.title}</h4>
-                    <p>{cat.sub}</p>
-                    <div className="pw-category-footer">
-                      <strong>{cat.skus} SKU{cat.skus !== 1 ? "s" : ""}</strong>
-                      <MS icon="arrow_forward" className="text-base" />
-                    </div>
-                  </div>
-                </article>
-              </Link>
-            ))}
-          </div>
-
-          <div className="pw-ai-entry">
-            <div className="pw-ai-entry-icon"><MS icon="auto_awesome" /></div>
-            <div>
-              <strong>Not sure which packaging fits?</strong>
-              <span>Describe your product and Packworkz AI will build a practical SKU, MOQ, and sampling plan.</span>
-            </div>
-            <Link href="/pack-ai">
-              <button className="btn-fill btn-amber px-6 py-3 text-sm pw-btn-transition">
-                <span>Plan with Packworkz AI</span><MS icon="arrow_forward" className="text-base" />
-              </button>
-            </Link>
           </div>
         </div>
       </section>

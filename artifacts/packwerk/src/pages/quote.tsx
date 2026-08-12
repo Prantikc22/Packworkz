@@ -621,6 +621,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
   });
   const [mobileBrowseAll, setMobileBrowseAll] = useState(false);
   const [mobileShowAllResults, setMobileShowAllResults] = useState(false);
+  const [showCategories, setShowCategories] = useState(false);
   const [qty, setQty] = useState<number>(() => loadDraft().qty || SKUS[0].moq);
   const [qtyUnit, setQtyUnit] = useState<'pieces' | 'kg'>(() => loadDraft().qtyUnit || 'pieces');
   const [variantSelections, setVariantSelections] = useState<Record<string, string>>(() => loadDraft().variantSelections || {});
@@ -807,6 +808,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
       setSelectedSizeCode(COMMERCE_PRODUCTS[sku.code]?.sizes[0]?.code || "");
       if (qtyUnit === "pieces") setQty(prev => Math.max(prev, getMinimumQuantityForConfiguration(sku.code, defaults)));
     }
+    setCatalogOpen(false);
     if (typeof window !== "undefined" && window.innerWidth < 640) {
       setCatalogOpen(false);
       window.requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: "smooth" }));
@@ -815,6 +817,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
 
   const handleSelectCategory = (slug: string) => {
     setCatalogQuery("");
+    setMobileIntentChosen(true);
     setSelectedCategory(slug);
     const first = getSkusByCategory(slug)[0];
     if (first) {
@@ -1035,26 +1038,26 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
             {/* ── STEP 1: Product & Quantity ── */}
             {stepNum === 1 && (
               <>
-                <StepHeader step={1} total={TOTAL_STEPS} title="What are you packaging?" subtitle="Tell us what you sell and we will narrow the catalog for you." />
+                <StepHeader step={1} total={TOTAL_STEPS} title="What do you need to package?" subtitle="Choose the closest match. You can change it later, and we check every specification before production." />
 
-                <div className="sm:hidden bg-white border border-slate-200 p-4">
+                {catalogOpen && <div className="bg-white border border-slate-200 p-4 sm:p-5">
                   <div className="flex items-start justify-between gap-3 mb-4">
                     <div>
-                      <p className="text-sm font-black text-slate-900">Choose the closest match</p>
-                      <p className="mt-1 text-xs leading-relaxed text-slate-500">We will show the most relevant products first.</p>
+                      <p className="text-sm font-black text-slate-900">What are you selling?</p>
+                      <p className="mt-1 text-xs leading-relaxed text-slate-500">Start here if packaging terms are unfamiliar.</p>
                     </div>
                     {mobileIntentChosen && (
                       <button type="button" onClick={() => setMobileIntentChosen(false)} className="text-xs font-bold text-blue-700 shrink-0">Change</button>
                     )}
                   </div>
                   {!mobileIntentChosen ? (
-                    <div className="space-y-2">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
                       {MOBILE_SHOPPING_INTENTS.map((intent) => (
                         <button
                           key={intent.label}
                           type="button"
                           onClick={() => handleMobileIntent(intent.category)}
-                          className="w-full min-h-[68px] border border-slate-200 bg-white px-3 py-2.5 flex items-center gap-3 text-left active:bg-slate-50"
+                          className="w-full min-h-[72px] border border-slate-200 bg-white px-3 py-2.5 flex items-center gap-3 text-left hover:border-slate-500 active:bg-slate-50"
                         >
                           <span className="w-10 h-10 bg-slate-100 flex items-center justify-center shrink-0">
                             <MS icon={intent.icon} className="text-xl text-slate-700" />
@@ -1068,18 +1071,40 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                       ))}
                     </div>
                   ) : (
-                    <div className="flex items-center gap-3 border-l-4 border-blue-600 bg-blue-50 px-3 py-3">
-                      <CheckCircle2 className="w-5 h-5 text-blue-700 shrink-0" />
+                    <div className="flex items-center gap-3 border-l-4 border-navy bg-white px-3 py-3">
+                      <CheckCircle2 className="w-5 h-5 text-navy shrink-0" />
                       <div>
                         <strong className="block text-sm text-slate-900">Recommended formats ready</strong>
                         <span className="block text-xs text-slate-500">Pick one below, then choose a standard size and quantity.</span>
                       </div>
                     </div>
                   )}
-                </div>
+                  <div className="relative mt-4">
+                    <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+                    <input
+                      type="search"
+                      value={catalogQuery}
+                      onChange={(event) => {
+                        setCatalogQuery(event.target.value);
+                        if (event.target.value) {
+                          setMobileIntentChosen(true);
+                          setMobileBrowseAll(true);
+                        }
+                      }}
+                      placeholder="Or search: coffee pouch, shampoo bottle, shipping box…"
+                      aria-label="Search packaging products"
+                      className="w-full h-12 border border-slate-300 bg-white pl-10 pr-11 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-navy"
+                    />
+                    {catalogQuery && <button type="button" onClick={() => setCatalogQuery("")} aria-label="Clear product search" className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center text-slate-400 hover:text-navy"><X className="w-4 h-4" /></button>}
+                  </div>
+                  <button type="button" onClick={() => setShowCategories((open) => !open)} className="mt-4 inline-flex items-center gap-2 text-xs font-black text-navy">
+                    {showCategories ? "Hide packaging types" : "Browse all packaging types"}
+                    <ChevronDown className={`w-4 h-4 transition-transform ${showCategories ? "rotate-180" : ""}`} />
+                  </button>
+                </div>}
 
                 {/* Category grid */}
-                {catalogOpen && <div className="hidden sm:block bg-white rounded-none border border-slate-200 p-5">
+                {catalogOpen && showCategories && <div className="bg-white rounded-none border border-slate-200 p-5">
                   <div className="flex justify-between items-center mb-4">
                     <span className="font-bold text-slate-800 text-sm" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>Product Category</span>
                     <div className="flex gap-2">
@@ -1091,33 +1116,12 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                         style={{ background: ecoFilter ? "#16A34A" : "#F1F5F9", color: ecoFilter ? "white" : "#64748B" }}>🌿 Eco</button>
                     </div>
                   </div>
-                  <div className="relative mb-4">
-                    <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
-                    <input
-                      type="search"
-                      value={catalogQuery}
-                      onChange={(event) => setCatalogQuery(event.target.value)}
-                      placeholder="Search pouches, labels, paper bags, bowls…"
-                      aria-label="Search packaging products"
-                      className="w-full h-11 border border-slate-300 bg-slate-50 pl-10 pr-11 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-blue focus:bg-white"
-                    />
-                    {catalogQuery && (
-                      <button
-                        type="button"
-                        onClick={() => setCatalogQuery("")}
-                        aria-label="Clear product search"
-                        className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center text-slate-400 hover:text-navy"
-                      >
-                        <X className="w-4 h-4" />
-                      </button>
-                    )}
-                  </div>
                   <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
                     {CATEGORIES.map(cat => (
                       <button key={cat.slug}
                         onClick={() => handleSelectCategory(cat.slug)}
                         className="flex flex-col items-center gap-1.5 p-3 rounded-none border-2 transition-all"
-                        style={{ borderColor: selectedCategory === cat.slug ? "#1B6CA8" : "#E2E8F0", background: selectedCategory === cat.slug ? "rgba(27,108,168,0.06)" : "white" }}
+                        style={{ borderColor: selectedCategory === cat.slug ? "#0D1B2A" : "#E2E8F0", background: "white" }}
                       >
                         <MS icon={cat.icon} className={`text-2xl ${selectedCategory === cat.slug ? "" : "text-slate-400"}`}
                           style={{ color: selectedCategory === cat.slug ? "#1B6CA8" : undefined } as any} />
@@ -1130,7 +1134,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                 </div>}
 
                 {/* SKU cards */}
-                <div className={`${catalogOpen && !mobileIntentChosen ? "hidden sm:block" : "block"} bg-white rounded-none border border-slate-200 p-4 sm:p-5`}>
+                <div className={`${catalogOpen && !mobileIntentChosen ? "hidden" : "block"} bg-white rounded-none border border-slate-200 p-4 sm:p-5`}>
                   <div className="flex items-center justify-between gap-4 mb-4">
                     <div className="font-bold text-slate-800 text-sm" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
                       {catalogOpen ? (normalizedCatalogQuery ? "Search results" : "Choose a product") : "Your selected product"}
@@ -1142,7 +1146,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                       </button>
                     )}
                   </div>
-                  {selectedSku && (
+                  {selectedSku && !catalogOpen && (
                     <div className="mb-5 grid md:grid-cols-[minmax(0,1.2fr)_minmax(250px,0.8fr)] border border-slate-200 bg-slate-50">
                       <div className="relative aspect-[4/3] md:aspect-auto md:min-h-[310px] overflow-hidden bg-white border-b md:border-b-0 md:border-r border-slate-200">
                         <img
@@ -1176,8 +1180,8 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                       </div>
                     </div>
                   )}
-                  <div className="mb-4 rounded-none border px-4 py-3" style={{ background: selectedSkuBuyingMode === "assisted" ? "#FFF7E6" : "#F1F8FF", borderColor: selectedSkuBuyingMode === "assisted" ? "#F2D89C" : "#CFE4F5" }}>
-                    <p className="text-xs leading-relaxed" style={{ color: selectedSkuBuyingMode === "assisted" ? "#8A5A00" : "#1B5F94" }}>
+                  <div className="mb-4 rounded-none border border-slate-300 bg-white px-4 py-3">
+                    <p className="text-xs leading-relaxed text-slate-700">
                       <strong>{selectedSkuBuyingMode === "assisted" ? "Managed quote:" : "Instant buy:"}</strong>{" "}
                       {selectedSkuBuyingMode === "assisted"
                         ? "This product needs a quick expert check before we confirm price and production timing."
@@ -1193,7 +1197,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                       {currentCatSkus.map((sku, index) => (
                         <button key={sku.id} onClick={() => handleSelectSku(sku.id)}
                           className={`${index >= 4 && !normalizedCatalogQuery && !mobileShowAllResults ? "hidden sm:flex" : "flex"} group flex-col overflow-hidden rounded-none border-2 text-left transition-colors`}
-                          style={{ borderColor: selectedSkuId === sku.id ? "#1B6CA8" : "#E2E8F0", background: selectedSkuId === sku.id ? "rgba(27,108,168,0.04)" : "white" }}
+                          style={{ borderColor: selectedSkuId === sku.id ? "#0D1B2A" : "#E2E8F0", background: "white" }}
                         >
                           <div className="relative w-full aspect-[4/3] bg-slate-100 shrink-0 overflow-hidden border-b border-slate-200">
                             <img src={getCatalogImage(sku)} alt={`${sku.name} packaging example`} loading="lazy" className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.025]" />
@@ -1207,8 +1211,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                           <div className="p-4 flex-1 min-w-0 w-full">
                             <div className="flex flex-wrap items-center gap-2 mb-2">
                               {sku.is_eco && <span className="text-[10px] px-1.5 py-0.5 font-bold" style={{ background: "rgba(22,163,74,0.1)", color: "#16A34A" }}>ECO</span>}
-                              {sku.is_smartstock && <span className="text-[10px] px-1.5 py-0.5 font-bold" style={{ background: "rgba(232,168,56,0.12)", color: "#B77608" }}>SmartStock</span>}
-                              <span className="text-[10px] px-1.5 py-0.5 font-bold" style={{ background: isAssistedSku(sku) ? "rgba(232,168,56,0.14)" : "rgba(27,108,168,0.10)", color: isAssistedSku(sku) ? "#92600A" : "#1B6CA8" }}>
+                              <span className="text-[10px] px-1.5 py-0.5 font-bold border" style={{ background: "#FFFFFF", borderColor: isAssistedSku(sku) ? "#D6A647" : "#0D1B2A", color: isAssistedSku(sku) ? "#7A5109" : "#0D1B2A" }}>
                                 {isAssistedSku(sku) ? "Managed quote" : "Instant buy"}
                               </span>
                               <span className="text-[10px] px-1.5 py-0.5 font-bold" style={{ background: "#0D1B2A", color: "#FFFFFF" }}>Custom printed</span>
@@ -1230,6 +1233,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                   )}
                 </div>
 
+                {!catalogOpen && <>
                 {/* Variant selectors */}
                 {selectedSku && selectedSku.variants.length > 0 && (
                   <>
@@ -1440,6 +1444,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                     )}
                   </div>
                 </div>
+                </>}
               </>
             )}
 
@@ -1838,7 +1843,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
               </>
             )}
 
-            {!isLastStep && selectedSku && (
+            {!isLastStep && selectedSku && !(stepNum === 1 && catalogOpen) && (
               <div className="lg:hidden border border-slate-200 bg-white px-4 py-3 flex items-center justify-between gap-4">
                 <div className="min-w-0">
                   <p className="truncate text-sm font-bold text-slate-900">{selectedSku.name}</p>
@@ -1856,7 +1861,11 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
               <button onClick={handleBack} className="px-4 sm:px-6 py-2.5 rounded-lg border border-slate-200 text-sm font-bold text-slate-600 hover:border-slate-400 transition-colors shrink-0">
                 ← Back
               </button>
-              {!isLastStep ? (
+              {stepNum === 1 && catalogOpen ? (
+                <button type="button" disabled className="flex-1 sm:flex-none px-4 sm:px-8 py-3 text-sm font-black text-slate-500 bg-slate-100 border border-slate-200 cursor-not-allowed min-w-0">
+                  Choose a product above
+                </button>
+              ) : !isLastStep ? (
                 <button onClick={handleNext} className="flex-1 sm:flex-none px-4 sm:px-8 py-3 text-sm font-black text-white transition-all hover:opacity-90 min-w-0" style={{ background: "#0D1B2A" }}>
                   {stepNum === 1 ? "Continue to brand & delivery" : stepNum === 2 ? "Continue to your details" : "Review order"} →
                 </button>
