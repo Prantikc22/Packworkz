@@ -85,10 +85,10 @@ export default function Products() {
                 Instant-buy packaging catalog
               </p>
               <h1 className="text-4xl md:text-5xl font-black leading-tight" style={{ fontFamily: "'Space Grotesk', sans-serif", color: "#0D1B2A" }}>
-                Configure standard SKUs online. Get expert pricing where specs need it.
+                Buy standard packaging online. Get expert help when specifications need it.
               </h1>
               <p className="text-slate-600 mt-4 max-w-2xl text-base leading-relaxed">
-                Start with smart defaults, see MOQ and price bands upfront, then choose a sample, artwork, or managed procurement path.
+                Compare ready sizes, MOQ, lead times and quantity pricing, then buy online or send a technical brief.
               </p>
               <div className="mt-6 flex flex-wrap gap-3">
                 {[
@@ -112,9 +112,9 @@ export default function Products() {
                 <p className="font-black text-sm">Your buying path</p>
               </div>
               {[
-                ["1", "Pick SKU", "Choose product, industry, or sustainable catalog."],
-                ["2", "Configure", "Size, material, finish, artwork, and sample defaults."],
-                ["3", "Approve", "Buy standard packs online or receive one managed quote for technical work."],
+                ["1", "Choose a product", "Browse by packaging type or search by what you sell."],
+                ["2", "Pick your options", "Select a ready size, material, print and quantity."],
+                ["3", "Buy or get a quote", "Pay online for standard packs; send technical runs to a specialist."],
               ].map(([num, title, body]) => (
                 <div key={num} className="flex gap-3 pb-4 last:pb-0">
                   <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-black shrink-0" style={{ background: "#E8A838", color: "#0D1B2A" }}>{num}</div>
@@ -279,8 +279,8 @@ export default function Products() {
                           <small>{sku.publicBuyingPath === "quote" ? "Indicative unit range" : "Starting unit price"}</small>
                           <strong>{sku.publicBuyingPath === "quote" ? `${formatINR(sku.price_min)} - ${formatINR(sku.price_max)}` : `${formatINR(sku.price_tiers?.[0]?.unit_price ?? sku.price_max)} / ${sku.moq_unit.replace(/s$/, "")}`}</strong>
                         </div>
-                        <Link href={getConfigureHref(sku)} className="pw-catalog-card-primary">
-                          {sku.publicBuyingPath === "instant" ? "Configure" : "Request pricing"} <MS icon="arrow_forward" />
+                        <Link href={getConfigureHref(sku)} className={`pw-catalog-card-primary${sku.publicBuyingPath === "quote" ? " is-quote" : ""}`}>
+                          {sku.publicBuyingPath === "instant" ? "Buy now" : "Get a quote"} <MS icon="arrow_forward" />
                         </Link>
                       </div>
 

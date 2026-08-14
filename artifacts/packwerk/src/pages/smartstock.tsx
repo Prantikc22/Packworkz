@@ -54,7 +54,7 @@ export function SmartStockDemo({ standalone = false }: { standalone?: boolean })
   const workingCapitalReleased = Math.round(suggestedQty * sku.unitCost * 0.14);
   const annualImpact = annualEmergencySavings + revenueProtected + workingCapitalReleased;
 
-  const alertColor = reorderIn <= 2 ? "#ef4444" : reorderIn <= 10 ? "#f59e0b" : "#22c55e";
+  const alertColor = reorderIn <= 2 ? "#E8A838" : "#AFC1D2";
 
   const forecast = useMemo(() => {
     return Array.from({ length: 10 }, (_, i) => {
@@ -78,10 +78,10 @@ export function SmartStockDemo({ standalone = false }: { standalone?: boolean })
                 About SmartStock
               </Link>
             )}
-            <p style={{ color: "#1B6CA8", fontSize: 11, fontWeight: 800, letterSpacing: "2.4px", textTransform: "uppercase", marginBottom: 14 }}>
+            <p style={{ color: "#1B6CA8", fontSize: 11, fontWeight: 800, letterSpacing: 0, textTransform: "uppercase", marginBottom: 14 }}>
               {standalone ? "INTERACTIVE DEMO / SAMPLE DATA" : "SMARTSTOCK™ / AI INVENTORY"}
             </p>
-            <h2 style={{ color: "#0D1B2A", fontSize: "clamp(2.2rem,4vw,4rem)", lineHeight: 1.05, fontWeight: 900, letterSpacing: "-0.04em", marginBottom: 16 }}>
+            <h2 style={{ color: "#0D1B2A", fontFamily: "'Space Grotesk', sans-serif", fontSize: "clamp(2.2rem,4vw,4rem)", lineHeight: 1.05, fontWeight: 900, letterSpacing: 0, marginBottom: 16 }}>
               {standalone ? "Change the forecast. See the decision." : "Your next packaging order, already anticipated."}
             </h2>
             <p style={{ color: "#64748B", fontSize: 16, lineHeight: 1.8, marginBottom: 26 }}>
@@ -124,10 +124,10 @@ export function SmartStockDemo({ standalone = false }: { standalone?: boolean })
           <div className="smartstock-dashboard">
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
               <div>
-                <p style={{ color: "rgba(255,255,255,0.45)", fontSize: 11, letterSpacing: "0.16em", textTransform: "uppercase", fontWeight: 800 }}>SmartStock AI Dashboard</p>
-                <h3 style={{ color: "white", fontSize: 20, fontWeight: 900, marginTop: 4 }}>Packaging command center</h3>
+                <p style={{ color: "rgba(255,255,255,0.45)", fontSize: 11, letterSpacing: 0, textTransform: "uppercase", fontWeight: 800 }}>SmartStock inventory view</p>
+                <h3 style={{ color: "white", fontFamily: "'Space Grotesk', sans-serif", fontSize: 20, fontWeight: 900, marginTop: 4 }}>Packaging command center</h3>
               </div>
-              <span style={{ background: "rgba(34,197,94,0.14)", color: "#86efac", border: "1px solid rgba(134,239,172,0.22)", borderRadius: 999, padding: "7px 10px", fontSize: 11, fontWeight: 800 }}>LIVE SIMULATION</span>
+              <span style={{ background: "rgba(255,255,255,0.05)", color: "#C7D5E5", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 2, padding: "7px 10px", fontSize: 11, fontWeight: 800 }}>LIVE SIMULATION</span>
             </div>
 
             <div className="smartstock-impact-strip">
@@ -144,8 +144,8 @@ export function SmartStockDemo({ standalone = false }: { standalone?: boolean })
                   onClick={() => setSelected(i)}
                   style={{
                     textAlign: "left",
-                    border: selected === i ? "1px solid #E8A838" : "1px solid rgba(255,255,255,0.10)",
-                    background: selected === i ? "rgba(232,168,56,0.12)" : "rgba(255,255,255,0.05)",
+                    border: selected === i ? "1px solid #5E8FD0" : "1px solid rgba(255,255,255,0.10)",
+                    background: selected === i ? "rgba(65,111,174,0.18)" : "rgba(255,255,255,0.05)",
                     color: "white",
                     borderRadius: 2,
                     padding: 12,
@@ -162,8 +162,8 @@ export function SmartStockDemo({ standalone = false }: { standalone?: boolean })
               <div style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.09)", borderRadius: 2, padding: 18 }}>
                 <div style={{ display: "flex", justifyContent: "space-between", gap: 12, marginBottom: 18 }}>
                   <div>
-                    <p style={{ color: "rgba(255,255,255,0.48)", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.14em", fontWeight: 800 }}>Selected SKU</p>
-                    <h4 style={{ color: "white", fontWeight: 900, fontSize: 18, marginTop: 4 }}>{sku.name}</h4>
+                    <p style={{ color: "rgba(255,255,255,0.48)", fontSize: 11, textTransform: "uppercase", letterSpacing: 0, fontWeight: 800 }}>Selected SKU</p>
+                    <h4 style={{ color: "white", fontFamily: "'Space Grotesk', sans-serif", fontWeight: 900, fontSize: 18, marginTop: 4 }}>{sku.name}</h4>
                   </div>
                   <span style={{ color: alertColor, fontWeight: 900 }}>{sku.risk} risk</span>
                 </div>
@@ -175,7 +175,7 @@ export function SmartStockDemo({ standalone = false }: { standalone?: boolean })
                   ].map((stat) => (
                     <div key={stat.label} style={{ background: "rgba(255,255,255,0.06)", borderRadius: 2, padding: 12 }}>
                       <p style={{ color: "white", fontSize: 24, fontWeight: 900, lineHeight: 1 }}>{stat.value}</p>
-                      <span style={{ color: "rgba(255,255,255,0.45)", fontSize: 10, textTransform: "uppercase", letterSpacing: "0.1em" }}>{stat.label}</span>
+                      <span style={{ color: "rgba(255,255,255,0.45)", fontSize: 10, textTransform: "uppercase", letterSpacing: 0 }}>{stat.label}</span>
                     </div>
                   ))}
                 </div>
@@ -192,7 +192,7 @@ export function SmartStockDemo({ standalone = false }: { standalone?: boolean })
                       onBlur={() => setHoveredBar(null)}
                       style={{
                         height: `${point.height}%`,
-                        background: point.height < 25 ? "#ef4444" : point.height < 45 ? "#f59e0b" : "#3b82f6",
+                        background: point.height < 25 ? "#C7933A" : point.height < 45 ? "#70859B" : "#3F6FA8",
                       }}
                     >
                       <span className={`smartstock-chart-tooltip${hoveredBar === i ? " visible" : ""}`}>
@@ -207,8 +207,8 @@ export function SmartStockDemo({ standalone = false }: { standalone?: boolean })
 
               <div style={{ display: "grid", gap: 12 }}>
                 <div style={{ background: "#ffffff", borderRadius: 2, padding: 18 }}>
-                  <p style={{ color: "#64748B", fontSize: 11, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.14em" }}>AI recommendation</p>
-                  <h4 style={{ color: "#0D1B2A", fontSize: 26, fontWeight: 900, margin: "8px 0 4px" }}>{suggestedQty.toLocaleString()} units</h4>
+                  <p style={{ color: "#64748B", fontSize: 11, fontWeight: 800, textTransform: "uppercase", letterSpacing: 0 }}>Recommended reorder</p>
+                  <h4 style={{ color: "#0D1B2A", fontFamily: "'Space Grotesk', sans-serif", fontSize: 26, fontWeight: 900, margin: "8px 0 4px" }}>{suggestedQty.toLocaleString()} units</h4>
                   <p style={{ color: "#64748B", fontSize: 13, lineHeight: 1.55 }}>Place reorder through {sku.vendor}. Holds 45 days of expected demand plus safety buffer.</p>
                 </div>
                 <div className="smartstock-value-stack">
@@ -218,7 +218,7 @@ export function SmartStockDemo({ standalone = false }: { standalone?: boolean })
                 </div>
                 <Link href="/configure">
                   <button className="btn-fill btn-amber w-full py-3 text-sm">
-                    <span>Build this reorder plan</span>
+                    <span>Review reorder plan</span>
                   </button>
                 </Link>
               </div>

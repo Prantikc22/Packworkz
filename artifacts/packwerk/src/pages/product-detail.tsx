@@ -263,8 +263,8 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
 
               <div className="pt-6 space-y-3 border-t border-border">
                 <Link href={configureHref}>
-                  <Button className="w-full h-12 bg-amber text-navy hover:bg-amber/90 font-bold text-lg">
-                    {quoteRequired ? "Request Managed Quote" : "Choose options & checkout"}
+                  <Button className="w-full h-14 bg-amber text-navy hover:bg-amber/90 font-black text-xl">
+                    {quoteRequired ? "Get a quote" : "Buy now"}
                   </Button>
                 </Link>
                 <Link href={`/samples?product=${product.id}`}>

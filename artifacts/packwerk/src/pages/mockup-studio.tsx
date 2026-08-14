@@ -148,7 +148,7 @@ export default function MockupStudio() {
 
           <div className="pw-mockup-footer">
             <p><Rotate3D size={17} /> {view === "preview" ? "Drag to rotate. Scroll to zoom." : "Solid lines cut. Dashed lines fold."}</p>
-            <Link className="btn-fill btn-amber" href={`/configure?sku=${selected.sku}`}><ShoppingBag size={17} /> Configure {selected.label}</Link>
+            <Link className="btn-fill btn-amber" href={`/configure?sku=${selected.sku}`}><ShoppingBag size={17} /> Buy {selected.label}</Link>
           </div>
         </aside>
 

@@ -308,13 +308,14 @@ const GLOBAL_STYLES = `
     content: '';
     position: absolute;
     inset: 0;
-    background: rgba(255,255,255,0.07);
+    background: rgba(255,255,255,0.12);
     border-radius: 6px;
     transform: translateX(-101%);
     transition: transform 0.25s ease;
   }
   .po-nav-link:hover::after { transform: translateX(0); }
-  .po-nav-link.active { color: #E8A838; }
+  .po-nav-link:hover { color: #FFFFFF; }
+  .po-nav-link.active { color: #F7C95C; }
 
   /* Amber CTA button fill animation */
   .po-cta-btn {
@@ -377,10 +378,10 @@ const GLOBAL_STYLES = `
     transition: color 0.16s ease, transform 0.16s ease;
   }
   .po-mega-link:last-child { border-bottom: 0; }
-  .po-mega-link:hover { color: #1B6CA8; transform: translateX(3px); }
+  .po-mega-link:hover { color: #0B3FA0; transform: translateX(3px); }
   .po-mega-link:hover .po-mega-arrow { opacity: 1; transform: translateX(0); }
   .po-mega-arrow {
-    color: #1B6CA8;
+    color: #0B3FA0;
     opacity: 0;
     transform: translateX(-4px);
     transition: opacity 0.16s ease, transform 0.16s ease;
@@ -403,7 +404,7 @@ const GLOBAL_STYLES = `
     transition: background 0.16s ease, color 0.16s ease;
   }
   .po-mega-footer-link:last-child { border-right: 0; }
-  .po-mega-footer-link:hover { background: #0D1B2A; color: #FFFFFF; }
+  .po-mega-footer-link:hover { background: #0B3FA0; color: #FFFFFF; }
   @media (max-width: 1180px) {
     .po-mega-column { padding-left: 20px; padding-right: 20px; }
     .po-mega-footer-link { padding-left: 16px; padding-right: 16px; }
@@ -418,11 +419,11 @@ function IconBox({ Icon }: { Icon: React.ElementType }) {
   return (
     <div style={{
       width: 32, height: 32, borderRadius: 8,
-      background: "rgba(27,108,168,0.08)",
+      background: "rgba(11,63,160,0.08)",
       display: "flex", alignItems: "center", justifyContent: "center",
       flexShrink: 0,
     }}>
-      <Icon size={16} color="#1B6CA8" />
+      <Icon size={16} color="#0B3FA0" />
     </div>
   );
 }
@@ -1100,7 +1101,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
       <Link
         href="/configure"
         className="pw-launch-strip h-10 flex items-center justify-center px-4 text-center no-underline"
-        style={{ background: "#E8A838", color: "#071522" }}
+        style={{ background: "#F7F9FC", color: "#0B3FA0", borderBottom: "1px solid #DCE5F2" }}
         aria-label={`Claim ${Math.round(LAUNCH_PROMOTION_RATE * 100)}% launch saving on your order`}
       >
         <span className="text-[10px] sm:text-xs font-black uppercase tracking-[0.08em] sm:tracking-[0.12em]">
@@ -1118,10 +1119,10 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
           left: "50%",
           width: navFloating ? "min(1180px, calc(100% - 32px))" : "100%",
           transform: "translateX(-50%)",
-          borderRadius: navFloating ? 14 : 0,
-          background: navSolid ? "#0D1B2A" : "transparent",
-          border: navSolid ? "1px solid #20364B" : "1px solid transparent",
-          boxShadow: navSolid ? "0 18px 50px rgba(2, 8, 23, 0.24)" : "none",
+          borderRadius: navFloating ? 8 : 0,
+          background: navFloating ? "#0B3FA0" : navSolid ? "#0D1B2A" : "transparent",
+          border: navFloating ? "1px solid #2A61BD" : navSolid ? "1px solid #20364B" : "1px solid transparent",
+          boxShadow: navFloating ? "0 18px 48px rgba(3, 31, 86, 0.26)" : "none",
           transition: "top 0.24s ease, width 0.24s ease, border-radius 0.24s ease, background-color 0.24s ease, border-color 0.24s ease, box-shadow 0.24s ease",
           willChange: "top, width, background-color, box-shadow",
         }}
@@ -1183,7 +1184,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
 
       {/* Mobile drawer */}
       {mobileOpen && (
-        <div className="fixed inset-x-0 bottom-0 z-40 overflow-y-auto" style={{ top: navFloating ? 84 : 108, background: "#020617" }}>
+        <div className="fixed inset-x-0 bottom-0 z-40 overflow-y-auto" style={{ top: navFloating ? 84 : 108, background: "#0D1B2A" }}>
           <nav className="flex flex-col px-8 py-8 gap-1">
             {[
               { label: "Products", href: "/products" },
