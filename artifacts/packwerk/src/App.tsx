@@ -39,6 +39,9 @@ import Privacy from "@/pages/privacy";
 import Terms from "@/pages/terms";
 import Refund from "@/pages/refund";
 import TrackOrder from "@/pages/track-order";
+import Cart from "@/pages/cart";
+import CartCheckout from "@/pages/cart-checkout";
+import { CartProvider } from "@/lib/cart";
 
 // Dashboard Pages
 import DashboardOverview from "@/pages/dashboard/overview";
@@ -137,6 +140,8 @@ function Router() {
       <PublicRoute path="/terms" component={Terms} layout={PublicLayout} />
       <PublicRoute path="/refund" component={Refund} layout={PublicLayout} />
       <PublicRoute path="/track-order" component={TrackOrder} layout={PublicLayout} />
+      <PublicRoute path="/cart/checkout" component={CartCheckout} layout={PublicLayout} />
+      <PublicRoute path="/cart" component={Cart} layout={PublicLayout} />
 
       {/* Ad landing page — not linked from nav/footer */}
       <Route path="/lp/d2c" component={LpD2c} />
@@ -168,10 +173,12 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
-          <ScrollToTop />
-          <Suspense fallback={<div className="min-h-screen grid place-items-center bg-slate-100 text-slate-600 font-bold">Loading Packworkz...</div>}>
-            <Router />
-          </Suspense>
+          <CartProvider>
+            <ScrollToTop />
+            <Suspense fallback={<div className="min-h-screen grid place-items-center bg-slate-100 text-slate-600 font-bold">Loading Packworkz...</div>}>
+              <Router />
+            </Suspense>
+          </CartProvider>
         </WouterRouter>
         <Toaster />
       </TooltipProvider>

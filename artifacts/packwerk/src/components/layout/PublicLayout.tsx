@@ -6,9 +6,12 @@ import {
   ChevronDown, BookOpen, Info, Network,
   Users, Mail, Calculator, FileText, Lightbulb, Bot, Palette,
   ClipboardCheck, Truck, ShieldCheck, MapPinned, MessageSquare,
+  ShoppingCart as ShoppingCartIcon,
 } from "lucide-react";
 import { CATALOG_SKUS } from "@/lib/catalog";
 import { LAUNCH_PROMOTION_RATE } from "@workspace/commerce";
+import { CartDrawer } from "@/components/cart/CartDrawer";
+import { useCart } from "@/lib/cart";
 
 // ── Per-page SEO metadata ────────────────────────────────────────────────────
 const PAGE_SEO: Record<string, { title: string; description: string; keywords: string }> = {
@@ -1022,6 +1025,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
   const [mobileResourcesOpen, setMobileResourcesOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(() => !!localStorage.getItem("packwerk_access_token"));
+  const { count: cartCount, openCart } = useCart();
 
   const isHome = location === "/";
   const navFloating = scrolled;
@@ -1175,6 +1179,21 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
             </span>
           </div>
 
+          <button
+            type="button"
+            onClick={openCart}
+            className="relative grid h-11 w-11 place-items-center text-white transition-colors hover:text-amber"
+            style={{ background: "transparent", border: "none", cursor: "pointer" }}
+            aria-label={`Open cart${cartCount ? `, ${cartCount} items` : ""}`}
+          >
+            <ShoppingCartIcon size={21} />
+            {cartCount > 0 && (
+              <span className="absolute right-0.5 top-0.5 grid h-5 min-w-5 place-items-center bg-amber px-1 text-[10px] font-black text-navy">
+                {cartCount > 99 ? "99+" : cartCount}
+              </span>
+            )}
+          </button>
+
           {/* Mobile hamburger only */}
           <button className="lg:hidden p-2 ml-1" style={{ color: "white", background: "none", border: "none", cursor: "pointer", lineHeight: 1 }} onClick={() => setMobileOpen(!mobileOpen)}>
             <span className="material-symbols-outlined" style={{ fontSize: 28 }}>{mobileOpen ? "close" : "menu"}</span>
@@ -1283,6 +1302,8 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
           </nav>
         </div>
       )}
+
+      <CartDrawer />
 
       <main className="flex-1">
         {children}

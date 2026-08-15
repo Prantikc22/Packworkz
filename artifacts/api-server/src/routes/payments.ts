@@ -34,20 +34,26 @@ function safeEqualHex(left: string, right: string) {
 }
 
 function parseQuoteForCommerce(quote: any) {
-  const item = Array.isArray(quote?.items) ? quote.items[0] : null;
-  const skuCode = String(item?.sku_code || "");
-  const quantity = Number(item?.quantity || 0);
-  const sizeCode = String(item?.custom_specs?.standard_size || "");
-  const rawConfiguration = (item?.variant_selections && typeof item.variant_selections === "object")
-    ? item.variant_selections as Record<string, string>
-    : {};
-  const promotionCode = String(rawConfiguration.promotion_code || "").toUpperCase();
-  const { promotion_code: _promotionCode, ...configuration } = rawConfiguration;
   const artwork = (quote?.design_paid
     ? "upload"
-    : quote?.artwork_option || item?.artwork_status || "none") as "upload" | "design" | "none";
+    : quote?.artwork_option || "upload") as "upload" | "design" | "none";
   const delivery = (quote?.preferred_timeline || "standard") as "standard" | "blitz" | "warehouse";
-  return { item, skuCode, quantity, sizeCode, artwork, delivery, configuration, promotionCode };
+  const items = (Array.isArray(quote?.items) ? quote.items : []).map((item: any) => {
+    const rawConfiguration = (item?.variant_selections && typeof item.variant_selections === "object")
+      ? item.variant_selections as Record<string, string>
+      : {};
+    const promotionCode = String(rawConfiguration.promotion_code || "").toUpperCase();
+    const { promotion_code: _promotionCode, ...configuration } = rawConfiguration;
+    return {
+      item,
+      skuCode: String(item?.sku_code || ""),
+      quantity: Number(item?.quantity || 0),
+      sizeCode: String(item?.custom_specs?.standard_size || ""),
+      configuration,
+      promotionCode,
+    };
+  });
+  return { items, artwork, delivery };
 }
 
 async function launchPromotionAvailable() {
@@ -179,21 +185,28 @@ router.post("/payments/prepare-order", async (req, res): Promise<void> => {
     return;
   }
 
-  const promotionRequested = parsed.promotionCode === LAUNCH_PROMOTION_CODE;
+  const promotionRequested = parsed.items.some((item: any) => item.promotionCode === LAUNCH_PROMOTION_CODE);
   const promotionCode = promotionRequested && (recoveryMode || Number(existingOrder?.discount_applied || 0) > 0 || await launchPromotionAvailable())
     ? LAUNCH_PROMOTION_CODE
     : undefined;
-  const estimate = calculateCommerceEstimate({
-    skuCode: parsed.skuCode,
-    quantity: parsed.quantity,
-    sizeCode: parsed.sizeCode,
+  const estimates: ReturnType<typeof calculateCommerceEstimate>[] = parsed.items.map((item: any) => calculateCommerceEstimate({
+    skuCode: item.skuCode,
+    quantity: item.quantity,
+    sizeCode: item.sizeCode,
     artwork: parsed.artwork,
     delivery: parsed.delivery,
-    configuration: parsed.configuration,
+    configuration: item.configuration,
     promotionCode,
-  });
+  }));
+  const blockingEstimate = estimates.find((item) => item.reason && item.reason !== "payment_limit");
+  const estimate = {
+    total: Number(estimates.reduce((sum, item) => sum + item.total, 0).toFixed(2)),
+    discount: Number(estimates.reduce((sum, item) => sum + item.discount, 0).toFixed(2)),
+    amountPaise: Math.round(estimates.reduce((sum, item) => sum + item.total, 0) * 100),
+    promotionCode,
+  };
 
-  if (estimate.reason && estimate.reason !== "payment_limit") {
+  if (!parsed.items.length || blockingEstimate) {
     res.json({
       status: "manual_confirmation",
       quote_id: quoteId,
@@ -245,8 +258,8 @@ router.post("/payments/prepare-order", async (req, res): Promise<void> => {
         receipt: quoteId.slice(0, 40),
         notes: {
           quote_id: quoteId,
-          sku_code: parsed.skuCode,
-          size_code: parsed.sizeCode,
+          sku_codes: parsed.items.map((item: any) => item.skuCode).join(",").slice(0, 240),
+          item_count: String(parsed.items.length),
           ...(recoveryMode ? {
             storage_mode: "recovery",
             recovery_order_id: packworkzOrderId,
@@ -272,8 +285,8 @@ router.post("/payments/prepare-order", async (req, res): Promise<void> => {
         fields: [
           { label: "Customer", value: quote.contact_name },
           { label: "Email", value: quote.email },
-          { label: "Product", value: parsed.item?.product_name },
-          { label: "Quantity", value: parsed.quantity },
+          { label: "Products", value: parsed.items.map((entry: any) => entry.item?.product_name).filter(Boolean).join(", ") },
+          { label: "Lines", value: parsed.items.length },
           { label: "Amount", value: `₹${estimate.total.toLocaleString("en-IN")}` },
         ],
       });

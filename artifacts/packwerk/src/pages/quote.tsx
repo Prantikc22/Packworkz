@@ -7,6 +7,7 @@ import type { Sku, VariantGroup } from "@/lib/skus";
 import { CATALOG_SKUS as SKUS, getCatalogImage, getCatalogSkusByCategory as getSkusByCategory, requiresQuote } from "@/lib/catalog";
 import { openOrderPayment, openRazorpay, prepareOrderPayment, type PreparedOrderPayment } from "@/lib/razorpay";
 import { calculateOrderEstimate } from "@/lib/pricing";
+import { createConfiguredCartItem, useCart } from "@/lib/cart";
 import {
   COMMERCE_PRODUCTS,
   LAUNCH_PROMOTION_CODE,
@@ -23,7 +24,7 @@ import {
 type ArtworkOption = "upload" | "design" | "none";
 type DeliveryOption = "standard" | "blitz" | "warehouse";
 
-const STEP_LABELS = ["Choose", "Brand & delivery", "Your details", "Review & pay"];
+const STEP_LABELS = ["Choose", "Brand & delivery", "Your details", "Review & checkout"];
 const TOTAL_STEPS = 4;
 
 const MOBILE_SHOPPING_INTENTS = [
@@ -125,10 +126,10 @@ const MS = ({ icon, className = "", style }: { icon: string; className?: string;
 
 // ── Order Summary Sidebar ──────────────────────────────────────────────────
 function OrderSummary({
-  sku, qty, delivery, artworkOption, designPaid, sizeCode, configuration, buyingMode, onSubmit, submitting
+  sku, qty, delivery, artworkOption, designPaid, sizeCode, configuration, buyingMode, purchaseIntent, onSubmit, submitting
 }: {
   sku: Sku | undefined; qty: number; delivery: DeliveryOption;
-  artworkOption: ArtworkOption; designPaid?: boolean; sizeCode?: string; configuration?: Record<string, string>; buyingMode: "self" | "assisted"; onSubmit?: () => void; submitting?: boolean;
+  artworkOption: ArtworkOption; designPaid?: boolean; sizeCode?: string; configuration?: Record<string, string>; buyingMode: "self" | "assisted"; purchaseIntent?: "cart" | "buy"; onSubmit?: () => void; submitting?: boolean;
 }) {
   const pricedArtwork = artworkOption === "design" && designPaid ? "upload" : artworkOption;
   const { low, high, mat, setup, logistics, artAdd, discount, promotionCode, gst, total, paymentEligible, perPiece } = calcPrice(sku, qty, delivery, pricedArtwork, sizeCode, configuration);
@@ -227,7 +228,7 @@ function OrderSummary({
               className="w-full py-3 rounded font-black uppercase tracking-widest text-sm transition-all hover:opacity-90 active:scale-95 flex items-center justify-center gap-2 mt-2"
               style={{ background: "#E8A838", color: "#0F1C2C" }}
             >
-              {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <>{buyingMode === "assisted" ? "REQUEST MANAGED QUOTE" : paymentEligible ? "SAVE & PAY SECURELY" : "SUBMIT FOR PAYMENT CONFIRMATION"} <ArrowRight className="w-4 h-4" /></>}
+              {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <>{buyingMode === "assisted" ? "REQUEST MANAGED QUOTE" : purchaseIntent === "cart" ? "ADD CONFIGURED ITEM TO CART" : "CONTINUE TO CHECKOUT"} <ArrowRight className="w-4 h-4" /></>}
             </button>
 
             <div className="mt-4 pt-4 border-t" style={{ borderColor: "rgba(255,255,255,0.08)" }}>
@@ -237,10 +238,14 @@ function OrderSummary({
                   { n: "1", text: "A packaging engineer checks compatibility and tooling" },
                   { n: "2", text: "You receive a production-ready technical quote" },
                   { n: "3", text: "Approve the specification before production starts" },
+                ] : purchaseIntent === "cart" ? [
+                  { n: "1", text: "Every selected size, material, finish and option stays attached" },
+                  { n: "2", text: "Review this configured item alongside the rest of your cart" },
+                  { n: "3", text: "Checkout once when your packaging order is complete" },
                 ] : [
-                  { n: "1", text: "Your specification is saved to the Packworkz order record" },
-                  { n: "2", text: paymentEligible ? "Pay securely with Razorpay without leaving Packworkz" : "Packworkz confirms the payment route for totals above ₹50,000" },
-                  { n: "3", text: "Track as a guest, or create an account after payment to keep every order and quote together" },
+                  { n: "1", text: "Your selected size, material, finish and artwork stay attached" },
+                  { n: "2", text: "Enter delivery and invoice details once at checkout" },
+                  { n: "3", text: paymentEligible ? "Pay securely with Razorpay and track with your order reference" : "Packworkz confirms the payment route for totals above ₹50,000" },
                 ]).map(({ n, text }) => (
                   <div key={n} className="flex items-start gap-2.5">
                     <span className="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center border border-slate-600 text-xs font-black"
@@ -593,6 +598,12 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
   const stepNum = params?.step ? parseInt(params.step) : params?.id ? 99 : 1;
   const [, setLocation] = useLocation();
   const { toast } = useToast();
+  const { addItem } = useCart();
+  const [purchaseIntent] = useState<"cart" | "buy">(() => {
+    if (typeof window === "undefined") return "buy";
+    const intent = new URLSearchParams(window.location.search).get("intent") || loadDraft().purchaseIntent;
+    return intent === "cart" ? "cart" : "buy";
+  });
 
   // ── Contact ──────────────────────────────────────────────────────────────
   const [contactName, setContactName] = useState<string>(() => loadDraft().contactName || "");
@@ -671,10 +682,6 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
 
   // ── Delivery ─────────────────────────────────────────────────────────────
   const [deliveryOption, setDeliveryOption] = useState<DeliveryOption>(() => loadDraft().deliveryOption || "standard");
-  const [addressLine, setAddressLine] = useState<string>(() => loadDraft().addressLine || "");
-  const [city, setCity] = useState<string>(() => loadDraft().city || "");
-  const [deliveryState, setDeliveryState] = useState<string>(() => loadDraft().deliveryState || "");
-  const [pincode, setPincode] = useState<string>(() => loadDraft().pincode || "");
 
   // ── Sample ───────────────────────────────────────────────────────────────
   const [sampleOption, setSampleOption] = useState<"express" | "standard" | "none">(() => loadDraft().sampleOption || "none");
@@ -720,8 +727,9 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
     contactName, company, email, phone, buyingAsBusiness, gstRegistered, gstin, poReference,
     selectedCategory, selectedSkuId, qty, qtyUnit, variantSelections, customFieldValues, selectedSizeCode, ecoFilter,
     artworkOption, designPaid, artworkFileUrl,
-    deliveryOption, addressLine, city, deliveryState, pincode,
+    deliveryOption,
     sampleOption, samplePaid, notes,
+    purchaseIntent,
   });
 
   // ── Navigation with save ──────────────────────────────────────────────────
@@ -738,18 +746,12 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
         toast({ variant: "destructive", title: "Check GSTIN", description: "Enter a valid 15-character GSTIN or choose 'Not GST registered'." }); return;
       }
     }
-    if (stepNum === 2 && !pincode.trim()) {
-      toast({ variant: "destructive", title: "Required field missing", description: "Please enter your delivery pincode." }); return;
-    }
-    if (stepNum === 2 && !/^\d{6}$/.test(pincode.trim())) {
-      toast({ variant: "destructive", title: "Invalid pincode", description: "Please enter a valid 6-digit Indian pincode." }); return;
-    }
     saveDraft(getAllState());
-    setLocation(`/configure/step/${stepNum + 1}`);
+    setLocation(`/configure/step/${stepNum + 1}?intent=${purchaseIntent}`);
   };
   const handleBack = () => {
     saveDraft(getAllState());
-    stepNum > 1 ? setLocation(`/configure/step/${stepNum - 1}`) : setLocation("/");
+    stepNum > 1 ? setLocation(`/configure/step/${stepNum - 1}?intent=${purchaseIntent}`) : setLocation("/");
   };
 
   const normalizedCatalogQuery = catalogQuery.trim().toLowerCase();
@@ -846,13 +848,46 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
   }, [setLocation, stepNum]);
 
   const handleSubmit = () => {
+    if (selectedSku && selectedSkuBuyingMode === "self") {
+      const item = createConfiguredCartItem(selectedSku, {
+        quantity: qty,
+        sizeCode: selectedSizeCode,
+        variantSelections,
+        customSpecs: customFieldValues,
+        artworkOption,
+        artworkFileUrl: artworkFileUrl || undefined,
+        deliveryOption,
+        sampleOption,
+      });
+      if (!item) {
+        toast({
+          variant: "destructive",
+          title: "This order needs a specialist review",
+          description: "The selected configuration or quantity requires a managed quote.",
+        });
+        return;
+      }
+      addItem(item);
+      try {
+        sessionStorage.setItem("packworkz_checkout_prefill", JSON.stringify({
+          contactName,
+          company,
+          email,
+          phone,
+          gstin: buyingAsBusiness && gstRegistered ? gstin.trim().toUpperCase() : "",
+        }));
+      } catch {}
+      clearDraft();
+      setLocation(purchaseIntent === "cart" ? "/cart" : "/cart/checkout");
+      return;
+    }
     const pricedArtwork = artworkOption === "design" && designPaid ? "upload" : artworkOption;
     const { low, high } = calcPrice(selectedSku, qty, deliveryOption, pricedArtwork, selectedSizeCode, variantSelections);
     submitMutation.mutate({
       data: {
         contact_name: contactName, company_name: company, email, phone,
         delivery_country: "India",
-        delivery_pincode: [addressLine, city, deliveryState, pincode].filter(Boolean).join(", "),
+        delivery_pincode: "",
         preferred_timeline: (deliveryOption as any),
         notes: [
           notes,
@@ -1584,26 +1619,8 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                     ))}
                   </div>
 
-                  <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
-                      Delivery Address<span style={{ color: "#E04B4B" }}> *</span>
-                    </label>
-                    <div className="space-y-2">
-                      <input type="text" value={addressLine} onChange={e => setAddressLine(e.target.value)}
-                        className="w-full border border-slate-200 rounded-lg px-4 py-2.5 text-sm bg-slate-50 focus:outline-none focus:border-blue-400"
-                        placeholder="Street / Building / Area" />
-                      <div className="grid grid-cols-2 gap-2">
-                        <input type="text" value={city} onChange={e => setCity(e.target.value)}
-                          className="w-full border border-slate-200 rounded-lg px-4 py-2.5 text-sm bg-slate-50 focus:outline-none focus:border-blue-400"
-                          placeholder="City" />
-                        <input type="text" value={deliveryState} onChange={e => setDeliveryState(e.target.value)}
-                          className="w-full border border-slate-200 rounded-lg px-4 py-2.5 text-sm bg-slate-50 focus:outline-none focus:border-blue-400"
-                          placeholder="State" />
-                      </div>
-                      <input type="text" value={pincode} onChange={e => setPincode(e.target.value)}
-                        className="w-full max-w-xs border border-slate-200 rounded-lg px-4 py-2.5 text-sm bg-slate-50 focus:outline-none focus:border-blue-400"
-                        placeholder="Pincode (6 digits)" maxLength={6} />
-                    </div>
+                  <div className="border-t border-slate-200 pt-4 text-sm text-slate-600">
+                    Your delivery address is collected once, at secure checkout. It is not attached separately to each configured item.
                   </div>
                 </div>
 
@@ -1770,7 +1787,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                           ? (artworkUploading ? "⏳ Uploading…" : artworkFileUrl && !artworkFileUrl.startsWith("local:") ? `✓ ${artworkFileUrl.split("/").pop()?.substring(0, 28) || "File uploaded"}` : artworkFile ? `⚠ ${artworkFile.name} (not uploaded)` : "Upload ready-to-print file")
                           : artworkOption === "design" ? `Design Service — ₹1,999 ${designPaid ? "✓ Paid" : "(pending payment)"}` : "Plain / unprinted"],
                         ["Delivery", deliveryOption === "standard" ? "Standard Pro (Free)" : deliveryOption === "blitz" ? "Blitz Logistics (+₹1,200)" : "Warehouse Hold (+₹300 handling)"],
-                        ["Delivery Address", [addressLine, city, deliveryState, pincode].filter(Boolean).join(", ") || "—"],
+                        ["Delivery address", selectedSkuBuyingMode === "self" ? "Collected at checkout" : "Confirmed after quote approval"],
                         ["Sample", sampleOption === "express" ? `Express Kit — ₹4,999 ${samplePaid ? "✓ Paid" : "(pending payment)"}` : sampleOption === "standard" ? `Standard — ₹2,999 ${samplePaid ? "✓ Paid" : "(pending payment)"}` : "Skipped"],
                       ].map(([k, v]) => (
                         <div key={String(k)} className="flex justify-between text-sm">
@@ -1879,7 +1896,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                 <button onClick={handleSubmit} disabled={submitMutation.isPending || artworkUploading || checkoutLaunching}
                   className="px-5 sm:px-8 py-2.5 rounded-lg text-sm font-black uppercase tracking-wider transition-all hover:opacity-90 flex items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed min-w-0"
                   style={{ background: "#E8A838", color: "#0F1C2C" }}>
-                  {artworkUploading ? <><Loader2 className="w-4 h-4 animate-spin" /> Uploading artwork…</> : submitMutation.isPending ? <><Loader2 className="w-4 h-4 animate-spin" /> Saving order…</> : checkoutLaunching ? <><Loader2 className="w-4 h-4 animate-spin" /> Opening secure payment…</> : <>{selectedSkuBuyingMode === "assisted" ? "Request managed quote" : "Save and pay securely"} <ArrowRight className="w-4 h-4" /></>}
+                  {artworkUploading ? <><Loader2 className="w-4 h-4 animate-spin" /> Uploading artwork…</> : submitMutation.isPending ? <><Loader2 className="w-4 h-4 animate-spin" /> Saving order…</> : checkoutLaunching ? <><Loader2 className="w-4 h-4 animate-spin" /> Opening secure checkout…</> : <>{selectedSkuBuyingMode === "assisted" ? "Request managed quote" : purchaseIntent === "cart" ? "Add configured item to cart" : "Continue to checkout"} <ArrowRight className="w-4 h-4" /></>}
                 </button>
               )}
             </div>
@@ -1896,6 +1913,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
               sizeCode={selectedSizeCode}
               configuration={variantSelections}
               buyingMode={selectedSkuBuyingMode}
+              purchaseIntent={purchaseIntent}
               onSubmit={isLastStep ? handleSubmit : undefined}
               submitting={submitMutation.isPending || checkoutLaunching}
             />

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { formatINR } from "@/lib/format";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ShoppingCart } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { getCategoryBySlug } from "@/lib/skus";
@@ -78,7 +78,9 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
   const category = getCategoryBySlug(product.category);
   const complianceCerts = product.is_eco ? ["FSC", "EPR-ready"] : ["ISO", "BRC-ready"];
   const quoteRequired = requiresQuote(product, currentQty);
-  const configureHref = `${getConfigureHref(product, currentQty)}&qty=${currentQty}`;
+  const configureHref = getConfigureHref(product, currentQty);
+  const addToCartHref = `${configureHref}${configureHref.includes("?") ? "&" : "?"}intent=cart`;
+  const buyNowHref = `${configureHref}${configureHref.includes("?") ? "&" : "?"}intent=buy`;
 
   return (
     <div className="container mx-auto px-4 pt-[124px] pb-8 max-w-7xl">
@@ -262,11 +264,26 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
               </div>
 
               <div className="pt-6 space-y-3 border-t border-border">
-                <Link href={configureHref}>
-                  <Button className="w-full h-14 bg-amber text-navy hover:bg-amber/90 font-black text-xl">
-                    {quoteRequired ? "Get a quote" : "Buy now"}
-                  </Button>
-                </Link>
+                {quoteRequired ? (
+                  <Link href={configureHref}>
+                    <Button className="w-full h-14 bg-navy text-white hover:bg-[#17324a] font-black text-xl">
+                      Get a quote
+                    </Button>
+                  </Link>
+                ) : (
+                  <div className="grid grid-cols-2 gap-3">
+                    <Link href={addToCartHref}>
+                      <Button type="button" variant="outline" className="w-full h-14 border-navy text-navy hover:bg-slate-50 font-black text-base">
+                        <ShoppingCart className="mr-2 h-5 w-5" /> Add to cart
+                      </Button>
+                    </Link>
+                    <Link href={buyNowHref}>
+                      <Button className="w-full h-14 bg-amber text-navy hover:bg-amber/90 font-black text-xl">
+                        Buy now
+                      </Button>
+                    </Link>
+                  </div>
+                )}
                 <Link href={`/samples?product=${product.id}`}>
                   <Button variant="outline" className="w-full h-12">
                     Get Sample ({formatINR(product.sample_price)})

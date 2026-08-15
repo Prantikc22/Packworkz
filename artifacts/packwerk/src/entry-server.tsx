@@ -27,6 +27,7 @@ import Privacy from "@/pages/privacy";
 import Terms from "@/pages/terms";
 import Refund from "@/pages/refund";
 import TrackOrder from "@/pages/track-order";
+import { CartProvider } from "@/lib/cart";
 
 function makeStaticHook(path: string) {
   return () => [path, (_: string) => {}] as [string, (to: string) => void];
@@ -40,7 +41,8 @@ function SSRApp({ url }: { url: string }) {
     <QueryClientProvider client={qc}>
       <TooltipProvider>
         <Router hook={makeStaticHook(url)}>
-          <Switch>
+          <CartProvider>
+            <Switch>
             <Route path="/">
               <PublicLayout><Home /></PublicLayout>
             </Route>
@@ -129,7 +131,8 @@ function SSRApp({ url }: { url: string }) {
             <Route path="/track-order">
               <PublicLayout><TrackOrder /></PublicLayout>
             </Route>
-          </Switch>
+            </Switch>
+          </CartProvider>
         </Router>
       </TooltipProvider>
     </QueryClientProvider>

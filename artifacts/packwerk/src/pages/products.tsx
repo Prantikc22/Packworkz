@@ -279,9 +279,20 @@ export default function Products() {
                           <small>{sku.publicBuyingPath === "quote" ? "Indicative unit range" : "Starting unit price"}</small>
                           <strong>{sku.publicBuyingPath === "quote" ? `${formatINR(sku.price_min)} - ${formatINR(sku.price_max)}` : `${formatINR(sku.price_tiers?.[0]?.unit_price ?? sku.price_max)} / ${sku.moq_unit.replace(/s$/, "")}`}</strong>
                         </div>
-                        <Link href={getConfigureHref(sku)} className={`pw-catalog-card-primary${sku.publicBuyingPath === "quote" ? " is-quote" : ""}`}>
-                          {sku.publicBuyingPath === "instant" ? "Buy now" : "Get a quote"} <MS icon="arrow_forward" />
-                        </Link>
+                        {sku.publicBuyingPath === "instant" ? (
+                          <div className="pw-catalog-card-actions">
+                            <Link href={`${getConfigureHref(sku)}&intent=cart`} className="pw-catalog-card-secondary">
+                              <MS icon="add_shopping_cart" /> Add to cart
+                            </Link>
+                            <Link href={`${getConfigureHref(sku)}&intent=buy`} className="pw-catalog-card-primary">
+                              Buy now <MS icon="arrow_forward" />
+                            </Link>
+                          </div>
+                        ) : (
+                          <Link href={getConfigureHref(sku)} className="pw-catalog-card-primary is-quote">
+                            Get a quote <MS icon="arrow_forward" />
+                          </Link>
+                        )}
                       </div>
 
                       {mockupFormat && (
