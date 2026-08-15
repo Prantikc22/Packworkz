@@ -137,6 +137,7 @@ const PRODUCT_ROUTE_DATA = [
   ["SP-905", "bagasse-clamshell", "Bagasse Food Containers"],
   ["SP-907", "paper-bowls-food-containers", "Paper Bowls & Food Containers"],
   ["SP-909", "greaseproof-food-wrap-paper", "Greaseproof & Food Wrap Paper"],
+  ["SP-912", "compostable-bio-paper-cups", "Compostable Bio Paper Cups"],
 ].map(([code, slug, name]) => ({
   path: `/products/${slug}`,
   title: `${name} | Custom Packaging India | Packworkz`,

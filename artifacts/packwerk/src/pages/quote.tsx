@@ -47,6 +47,9 @@ function customisationNote(sku: Sku | undefined) {
   if (sku.code === "SP-907") {
     return "Add your brand with direct print or an applied label. The preview shows the intended finished presentation.";
   }
+  if (sku.code === "SP-912") {
+    return "Start with plain compostable cups, add a brand label for shorter runs, or move to direct custom print for production quantities.";
+  }
   if (sku.code === "EC-510") {
     return "Printed to your brand in a fixed, production-ready bag size. Upload artwork in the next step.";
   }
@@ -1269,13 +1272,15 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                   </>
                 )}
 
-                {selectedSku?.code === "SP-907" && (
+                {["SP-907", "SP-912"].includes(selectedSku?.code || "") && (
                   <div className="border border-slate-300 border-l-[3px] border-l-amber-500 bg-white px-4 py-3 text-sm text-slate-700">
                     <strong className="block text-slate-900">
                       {(variantSelections.branding || "Plain stock") === "Custom printed"
                         ? "Direct custom print starts at 10,000 units"
                         : (variantSelections.branding || "Plain stock") === "Applied label"
                           ? "Branded short runs start at 500 units"
+                        : selectedSku?.code === "SP-912"
+                          ? "Plain stock starts at 100 units"
                           : "Plain stock starts at 300 units"}
                     </strong>
                     <span className="mt-1 block text-xs leading-relaxed text-slate-600">

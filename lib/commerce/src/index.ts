@@ -100,6 +100,7 @@ export const COMMERCE_PRODUCTS: Record<string, CommerceProduct> = {
   "SP-905": { code: "SP-905", sizes: [size("6X6", "6 x 6 in", "Snack clamshell", 0.75), size("9X6", "9 x 6 in", "Meal clamshell"), size("9X9", "9 x 9 in", "Large / 3-compartment", 1.35)], tiers: tiers([100, 18.5], [250, 17.5], [500, 16.75], [1_000, 13.65], [2_500, 11.35], [5_000, 9.7]), quoteThreshold: 20_000, ...shared },
   "SP-907": { code: "SP-907", sizes: [size("200ML", "200 ml bowl", "11.6 cm lid", 0.72), size("300ML", "300 ml bowl", "11.6 cm lid", 0.8), size("500ML", "500 ml bowl", "11.6 cm lid"), size("750ML-TALL", "750 ml bowl", "11.6 cm lid", 1.18), size("600ML-FLAT", "600 ml flat bowl", "14.8 cm lid", 1.16), size("750ML-FLAT", "750 ml flat bowl", "14.8 cm lid", 1.3), size("1000ML", "1,000 ml flat bowl", "14.8 cm lid", 1.52), size("1250ML", "1,250 ml flat bowl", "14.8 cm lid", 1.72)], tiers: tiers([300, 8.5], [500, 8.1], [1_000, 7.5], [2_500, 6.7], [5_000, 5.8], [10_000, 4.95]), quoteThreshold: 25_000, ...shared, setupFee: 0 },
   "SP-909": { code: "SP-909", sizes: [size("250", "25 x 25 cm", "Snack / bakery wrap", 0.82), size("300", "30 x 30 cm", "Burger / deli wrap"), size("400", "40 x 40 cm", "Tray liner / large wrap", 1.32)], tiers: tiers([5_000, 3.2], [10_000, 2.6], [25_000, 2.15]), quoteThreshold: 50_000, ...shared },
+  "SP-912": { code: "SP-912", sizes: [size("7OZ", "7 oz", "8 cm rim · 207 ml", 0.92), size("8OZ", "8 oz", "8 cm rim · 237 ml"), size("12OZ", "12 oz", "9 cm rim · 355 ml", 1.14), size("16OZ", "16 oz", "9 cm rim · 473 ml", 1.28), size("20OZ", "20 oz", "9 cm rim · 591 ml", 1.42)], tiers: tiers([100, 8.9], [250, 7.9], [500, 7.1], [1_000, 6.4], [2_500, 5.7], [5_000, 5.2], [10_000, 4.8]), quoteThreshold: 25_000, ...shared, setupFee: 0, shippingBase: 299, shippingPerUnit: 0.2, shippingCap: 2_499 },
 };
 
 // Conservative pre-GST landed-cost assumptions. These are a checkout guard, not
@@ -148,6 +149,7 @@ const LANDED_COSTS: Record<string, LandedCostTier[]> = {
   "SP-905": costs([100, 11], [250, 10.5], [500, 10.07], [1_000, 8.2], [2_500, 6.8], [5_000, 5.8]),
   "SP-907": costs([300, 5], [500, 4.8], [1_000, 4.35], [2_500, 3.9], [5_000, 3.35], [10_000, 2.85]),
   "SP-909": costs([5_000, 1.9], [10_000, 1.55], [25_000, 1.27]),
+  "SP-912": costs([100, 5.2], [250, 4.6], [500, 4.15], [1_000, 3.7], [2_500, 3.3], [5_000, 3], [10_000, 2.75]),
 };
 
 function roundUpCurrency(value: number): number {
@@ -170,6 +172,10 @@ function configurationCostMultiplier(skuCode: string, configuration: CommerceCon
     if (/no lid/i.test(configuration.lid || "")) multiplier *= 0.8;
     else if (/clear recyclable lid/i.test(configuration.lid || "")) multiplier *= 1.06;
   }
+  if (skuCode === "SP-912") {
+    if (/compostable fibre sip lid/i.test(configuration.lid || "")) multiplier *= 1.28;
+    else if (/reclosable delivery lid/i.test(configuration.lid || "")) multiplier *= 1.38;
+  }
   for (const value of Object.values(configuration)) {
     const option = String(value).toLowerCase();
     if (/coffee valve/.test(option)) multiplier *= 1.18;
@@ -184,7 +190,7 @@ function configurationCostMultiplier(skuCode: string, configuration: CommerceCon
 
 function configurationSetupFee(skuCode: string, configuration: CommerceConfiguration = {}): number {
   const branding = String(configuration.branding || "").toLowerCase();
-  if (skuCode === "SP-907") {
+  if (skuCode === "SP-907" || skuCode === "SP-912") {
     if (branding === "custom printed") return 1_499;
     if (branding === "applied label") return 499;
     return 0;
@@ -205,6 +211,11 @@ export function getMinimumQuantityForConfiguration(
     if (branding === "custom printed") return 10_000;
     if (branding === "applied label") return 500;
     return 300;
+  }
+  if (skuCode === "SP-912") {
+    if (branding === "custom printed") return 10_000;
+    if (branding === "applied label") return 500;
+    return 100;
   }
   if (skuCode === "SP-909") return 5_000;
   return product.tiers[0].minQty;
@@ -309,7 +320,7 @@ export function calculateCommerceEstimate(input: CommerceEstimateInput): Commerc
   const material = Number((unitPrice * input.quantity).toFixed(2));
   const discount = promotionCode ? Number((material * LAUNCH_PROMOTION_RATE).toFixed(2)) : 0;
   const foodserviceBranding = String(input.configuration?.branding || "plain").toLowerCase();
-  const requiresBrandingSetup = ["SP-905", "SP-907"].includes(input.skuCode) && foodserviceBranding !== "plain";
+  const requiresBrandingSetup = ["SP-905", "SP-907", "SP-912"].includes(input.skuCode) && foodserviceBranding !== "plain";
   const setup = input.artwork === "none" && !requiresBrandingSetup ? 0 : configurationSetupFee(input.skuCode, input.configuration);
   const artwork = input.artwork === "design" ? 1_999 : 0;
   const deliveryAdd = input.delivery === "blitz" ? 1_200 : input.delivery === "warehouse" ? 300 : 0;

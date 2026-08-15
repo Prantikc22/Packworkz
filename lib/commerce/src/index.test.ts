@@ -113,6 +113,42 @@ test("foodservice branding uses honest production minimums", () => {
   assert.ok((productionRun.grossMarginRate ?? 0) >= TARGET_PRODUCT_GROSS_MARGIN);
 });
 
+test("compostable bio cups stay competitive and preserve guarded margins", () => {
+  const plain = calculateCommerceEstimate({
+    skuCode: "SP-912",
+    quantity: 100,
+    sizeCode: "8OZ",
+    artwork: "none",
+    delivery: "standard",
+    configuration: { lid: "No lid", branding: "Plain" },
+    promotionCode: LAUNCH_PROMOTION_CODE,
+  });
+  assert.notEqual(plain.reason, "invalid_quantity");
+  assert.ok(plain.unitPrice <= 9.98, `Expected entry rate at or below the benchmark, got ${plain.unitPrice}`);
+  assert.ok((plain.grossMarginRate ?? 0) >= TARGET_PRODUCT_GROSS_MARGIN);
+
+  const withLid = calculateCommerceEstimate({
+    skuCode: "SP-912",
+    quantity: 100,
+    sizeCode: "8OZ",
+    artwork: "none",
+    delivery: "standard",
+    configuration: { lid: "Compostable fibre sip lid", branding: "Plain" },
+    promotionCode: LAUNCH_PROMOTION_CODE,
+  });
+  assert.ok(withLid.unitPrice > plain.unitPrice);
+
+  const shortCustomRun = calculateCommerceEstimate({
+    skuCode: "SP-912",
+    quantity: 5_000,
+    sizeCode: "12OZ",
+    artwork: "upload",
+    delivery: "standard",
+    configuration: { lid: "No lid", branding: "Custom printed" },
+  });
+  assert.equal(shortCustomRun.reason, "invalid_quantity");
+});
+
 test("metric dimensions are presented in centimetres", () => {
   assert.equal(formatMeasurementInCm("40 mm round"), "4 cm round");
   assert.equal(formatMeasurementInCm("100 x 150 mm"), "10 x 15 cm");

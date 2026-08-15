@@ -28,7 +28,7 @@ const LEGACY_SLUG_ALIASES: Record<string, string> = {
   "paper-labels-stickers": "round-paper-labels",
   "folding-carton": "straight-tuck-end-carton",
   "rigid-box": "two-piece-rigid-box",
-  "paper-cup": "paper-bowls-food-containers",
+  "paper-cup": "compostable-bio-paper-cups",
 };
 
 const LEGACY_CATEGORY_SLUGS = new Set([

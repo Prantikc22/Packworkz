@@ -53,7 +53,7 @@ export const INDUSTRY_CATALOGS: IndustryCatalog[] = [
     outcome: "Choose food-grade pouches, jars, cartons, and certified eco options.",
     categories: ["flexible", "bottles", "sustainable"],
     icon: "restaurant",
-    featuredSkuCodes: ["FP-101", "FP-104", "BC-202", "SP-905", "SP-907"],
+    featuredSkuCodes: ["FP-101", "FP-104", "BC-202", "SP-905", "SP-907", "SP-912"],
   },
   {
     slug: "fmcg",
@@ -349,6 +349,15 @@ const STOREFRONT_OVERRIDES: Record<string, Partial<Sku>> = {
       { key: "branding", label: "Branding", options: ["Plain", "Applied label", "Custom printed"] },
     ],
   },
+  "SP-912": {
+    name: "Compostable Bio Paper Cups",
+    description: "Aqueous-coated single-wall cups in five familiar beverage sizes, with optional moulded-fibre lids and a clear path from plain trials to custom-printed production.",
+    use_case: "Coffee, tea, hot chocolate, cold drinks, tastings, events and takeaway beverages",
+    variants: [
+      { key: "lid", label: "Lid", options: ["No lid", "Compostable fibre sip lid", "Reclosable delivery lid"] },
+      { key: "branding", label: "Branding", options: ["Plain", "Applied label", "Custom printed"] },
+    ],
+  },
 };
 
 function defaultQuoteThreshold(sku: Sku): number | undefined {
@@ -408,7 +417,7 @@ export function getCatalogSkuById(value: string): CatalogSku | undefined {
 }
 
 const CATEGORY_CROSS_LISTINGS: Record<string, Set<string>> = {
-  ecommerce: new Set(["SP-905", "SP-907"]),
+  ecommerce: new Set(["SP-905", "SP-907", "SP-912"]),
 };
 
 export function isCatalogSkuInCategory(sku: CatalogSku, category: string): boolean {

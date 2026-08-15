@@ -65,7 +65,7 @@ export const CATEGORIES: Category[] = [
   { slug: "protective", label: "Protective Packaging",  icon: "shield",                    count: 2 },
   { slug: "rolls",      label: "Packaging Rolls",       icon: "density_medium",            count: 3 },
   { slug: "labels",     label: "Labels & Brand Extras", icon: "label",                     count: 13 },
-  { slug: "sustainable",label: "Sustainable Foodservice",icon: "eco",                      count: 3 },
+  { slug: "sustainable",label: "Sustainable Foodservice",icon: "eco",                      count: 4 },
 ];
 
 // ── Full SKU catalog ────────────────────────────────────────────────────────
@@ -818,6 +818,7 @@ export const SKU_IMAGES: Record<string, string> = {
   "SP-905": "/catalog/branded/custom-bagasse.jpg",
   "SP-907": "/catalog/branded/custom-paper-bowls.jpg",
   "SP-909": "/shopify-products/SP-909.jpg",
+  "SP-912": "/catalog/branded/custom-compostable-bio-paper-cups.png",
 };
 
 // ── Lookup helpers ──────────────────────────────────────────────────────────
