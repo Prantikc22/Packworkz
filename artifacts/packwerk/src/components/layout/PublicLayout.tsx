@@ -1119,14 +1119,14 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
         className={`fixed flex items-center justify-between px-6 md:px-10 h-[68px] ${navSolid ? "pw-nav-floating" : "pw-nav-top"}`}
         style={{
           zIndex: 1000,
-          top: navFloating ? 16 : 40,
+          top: navFloating ? 0 : 40,
           left: "50%",
-          width: navFloating ? "min(1180px, calc(100% - 32px))" : "100%",
+          width: "100%",
           transform: "translateX(-50%)",
-          borderRadius: navFloating ? 8 : 0,
+          borderRadius: 0,
           background: navFloating ? "#0B3FA0" : navSolid ? "#0D1B2A" : "transparent",
-          border: navFloating ? "1px solid #2A61BD" : navSolid ? "1px solid #20364B" : "1px solid transparent",
-          boxShadow: navFloating ? "0 18px 48px rgba(3, 31, 86, 0.26)" : "none",
+          border: navFloating ? "0 solid transparent" : navSolid ? "1px solid #20364B" : "1px solid transparent",
+          boxShadow: navFloating ? "0 10px 30px rgba(3, 31, 86, 0.22)" : "none",
           transition: "top 0.24s ease, width 0.24s ease, border-radius 0.24s ease, background-color 0.24s ease, border-color 0.24s ease, box-shadow 0.24s ease",
           willChange: "top, width, background-color, box-shadow",
         }}
@@ -1203,7 +1203,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
 
       {/* Mobile drawer */}
       {mobileOpen && (
-        <div className="fixed inset-x-0 bottom-0 z-40 overflow-y-auto" style={{ top: navFloating ? 84 : 108, background: "#0D1B2A" }}>
+        <div className="fixed inset-x-0 bottom-0 z-40 overflow-y-auto" style={{ top: navFloating ? 68 : 108, background: "#0D1B2A" }}>
           <nav className="flex flex-col px-8 py-8 gap-1">
             {[
               { label: "Products", href: "/products" },

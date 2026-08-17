@@ -927,6 +927,7 @@
 .pw-catalog-card-primary.is-quote:hover { background: #17324a; color: #fff; }
 .pw-catalog-card-mockup { margin-top: 14px; min-height: 38px; padding: 0 12px; display: inline-flex; align-items: center; justify-content: center; gap: 7px; border: 1px solid #d7e0e8; background: #f8fafc; color: #1b6ca8; font-size: 10px; font-weight: 850; text-decoration: none; }
 .pw-catalog-card-mockup:hover { border-color: #1b6ca8; background: #edf5fb; color: #155781; }
+@media (min-width: 1680px) { .pw-catalog-card-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 @media (max-width: 1120px) { .pw-catalog-card-grid { grid-template-columns: 1fr; } }
 @media (max-width: 640px) {
   .pw-catalog-card-media { aspect-ratio: 1.16; }

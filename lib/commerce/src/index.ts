@@ -276,6 +276,15 @@ export type CommerceEstimate = {
   size?: CommerceSize;
 };
 
+export type CommerceCartEstimate = {
+  eligible: boolean;
+  reason?: "empty_cart" | "manual_review" | "payment_limit";
+  estimates: CommerceEstimate[];
+  total: number;
+  discount: number;
+  amountPaise: number;
+};
+
 export function getCommerceProduct(skuCode: string): CommerceProduct | undefined {
   return COMMERCE_PRODUCTS[skuCode];
 }
@@ -288,6 +297,10 @@ export function calculateCommerceEstimate(input: CommerceEstimateInput): Commerc
   if (!Number.isInteger(input.quantity) || input.quantity < minimumQuantity) {
     return { eligible: false, reason: "invalid_quantity", ...empty };
   }
+  const effectiveTiers = getEffectiveCommerceTiers(input.skuCode);
+  if (!effectiveTiers.some((tier) => tier.minQty === input.quantity)) {
+    return { eligible: false, reason: "managed_quote", ...empty };
+  }
   if (input.quantity >= product.quoteThreshold) {
     return { eligible: false, reason: "managed_quote", ...empty };
   }
@@ -297,7 +310,6 @@ export function calculateCommerceEstimate(input: CommerceEstimateInput): Commerc
   const selectedSize = product.sizes.find((item) => item.code === input.sizeCode);
   if (!selectedSize) return { eligible: false, reason: "invalid_size", ...empty };
 
-  const effectiveTiers = getEffectiveCommerceTiers(input.skuCode);
   let tier = effectiveTiers[0];
   for (const candidate of effectiveTiers) {
     if (input.quantity >= candidate.minQty) tier = candidate;
@@ -349,4 +361,34 @@ export function calculateCommerceEstimate(input: CommerceEstimateInput): Commerc
     marginFloorApplied: unitPrice > sizedTierPrice,
     size: selectedSize,
   };
+}
+
+/**
+ * Applies the online-payment rules to the cart as one transaction. A cart is
+ * never split silently: one managed/invalid line moves the whole cart to a
+ * reviewed quote, and the payment ceiling is checked against the combined
+ * payable total.
+ */
+export function calculateCommerceCartEstimate(inputs: CommerceEstimateInput[]): CommerceCartEstimate {
+  const estimates = inputs.map(calculateCommerceEstimate);
+  const total = Number(estimates.reduce((sum, estimate) => sum + estimate.total, 0).toFixed(2));
+  const discount = Number(estimates.reduce((sum, estimate) => sum + estimate.discount, 0).toFixed(2));
+  const amountPaise = Math.round(total * 100);
+
+  if (!inputs.length) {
+    return { eligible: false, reason: "empty_cart", estimates, total, discount, amountPaise };
+  }
+
+  const needsManualReview = estimates.some(
+    (estimate) => Boolean(estimate.reason && estimate.reason !== "payment_limit"),
+  );
+  if (needsManualReview) {
+    return { eligible: false, reason: "manual_review", estimates, total, discount, amountPaise };
+  }
+
+  if (total > RAZORPAY_PAYMENT_LIMIT_RUPEES) {
+    return { eligible: false, reason: "payment_limit", estimates, total, discount, amountPaise };
+  }
+
+  return { eligible: true, estimates, total, discount, amountPaise };
 }

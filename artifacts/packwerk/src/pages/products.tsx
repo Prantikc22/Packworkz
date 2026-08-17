@@ -74,63 +74,28 @@ export default function Products() {
 
   return (
     <div className="products-page min-h-screen" style={{ background: "#F8F9FC", fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-      <section className="relative overflow-hidden bg-white border-b border-slate-200">
-        <div className="absolute inset-0 pointer-events-none opacity-70" style={{
-          background: "linear-gradient(120deg, rgba(27,108,168,0.08), transparent 38%), radial-gradient(circle at 80% 10%, rgba(232,168,56,0.18), transparent 28%)",
-        }} />
-        <div className="relative max-w-7xl mx-auto px-6 md:px-8 pt-28 pb-12 md:pt-32 md:pb-16">
-          <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-8 items-end">
-            <div>
-              <p className="text-xs font-black uppercase tracking-[0.22em] mb-3" style={{ color: "#1B6CA8" }}>
-                Instant-buy packaging catalog
-              </p>
-              <h1 className="text-4xl md:text-5xl font-black leading-tight" style={{ fontFamily: "'Space Grotesk', sans-serif", color: "#0D1B2A" }}>
-                Buy standard packaging online. Get expert help when specifications need it.
-              </h1>
-              <p className="text-slate-600 mt-4 max-w-2xl text-base leading-relaxed">
-                Compare ready sizes, MOQ, lead times and quantity pricing, then buy online or send a technical brief.
-              </p>
-              <div className="mt-6 flex flex-wrap gap-3">
-                {[
-                  `${CATALOG_SKUS.length} product families`,
-                  `${totalInstant} instant-buy`,
-                  `${totalQuote} request-quote`,
-                ].map((item) => (
-                  <span key={item} className="px-3 py-2 rounded-full bg-slate-100 text-xs font-bold" style={{ color: "#334155" }}>{item}</span>
-                ))}
-              </div>
-              <div className="mt-7 flex flex-wrap gap-3">
-                <Link href="/mockup-studio" className="pw-catalog-studio-cta">
-                  <MS icon="view_in_ar" className="text-xl" /> Design in 3D <MS icon="arrow_forward" className="text-base" />
-                </Link>
-                <Link href="/configure" className="pw-catalog-brief-cta">Start a packaging plan</Link>
-              </div>
-            </div>
-            <div className="bg-slate-950 text-white rounded-lg p-5 shadow-xl">
-              <div className="flex items-center gap-2 mb-4">
-                <MS icon="checklist" style={{ color: "#E8A838" }} />
-                <p className="font-black text-sm">Your buying path</p>
-              </div>
-              {[
-                ["1", "Choose a product", "Browse by packaging type or search by what you sell."],
-                ["2", "Pick your options", "Select a ready size, material, print and quantity."],
-                ["3", "Buy or get a quote", "Pay online for standard packs; send technical runs to a specialist."],
-              ].map(([num, title, body]) => (
-                <div key={num} className="flex gap-3 pb-4 last:pb-0">
-                  <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-black shrink-0" style={{ background: "#E8A838", color: "#0D1B2A" }}>{num}</div>
-                  <div>
-                    <p className="font-bold text-sm">{title}</p>
-                    <p className="text-xs text-slate-400 leading-relaxed">{body}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
+      <section className="bg-white border-b border-slate-200 px-4 sm:px-6 lg:px-8 2xl:px-10 pt-[124px] pb-5">
+        <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
+          <div>
+            <p className="text-[11px] font-black uppercase tracking-[0.2em]" style={{ color: "#1B6CA8" }}>Packaging catalog</p>
+            <h1 className="mt-1 text-3xl md:text-4xl font-black leading-tight" style={{ color: "#0D1B2A" }}>Find your packaging and start ordering.</h1>
+            <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-600">
+              Compare sizes, minimums and quantity pricing. Standard runs can be bought online; technical and enterprise volumes move to a reviewed quote.
+            </p>
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="px-3 py-2 bg-slate-100 text-xs font-bold text-slate-700">{CATALOG_SKUS.length} product families</span>
+            <span className="px-3 py-2 bg-blue-50 text-xs font-bold text-blue-800">{totalInstant} instant-buy</span>
+            <span className="px-3 py-2 bg-slate-900 text-xs font-bold text-white">{totalQuote} request-quote</span>
+            <Link href="/mockup-studio" className="pw-catalog-studio-cta !min-h-9 !px-3">
+              <MS icon="view_in_ar" className="text-lg" /> Design in 3D
+            </Link>
           </div>
         </div>
       </section>
 
-      <section className="bg-white border-b border-slate-200 sticky top-[68px] z-30">
-        <div className="max-w-7xl mx-auto px-4 md:px-8 py-3 flex flex-col lg:flex-row gap-3 lg:items-center">
+      <section className="bg-white border-b border-slate-200 sticky top-[68px] z-30 pt-4 shadow-[0_8px_18px_rgba(13,27,42,0.06)]">
+        <div className="w-full px-4 sm:px-6 lg:px-8 2xl:px-10 py-3 flex flex-col lg:flex-row gap-3 lg:items-center">
           <div className="relative flex-1">
             <MS icon="search" className="absolute left-3 top-1/2 -translate-y-1/2 text-xl" style={{ color: "#74777d" }} />
             <input
@@ -142,6 +107,19 @@ export default function Products() {
             />
           </div>
           <div className="flex gap-2 overflow-x-auto">
+            <label className="relative shrink-0 lg:hidden">
+              <span className="sr-only">Product category</span>
+              <select
+                aria-label="Product category"
+                value={category || ""}
+                onChange={(event) => setCategory(event.target.value || undefined)}
+                className="h-full min-h-[52px] w-44 appearance-none border border-slate-200 bg-white pl-3 pr-8 text-xs font-black text-slate-900 outline-none focus:border-blue-500"
+              >
+                <option value="">All categories</option>
+                {CATEGORIES.map((cat) => <option key={cat.slug} value={cat.slug}>{cat.label}</option>)}
+              </select>
+              <MS icon="expand_more" className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-lg text-slate-500" />
+            </label>
             {FILTERS.map((filter) => (
               <button
                 key={filter.key}
@@ -173,9 +151,9 @@ export default function Products() {
         </div>
       </section>
 
-      <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 flex flex-col lg:flex-row gap-8">
-        <aside className="w-full lg:w-60 shrink-0">
-          <div className="bg-white rounded-lg border border-slate-200 p-4 sticky top-40">
+      <div className="w-full px-4 sm:px-6 lg:px-8 2xl:px-10 py-8 flex flex-col lg:flex-row gap-8">
+        <aside className="hidden w-full lg:block lg:w-60 shrink-0">
+          <div className="bg-white rounded-lg border border-slate-200 p-4 sticky top-[184px]">
             <p className="text-xs font-black uppercase tracking-widest mb-3" style={{ color: "#74777d" }}>Categories</p>
             <button
               onClick={() => setCategory(undefined)}

@@ -5,6 +5,7 @@ import {
   LAUNCH_PROMOTION_CODE,
   RAZORPAY_PAYMENT_LIMIT_RUPEES,
   TARGET_PRODUCT_GROSS_MARGIN,
+  calculateCommerceCartEstimate,
   calculateCommerceEstimate,
   formatMeasurementInCm,
   getMinimumQuantityForConfiguration,
@@ -184,4 +185,62 @@ test("orders above the online ceiling keep their value but require payment confi
   assert.ok(estimate.total > RAZORPAY_PAYMENT_LIMIT_RUPEES);
   assert.equal(estimate.eligible, false);
   assert.equal(estimate.reason, "payment_limit");
+});
+
+test("the combined cart total, not each line alone, controls the payment ceiling", () => {
+  const input = {
+    skuCode: "FP-101",
+    quantity: 2_500,
+    sizeCode: "100G",
+    artwork: "upload" as const,
+    delivery: "standard" as const,
+  };
+  const line = calculateCommerceEstimate(input);
+  assert.ok(line.total < RAZORPAY_PAYMENT_LIMIT_RUPEES);
+
+  const cart = calculateCommerceCartEstimate([input, input]);
+  assert.ok(cart.total > RAZORPAY_PAYMENT_LIMIT_RUPEES);
+  assert.equal(cart.eligible, false);
+  assert.equal(cart.reason, "payment_limit");
+});
+
+test("a mixed instant and managed-review cart is never partially charged", () => {
+  const cart = calculateCommerceCartEstimate([
+    {
+      skuCode: "LC-816",
+      quantity: 100,
+      sizeCode: "40R",
+      artwork: "upload",
+      delivery: "standard",
+    },
+    {
+      skuCode: "FP-101",
+      quantity: 500,
+      sizeCode: "250G",
+      artwork: "upload",
+      delivery: "standard",
+      configuration: { dimensions: "Custom dimensions" },
+    },
+  ]);
+  assert.equal(cart.eligible, false);
+  assert.equal(cart.reason, "manual_review");
+});
+
+test("an empty cart cannot create a payment", () => {
+  const cart = calculateCommerceCartEstimate([]);
+  assert.equal(cart.eligible, false);
+  assert.equal(cart.reason, "empty_cart");
+  assert.equal(cart.amountPaise, 0);
+});
+
+test("an unlisted custom quantity is routed to a managed quote", () => {
+  const estimate = calculateCommerceEstimate({
+    skuCode: "FP-101",
+    quantity: 750,
+    sizeCode: "250G",
+    artwork: "upload",
+    delivery: "standard",
+  });
+  assert.equal(estimate.eligible, false);
+  assert.equal(estimate.reason, "managed_quote");
 });

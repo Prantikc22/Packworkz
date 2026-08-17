@@ -4,7 +4,7 @@ import { useSubmitQuote } from "@workspace/api-client-react";
 import { useToast } from "@/hooks/use-toast";
 import { CATEGORIES } from "@/lib/skus";
 import type { Sku, VariantGroup } from "@/lib/skus";
-import { CATALOG_SKUS as SKUS, getCatalogImage, getCatalogSkusByCategory as getSkusByCategory, requiresQuote } from "@/lib/catalog";
+import { CATALOG_SKUS as SKUS, getCatalogImage, getCatalogSkusByCategory as getSkusByCategory, getMaxSelfServeQuantity, requiresQuote } from "@/lib/catalog";
 import { openOrderPayment, openRazorpay, prepareOrderPayment, type PreparedOrderPayment } from "@/lib/razorpay";
 import { calculateOrderEstimate } from "@/lib/pricing";
 import { createConfiguredCartItem, useCart } from "@/lib/cart";
@@ -17,7 +17,7 @@ import {
 } from "@workspace/commerce";
 import {
   Loader2, CheckCircle2, ChevronDown, ChevronUp,
-  Upload, Palette, X, Truck, Zap, Warehouse, ArrowRight, Shield, Search,
+  Upload, Palette, X, Truck, Zap, Warehouse, ArrowRight, Shield, Search, CircleX,
 } from "lucide-react";
 
 // ── Types ──────────────────────────────────────────────────────────────────
@@ -228,20 +228,20 @@ function OrderSummary({
               className="w-full py-3 rounded font-black uppercase tracking-widest text-sm transition-all hover:opacity-90 active:scale-95 flex items-center justify-center gap-2 mt-2"
               style={{ background: "#E8A838", color: "#0F1C2C" }}
             >
-              {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <>{buyingMode === "assisted" ? "REQUEST MANAGED QUOTE" : purchaseIntent === "cart" ? "ADD CONFIGURED ITEM TO CART" : "CONTINUE TO CHECKOUT"} <ArrowRight className="w-4 h-4" /></>}
+              {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <>{purchaseIntent === "cart" ? "ADD CONFIGURED ITEM TO CART" : buyingMode === "assisted" ? "REQUEST MANAGED QUOTE" : "CONTINUE TO CHECKOUT"} <ArrowRight className="w-4 h-4" /></>}
             </button>
 
             <div className="mt-4 pt-4 border-t" style={{ borderColor: "rgba(255,255,255,0.08)" }}>
               <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: "#94A3B8" }}>What happens next</p>
               <div className="flex flex-col gap-2.5">
-                {(buyingMode === "assisted" ? [
+                {(purchaseIntent === "cart" ? [
+                  { n: "1", text: "Every selected size, material, finish and option stays attached" },
+                  { n: "2", text: "Review instant-buy and managed-quote items together in one cart" },
+                  { n: "3", text: "Enter delivery and contact details once for the complete cart" },
+                ] : buyingMode === "assisted" ? [
                   { n: "1", text: "A packaging engineer checks compatibility and tooling" },
                   { n: "2", text: "You receive a production-ready technical quote" },
                   { n: "3", text: "Approve the specification before production starts" },
-                ] : purchaseIntent === "cart" ? [
-                  { n: "1", text: "Every selected size, material, finish and option stays attached" },
-                  { n: "2", text: "Review this configured item alongside the rest of your cart" },
-                  { n: "3", text: "Checkout once when your packaging order is complete" },
                 ] : [
                   { n: "1", text: "Your selected size, material, finish and artwork stay attached" },
                   { n: "2", text: "Enter delivery and invoice details once at checkout" },
@@ -369,6 +369,7 @@ type ConfirmationQuote = {
 
 const recoveryTokenKey = (quoteId: string) => `packworkz_checkout_${quoteId}`;
 const paidOrderKey = (quoteId: string) => `packworkz_paid_${quoteId}`;
+const pendingOrderKey = (quoteId: string) => `packworkz_pending_${quoteId}`;
 
 function readRecoveryToken(quoteId: string) {
   if (typeof window === "undefined") return null;
@@ -393,10 +394,27 @@ function readPaidOrder(quoteId: string): { orderId: string; recoveryMode: boolea
 function savePaidOrder(quoteId: string, orderId: string, recoveryMode = false) {
   if (typeof window === "undefined" || !orderId) return;
   window.sessionStorage.setItem(paidOrderKey(quoteId), JSON.stringify({ orderId, recoveryMode }));
+  window.sessionStorage.removeItem(pendingOrderKey(quoteId));
+}
+
+function readPendingOrder(quoteId: string): { orderId: string; recoveryMode: boolean; amount: number } | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const value = JSON.parse(window.sessionStorage.getItem(pendingOrderKey(quoteId)) || "null");
+    return value?.orderId ? value : null;
+  } catch {
+    return null;
+  }
+}
+
+function savePendingOrder(quoteId: string, orderId: string, recoveryMode: boolean, amount: number) {
+  if (typeof window === "undefined" || !orderId) return;
+  window.sessionStorage.setItem(pendingOrderKey(quoteId), JSON.stringify({ orderId, recoveryMode, amount }));
 }
 
 function ConfirmationScreen({ quoteId, buyingMode }: { quoteId: string; buyingMode: "self" | "assisted" }) {
   const paidOrder = readPaidOrder(quoteId);
+  const pendingOrder = readPendingOrder(quoteId);
   const [quote, setQuote] = useState<ConfirmationQuote | null>(null);
   const [prepared, setPrepared] = useState<PreparedOrderPayment | null>(null);
   const [loading, setLoading] = useState(true);
@@ -404,6 +422,12 @@ function ConfirmationScreen({ quoteId, buyingMode }: { quoteId: string; buyingMo
   const [orderId, setOrderId] = useState(paidOrder?.orderId || "");
   const [recoveryPaid, setRecoveryPaid] = useState(Boolean(paidOrder?.recoveryMode));
   const [error, setError] = useState("");
+  const [paymentState, setPaymentState] = useState<"cancelled" | "failed" | "unavailable" | "processing" | "">(() => {
+    if (typeof window === "undefined") return "";
+    const state = new URLSearchParams(window.location.search).get("payment");
+    if (state === "cancelled" || state === "failed" || state === "unavailable" || state === "processing") return state;
+    return pendingOrder ? "processing" : "";
+  });
 
   useEffect(() => {
     let active = true;
@@ -418,10 +442,20 @@ function ConfirmationScreen({ quoteId, buyingMode }: { quoteId: string; buyingMo
         if (!active) return;
         setQuote(quoteData);
         if (buyingMode === "self" && !paidOrder?.orderId) {
+          if (pendingOrder?.recoveryMode) {
+            setPrepared({ status: "payment_processing", quote_id: quoteId, order_id: pendingOrder.orderId, amount_rupees: pendingOrder.amount, recovery_mode: true, message: "Razorpay is confirming this payment. Do not pay again." });
+            return;
+          }
           const payment = await prepareOrderPayment(quoteId, checkoutToken);
           if (!active) return;
           setPrepared(payment);
-          if (payment.status === "already_paid" && payment.order_id) setOrderId(payment.order_id);
+          if (payment.status === "already_paid" && payment.order_id) {
+            savePaidOrder(quoteId, payment.order_id, false);
+            setOrderId(payment.order_id);
+            setPaymentState("");
+          } else if (payment.status === "payment_processing") {
+            setPaymentState("processing");
+          }
         }
       } catch (cause) {
         if (active) setError(cause instanceof Error ? cause.message : "We could not prepare the next step.");
@@ -447,6 +481,7 @@ function ConfirmationScreen({ quoteId, buyingMode }: { quoteId: string; buyingMo
     if (!prepared) return;
     setPaying(true);
     setError("");
+    setPaymentState("");
     try {
       await openOrderPayment({
         prepared,
@@ -454,9 +489,13 @@ function ConfirmationScreen({ quoteId, buyingMode }: { quoteId: string; buyingMo
         email: quote?.email,
         contact: quote?.phone,
         description: `${item?.product_name || "Packaging"} · ${quoteId}`,
-        onDismiss: () => setPaying(false),
+        onDismiss: () => {
+          setPaying(false);
+          setPaymentState("cancelled");
+        },
         onError: (message) => {
           setPaying(false);
+          setPaymentState("failed");
           setError(message);
         },
         onSuccess: (result) => {
@@ -465,19 +504,33 @@ function ConfirmationScreen({ quoteId, buyingMode }: { quoteId: string; buyingMo
           setRecoveryPaid(Boolean(prepared.recovery_mode));
           setPaying(false);
         },
+        onPending: (result) => {
+          savePendingOrder(quoteId, result.order_id, result.recovery_mode, prepared.amount_rupees);
+          setPrepared({ ...prepared, status: "payment_processing", order_id: result.order_id, message: "Razorpay is confirming this payment. Do not pay again." });
+          setPaying(false);
+          setPaymentState("processing");
+        },
       });
     } catch (cause) {
       setPaying(false);
+      setPaymentState("unavailable");
       setError(cause instanceof Error ? cause.message : "Payment could not be started.");
     }
   };
 
-  const eyebrow = isPaid ? "PAYMENT VERIFIED" : isQuote ? "PRODUCTION BRIEF RECEIVED" : gatewayPending ? "ONLINE CHECKOUT PENDING" : requiresConfirmation ? "ORDER PLAN RECEIVED" : "SPECIFICATION LOCKED";
-  const title = isPaid ? "Your order is confirmed." : isQuote ? "Your packaging brief is with our engineers." : gatewayPending ? "Online checkout is not active yet." : requiresConfirmation ? "We’ll confirm your payment route." : "One secure step remains.";
+  const paymentInterrupted = !isPaid && !isQuote && Boolean(paymentState);
+  const paymentProcessing = !isPaid && !isQuote && (paymentState === "processing" || prepared?.status === "payment_processing");
+  const paymentFailedOrCancelled = paymentInterrupted && !paymentProcessing;
+  const eyebrow = isPaid ? "PAYMENT VERIFIED" : isQuote ? "PRODUCTION BRIEF RECEIVED" : paymentProcessing ? "PAYMENT PROCESSING" : paymentFailedOrCancelled ? "PAYMENT NOT COMPLETED" : gatewayPending ? "ONLINE CHECKOUT PENDING" : requiresConfirmation ? "ORDER PLAN RECEIVED" : "SPECIFICATION LOCKED";
+  const title = isPaid ? "Your order is confirmed." : isQuote ? "Your packaging brief is with our engineers." : paymentProcessing ? "Payment confirmation is in progress." : paymentState === "cancelled" ? "Payment was cancelled." : paymentState === "failed" ? "Payment did not complete." : paymentState === "unavailable" ? "Secure checkout could not open." : gatewayPending ? "Online checkout is not active yet." : requiresConfirmation ? "We’ll confirm your payment route." : "One secure step remains.";
   const body = isPaid
     ? recoveryPaid
       ? "Payment is verified and your order is with the Packworkz order desk. We will send the production and tracking update to your checkout email and mobile."
       : "Payment is verified and the prepress review is queued. Nothing enters production until your artwork and specification pass the final check."
+    : paymentProcessing
+      ? "Razorpay accepted the payment attempt, but capture confirmation is still pending. Do not pay again. Production starts only after the verified capture arrives."
+    : paymentFailedOrCancelled
+      ? "Nothing was charged. Your cart and saved order plan are still available, so you can retry securely without configuring the products again."
     : isQuote
       ? "Compatibility, tooling, supplier capacity and the production rate will be reviewed before we send an itemised commercial plan."
       : requiresConfirmation
@@ -492,6 +545,14 @@ function ConfirmationScreen({ quoteId, buyingMode }: { quoteId: string; buyingMo
     ["01", "Payment verified", "Your payment and specification are tied to one Packworkz order."],
     ["02", "Artwork preflight", "We check dimensions, bleed, colour and print readiness before production."],
     ["03", "Production + SmartStock", "Track production now and get an earlier reorder signal after delivery."],
+  ] : paymentProcessing ? [
+    ["01", "Payment submitted", "The Razorpay payment attempt is linked to this reference."],
+    ["02", "Capture confirmation", "We wait for verified gateway confirmation and do not ask you to pay twice."],
+    ["03", "Order confirmation", "Your order moves to prepress only after payment is confirmed."],
+  ] : paymentFailedOrCancelled ? [
+    ["01", "No charge completed", "Cancelling or closing Razorpay does not confirm the order or start production."],
+    ["02", "Order plan saved", "Your products, quantities, artwork choices and delivery details remain attached."],
+    ["03", "Retry when ready", "Use the secure payment button below; the server rechecks the amount before Razorpay opens."],
   ] : isQuote ? [
     ["01", "Technical review", "Material, dimensions, tooling and compliance are checked."],
     ["02", "Itemised commercial", "You receive final pricing, lead time and payment milestones."],
@@ -517,8 +578,8 @@ function ConfirmationScreen({ quoteId, buyingMode }: { quoteId: string; buyingMo
         <div className="grid lg:grid-cols-[1.05fr_0.95fr] border" style={{ borderColor: "rgba(255,255,255,0.14)", background: "rgba(11,28,43,0.96)" }}>
           <section className="p-7 sm:p-12 lg:p-16 border-b lg:border-b-0 lg:border-r" style={{ borderColor: "rgba(255,255,255,0.12)" }}>
             <div className="flex items-center gap-3 mb-8">
-              <div className="w-11 h-11 flex items-center justify-center" style={{ background: isPaid ? "#1B8A5A" : "#E8A838", color: "#071522" }}>
-                {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <CheckCircle2 className="w-6 h-6" />}
+              <div className="w-11 h-11 flex items-center justify-center" style={{ background: isPaid ? "#1B8A5A" : paymentInterrupted ? "#F59E0B" : "#E8A838", color: "#071522" }}>
+                {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : paymentProcessing ? <Loader2 className="w-6 h-6" /> : paymentFailedOrCancelled ? <CircleX className="w-6 h-6" /> : <CheckCircle2 className="w-6 h-6" />}
               </div>
               <span className="text-[11px] font-black tracking-[0.2em]" style={{ color: isPaid ? "#62D39B" : "#E8A838" }}>{eyebrow}</span>
             </div>
@@ -558,6 +619,10 @@ function ConfirmationScreen({ quoteId, buyingMode }: { quoteId: string; buyingMo
               </button>
             )}
 
+            {paymentFailedOrCancelled && !error && (
+              <div className="mt-6 p-4 text-sm" style={{ background: "rgba(245,158,11,0.12)", border: "1px solid rgba(245,158,11,0.35)", color: "#FCD34D" }}>Nothing was charged. You may retry now or return to your cart.</div>
+            )}
+
             {error && <div className="mt-6 p-4 text-sm" style={{ background: "rgba(220,38,38,0.12)", border: "1px solid rgba(248,113,113,0.35)", color: "#FCA5A5" }}>{error}</div>}
           </section>
 
@@ -577,6 +642,9 @@ function ConfirmationScreen({ quoteId, buyingMode }: { quoteId: string; buyingMo
             <div className="mt-9 flex flex-col sm:flex-row lg:flex-col gap-3">
               <a href={`https://wa.me/918208990366?text=${waMsg}`} target="_blank" rel="noopener noreferrer" className="px-5 py-3.5 text-center font-bold text-sm border" style={{ borderColor: "rgba(255,255,255,0.24)", color: "white" }}>Message order desk</a>
               <Link href={isPaid && !recoveryPaid ? `/track-order?reference=${encodeURIComponent(orderId || quoteId)}` : "/products"} className="px-5 py-3.5 text-center font-bold text-sm" style={{ background: "#18344A", color: "#D7E5F0" }}>{isPaid && !recoveryPaid ? "Track without an account" : "Browse products"}</Link>
+              {!isPaid && !isQuote && !paymentProcessing && (
+                <Link href="/cart" className="px-5 py-3.5 text-center font-bold text-sm border" style={{ borderColor: "#E8A838", color: "#E8A838" }}>Return to cart</Link>
+              )}
               {isPaid && !recoveryPaid && (
                 <Link href={`/signup?claim=${encodeURIComponent(orderId || quoteId)}`} className="px-5 py-3.5 text-center font-bold text-sm border" style={{ borderColor: "#E8A838", color: "#E8A838" }}>
                   Create account and save this order
@@ -638,6 +706,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
   const [mobileShowAllResults, setMobileShowAllResults] = useState(false);
   const [showCategories, setShowCategories] = useState(false);
   const [qty, setQty] = useState<number>(() => loadDraft().qty || SKUS[0].moq);
+  const [customQtyInput, setCustomQtyInput] = useState<string>(() => loadDraft().customQtyInput || "");
   const [qtyUnit, setQtyUnit] = useState<'pieces' | 'kg'>(() => loadDraft().qtyUnit || 'pieces');
   const [variantSelections, setVariantSelections] = useState<Record<string, string>>(() => loadDraft().variantSelections || {});
   const [customFieldValues, setCustomFieldValues] = useState<Record<string, string>>(() => loadDraft().customFieldValues || {});
@@ -718,14 +787,17 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
     }
     if (qtyParam) {
       const q = parseInt(qtyParam);
-      if (q > 0) setQty(q);
+      if (q > 0) {
+        setQty(q);
+        setCustomQtyInput(String(q));
+      }
     }
   }, []);
 
   // ── Helper: collect all state into one object for saving ──────────────────
   const getAllState = () => ({
     contactName, company, email, phone, buyingAsBusiness, gstRegistered, gstin, poReference,
-    selectedCategory, selectedSkuId, qty, qtyUnit, variantSelections, customFieldValues, selectedSizeCode, ecoFilter,
+    selectedCategory, selectedSkuId, qty, customQtyInput, qtyUnit, variantSelections, customFieldValues, selectedSizeCode, ecoFilter,
     artworkOption, designPaid, artworkFileUrl,
     deliveryOption,
     sampleOption, samplePaid, notes,
@@ -776,15 +848,38 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
     ? getMinimumQuantityForConfiguration(selectedSku.code, variantSelections) || selectedSku.moq
     : 500;
   const commerceProduct = selectedSku ? COMMERCE_PRODUCTS[selectedSku.code] : undefined;
-  const selectedSkuBuyingMode = selectedSku && !isAssistedSku(selectedSku) && !requiresQuote(selectedSku, qty) ? "self" : "assisted";
-  const quantityPresets = useMemo(() => {
-    if (!selectedSku || qtyUnit !== "pieces") return [50, 100, 250, 500, 1000];
-    const tierQuantities = (selectedSku.price_tiers || [])
-      .map((tier) => tier.min_qty)
-      .filter((quantity) => quantity >= selectedSkuMoq)
-      .filter((quantity) => !selectedSku.quote_threshold || quantity < selectedSku.quote_threshold);
-    return tierQuantities.length ? tierQuantities : [selectedSkuMoq, selectedSkuMoq * 2, selectedSkuMoq * 5];
-  }, [qtyUnit, selectedSku, selectedSkuMoq]);
+  const pricedArtworkForCurrentOrder = artworkOption === "design" && designPaid ? "upload" : artworkOption;
+  const currentOrderEstimate = calculateOrderEstimate(
+    selectedSku,
+    qty,
+    deliveryOption,
+    pricedArtworkForCurrentOrder,
+    selectedSizeCode,
+    variantSelections,
+  );
+  const exceedsOnlineOrderLimit = "total" in currentOrderEstimate
+    && Number(currentOrderEstimate.total || 0) > RAZORPAY_PAYMENT_LIMIT_RUPEES;
+  const selectedSkuBuyingMode = selectedSku
+    && !isAssistedSku(selectedSku)
+    && !requiresQuote(selectedSku, qty)
+    && !exceedsOnlineOrderLimit
+    ? "self"
+    : "assisted";
+const quantityPresets = useMemo(() => {
+  if (!selectedSku || qtyUnit !== "pieces") return [50, 100, 250, 500, 1000];
+  const tierQuantities = (selectedSku.price_tiers || [])
+    .map((tier) => tier.min_qty)
+    .filter((quantity) => quantity >= selectedSkuMoq)
+    .filter((quantity) => !requiresQuote(selectedSku, quantity));
+  const fallbackQuantities = [selectedSkuMoq, selectedSkuMoq * 2, selectedSkuMoq * 5]
+    .filter((quantity) => !requiresQuote(selectedSku, quantity));
+  return tierQuantities.length
+    ? tierQuantities
+    : fallbackQuantities.length
+      ? fallbackQuantities
+      : [selectedSkuMoq];
+}, [qtyUnit, selectedSku, selectedSkuMoq]);
+const maxSelfServeQuantity = selectedSku ? getMaxSelfServeQuantity(selectedSku) : 0;
 
   useEffect(() => {
     if (qtyUnit === "pieces" && selectedSku && qty < selectedSkuMoq) setQty(selectedSkuMoq);
@@ -810,6 +905,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
     const sku = SKUS.find(s => s.id === skuId);
     if (sku) {
       setSelectedCategory(sku.category);
+      setCustomQtyInput("");
       const defaults = initVariants(sku);
       setSelectedSizeCode(COMMERCE_PRODUCTS[sku.code]?.sizes[0]?.code || "");
       if (qtyUnit === "pieces") setQty(prev => Math.max(prev, getMinimumQuantityForConfiguration(sku.code, defaults)));
@@ -825,6 +921,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
     setCatalogQuery("");
     setMobileIntentChosen(true);
     setSelectedCategory(slug);
+    setCustomQtyInput("");
     const first = getSkusByCategory(slug)[0];
     if (first) {
       setSelectedSkuId(first.id);
@@ -847,8 +944,14 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
     if (stepNum > TOTAL_STEPS && stepNum !== 99) setLocation(`/configure/step/${TOTAL_STEPS}`);
   }, [setLocation, stepNum]);
 
+  useEffect(() => {
+    if ((selectedSkuBuyingMode === "self" || purchaseIntent === "cart") && stepNum > 2 && stepNum !== 99) {
+      setLocation(`/configure/step/2?intent=${purchaseIntent}`);
+    }
+  }, [purchaseIntent, selectedSkuBuyingMode, setLocation, stepNum]);
+
   const handleSubmit = () => {
-    if (selectedSku && selectedSkuBuyingMode === "self") {
+    if (selectedSku && (selectedSkuBuyingMode === "self" || purchaseIntent === "cart")) {
       const item = createConfiguredCartItem(selectedSku, {
         quantity: qty,
         sizeCode: selectedSizeCode,
@@ -955,9 +1058,14 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
               setCheckoutLaunching(false);
               setLocation(confirmationPath);
             },
+            onPending: (result) => {
+              savePendingOrder(response.quote_id, result.order_id, result.recovery_mode, prepared.amount_rupees);
+              setCheckoutLaunching(false);
+              setLocation(`${confirmationPath}&payment=processing`);
+            },
             onDismiss: () => {
               setCheckoutLaunching(false);
-              setLocation(confirmationPath);
+              setLocation(`${confirmationPath}&payment=cancelled`);
             },
             onError: (message) => {
               setCheckoutLaunching(false);
@@ -966,7 +1074,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                 title: "Payment was not completed",
                 description: `${message} Your order plan is saved and can be paid safely from the next screen.`,
               });
-              setLocation(confirmationPath);
+              setLocation(`${confirmationPath}&payment=failed`);
             },
           });
         } catch (error) {
@@ -976,7 +1084,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
             title: "Secure checkout could not open",
             description: "Your order plan is saved. Retry payment safely from the next screen.",
           });
-          setLocation(confirmationPath);
+          setLocation(`${confirmationPath}&payment=unavailable`);
         }
       },
       onError: () => toast({ variant: "destructive", title: "Submission Failed", description: "Please try again." })
@@ -994,13 +1102,16 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
   }
 
   const isLastStep = stepNum === TOTAL_STEPS;
+  const isSelfServeConfigurationFinalStep = (selectedSkuBuyingMode === "self" || purchaseIntent === "cart") && stepNum === 2;
+  const displayedStepLabels = selectedSkuBuyingMode === "self" || purchaseIntent === "cart" ? ["Choose", "Brand & delivery"] : STEP_LABELS;
+  const displayedTotalSteps = displayedStepLabels.length;
 
   return (
     <div className="min-h-screen pt-[104px] md:pt-[108px]" style={{ background: "#F8F9FC", fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
       {/* ── Progress strip ── */}
       <div className="bg-white border-b border-slate-100 px-4 md:px-8 py-3">
         <div className="max-w-6xl mx-auto flex items-center gap-0">
-          {STEP_LABELS.map((label, i) => {
+          {displayedStepLabels.map((label, i) => {
             const s = i + 1;
             const done = stepNum > s;
             const active = stepNum === s;
@@ -1013,7 +1124,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                   </div>
                   <span className="text-xs font-bold hidden sm:block" style={{ color: active ? "#0D1B2A" : done ? "#1B6CA8" : "#94A3B8" }}>{label}</span>
                 </div>
-                {i < STEP_LABELS.length - 1 && <div className="flex-1 h-px mx-3" style={{ background: done ? "#1B6CA8" : "#E2E8F0" }} />}
+                {i < displayedStepLabels.length - 1 && <div className="flex-1 h-px mx-3" style={{ background: done ? "#1B6CA8" : "#E2E8F0" }} />}
               </div>
             );
           })}
@@ -1030,7 +1141,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
             {/* ── STEP 3: Contact Info ── */}
             {stepNum === 3 && (
               <>
-                <StepHeader step={3} total={TOTAL_STEPS} title="Where should we send updates?" subtitle="Checkout works without an account. Add the contact details for this order." />
+                <StepHeader step={3} total={displayedTotalSteps} title="Where should we send the quote?" subtitle="Add one contact for the reviewed commercial and production follow-up." />
                 <div className="bg-white rounded-lg border border-slate-200 p-6">
                   <div className="grid md:grid-cols-2 gap-5">
                     {[
@@ -1077,7 +1188,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
             {/* ── STEP 1: Product & Quantity ── */}
             {stepNum === 1 && (
               <>
-                <StepHeader step={1} total={TOTAL_STEPS} title="What do you need to package?" subtitle="Choose the closest match. You can change it later, and we check every specification before production." />
+                <StepHeader step={1} total={displayedTotalSteps} title="What do you need to package?" subtitle="Choose the closest match. You can change it later, and we check every specification before production." />
 
                 {catalogOpen && <div className="bg-white border border-slate-200 p-4 sm:p-5">
                   <div className="flex items-start justify-between gap-3 mb-4">
@@ -1441,7 +1552,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                     {/* Unit toggle */}
                     {selectedSku?.category === "rolls" && <div className="flex gap-0 rounded-lg border border-slate-200 overflow-hidden w-fit">
                       {(["pieces", "kg"] as const).map(u => (
-                        <button key={u} onClick={() => { setQtyUnit(u); setQty(u === "pieces" ? selectedSkuMoq : 50); }}
+                        <button key={u} onClick={() => { setQtyUnit(u); setQty(u === "pieces" ? selectedSkuMoq : 50); setCustomQtyInput(""); }}
                           className="px-4 py-1.5 text-sm font-semibold transition-all"
                           style={{ background: qtyUnit === u ? "#1B6CA8" : "white", color: qtyUnit === u ? "white" : "#64748B" }}>
                           {u === "pieces" ? "Pieces" : "Kg (film)"}
@@ -1450,17 +1561,25 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                     </div>}
                     <div className="flex gap-2 flex-wrap">
                       {quantityPresets.map(q => (
-                        <button key={q} onClick={() => setQty(q)}
+                        <button key={q} onClick={() => { setQty(q); setCustomQtyInput(""); }}
                           className="px-4 py-2 border text-sm font-bold transition-all"
                           style={{ borderColor: qty === q ? "#0D1B2A" : "#E2E8F0", background: "white", color: qty === q ? "#0D1B2A" : "#64748B", boxShadow: qty === q ? "inset 0 -3px 0 #1B6CA8" : "none" }}>
                           {q.toLocaleString()}
                         </button>
                       ))}
-                      {selectedSkuBuyingMode === "assisted" && (
-                        <input type="number" value={qty}
-                          onChange={e => setQty(Math.max(qtyUnit === "pieces" ? selectedSkuMoq : 50, parseInt(e.target.value) || (qtyUnit === "pieces" ? selectedSkuMoq : 50)))}
-                          className="w-28 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-400 bg-slate-50" placeholder="Custom" />
-                      )}
+                      <input
+                        type="number"
+                        aria-label="Custom quantity"
+                        min={qtyUnit === "pieces" ? selectedSkuMoq : 50}
+                        value={customQtyInput}
+                        onChange={(event) => {
+                          setCustomQtyInput(event.target.value);
+                          const nextQuantity = parseInt(event.target.value);
+                          if (nextQuantity >= (qtyUnit === "pieces" ? selectedSkuMoq : 50)) setQty(nextQuantity);
+                        }}
+                        className="w-36 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-400 bg-slate-50"
+                        placeholder="Custom quantity"
+                      />
                     </div>
                     <p className="text-xs text-slate-400">
                       {selectedSkuBuyingMode === "self"
@@ -1492,7 +1611,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
             {/* ── STEP 2: Design & Delivery (consolidated) ── */}
             {stepNum === 2 && (
               <>
-                <StepHeader step={2} total={TOTAL_STEPS} title="Brand and delivery" subtitle="Add your design, choose delivery, and decide whether you need a sample first." />
+                <StepHeader step={2} total={displayedTotalSteps} title="Brand and delivery" subtitle="Add your design, choose delivery, and decide whether you need a sample first." />
 
                 {/* Artwork section */}
                 <div className="bg-white rounded-lg border border-slate-200 p-6">
@@ -1582,7 +1701,15 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                             onClick={async () => {
                               setDesignPaying(true);
                               try {
-                                await openRazorpay({ amount: 199900, description: "Packaging Design Service", notes: { service: "design" }, onSuccess: () => setDesignPaid(true), onDismiss: () => setDesignPaying(false) });
+                                await openRazorpay({
+                                  amount: 199900,
+                                  description: "Packaging Design Service",
+                                  notes: { service: "design" },
+                                  onSuccess: () => { setDesignPaid(true); setDesignPaying(false); },
+                                  onPending: () => { setDesignPaying(false); toast({ title: "Payment confirmation pending", description: "Razorpay is still confirming this payment. Please do not pay again." }); },
+                                  onError: (message) => { setDesignPaying(false); toast({ variant: "destructive", title: "Payment could not be verified", description: message }); },
+                                  onDismiss: () => setDesignPaying(false),
+                                });
                               } catch { setDesignPaying(false); }
                             }}
                             className="px-6 py-2.5 rounded text-sm font-bold transition-all hover:opacity-90 active:scale-95 flex items-center gap-2"
@@ -1652,7 +1779,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
             {/* Sampling now lives inside Brand & delivery; keep this retired screen unreachable. */}
             {false && (
               <>
-                <StepHeader step={3} total={TOTAL_STEPS} title="Sample Request" subtitle="Validate structure and print before bulk production." />
+                <StepHeader step={3} total={displayedTotalSteps} title="Sample Request" subtitle="Validate structure and print before bulk production." />
                 <div className="bg-white rounded-lg border border-slate-200 p-6">
                   <p className="text-sm text-slate-500 mb-6">Sampling fee is fully adjusted against your production order. No extra charge.</p>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -1683,7 +1810,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                             onClick={async (e) => {
                               e.stopPropagation();
                               try {
-                                await openRazorpay({ amount: 499900, description: "Express Sample Kit", notes: { service: "sample_express" }, onSuccess: () => setSamplePaid(true), onDismiss: () => {} });
+                                await openRazorpay({ amount: 499900, description: "Express Sample Kit", notes: { service: "sample_express" }, onSuccess: () => setSamplePaid(true), onPending: () => toast({ title: "Payment confirmation pending", description: "Please do not pay again while Razorpay confirms it." }), onError: (message) => toast({ variant: "destructive", title: "Payment could not be verified", description: message }), onDismiss: () => {} });
                               } catch {}
                             }}
                             className="w-full py-2.5 rounded-lg text-sm font-bold transition-all hover:brightness-110"
@@ -1718,7 +1845,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                           <button
                             onClick={async (event) => {
                               event.stopPropagation();
-                              try { await openRazorpay({ amount: 299900, description: "Standard Sample", notes: { service: "sample_standard" }, onSuccess: () => setSamplePaid(true), onDismiss: () => {} }); } catch {}
+                              try { await openRazorpay({ amount: 299900, description: "Standard Sample", notes: { service: "sample_standard" }, onSuccess: () => setSamplePaid(true), onPending: () => toast({ title: "Payment confirmation pending", description: "Please do not pay again while Razorpay confirms it." }), onError: (message) => toast({ variant: "destructive", title: "Payment could not be verified", description: message }), onDismiss: () => {} }); } catch {}
                             }}
                             className="w-full py-2.5 rounded-lg text-sm font-bold transition-all hover:brightness-110"
                             style={{ background: "#1B6CA8", color: "white" }}>
@@ -1750,7 +1877,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
             {/* ── STEP 4: Review ── */}
             {stepNum === 4 && (
               <>
-                <StepHeader step={4} total={TOTAL_STEPS} title={selectedSkuBuyingMode === "assisted" ? "Review your request" : "Review your order"} subtitle="Check the essentials before saving your request." />
+                <StepHeader step={4} total={displayedTotalSteps} title={selectedSkuBuyingMode === "assisted" ? "Review your request" : "Review your order"} subtitle="Check the essentials before saving your request." />
                 <div className="bg-white rounded-lg border border-slate-200 p-6 space-y-5">
                   <div>
                     <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Additional Notes / Special Requirements</label>
@@ -1888,6 +2015,12 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
                 <button type="button" disabled className="flex-1 sm:flex-none px-4 sm:px-8 py-3 text-sm font-black text-slate-500 bg-slate-100 border border-slate-200 cursor-not-allowed min-w-0">
                   Choose a product above
                 </button>
+              ) : isSelfServeConfigurationFinalStep ? (
+                <button onClick={handleSubmit} disabled={artworkUploading}
+                  className="flex-1 sm:flex-none px-4 sm:px-8 py-3 text-sm font-black text-white transition-all hover:opacity-90 disabled:opacity-60 min-w-0"
+                  style={{ background: "#0D1B2A" }}>
+                  {artworkUploading ? "Uploading artwork…" : purchaseIntent === "cart" ? "Add configured item to cart" : "Continue to cart checkout"} →
+                </button>
               ) : !isLastStep ? (
                 <button onClick={handleNext} className="flex-1 sm:flex-none px-4 sm:px-8 py-3 text-sm font-black text-white transition-all hover:opacity-90 min-w-0" style={{ background: "#0D1B2A" }}>
                   {stepNum === 1 ? "Continue to brand & delivery" : stepNum === 2 ? "Continue to your details" : "Review order"} →
@@ -1914,7 +2047,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
               configuration={variantSelections}
               buyingMode={selectedSkuBuyingMode}
               purchaseIntent={purchaseIntent}
-              onSubmit={isLastStep ? handleSubmit : undefined}
+              onSubmit={isLastStep || isSelfServeConfigurationFinalStep ? handleSubmit : undefined}
               submitting={submitMutation.isPending || checkoutLaunching}
             />
           </aside>

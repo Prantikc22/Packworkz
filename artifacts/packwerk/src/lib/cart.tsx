@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import type { CatalogSku } from "@/lib/catalog";
-import { COMMERCE_PRODUCTS, LAUNCH_PROMOTION_CODE } from "@workspace/commerce";
+import { COMMERCE_PRODUCTS, LAUNCH_PROMOTION_CODE, calculateCommerceCartEstimate } from "@workspace/commerce";
 import { calculateOrderEstimate } from "@/lib/pricing";
 import { getCatalogImage, requiresQuote } from "@/lib/catalog";
 
@@ -86,11 +86,11 @@ export function createConfiguredCartItem(
     sampleOption?: CartItem["sampleOption"];
   },
 ): CartItem | null {
-  if (sku.publicBuyingPath !== "instant" || requiresQuote(sku, configuration.quantity)) return null;
+  const managedItem = sku.publicBuyingPath !== "instant" || requiresQuote(sku, configuration.quantity);
   const size = COMMERCE_PRODUCTS[sku.code]?.sizes.find((item) => item.code === configuration.sizeCode);
-  if (!size) return null;
+  if (!size && !managedItem) return null;
   const identity = JSON.stringify({
-    size: size.code,
+    size: size?.code || configuration.sizeCode || "managed",
     variants: configuration.variantSelections,
     specs: configuration.customSpecs || {},
     artwork: configuration.artworkOption,
@@ -105,14 +105,37 @@ export function createConfiguredCartItem(
     image: getCatalogImage(sku),
     quantity: configuration.quantity,
     quantityUnit: sku.moq_unit,
-    sizeCode: size.code,
-    sizeLabel: size.label,
+    sizeCode: size?.code || configuration.sizeCode || "",
+    sizeLabel: size?.label || "Custom specification",
     variantSelections: configuration.variantSelections,
     customSpecs: configuration.customSpecs || {},
     artworkOption: configuration.artworkOption,
     artworkFileUrl: configuration.artworkFileUrl,
     deliveryOption: configuration.deliveryOption,
     sampleOption: configuration.sampleOption || "none",
+  };
+}
+
+export function getCartCheckoutDecision(rows: Array<{ item: CartItem; sku: CatalogSku }>) {
+  const cartEstimate = calculateCommerceCartEstimate(rows.map(({ item }) => ({
+    skuCode: item.skuCode,
+    quantity: item.quantity,
+    sizeCode: item.sizeCode,
+    artwork: item.artworkOption || "upload",
+    delivery: item.deliveryOption || "standard",
+    configuration: item.variantSelections,
+    promotionCode: LAUNCH_PROMOTION_CODE,
+  })));
+  const hasManagedItem = rows.some(({ item, sku }) => (
+    sku.publicBuyingPath !== "instant" || requiresQuote(sku, item.quantity)
+  ));
+
+  return {
+    ...cartEstimate,
+    eligible: cartEstimate.eligible && !hasManagedItem,
+    reason: hasManagedItem ? "manual_review" as const : cartEstimate.reason,
+    requiresQuote: hasManagedItem || !cartEstimate.eligible,
+    hasManagedItem,
   };
 }
 

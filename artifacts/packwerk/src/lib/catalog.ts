@@ -465,8 +465,28 @@ export function getSkusForIndustry(slug: string): CatalogSku[] {
   });
 }
 
+export function getMaxSelfServeQuantity(
+  sku: Pick<CatalogSku, "publicBuyingPath" | "price_tiers" | "moq" | "quote_threshold">,
+): number {
+  if (sku.publicBuyingPath === "quote") return 0;
+
+  const validatedTiers = (sku.price_tiers || [])
+    .map((tier) => tier.min_qty)
+    .filter((quantity) => !sku.quote_threshold || quantity < sku.quote_threshold);
+
+  return Math.max(sku.moq, ...validatedTiers);
+}
+
 export function requiresQuote(sku: CatalogSku, quantity?: number): boolean {
-  return sku.publicBuyingPath === "quote" || Boolean(quantity && sku.quote_threshold && quantity >= sku.quote_threshold);
+  if (sku.publicBuyingPath === "quote") return true;
+  if (!quantity) return false;
+
+  const reachesConfiguredThreshold = Boolean(sku.quote_threshold && quantity >= sku.quote_threshold);
+  const onlineQuantities = (sku.price_tiers || [])
+    .map((tier) => tier.min_qty)
+    .filter((tierQuantity) => !sku.quote_threshold || tierQuantity < sku.quote_threshold);
+  const isListedOnlineQuantity = onlineQuantities.includes(quantity);
+  return reachesConfiguredThreshold || quantity > getMaxSelfServeQuantity(sku) || !isListedOnlineQuantity;
 }
 
 export function getConfigureHref(sku: CatalogSku, quantity?: number): string {

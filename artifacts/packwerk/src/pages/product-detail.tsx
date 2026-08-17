@@ -9,11 +9,12 @@ import { ArrowLeft, ShoppingCart } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { getCategoryBySlug } from "@/lib/skus";
-import { CATALOG_SKUS, getCatalogImage, getConfigureHref, requiresQuote } from "@/lib/catalog";
+import { CATALOG_SKUS, getCatalogImage, getConfigureHref, getMaxSelfServeQuantity, requiresQuote } from "@/lib/catalog";
 import {
   COMMERCE_PRODUCTS,
   LAUNCH_PROMOTION_CODE,
   LAUNCH_PROMOTION_RATE,
+  RAZORPAY_PAYMENT_LIMIT_RUPEES,
   formatMeasurementInCm,
 } from "@workspace/commerce";
 
@@ -77,13 +78,21 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
   const productImage = getCatalogImage(product);
   const category = getCategoryBySlug(product.category);
   const complianceCerts = product.is_eco ? ["FSC", "EPR-ready"] : ["ISO", "BRC-ready"];
-  const quoteRequired = requiresQuote(product, currentQty);
-  const configureHref = getConfigureHref(product, currentQty);
+  const quantityRequiresQuote = requiresQuote(product, currentQty);
+  const estimateExceedsOnlineLimit = "total" in estimate && Number(estimate.total || 0) > RAZORPAY_PAYMENT_LIMIT_RUPEES;
+  const quoteRequired = quantityRequiresQuote || estimateExceedsOnlineLimit;
+  const maxSelfServeQuantity = getMaxSelfServeQuantity(product);
+  const onlinePriceTiers = (product.price_tiers || []).filter((tier) => !requiresQuote(product, tier.min_qty));
+  const baseConfigureHref = getConfigureHref(product, currentQty);
+  const quoteAwareConfigureHref = estimateExceedsOnlineLimit && baseConfigureHref.startsWith("/configure")
+    ? baseConfigureHref.replace("/configure", "/procurement-plan")
+    : baseConfigureHref;
+  const configureHref = `${quoteAwareConfigureHref}&qty=${currentQty}`;
   const addToCartHref = `${configureHref}${configureHref.includes("?") ? "&" : "?"}intent=cart`;
   const buyNowHref = `${configureHref}${configureHref.includes("?") ? "&" : "?"}intent=buy`;
 
   return (
-    <div className="container mx-auto px-4 pt-[124px] pb-8 max-w-7xl">
+    <div className="w-full px-4 sm:px-6 lg:px-8 2xl:px-10 pt-[124px] pb-8">
       <Link href="/products" className="inline-flex items-center text-sm font-medium text-muted hover:text-navy mb-8 transition-colors">
         <ArrowLeft className="w-4 h-4 mr-2" /> Back to Products
       </Link>
@@ -183,12 +192,16 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
         <div className="lg:col-span-1">
           <div className="sticky top-24 bg-white border border-border p-6 shadow-sm">
             <div className="mb-6">
-              <div className="text-sm text-muted mb-1">{product.publicBuyingPath === "quote" ? "Indicative production range" : "Launch checkout rate"}</div>
+              <div className="text-sm text-muted mb-1">{product.publicBuyingPath === "quote" || quoteRequired ? "Reviewed bulk pricing" : "Launch checkout rate"}</div>
               <div className="text-3xl font-bold text-navy">
-                {product.publicBuyingPath === "quote" ? `${formatINR(product.price_min)} - ${formatINR(product.price_max)}` : `from ${formatINR(launchUnit)}`}
-                <span className="text-sm font-normal text-muted ml-1">/ {product.moq_unit.replace(/s$/, "")}</span>
+                {product.publicBuyingPath === "quote"
+                  ? `${formatINR(product.price_min)} - ${formatINR(product.price_max)}`
+                  : quoteRequired
+                    ? "Get a custom quote"
+                    : `from ${formatINR(launchUnit)}`}
+                {!quoteRequired && <span className="text-sm font-normal text-muted ml-1">/ {product.moq_unit.replace(/s$/, "")}</span>}
               </div>
-              {product.publicBuyingPath === "instant" && <p className="mt-2 text-xs text-slate-500">For the smallest listed size and selected quantity, before GST. Delivery is shown separately at checkout.</p>}
+              {product.publicBuyingPath === "instant" && !quoteRequired && <p className="mt-2 text-xs text-slate-500">For the smallest listed size and selected quantity, before GST. Delivery is shown separately at checkout.</p>}
             </div>
 
             <div className="space-y-6">
@@ -202,20 +215,23 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
                   onChange={e => setQuantity(parseInt(e.target.value) || product.moq)}
                   className="h-12"
                 />
+                {product.publicBuyingPath === "instant" && maxSelfServeQuantity > 0 && (
+                  <p className="mt-2 text-xs text-slate-500">Online checkout is available up to {maxSelfServeQuantity.toLocaleString("en-IN")} {product.moq_unit}. Enter a larger run to request reviewed bulk pricing.</p>
+                )}
               </div>
 
-              {product.quote_threshold && currentQty >= product.quote_threshold && product.publicBuyingPath === "instant" && (
+              {quoteRequired && product.publicBuyingPath === "instant" && (
                 <div className="border border-slate-300 border-l-[3px] border-l-amber-500 bg-white p-4 text-sm text-navy">
                   <p className="font-black">Enterprise quantity detected</p>
-                  <p className="mt-1 text-xs text-slate-600">At {product.quote_threshold.toLocaleString("en-IN")}+ units we check production capacity, freight and a sharper bulk rate before confirming.</p>
+                  <p className="mt-1 text-xs text-slate-600">Above the online range we check production capacity, freight and a sharper bulk rate before confirming. This quantity will not be charged using a blindly multiplied unit price.</p>
                 </div>
               )}
 
-              {product.price_tiers && product.price_tiers.length > 0 && (
+              {onlinePriceTiers.length > 0 && (
                 <div className="border-y border-border py-4">
                   <p className="text-xs font-black uppercase tracking-wider text-muted mb-3">Quantity pricing</p>
                   <div className="grid gap-2">
-                    {product.price_tiers.map((tier) => {
+                    {onlinePriceTiers.map((tier) => {
                       const tierEstimate = calculateOrderEstimate(product, tier.min_qty, "standard", "upload", defaultSize?.code, defaultConfiguration);
                       const tierLaunchUnit = tier.min_qty > 0
                         ? ((tierEstimate.material || 0) - (tierEstimate.discount || 0)) / tier.min_qty
@@ -235,7 +251,7 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
                 </div>
               )}
 
-              <div className="bg-surface p-4 rounded-xl space-y-3">
+              {!quoteRequired && <div className="bg-surface p-4 rounded-xl space-y-3">
                 <div className="flex justify-between items-center text-sm">
                   <span className="text-muted">Estimated Total</span>
                   <span className="font-bold text-navy">{formatINR(estimatedMin)} - {formatINR(estimatedMax)}</span>
@@ -250,26 +266,33 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
                     <span className="font-black text-emerald-700">-{formatINR(estimate.discount)}</span>
                   </div>
                 )}
-              </div>
+              </div>}
 
               <div className="space-y-3">
                 <div className="flex justify-between items-center text-sm border-t border-border pt-4">
                   <span className="text-muted">Delivery (India)</span>
-                  <span className="font-semibold text-navy">{product.delivery_days_india} Days</span>
+                  <span className="font-semibold text-navy">{quoteRequired ? "Confirmed in quote" : `${product.delivery_days_india} Days`}</span>
                 </div>
                 <div className="flex justify-between items-center text-sm">
                   <span className="text-muted">Delivery (Global)</span>
-                  <span className="font-semibold text-navy">{product.delivery_days_india + 14} Days</span>
+                  <span className="font-semibold text-navy">{quoteRequired ? "Confirmed in quote" : `${product.delivery_days_india + 14} Days`}</span>
                 </div>
               </div>
 
               <div className="pt-6 space-y-3 border-t border-border">
                 {quoteRequired ? (
-                  <Link href={configureHref}>
-                    <Button className="w-full h-14 bg-navy text-white hover:bg-[#17324a] font-black text-xl">
-                      Get a quote
-                    </Button>
-                  </Link>
+                  <div className="grid grid-cols-2 gap-3">
+                    <Link href={addToCartHref}>
+                      <Button type="button" variant="outline" className="w-full h-14 border-navy text-navy hover:bg-slate-50 font-black text-base">
+                        <ShoppingCart className="mr-2 h-5 w-5" /> Add to quote cart
+                      </Button>
+                    </Link>
+                    <Link href={buyNowHref}>
+                      <Button className="w-full h-14 bg-navy text-white hover:bg-[#17324a] font-black text-lg">
+                        Get quote now
+                      </Button>
+                    </Link>
+                  </div>
                 ) : (
                   <div className="grid grid-cols-2 gap-3">
                     <Link href={addToCartHref}>

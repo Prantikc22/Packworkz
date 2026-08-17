@@ -5,7 +5,7 @@ import {
   LAUNCH_PROMOTION_CODE,
   LAUNCH_PROMOTION_MONTHLY_LIMIT,
   RAZORPAY_PAYMENT_LIMIT_RUPEES,
-  calculateCommerceEstimate,
+  calculateCommerceCartEstimate,
 } from "@workspace/commerce";
 import { sb } from "../lib/supabase";
 import { generateId } from "../lib/generateId";
@@ -44,16 +44,32 @@ function parseQuoteForCommerce(quote: any) {
       : {};
     const promotionCode = String(rawConfiguration.promotion_code || "").toUpperCase();
     const { promotion_code: _promotionCode, ...configuration } = rawConfiguration;
+    const rawCustomSpecs = (item?.custom_specs && typeof item.custom_specs === "object")
+      ? item.custom_specs as Record<string, string>
+      : {};
+    const { standard_size: _standardSize, ...customConfiguration } = rawCustomSpecs;
     return {
       item,
       skuCode: String(item?.sku_code || ""),
       quantity: Number(item?.quantity || 0),
       sizeCode: String(item?.custom_specs?.standard_size || ""),
-      configuration,
+      configuration: { ...configuration, ...customConfiguration },
       promotionCode,
     };
   });
   return { items, artwork, delivery };
+}
+
+function readDeliveryAddress(quote: any) {
+  const notes = String(quote?.notes || "");
+  const line = (label: string) => notes.match(new RegExp(`^${label}:\\s*(.+)$`, "im"))?.[1]?.trim() || "";
+  return {
+    address: line("Delivery address"),
+    city: line("Delivery city"),
+    state: line("Delivery state"),
+    pincode: line("Delivery pincode") || String(quote?.delivery_pincode || ""),
+    country: String(quote?.delivery_country || "India"),
+  };
 }
 
 async function launchPromotionAvailable() {
@@ -109,6 +125,15 @@ async function finalizeCommerceOrder(gatewayOrderId: string, paymentId?: string)
     });
   }
   return order;
+}
+
+async function findCommerceOrder(gatewayOrderId: string) {
+  const result = await sb.from("orders").select("*").eq("payment_link", gatewayOrderId).maybeSingle();
+  if (result.error) {
+    console.error("[payments] Could not resolve Packworkz order", { code: result.error.code, message: result.error.message });
+    return null;
+  }
+  return result.data;
 }
 
 async function finalizeRecoveryOrder(gatewayOrderId: string, paymentId?: string) {
@@ -184,12 +209,73 @@ router.post("/payments/prepare-order", async (req, res): Promise<void> => {
     });
     return;
   }
+  if (existingOrder?.status === "payment_processing" && String(existingOrder.payment_link || "").startsWith("order_")) {
+    const razorpay = getRazorpay();
+    try {
+      const gatewayOrder = razorpay ? await razorpay.orders.fetch(existingOrder.payment_link) : null;
+      if (gatewayOrder?.status === "paid") {
+        const paidOrder = await finalizeCommerceOrder(existingOrder.payment_link);
+        res.json({
+          status: "already_paid",
+          quote_id: quoteId,
+          order_id: paidOrder?.order_id || existingOrder.order_id,
+          amount_rupees: Number(existingOrder.total_price),
+          discount_rupees: Number(existingOrder.discount_applied || 0),
+        });
+        return;
+      }
+    } catch (error) {
+      console.error("[payments/prepare-order] Could not refresh processing payment", error);
+    }
+    res.json({
+      status: "payment_processing",
+      quote_id: quoteId,
+      order_id: existingOrder.order_id,
+      amount_rupees: Number(existingOrder.total_price),
+      message: "Razorpay accepted the payment attempt and confirmation is still processing. Do not pay again.",
+    });
+    return;
+  }
+  if (existingOrder?.status === "payment_pending" && String(existingOrder.payment_link || "").startsWith("order_")) {
+    const razorpay = getRazorpay();
+    if (!razorpay) {
+      res.json({ status: "gateway_not_configured", quote_id: quoteId, amount_rupees: Number(existingOrder.total_price), message: "Secure online payment is temporarily unavailable. Your original order amount remains saved." });
+      return;
+    }
+    try {
+      const gatewayOrder = await razorpay.orders.fetch(existingOrder.payment_link);
+      if (gatewayOrder.status === "paid") {
+        const paidOrder = await finalizeCommerceOrder(existingOrder.payment_link);
+        res.json({ status: "already_paid", quote_id: quoteId, order_id: paidOrder?.order_id || existingOrder.order_id, amount_rupees: Number(existingOrder.total_price), discount_rupees: Number(existingOrder.discount_applied || 0) });
+        return;
+      }
+      const lockedTotal = Number(existingOrder.total_price);
+      res.json({
+        status: "ready",
+        quote_id: quoteId,
+        order_id: existingOrder.order_id,
+        razorpay_order_id: existingOrder.payment_link,
+        key_id: process.env.RAZORPAY_KEY_ID,
+        amount: Math.round(lockedTotal * 100),
+        amount_rupees: lockedTotal,
+        discount_rupees: Number(existingOrder.discount_applied || 0),
+        promotion_code: Number(existingOrder.discount_applied || 0) > 0 ? LAUNCH_PROMOTION_CODE : undefined,
+        currency: "INR",
+        recovery_mode: false,
+      });
+      return;
+    } catch (error) {
+      console.error("[payments/prepare-order] Could not refresh saved Razorpay order", error);
+      res.status(503).json({ error: "Your saved payment could not be refreshed. Nothing was charged; please retry shortly." });
+      return;
+    }
+  }
 
   const promotionRequested = parsed.items.some((item: any) => item.promotionCode === LAUNCH_PROMOTION_CODE);
   const promotionCode = promotionRequested && (recoveryMode || Number(existingOrder?.discount_applied || 0) > 0 || await launchPromotionAvailable())
     ? LAUNCH_PROMOTION_CODE
     : undefined;
-  const estimates: ReturnType<typeof calculateCommerceEstimate>[] = parsed.items.map((item: any) => calculateCommerceEstimate({
+  const cartEstimate = calculateCommerceCartEstimate(parsed.items.map((item: any) => ({
     skuCode: item.skuCode,
     quantity: item.quantity,
     sizeCode: item.sizeCode,
@@ -197,26 +283,25 @@ router.post("/payments/prepare-order", async (req, res): Promise<void> => {
     delivery: parsed.delivery,
     configuration: item.configuration,
     promotionCode,
-  }));
-  const blockingEstimate = estimates.find((item) => item.reason && item.reason !== "payment_limit");
+  })));
   const estimate = {
-    total: Number(estimates.reduce((sum, item) => sum + item.total, 0).toFixed(2)),
-    discount: Number(estimates.reduce((sum, item) => sum + item.discount, 0).toFixed(2)),
-    amountPaise: Math.round(estimates.reduce((sum, item) => sum + item.total, 0) * 100),
+    total: cartEstimate.total,
+    discount: cartEstimate.discount,
+    amountPaise: cartEstimate.amountPaise,
     promotionCode,
   };
 
-  if (!parsed.items.length || blockingEstimate) {
+  if (cartEstimate.reason === "empty_cart" || cartEstimate.reason === "manual_review") {
     res.json({
       status: "manual_confirmation",
       quote_id: quoteId,
-      amount_rupees: estimate.total || Number(quote.total_estimated_min || 0),
+      amount_rupees: Number(quote.total_estimated_min || estimate.total || 0),
       message: "Packworkz will confirm the final payment route after reviewing this production specification.",
     });
     return;
   }
 
-  if (estimate.total > RAZORPAY_PAYMENT_LIMIT_RUPEES) {
+  if (cartEstimate.reason === "payment_limit") {
     if (!recoveryMode) {
       await sb.from("quote_requests").update({
         status: "payment_confirmation_required",
@@ -245,8 +330,7 @@ router.post("/payments/prepare-order", async (req, res): Promise<void> => {
 
   let packworkzOrderId = existingOrder?.order_id as string | undefined;
   let razorpayOrderId = existingOrder?.payment_link as string | undefined;
-  const totalChanged = existingOrder ? Math.abs(Number(existingOrder.total_price) - estimate.total) > 0.01 : false;
-  if (!existingOrder || !razorpayOrderId?.startsWith("order_") || totalChanged) {
+  if (!existingOrder || !razorpayOrderId?.startsWith("order_")) {
     packworkzOrderId = packworkzOrderId || (recoveryMode
       ? createRecoveryReference("ORD")
       : await generateId("ORD", "orders", "order_id"));
@@ -306,7 +390,7 @@ router.post("/payments/prepare-order", async (req, res): Promise<void> => {
         total_price: String(estimate.total),
         discount_applied: String(estimate.discount),
         payment_type: "razorpay",
-        delivery_address: { value: quote.delivery_pincode, country: quote.delivery_country },
+        delivery_address: readDeliveryAddress(quote),
         status: "payment_pending",
         payment_link: razorpayOrderId,
         internal_notes: `Awaiting Razorpay payment for ${quoteId}`,
@@ -374,19 +458,61 @@ router.post("/payments/verify", async (req, res): Promise<void> => {
       return;
     }
 
-    const recoveryOrder = await finalizeRecoveryOrder(razorpay_order_id, razorpay_payment_id);
-    if (recoveryOrder) {
+    const razorpay = getRazorpay();
+    if (!razorpay) {
+      res.status(503).json({ success: false, error: "Payment verification is not configured" });
+      return;
+    }
+    const payment = await razorpay.payments.fetch(razorpay_payment_id);
+    if (String(payment.order_id || "") !== String(razorpay_order_id) || String(payment.currency || "") !== "INR") {
+      res.status(400).json({ success: false, error: "Payment details do not match this order" });
+      return;
+    }
+
+    const commerceOrder = await findCommerceOrder(razorpay_order_id);
+    if (commerceOrder) {
+      const expectedAmount = Math.round(Number(commerceOrder.total_price) * 100);
+      if (Number(payment.amount) !== expectedAmount) {
+        res.status(400).json({ success: false, error: "Payment amount does not match this order" });
+        return;
+      }
+      if (payment.status !== "captured") {
+        await sb.from("orders").update({ status: "payment_processing", internal_notes: `Razorpay payment awaiting capture: ${razorpay_payment_id}` }).eq("id", commerceOrder.id);
+        res.status(202).json({ success: true, pending: true, order_id: commerceOrder.order_id, payment_id: razorpay_payment_id });
+        return;
+      }
+      const order = await finalizeCommerceOrder(razorpay_order_id, razorpay_payment_id);
+      res.json({ success: true, order_id: order?.order_id || commerceOrder.order_id, payment_id: razorpay_payment_id });
+      return;
+    }
+
+    const gatewayOrder = await razorpay.orders.fetch(razorpay_order_id);
+    const gatewayNotes = (gatewayOrder.notes || {}) as Record<string, string>;
+    if (gatewayNotes.storage_mode === "recovery" && gatewayNotes.recovery_order_id) {
+      if (payment.status !== "captured") {
+        res.status(202).json({ success: true, pending: true, order_id: gatewayNotes.recovery_order_id, payment_id: razorpay_payment_id, recovery_mode: true });
+        return;
+      }
+      const recoveryOrder = await finalizeRecoveryOrder(razorpay_order_id, razorpay_payment_id);
+      if (!recoveryOrder) {
+        res.status(500).json({ success: false, error: "Recovery payment could not be reconciled" });
+        return;
+      }
       res.json({ success: true, order_id: recoveryOrder.order_id, payment_id: razorpay_payment_id, recovery_mode: true });
       return;
     }
 
-    const order = await finalizeCommerceOrder(razorpay_order_id, razorpay_payment_id);
-    if (!order) {
-      // A valid fixed-price design/sample payment has no commerce order record.
-      res.json({ success: true, payment_id: razorpay_payment_id });
+    const service = String(gatewayNotes.service || "");
+    const serviceAmount = SERVICE_AMOUNTS[service];
+    if (!serviceAmount || Number(gatewayOrder.amount) !== serviceAmount || Number(payment.amount) !== serviceAmount) {
+      res.status(404).json({ success: false, error: "Payment order is not recognized" });
       return;
     }
-    res.json({ success: true, order_id: order.order_id, payment_id: razorpay_payment_id });
+    if (payment.status !== "captured") {
+      res.status(202).json({ success: true, pending: true, payment_id: razorpay_payment_id });
+      return;
+    }
+    res.json({ success: true, payment_id: razorpay_payment_id });
   } catch (error: any) {
     res.status(500).json({ success: false, error: error.message || "Payment verification failed" });
   }

@@ -21,6 +21,8 @@ export interface RazorpayOptions {
   prefillContact?: string;
   notes?: Record<string, string>;
   onSuccess: (payment: { razorpay_payment_id: string; razorpay_order_id: string; razorpay_signature: string }) => void;
+  onPending?: (payment: { razorpay_payment_id: string; razorpay_order_id: string; razorpay_signature: string }) => void;
+  onError?: (message: string) => void;
   onDismiss?: () => void;
 }
 
@@ -55,13 +57,22 @@ export async function openRazorpay(opts: RazorpayOptions) {
     notes: opts.notes || {},
     theme: { color: "#1B6CA8" },
     handler: async (payment: { razorpay_payment_id: string; razorpay_order_id: string; razorpay_signature: string }) => {
-      const verify = await fetch(`${API}/api/payments/verify`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payment),
-      });
-      if (!verify.ok) throw new Error("Payment verification failed");
-      opts.onSuccess(payment);
+      try {
+        const verify = await fetch(`${API}/api/payments/verify`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payment),
+        });
+        const result = await verify.json().catch(() => ({}));
+        if (!verify.ok || !result.success) throw new Error(result.error || "Payment verification failed");
+        if (result.pending) {
+          opts.onPending?.(payment);
+          return;
+        }
+        opts.onSuccess(payment);
+      } catch (error) {
+        opts.onError?.(error instanceof Error ? error.message : "Payment verification failed");
+      }
     },
     modal: { ondismiss: opts.onDismiss },
   });
@@ -70,7 +81,7 @@ export async function openRazorpay(opts: RazorpayOptions) {
 }
 
 export type PreparedOrderPayment = {
-  status: "ready" | "manual_confirmation" | "gateway_not_configured" | "already_paid";
+  status: "ready" | "manual_confirmation" | "gateway_not_configured" | "already_paid" | "payment_processing";
   quote_id: string;
   order_id?: string;
   razorpay_order_id?: string;
@@ -102,6 +113,7 @@ export async function openOrderPayment(opts: {
   contact?: string;
   description: string;
   onSuccess: (result: { order_id: string; payment_id: string }) => void;
+  onPending?: (result: { order_id: string; payment_id: string; recovery_mode: boolean }) => void;
   onDismiss?: () => void;
   onError?: (message: string) => void;
 }) {
@@ -132,6 +144,10 @@ export async function openOrderPayment(opts: {
         });
         const result = await response.json().catch(() => ({}));
         if (!response.ok || !result.success) throw new Error(result.error || "Payment verification failed");
+        if (result.pending) {
+          opts.onPending?.({ order_id: result.order_id || prepared.order_id || "", payment_id: payment.razorpay_payment_id, recovery_mode: Boolean(result.recovery_mode || prepared.recovery_mode) });
+          return;
+        }
         opts.onSuccess({ order_id: result.order_id, payment_id: payment.razorpay_payment_id });
       } catch (error) {
         opts.onError?.(error instanceof Error ? error.message : "Payment verification failed");

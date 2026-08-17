@@ -54,6 +54,7 @@ const readinessHandler: RequestHandler = async (_req, res) => {
     "RAZORPAY_KEY_ID",
     "RAZORPAY_KEY_SECRET",
     "RAZORPAY_WEBHOOK_SECRET",
+    "RESEND_API_KEY",
   ] as const;
   const missing = required.filter((name) => !process.env[name]);
   let databaseReachable = false;
@@ -83,6 +84,8 @@ const readinessHandler: RequestHandler = async (_req, res) => {
       paymentGateway: Boolean(process.env.RAZORPAY_KEY_ID && process.env.RAZORPAY_KEY_SECRET),
       paymentWebhook: Boolean(process.env.RAZORPAY_WEBHOOK_SECRET),
       accountSessions: Boolean(process.env.JWT_SECRET),
+      customerNotifications: Boolean(process.env.RESEND_API_KEY),
+      operationsNotifications: Boolean(process.env.RESEND_API_KEY || process.env.SLACK_WEBHOOK_URL || (process.env.SLACK_CHANNEL_ID && process.env.SLACK_BOT_TOKEN) || process.env.WHATSAPP_WEBHOOK_URL),
     },
     missing,
   });

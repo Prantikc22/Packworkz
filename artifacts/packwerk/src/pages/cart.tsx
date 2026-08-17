@@ -1,8 +1,8 @@
 import { Link } from "wouter";
-import { ArrowRight, PackageOpen, ShoppingBag, Trash2 } from "lucide-react";
+import { AlertTriangle, ArrowRight, PackageOpen, ShoppingBag, Trash2 } from "lucide-react";
 import { CATALOG_SKUS, requiresQuote } from "@/lib/catalog";
 import { formatINR } from "@/lib/format";
-import { getCartConfigurationDetails, getCartEstimate, useCart } from "@/lib/cart";
+import { getCartCheckoutDecision, getCartConfigurationDetails, getCartEstimate, useCart } from "@/lib/cart";
 
 export default function Cart() {
   const { items, updateQuantity, removeItem } = useCart();
@@ -11,9 +11,11 @@ export default function Cart() {
     if (!sku) return [];
     return [{ item, sku, estimate: getCartEstimate(item, sku) }];
   });
+  const unresolvedItems = items.filter((item) => !CATALOG_SKUS.some((sku) => sku.code === item.skuCode));
+  const checkoutDecision = getCartCheckoutDecision(rows);
   const total = rows.reduce((sum, row) => sum + row.estimate.high, 0);
 
-  if (!rows.length) {
+  if (!items.length) {
     return (
       <main className="min-h-[72vh] bg-slate-50 px-5 pb-20 pt-40">
         <section className="mx-auto max-w-3xl border border-slate-200 bg-white px-6 py-16 text-center md:px-14">
@@ -41,6 +43,15 @@ export default function Cart() {
 
         <div className="grid gap-8 lg:grid-cols-[1fr_360px]">
           <section className="space-y-4" aria-label="Cart items">
+            {unresolvedItems.map((item) => (
+              <article key={item.id} className="flex items-start justify-between gap-5 border border-amber-300 bg-amber-50 p-5">
+                <div className="flex gap-3">
+                  <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-amber-700" />
+                  <div><h2 className="font-black text-navy">{item.productName || item.skuCode} is no longer available</h2><p className="mt-1 text-sm text-slate-600">Remove this saved item before checkout. It will never be silently omitted or charged.</p></div>
+                </div>
+                <button onClick={() => removeItem(item.id)} className="p-2 text-red-600" aria-label={`Remove ${item.productName}`}><Trash2 className="h-5 w-5" /></button>
+              </article>
+            ))}
             {rows.map(({ item, sku, estimate }) => {
               const configuration = getCartConfigurationDetails(item);
               const quantities = Array.from(new Set([
@@ -97,17 +108,21 @@ export default function Cart() {
               <h2 className="text-2xl font-black">Order summary</h2>
             </div>
             <div className="flex justify-between border-b border-white/15 py-6 text-sm text-white/70">
-              <span>{rows.length} {rows.length === 1 ? "product" : "products"}</span>
+              <span>{items.length} {items.length === 1 ? "product" : "products"}</span>
               <span>Delivery calculated at checkout</span>
             </div>
             <div className="flex items-end justify-between py-6">
               <span className="font-bold">Estimated total</span>
               <strong className="text-3xl">{formatINR(total)}</strong>
             </div>
-            <p className="mb-5 text-sm leading-6 text-white/60">Includes the launch discount and GST. Your final address and delivery details are confirmed on the next step.</p>
-            <Link href="/cart/checkout" className="flex h-14 w-full items-center justify-center gap-3 bg-amber px-5 text-lg font-black text-navy hover:bg-[#d99a29]">
-              Proceed to checkout <ArrowRight className="h-5 w-5" />
-            </Link>
+            <p className="mb-5 text-sm leading-6 text-white/60">{unresolvedItems.length ? "Remove unavailable items before continuing." : checkoutDecision.requiresQuote ? "This cart will be submitted as one managed quote. Instant-buy lines will not be charged separately." : "Includes the launch discount and GST. Your address is entered once on the next step."}</p>
+            {unresolvedItems.length ? (
+              <div className="flex h-14 w-full items-center justify-center bg-white/10 px-5 text-center text-sm font-bold text-white/60">Review unavailable items</div>
+            ) : (
+              <Link href="/cart/checkout" className="flex h-14 w-full items-center justify-center gap-3 bg-amber px-5 text-lg font-black text-navy hover:bg-[#d99a29]">
+                {checkoutDecision.requiresQuote ? "Continue to quote checkout" : "Proceed to checkout"} <ArrowRight className="h-5 w-5" />
+              </Link>
+            )}
           </aside>
         </div>
       </div>

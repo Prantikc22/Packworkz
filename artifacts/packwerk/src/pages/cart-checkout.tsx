@@ -1,11 +1,11 @@
-import { useMemo, useState, type FormEvent } from "react";
+import { useMemo, useRef, useState, type FormEvent } from "react";
 import { Link, useLocation } from "wouter";
 import { ArrowLeft, LockKeyhole, PackageCheck } from "lucide-react";
 import { useSubmitQuote } from "@workspace/api-client-react";
-import { LAUNCH_PROMOTION_CODE } from "@workspace/commerce";
+import { LAUNCH_PROMOTION_CODE, RAZORPAY_PAYMENT_LIMIT_RUPEES } from "@workspace/commerce";
 import { CATALOG_SKUS } from "@/lib/catalog";
 import { formatINR } from "@/lib/format";
-import { getCartConfigurationDetails, getCartEstimate, useCart } from "@/lib/cart";
+import { getCartCheckoutDecision, getCartConfigurationDetails, getCartEstimate, useCart } from "@/lib/cart";
 import { openOrderPayment, prepareOrderPayment } from "@/lib/razorpay";
 import { useToast } from "@/hooks/use-toast";
 
@@ -40,17 +40,31 @@ export default function CartCheckout() {
   const submitQuote = useSubmitQuote();
   const [form, setForm] = useState<CheckoutForm>(loadCheckoutForm);
   const [launchingPayment, setLaunchingPayment] = useState(false);
+  const submissionLock = useRef(false);
   const rows = useMemo(() => items.flatMap((item) => {
     const sku = CATALOG_SKUS.find((entry) => entry.code === item.skuCode);
     return sku ? [{ item, sku, estimate: getCartEstimate(item, sku) }] : [];
   }), [items]);
+  const unresolvedItems = useMemo(() => items.filter((item) => !CATALOG_SKUS.some((sku) => sku.code === item.skuCode)), [items]);
+  const checkoutDecision = useMemo(() => getCartCheckoutDecision(rows), [rows]);
   const total = rows.reduce((sum, row) => sum + row.estimate.high, 0);
+  const quoteRequired = checkoutDecision.requiresQuote;
+  const quoteReason = checkoutDecision.hasManagedItem
+    ? "This cart contains at least one managed-quote item. We will review the complete cart together; no item will be charged separately."
+    : checkoutDecision.reason === "payment_limit"
+      ? `The combined cart is above ${formatINR(RAZORPAY_PAYMENT_LIMIT_RUPEES)}, so the complete cart moves to a reviewed quote. Nothing is charged now.`
+      : "This cart needs a specification review before payment. Nothing is charged when you submit it.";
 
   const update = (key: keyof CheckoutForm, value: string) => setForm((current) => ({ ...current, [key]: value }));
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
+    if (submissionLock.current) return;
     if (!rows.length) return navigate("/cart");
+    if (unresolvedItems.length) {
+      toast({ variant: "destructive", title: "Review unavailable cart items", description: "One or more saved products are no longer available. Return to the cart and remove them before continuing." });
+      return;
+    }
     if (!/^\d{6}$/.test(form.pincode.trim())) {
       toast({ variant: "destructive", title: "Check your pincode", description: "Enter a valid 6-digit Indian delivery pincode." });
       return;
@@ -60,6 +74,7 @@ export default function CartCheckout() {
       return;
     }
 
+    submissionLock.current = true;
     setLaunchingPayment(true);
     submitQuote.mutate({
       data: {
@@ -70,14 +85,14 @@ export default function CartCheckout() {
         delivery_country: "India",
         delivery_pincode: form.pincode.trim(),
         preferred_timeline: "standard",
-        notes: `${form.gstin ? `GSTIN ${form.gstin.trim().toUpperCase()}\n` : ""}Delivery address: ${[
-          form.address,
-          form.city,
-          form.state,
-          form.pincode,
-        ]
-          .filter(Boolean)
-          .join(", ")}\nMulti-item online cart`,
+        notes: [
+          form.gstin ? `GSTIN: ${form.gstin.trim().toUpperCase()}` : "",
+          `Delivery address: ${form.address.trim()}`,
+          `Delivery city: ${form.city.trim()}`,
+          `Delivery state: ${form.state.trim()}`,
+          `Delivery pincode: ${form.pincode.trim()}`,
+          "Multi-item online cart",
+        ].filter(Boolean).join("\n"),
         total_estimated_min: total,
         total_estimated_max: total,
         items: rows.map(({ item, sku }) => ({
@@ -100,13 +115,18 @@ export default function CartCheckout() {
         sample_option: "none",
         design_paid: false,
         sample_paid: false,
-        buying_mode: "self",
+        buying_mode: quoteRequired ? "assisted" : "self",
       } as any,
     }, {
       onSuccess: async (result) => {
         const response = result as typeof result & { checkout_token?: string };
-        const confirmationPath = `/configure/confirmed/${response.quote_id}?mode=self`;
+        const confirmationPath = `/configure/confirmed/${response.quote_id}?mode=${quoteRequired ? "assisted" : "self"}`;
         if (response.checkout_token) sessionStorage.setItem(`packworkz_checkout_${response.quote_id}`, response.checkout_token);
+        if (quoteRequired) {
+          clearCart();
+          navigate(confirmationPath);
+          return;
+        }
         try {
           const prepared = await prepareOrderPayment(response.quote_id, response.checkout_token);
           if (prepared.status === "already_paid") {
@@ -131,23 +151,30 @@ export default function CartCheckout() {
               setLaunchingPayment(false);
               navigate(confirmationPath);
             },
+            onPending: ({ order_id, recovery_mode }) => {
+              sessionStorage.setItem(`packworkz_pending_${response.quote_id}`, JSON.stringify({ orderId: order_id, recoveryMode: recovery_mode, amount: prepared.amount_rupees }));
+              clearCart();
+              setLaunchingPayment(false);
+              navigate(`${confirmationPath}&payment=processing`);
+            },
             onDismiss: () => {
               setLaunchingPayment(false);
-              navigate(confirmationPath);
+              navigate(`${confirmationPath}&payment=cancelled`);
             },
             onError: (message) => {
               setLaunchingPayment(false);
               toast({ variant: "destructive", title: "Payment was not completed", description: `${message} Your order is saved and can be paid safely from the next screen.` });
-              navigate(confirmationPath);
+              navigate(`${confirmationPath}&payment=failed`);
             },
           });
         } catch {
           setLaunchingPayment(false);
           toast({ variant: "destructive", title: "Secure checkout could not open", description: "Your order is saved. Retry payment safely from the next screen." });
-          navigate(confirmationPath);
+          navigate(`${confirmationPath}&payment=unavailable`);
         }
       },
       onError: () => {
+        submissionLock.current = false;
         setLaunchingPayment(false);
         toast({ variant: "destructive", title: "Checkout could not be created", description: "Nothing was charged. Please check your details and try again." });
       },
@@ -188,10 +215,10 @@ export default function CartCheckout() {
             })}
           </div>
           <div className="flex items-end justify-between py-6"><span className="font-bold">Payable estimate</span><strong className="text-3xl">{formatINR(total)}</strong></div>
-          <button disabled={launchingPayment || submitQuote.isPending} className="flex h-14 w-full items-center justify-center gap-3 bg-amber px-5 text-lg font-black text-navy hover:bg-[#d99a29] disabled:cursor-wait disabled:opacity-60">
-            <LockKeyhole className="h-5 w-5" /> {launchingPayment || submitQuote.isPending ? "Opening secure payment..." : total > 50000 ? "Confirm order plan" : "Pay securely"}
+          <button disabled={launchingPayment || submitQuote.isPending || unresolvedItems.length > 0} className="flex h-14 w-full items-center justify-center gap-3 bg-amber px-5 text-lg font-black text-navy hover:bg-[#d99a29] disabled:cursor-wait disabled:opacity-60">
+            <LockKeyhole className="h-5 w-5" /> {unresolvedItems.length ? "Review cart first" : launchingPayment || submitQuote.isPending ? (quoteRequired ? "Sending quote request..." : "Opening secure payment...") : quoteRequired ? "Request one quote" : "Pay securely"}
           </button>
-          <p className="mt-4 text-sm leading-6 text-white/55">{total > 50000 ? "For totals above ₹50,000, our order desk confirms the safest payment route before production." : "Razorpay opens directly after your delivery details are saved. No duplicate configuration step."}</p>
+          <p className="mt-4 text-sm leading-6 text-white/55">{unresolvedItems.length ? "A saved product is no longer available. Return to the cart and remove it so nothing is omitted from your request." : quoteRequired ? quoteReason : "Razorpay opens directly after your delivery details are saved. The server rechecks every line and the combined total before creating a payment."}</p>
         </aside>
       </form>
     </main>
