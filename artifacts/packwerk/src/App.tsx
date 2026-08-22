@@ -28,6 +28,8 @@ import Sustainable from "@/pages/sustainable";
 import About from "@/pages/about";
 import Resources from "@/pages/resources";
 import ResourceDetail from "@/pages/resource-detail";
+import GrowingBrands from "@/pages/growing-brands";
+import Enterprise from "@/pages/enterprise";
 import LpD2c from "@/pages/lp-d2c";
 import Careers from "@/pages/careers";
 import Contact from "@/pages/contact";
@@ -129,6 +131,8 @@ function Router() {
       <PublicRoute path="/about" component={About} layout={PublicLayout} />
       <PublicRoute path="/resources" component={Resources} layout={PublicLayout} />
       <PublicRoute path="/resources/:slug" component={ResourceDetail} layout={PublicLayout} />
+      <PublicRoute path="/solutions/growing-brands" component={GrowingBrands} layout={PublicLayout} />
+      <PublicRoute path="/enterprise" component={Enterprise} layout={PublicLayout} />
 
       <PublicRoute path="/careers" component={Careers} layout={PublicLayout} />
       <PublicRoute path="/contact" component={Contact} layout={PublicLayout} />

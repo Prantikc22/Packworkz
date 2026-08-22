@@ -4,7 +4,7 @@ import { generateId } from "../lib/generateId";
 import { notifySlack } from "../lib/slack";
 
 const router: IRouter = Router();
-const ALLOWED_SOURCES = new Set(["contact", "support", "pack_ai_handoff", "exit_offer", "newsletter"]);
+const ALLOWED_SOURCES = new Set(["contact", "support", "pack_ai_handoff", "exit_offer", "newsletter", "enterprise_benchmark"]);
 
 const clean = (value: unknown, max = 1200) => String(value ?? "").trim().slice(0, max);
 
@@ -44,7 +44,9 @@ router.post("/leads", async (req, res): Promise<void> => {
         ? "Exit offer"
         : source === "newsletter"
           ? "Newsletter"
-        : "Contact";
+          : source === "enterprise_benchmark"
+            ? "Enterprise benchmark"
+            : "Contact";
   const safeEmail = email || `unknown+${inquiryId.toLowerCase()}@packworkz.invalid`;
 
   const { data: inquiry, error } = await sb

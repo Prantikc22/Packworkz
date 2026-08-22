@@ -142,6 +142,29 @@ const PRODUCT_ROUTE_DATA = [
   keywords: `${name.toLowerCase()} India, custom packaging India, ${code}, Packworkz`,
 }));
 
+const RESOURCE_ROUTE_DATA = [
+  ["custom-packaging-cost-india-2026", "Custom Packaging Cost in India: Complete 2026 Pricing Guide", "Understand the real cost drivers behind custom packaging in India, from structure and printing to quantity and delivery."],
+  ["low-moq-custom-packaging-india", "Low MOQ Custom Packaging in India: Complete Guide", "Choose a low-MOQ packaging route that protects launch cash flow without creating avoidable stockout risk."],
+  ["custom-printed-pouch-moq-pricing", "Custom Printed Pouch MOQ & Pricing Guide", "Compare pouch materials, closures, print methods and quantity tiers before requesting a custom printed pouch quote."],
+  ["custom-printed-box-cost-india", "Custom Printed Box Cost in India", "See what changes the price of folding cartons, mailer boxes, corrugated shippers and rigid presentation boxes."],
+  ["packaging-for-d2c-brand-beginners-guide", "Packaging for a D2C Brand: Complete Beginner's Guide", "Build a practical packaging system for a D2C launch across primary packs, labels, cartons and ecommerce shipping."],
+  ["fssai-packaging-labelling-requirements-india", "FSSAI Packaging & Labelling Requirements in India", "Use a current starting checklist for food-contact packaging, declarations and artwork approval under the FSSAI framework."],
+  ["best-packaging-coffee-beans-india", "Best Packaging for Coffee Beans", "Choose coffee packaging around aroma protection, degassing, resealability and roast-to-order operations."],
+  ["best-packaging-snacks-material-barrier-shelf-life", "Best Packaging for Snacks", "Compare snack packaging formats using barrier, sealing, shelf-life and filling-line requirements."],
+  ["cosmetic-packaging-india-complete-guide", "Cosmetic Packaging in India: Complete Guide", "Build a compatible cosmetic pack across bottles, pumps, labels, cartons and transit packaging."],
+  ["choose-packaging-skincare-brand", "How to Choose Packaging for a Skincare Brand", "Choose containers and dispensing systems for serums, creams, cleansers, oils and treatment formulas."],
+  ["best-packaging-restaurants-cloud-kitchens", "Best Packaging for Restaurants & Cloud Kitchens", "Choose takeaway packaging by food type, temperature, venting, leak resistance and delivery journey."],
+  ["bopp-vs-ldpe-packaging", "BOPP vs LDPE Packaging", "Compare BOPP and LDPE for print, stiffness, sealing, clarity and flexible packaging structures."],
+  ["digital-vs-rotogravure-printing", "Digital Printing vs Rotogravure Printing", "Choose a packaging print process using quantity, variants, lead time, colour control and repeat-order economics."],
+  ["amazon-india-packaging-requirements", "Amazon India Packaging Requirements", "Plan packaging for FBA, Easy Ship or Self-Ship while checking the current category-specific Seller Central rules."],
+  ["how-much-packaging-should-startup-order", "How Much Packaging Should a Startup Order?", "Use demand, lead time, cash flow and write-off risk to set a sensible first packaging quantity."],
+].map(([slug, title, description]) => ({
+  path: `/resources/${slug}`,
+  title: `${title} | Packworkz`,
+  description,
+  keywords: `${title.toLowerCase()}, packaging India, Packworkz resources`,
+}));
+
 // Keep in sync with PAGE_SEO in PublicLayout.tsx
 const ROUTES = [
   // ── Core pages ──────────────────────────────────────────────────────────────
@@ -192,6 +215,19 @@ const ROUTES = [
     title: "Packaging Guides & Resources — Packworkz Blog",
     description: "Expert packaging guides, MOQ tips, EPR compliance checklists, and D2C brand case studies from the Packworkz team.",
     keywords: "packaging guides India, packaging blog, EPR compliance guide, D2C packaging tips",
+  },
+  ...RESOURCE_ROUTE_DATA,
+  {
+    path: "/solutions/growing-brands",
+    title: "Custom Packaging for D2C Brands & Startups India | Packworkz",
+    description: "Launch custom branded pouches, boxes, labels and ecommerce packaging with startup-friendly MOQs. Configure online, preview your artwork and scale with Packworkz.",
+    keywords: "custom packaging for startups India, D2C packaging India, custom packaging low MOQ India, custom boxes for small business, custom pouches for startups",
+  },
+  {
+    path: "/enterprise",
+    title: "Enterprise Packaging Procurement & Manufacturing India | Packworkz",
+    description: "Consolidate packaging sourcing, manufacturing, QC, compliance and logistics with Packworkz. Built for FMCG, D2C, food, beauty, pharma and multi-SKU procurement teams.",
+    keywords: "enterprise packaging India, packaging procurement India, packaging sourcing company India, FMCG packaging supplier, packaging vendor management",
   },
   {
     path: "/network",

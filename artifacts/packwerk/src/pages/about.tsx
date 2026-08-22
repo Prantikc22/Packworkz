@@ -1,4 +1,5 @@
 import { Link } from "wouter";
+import { CATALOG_SKUS } from "@/lib/catalog";
 
 const kalyanFactory = "/kalyani-factory.png";
 
@@ -19,14 +20,14 @@ const VALUES = [
 
 const STATS = [
   { val: "30+", label: "Years Manufacturing" },
-  { val: "49", label: "Product families" },
+  { val: String(CATALOG_SKUS.length), label: "Product families" },
   { val: "500+", label: "Factory Partners" },
   { val: "220+", label: "Brands Served" },
 ];
 
 const MISSION_STATS = [
   { num: "18–35%", label: "Cost Savings vs. Traditional" },
-  { num: "49", label: "Product families" },
+  { num: String(CATALOG_SKUS.length), label: "Product families" },
   { num: "0", label: "Stockouts on SmartStock" },
   { num: "48hr", label: "Pricing Turnaround" },
 ];
@@ -242,7 +243,7 @@ export default function About() {
             </a>
           </div>
           <p style={{ color: "rgba(255,255,255,0.28)", fontSize: 12, marginTop: 14, letterSpacing: "0.2px" }}>
-            No minimum for samples · MOQ from 500 units for bulk
+            MOQs from 25 units on selected formats · enterprise volumes supported
           </p>
         </div>
       </section>

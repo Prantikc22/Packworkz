@@ -90,6 +90,7 @@ export default function Products() {
             <Link href="/mockup-studio" className="pw-catalog-studio-cta !min-h-9 !px-3">
               <MS icon="view_in_ar" className="text-lg" /> Design in 3D
             </Link>
+            <Link href="/enterprise" className="px-3 py-2 text-xs font-black text-blue-800">High volumes or multiple SKUs? Enterprise →</Link>
           </div>
         </div>
       </section>

@@ -13,6 +13,7 @@ import { LAUNCH_PROMOTION_RATE } from "@workspace/commerce";
 import { CartDrawer } from "@/components/cart/CartDrawer";
 import { ExitOfferModal } from "@/components/leads/ExitOfferModal";
 import { useCart } from "@/lib/cart";
+import { ARTICLES } from "@/lib/resources-data";
 
 // ── Per-page SEO metadata ────────────────────────────────────────────────────
 const PAGE_SEO: Record<string, { title: string; description: string; keywords: string }> = {
@@ -25,6 +26,16 @@ const PAGE_SEO: Record<string, { title: string; description: string; keywords: s
     title: "Packaging Products India | Pouches, Boxes, Bottles | Packworkz",
     description: "Browse curated packaging families including pouches, rigid boxes, cartons, containers, mailers, labels, food-service packs and technical rollstock. See buying paths and quantity pricing online.",
     keywords: "packaging manufacturer India, custom packaging manufacturer, stand-up pouch manufacturer India, corrugated box manufacturer, flexible packaging manufacturer India",
+  },
+  "/solutions/growing-brands": {
+    title: "Custom Packaging for D2C Brands & Startups India | Packworkz",
+    description: "Launch custom branded pouches, boxes, labels and ecommerce packaging with startup-friendly MOQs. Configure online, preview your artwork and scale with Packworkz.",
+    keywords: "custom packaging for startups India, D2C packaging India, custom packaging low MOQ India, custom boxes for small business, custom pouches for startups, branded ecommerce packaging India",
+  },
+  "/enterprise": {
+    title: "Enterprise Packaging Procurement & Manufacturing India | Packworkz",
+    description: "Consolidate packaging sourcing, manufacturing, QC, compliance and logistics with Packworkz. Built for FMCG, D2C, food, beauty, pharma and multi-SKU procurement teams.",
+    keywords: "enterprise packaging India, packaging procurement India, packaging sourcing company India, FMCG packaging supplier, packaging vendor management, contract packaging procurement, multi vendor packaging sourcing, packaging supply chain India",
   },
   "/industries": {
     title: "Packaging Manufacturer for D2C, FMCG, Pharma & Exports | India | Packworkz",
@@ -224,10 +235,10 @@ const ABOUT_ITEMS = [
 ];
 
 const RESOURCE_ITEMS = [
-  { icon: BookOpen, label: "Packaging Guides", desc: "Materials, print and format decisions", href: "/resources" },
-  { icon: FileText, label: "Case Studies", desc: "How brands improved cost and reliability", href: "/resources?type=case-study" },
-  { icon: Calculator, label: "Savings Calculator", desc: "Estimate the value of managed sourcing", href: "/#savings-calculator" },
-  { icon: Lightbulb, label: "Packaging Insights", desc: "Practical procurement and compliance advice", href: "/resources?type=insight" },
+  { icon: BookOpen, label: "Blogs & Guides", desc: "Packaging cost, MOQ, formats and materials", href: "/resources" },
+  { icon: MessageSquare, label: "FAQs", desc: "Straight answers before you order", href: "/resources#faqs" },
+  { icon: FileText, label: "Case Studies", desc: "Packaging work and operating outcomes", href: "/resources#case-studies" },
+  { icon: Lightbulb, label: "Insights & Thoughts", desc: "Practical procurement and compliance views", href: "/resources#insights" },
 ];
 
 // ── Styles injected once ──────────────────────────────────────────────────────
@@ -333,6 +344,7 @@ const GLOBAL_STYLES = `
     letter-spacing: 0.05em;
     text-transform: uppercase;
     text-decoration: none;
+    white-space: nowrap;
     color: #0D1B2A;
     background: #E8A838;
     transition: color 0.25s;
@@ -515,9 +527,9 @@ function ResourcesMenu() {
     <div className="po-mega-panel" aria-label="Resources menu">
       <div className="po-mega-grid">
         <section className="po-mega-column">
-          <div style={{ color: "#1B6CA8", fontSize: 11, fontWeight: 800, letterSpacing: "0.13em" }}>LEARN PACKAGING</div>
-          <p style={{ color: "#718096", fontSize: 12, lineHeight: 1.5, margin: "5px 0 12px" }}>Clear answers for materials, formats and buying decisions.</p>
-          {RESOURCE_ITEMS.filter((item) => ["Packaging Guides", "Packaging Insights", "Case Studies"].includes(item.label)).map(item => (
+          <div style={{ color: "#1B6CA8", fontSize: 11, fontWeight: 800, letterSpacing: "0.13em" }}>LEARN</div>
+          <p style={{ color: "#718096", fontSize: 12, lineHeight: 1.5, margin: "5px 0 12px" }}>Commercial guidance for packaging decisions.</p>
+          {RESOURCE_ITEMS.slice(0, 2).map(item => (
             <Link key={item.label} href={item.href} className="po-mega-link">
               <IconBox Icon={item.icon} />
               <span><strong style={{ display: "block", fontSize: 14 }}>{item.label}</strong><small style={{ color: "#718096", fontSize: 11 }}>{item.desc}</small></span>
@@ -526,13 +538,9 @@ function ResourcesMenu() {
           ))}
         </section>
         <section className="po-mega-column">
-          <div style={{ color: "#1B6CA8", fontSize: 11, fontWeight: 800, letterSpacing: "0.13em" }}>PLAN YOUR PACK</div>
-          <p style={{ color: "#718096", fontSize: 12, lineHeight: 1.5, margin: "5px 0 12px" }}>Tools that turn an idea into a usable specification.</p>
-          {[
-            { icon: Calculator, label: "Savings Calculator", desc: "Model packaging and sourcing savings", href: "/#savings-calculator" },
-            { icon: Palette, label: "3D Mockup Studio", desc: "See artwork on a pack before production", href: "/mockup-studio" },
-            { icon: Bot, label: "Ask Packworkz AI", desc: "Get a practical packaging shortlist", href: "/pack-ai" },
-          ].map(item => (
+          <div style={{ color: "#1B6CA8", fontSize: 11, fontWeight: 800, letterSpacing: "0.13em" }}>PROOF & PERSPECTIVE</div>
+          <p style={{ color: "#718096", fontSize: 12, lineHeight: 1.5, margin: "5px 0 12px" }}>Operating stories and practical viewpoints.</p>
+          {RESOURCE_ITEMS.slice(2).map(item => (
             <Link key={item.label} href={item.href} className="po-mega-link">
               <IconBox Icon={item.icon} />
               <span><strong style={{ display: "block", fontSize: 14 }}>{item.label}</strong><small style={{ color: "#718096", fontSize: 11 }}>{item.desc}</small></span>
@@ -540,27 +548,19 @@ function ResourcesMenu() {
             </Link>
           ))}
         </section>
-        <section className="po-mega-column">
-          <div style={{ color: "#B8780A", fontSize: 11, fontWeight: 800, letterSpacing: "0.13em" }}>BUY WITH CONFIDENCE</div>
-          <p style={{ color: "#718096", fontSize: 12, lineHeight: 1.5, margin: "5px 0 12px" }}>Proof, support and status after you choose a format.</p>
-          {[
-            { icon: ClipboardCheck, label: "Order Samples", desc: "Compare materials and print in hand", href: "/samples" },
-            { icon: Truck, label: "Track an Order", desc: "Check production and delivery status", href: "/track-order" },
-            { icon: MessageSquare, label: "Packaging Support", desc: "Talk through a specific requirement", href: "/contact" },
-          ].map(item => (
-            <Link key={item.label} href={item.href} className="po-mega-link">
-              <IconBox Icon={item.icon} />
-              <span><strong style={{ display: "block", fontSize: 14 }}>{item.label}</strong><small style={{ color: "#718096", fontSize: 11 }}>{item.desc}</small></span>
-              <span className="po-mega-arrow">→</span>
-            </Link>
-          ))}
-        </section>
+        <Link href="/resources/custom-packaging-cost-india-2026" style={{ display: "grid", gridTemplateColumns: "minmax(180px, .8fr) 1.2fr", minWidth: 0, background: "#07182A", color: "white", textDecoration: "none", overflow: "hidden" }}>
+          <img src="/catalog/box-options/custom-printed-folding-cartons-v2.jpg" alt="Featured custom packaging cost guide" style={{ width: "100%", height: "100%", minHeight: 230, objectFit: "cover" }} />
+          <span style={{ padding: "28px 26px", display: "flex", flexDirection: "column", justifyContent: "space-between", minWidth: 0 }}>
+            <span><small style={{ color: "#E8A838", fontSize: 10, fontWeight: 800, letterSpacing: "0.16em" }}>FEATURED GUIDE</small><strong style={{ display: "block", marginTop: 14, fontSize: 22, lineHeight: 1.2 }}>Custom Packaging Cost in India</strong><small style={{ display: "block", marginTop: 12, color: "rgba(255,255,255,.58)", lineHeight: 1.55 }}>The 2026 guide to quantities, print, tooling and landed cost.</small></span>
+            <b style={{ marginTop: 20, color: "#E8A838", fontSize: 13 }}>READ THE GUIDE →</b>
+          </span>
+        </Link>
       </div>
       <div className="po-mega-footer">
         <Link href="/resources" className="po-mega-footer-link">VIEW ALL RESOURCES →</Link>
-        <Link href="/mockup-studio" className="po-mega-footer-link">OPEN 3D STUDIO →</Link>
-        <Link href="/pack-ai" className="po-mega-footer-link">ASK PACKWORKZ AI →</Link>
-        <Link href="/contact" className="po-mega-footer-link">GET PACKAGING HELP →</Link>
+        <Link href="/resources#faqs" className="po-mega-footer-link">PACKAGING FAQS →</Link>
+        <Link href="/resources?cluster=cost-moq" className="po-mega-footer-link">COST & MOQ GUIDES →</Link>
+        <Link href="/resources/packaging-for-d2c-brand-beginners-guide" className="po-mega-footer-link">D2C STARTER GUIDE →</Link>
       </div>
     </div>
   );
@@ -1119,7 +1119,18 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
           keywords: `${product.name} India, custom ${product.name}, packaging supplier India, Packworkz`,
         }
       : undefined;
-    const seo = productSeo ?? PAGE_SEO[location] ??
+    const resourceSlug = location.match(/^\/resources\/([^/?#]+)/)?.[1];
+    const resource = resourceSlug
+      ? ARTICLES.find((article) => article.slug === decodeURIComponent(resourceSlug))
+      : undefined;
+    const resourceSeo = resource
+      ? {
+          title: `${resource.title} | Packworkz`,
+          description: resource.description,
+          keywords: resource.keywords.join(", "),
+        }
+      : undefined;
+    const seo = productSeo ?? resourceSeo ?? PAGE_SEO[location] ??
       (Object.entries(PAGE_SEO)
         .filter(([k]) => k !== "/" && location.startsWith(k))
         .sort((a, b) => b[0].length - a[0].length)[0]?.[1]) ??
@@ -1215,6 +1226,8 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
           <NavItem label="Industries" active={location.startsWith("/industries")} mega>
             <IndustriesMenu />
           </NavItem>
+          <NavItem label="Growing Brands" href="/solutions/growing-brands" active={location.startsWith("/solutions/growing-brands")} />
+          <NavItem label="Enterprise" href="/enterprise" active={location.startsWith("/enterprise")} />
           <NavItem label="Sustainability" href="/sustainable" active={location.startsWith("/sustainable")} />
           <NavItem label="Resources" active={location.startsWith("/resources")} mega>
             <ResourcesMenu />
@@ -1238,7 +1251,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
               </Link>
             )}
             <span style={{ marginLeft: 8 }}>
-              <Link href="/configure" className="po-cta-btn">
+              <Link href="/products" className="po-cta-btn">
                 <span>START YOUR ORDER</span>
               </Link>
             </span>
@@ -1273,6 +1286,8 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
             {[
               { label: "Products", href: "/products" },
               { label: "Industries", href: "/industries" },
+              { label: "Growing Brands", href: "/solutions/growing-brands" },
+              { label: "Enterprise", href: "/enterprise" },
               { label: "Sustainability", href: "/sustainable" },
             ].map(item => (
               <Link key={item.href} href={item.href} onClick={() => setMobileOpen(false)}
@@ -1295,12 +1310,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
             </button>
             {mobileResourcesOpen && (
               <div style={{ paddingLeft: 8, paddingBottom: 4, borderBottom: "1px solid rgba(255,255,255,0.07)" }}>
-                {[
-                  ...RESOURCE_ITEMS,
-                  { icon: Palette, label: "3D Mockup Studio", desc: "", href: "/mockup-studio" },
-                  { icon: Bot, label: "Ask Packworkz AI", desc: "", href: "/pack-ai" },
-                  { icon: Truck, label: "Track an Order", desc: "", href: "/track-order" },
-                ].map(item => (
+                {RESOURCE_ITEMS.map(item => (
                   <Link key={`${item.label}-${item.href}`} href={item.href} onClick={() => { setMobileOpen(false); setMobileResourcesOpen(false); }}
                     style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 4px", fontSize: 15, fontWeight: 700, color: "rgba(255,255,255,0.7)", textDecoration: "none" }}>
                     <item.icon size={16} color="#E8A838" />
@@ -1359,7 +1369,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
                   Login
                 </Link>
               )}
-              <Link href="/configure" onClick={() => setMobileOpen(false)}
+              <Link href="/products" onClick={() => setMobileOpen(false)}
                 style={{ display: "inline-block", marginTop: 8, padding: "14px 28px", background: "#E8A838", color: "#0D1B2A", fontWeight: 800, fontSize: 14, textDecoration: "none", borderRadius: 8, textTransform: "uppercase", letterSpacing: "0.05em", textAlign: "center" }}>
                 Start your order →
               </Link>
@@ -1394,7 +1404,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d={s.path}/></svg>
               </a>
             ))}
-            <Link href="/configure" className="po-cta-btn">
+            <Link href="/products" className="po-cta-btn">
               <span>START YOUR ORDER →</span>
             </Link>
           </div>

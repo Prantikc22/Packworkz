@@ -17,6 +17,9 @@ import ProductDetail from "@/pages/product-detail";
 import Industries from "@/pages/industries";
 import IndustryDetail from "@/pages/industry-detail";
 import Resources from "@/pages/resources";
+import ResourceDetail from "@/pages/resource-detail";
+import GrowingBrands from "@/pages/growing-brands";
+import Enterprise from "@/pages/enterprise";
 import Quote from "@/pages/quote";
 import Samples from "@/pages/samples";
 import Design from "@/pages/design";
@@ -84,6 +87,15 @@ function SSRApp({ url }: { url: string }) {
             </Route>
             <Route path="/resources">
               <PublicLayout><Resources /></PublicLayout>
+            </Route>
+            <Route path="/resources/:slug">
+              <PublicLayout><ResourceDetail /></PublicLayout>
+            </Route>
+            <Route path="/solutions/growing-brands">
+              <PublicLayout><GrowingBrands /></PublicLayout>
+            </Route>
+            <Route path="/enterprise">
+              <PublicLayout><Enterprise /></PublicLayout>
             </Route>
             <Route path="/quote">
               <Redirect to="/configure" />

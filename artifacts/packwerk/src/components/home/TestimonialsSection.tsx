@@ -1,10 +1,11 @@
 import { ArrowRight, CheckCircle2, Quote } from "lucide-react";
 import { Link } from "wouter";
+import { CATALOG_SKUS } from "@/lib/catalog";
 
 const METRICS = [
   { value: "220+", label: "brands served" },
   { value: "20+", label: "countries reached" },
-  { value: "49", label: "focused product families" },
+  { value: String(CATALOG_SKUS.length), label: "focused product families" },
   { value: "2", label: "clear buying paths" },
 ];
 

@@ -157,7 +157,7 @@ export default function Network() {
             <Link href="/products"><button className="btn-fill btn-outline-white px-8 py-3 text-sm pw-btn-transition">Browse the product catalogue</button></Link>
           </div>
           <p style={{ color: "rgba(255,255,255,0.28)", fontSize: 12, marginTop: 14, letterSpacing: "0.2px" }}>
-            No minimum for samples · MOQ from 500 units for bulk
+            MOQs from 25 units on selected formats · enterprise volumes supported
           </p>
         </div>
       </section>

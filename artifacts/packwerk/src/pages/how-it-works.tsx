@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "wouter";
 import { Search, GitBranch, ShieldCheck, Truck, ChevronDown } from "lucide-react";
+import { CATALOG_SKUS } from "@/lib/catalog";
 
 const WHATSAPP_NUM = "918208990366";
 
@@ -331,7 +332,7 @@ export default function HowItWorks() {
             color: "rgba(255,255,255,0.6)", fontSize: 17,
             margin: "0 auto 44px", lineHeight: 1.65,
           }}>
-            Browse 39 packaging product families or speak to our team today.
+            Browse {CATALOG_SKUS.length} packaging product families or speak to our team today.
           </p>
 
           <div style={{ display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap" }}>

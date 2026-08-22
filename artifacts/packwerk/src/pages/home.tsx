@@ -262,7 +262,7 @@ const HOW_IT_WORKS_STEPS = [
     num: "Step 01",
     Icon: Search,
     title: "Configure and Pricing Plan",
-    desc: "Browse 49 launch-ready product families, choose the specification, and follow one of two clear paths: instant buy or managed quote.",
+    desc: `Browse ${CATALOG_SKUS.length} launch-ready product families, choose the specification, and follow one of two clear paths: instant buy or managed quote.`,
     bg: "#0D1B2A",
   },
   {
@@ -780,20 +780,20 @@ export default function Home() {
             <div className="flex flex-col sm:flex-row gap-4 mb-3" style={{ alignItems: "stretch" }}>
               <span className="animated-border animated-border-white" style={{ display: "flex" }}>
                 <Link href="/products" style={{ flex: 1, display: "flex" }}>
-                  <button className="btn-fill btn-amber px-9 py-4 text-base whitespace-nowrap" style={{ flex: 1 }}>
-                    <span>Shop packaging</span><MS icon="arrow_forward" />
+                  <button className="btn-fill btn-amber px-8 py-3 text-left" style={{ flex: 1 }}>
+                    <span><strong style={{ display: "block", fontSize: 15 }}>Shop Packaging</strong><small style={{ display: "block", marginTop: 2, fontSize: 10, opacity: .68, textTransform: "none", letterSpacing: 0 }}>For startups & growing brands</small></span><MS icon="arrow_forward" />
                   </button>
                 </Link>
               </span>
-              <Link href="/configure" style={{ display: "flex" }}>
-                <button className="btn-fill btn-outline-white px-9 py-4 text-base whitespace-nowrap" style={{ flex: 1 }}>
-                  <span>Get a quote</span>
+              <Link href="/enterprise" style={{ display: "flex" }}>
+                <button className="btn-fill btn-outline-white px-8 py-3 text-left" style={{ flex: 1 }}>
+                  <span><strong style={{ display: "block", fontSize: 15 }}>Packworkz Enterprise</strong><small style={{ display: "block", marginTop: 2, fontSize: 10, opacity: .62, textTransform: "none", letterSpacing: 0 }}>For multi-SKU procurement</small></span>
                 </button>
               </Link>
             </div>
             <div style={{ marginBottom: 24, display: "flex", alignItems: "center", gap: 18, flexWrap: "wrap" }}>
               <p style={{ color: "rgba(255,255,255,0.42)", fontSize: 12, letterSpacing: "0.2px" }}>
-                No minimum for samples · MOQ from 500 units for bulk
+                MOQs from 25 units on selected formats · enterprise volumes supported
               </p>
               <Link href="/mockup-studio" style={{ color: "#93c5fd", fontSize: 12, fontWeight: 800, textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 5 }}>
                 Preview artwork in 3D <MS icon="view_in_ar" className="text-base" />

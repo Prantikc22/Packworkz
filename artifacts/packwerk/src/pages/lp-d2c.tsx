@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Link } from "wouter";
 import { Package, ShoppingBag, Box, Leaf, Tag, MessageSquare, FlaskConical, CheckCircle, Truck } from "lucide-react";
+import { CATALOG_SKUS } from "@/lib/catalog";
 
 // ─── Calculator ───────────────────────────────────────────────────────────────
 type VendorBucket = "Just 1" | "2 to 4" | "5+";
@@ -100,7 +101,7 @@ const STEPS = [
 
 const STATS = [
   { value: "220+", label: "Brands served" },
-  { value: "49", label: "Focused product families" },
+  { value: String(CATALOG_SKUS.length), label: "Focused product families" },
   { value: "14",   label: "Days brief to door" },
   { value: "98.7%", label: "On-time delivery" },
 ];
@@ -537,7 +538,7 @@ export default function LpD2c() {
                 opacity: heroLoaded ? 1 : 0, transform: heroLoaded ? "translateY(0)" : "translateY(20px)",
                 transition: "opacity 0.7s ease 0.35s, transform 0.7s ease 0.35s",
               }}>
-                One managed packaging platform for beauty, food, FMCG and e-commerce, with 74 curated product families and one production record.
+                One managed packaging platform for beauty, food, FMCG and e-commerce, with {CATALOG_SKUS.length} configured product families and one production record.
               </p>
 
               {/* Price match badge */}
