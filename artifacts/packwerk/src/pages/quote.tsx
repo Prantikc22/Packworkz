@@ -177,7 +177,7 @@ function OrderSummary({
               </div>
             )}
             <div className="flex justify-between text-sm">
-              <span className="text-slate-400">Logistics</span>
+              <span className="text-slate-400">Estimated delivery</span>
               <span className="text-white font-medium" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>₹{fmt(logistics)}</span>
             </div>
             {buyingMode === "self" && (
@@ -208,7 +208,7 @@ function OrderSummary({
                   ✓ Volume discount applied — order more, pay less per piece
                 </div>
               )}
-              <div className="text-xs text-slate-500 mt-1.5">{buyingMode === "self" ? "Payable total includes GST, setup and the delivery shown above. The product rate is shown separately for a fair comparison." : "Excludes GST. Final pricing follows engineering and artwork review."}</div>
+              <div className="text-xs text-slate-500 mt-1.5">{buyingMode === "self" ? "Payable total includes GST, setup and the estimated delivery shown above. Final freight may be adjusted if packed weight, volume or serviceability differs." : "Excludes GST. Final pricing and delivery follow engineering and artwork review."}</div>
               {buyingMode === "self" && !paymentEligible && (
                 <div className="mt-3 border border-slate-600 border-l-[3px] border-l-amber-400 bg-transparent p-3 text-xs leading-relaxed" style={{ color: "#FBD38D" }}>
                   Online payment is currently available up to ₹{RAZORPAY_PAYMENT_LIMIT_RUPEES.toLocaleString("en-IN")}. Submit this order plan and our team will confirm the payment route and production slot.
@@ -1728,8 +1728,8 @@ const maxSelfServeQuantity = selectedSku ? getMaxSelfServeQuantity(selectedSku) 
                   <div className="text-xs text-slate-400 mb-5">How fast do you need it?</div>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-5">
                     {([
-                      { id: "standard" as DeliveryOption, icon: <Truck className="w-7 h-7" />, label: "Standard Pro", time: `${selectedSku?.delivery_days_india || 12}–${(selectedSku?.delivery_days_india || 12) + 2} Days`, price: "Free", recommended: true },
-                      { id: "blitz" as DeliveryOption, icon: <Zap className="w-7 h-7" />, label: "Blitz Logistics", time: "5–7 Days", price: "+₹1,200" },
+                      { id: "standard" as DeliveryOption, icon: <Truck className="w-7 h-7" />, label: "Standard Pro", time: `${selectedSku?.delivery_days_india || 12}–${(selectedSku?.delivery_days_india || 12) + 2} Days`, price: "Estimated", recommended: true },
+                      { id: "blitz" as DeliveryOption, icon: <Zap className="w-7 h-7" />, label: "Blitz Logistics", time: "5–7 Days", price: "Est. +₹1,200" },
                       { id: "warehouse" as DeliveryOption, icon: <Warehouse className="w-7 h-7" />, label: "Warehouse Hold", time: "Up to 30 days", price: "+₹300 handling" },
                     ]).map(opt => (
                       <button key={opt.id} onClick={() => setDeliveryOption(opt.id)}

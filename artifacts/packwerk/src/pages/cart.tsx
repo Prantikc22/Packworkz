@@ -109,13 +109,13 @@ export default function Cart() {
             </div>
             <div className="flex justify-between border-b border-white/15 py-6 text-sm text-white/70">
               <span>{items.length} {items.length === 1 ? "product" : "products"}</span>
-              <span>Delivery calculated at checkout</span>
+              <span>Estimated delivery calculated at checkout</span>
             </div>
             <div className="flex items-end justify-between py-6">
               <span className="font-bold">Estimated total</span>
               <strong className="text-3xl">{formatINR(total)}</strong>
             </div>
-            <p className="mb-5 text-sm leading-6 text-white/60">{unresolvedItems.length ? "Remove unavailable items before continuing." : checkoutDecision.requiresQuote ? "This cart will be submitted as one managed quote. Instant-buy lines will not be charged separately." : "Includes the launch discount and GST. Your address is entered once on the next step."}</p>
+            <p className="mb-5 text-sm leading-6 text-white/60">{unresolvedItems.length ? "Remove unavailable items before continuing." : checkoutDecision.requiresQuote ? "This cart will be submitted as one managed quote. Instant-buy lines will not be charged separately." : "Includes the launch discount, GST and estimated delivery. Final freight can change if packed weight, volume or serviceability differs. Your address is entered once on the next step."}</p>
             {unresolvedItems.length ? (
               <div className="flex h-14 w-full items-center justify-center bg-white/10 px-5 text-center text-sm font-bold text-white/60">Review unavailable items</div>
             ) : (

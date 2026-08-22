@@ -201,7 +201,7 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
                     : `from ${formatINR(launchUnit)}`}
                 {!quoteRequired && <span className="text-sm font-normal text-muted ml-1">/ {product.moq_unit.replace(/s$/, "")}</span>}
               </div>
-              {product.publicBuyingPath === "instant" && !quoteRequired && <p className="mt-2 text-xs text-slate-500">For the smallest listed size and selected quantity, before GST. Delivery is shown separately at checkout.</p>}
+              {product.publicBuyingPath === "instant" && !quoteRequired && <p className="mt-2 text-xs text-slate-500">For the smallest listed size and selected quantity, before GST. Estimated delivery is shown separately at checkout.</p>}
             </div>
 
             <div className="space-y-6">

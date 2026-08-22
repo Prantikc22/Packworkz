@@ -768,7 +768,7 @@ export const SKU_IMAGES: Record<string, string> = {
   "TS-302": "/skus/blisterpacks.jpg",
   "TS-306": "/skus/sustainable-cosmetic-tubes-v2.png",
   // Boxes & Cartons
-  "BX-401": "/catalog/box-options/folding-straight.webp",
+  "BX-401": "/catalog/box-options/custom-printed-folding-cartons-v2.jpg",
   "BX-402": "/catalog/box-options/rigid-two-piece.webp",
   "BX-403": "/catalog/box-options/rigid-magnetic.webp",
   "BX-404": "/catalog/box-options/folding-auto-bottom.webp",

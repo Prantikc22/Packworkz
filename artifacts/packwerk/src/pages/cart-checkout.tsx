@@ -215,6 +215,7 @@ export default function CartCheckout() {
             })}
           </div>
           <div className="flex items-end justify-between py-6"><span className="font-bold">Payable estimate</span><strong className="text-3xl">{formatINR(total)}</strong></div>
+          <p className="-mt-3 mb-5 text-xs leading-5 text-white/55">Includes estimated delivery. Final freight may be adjusted if the packed weight, volume or destination serviceability differs.</p>
           <button disabled={launchingPayment || submitQuote.isPending || unresolvedItems.length > 0} className="flex h-14 w-full items-center justify-center gap-3 bg-amber px-5 text-lg font-black text-navy hover:bg-[#d99a29] disabled:cursor-wait disabled:opacity-60">
             <LockKeyhole className="h-5 w-5" /> {unresolvedItems.length ? "Review cart first" : launchingPayment || submitQuote.isPending ? (quoteRequired ? "Sending quote request..." : "Opening secure payment...") : quoteRequired ? "Request one quote" : "Pay securely"}
           </button>
