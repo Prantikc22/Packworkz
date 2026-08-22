@@ -10,7 +10,7 @@ const STEPS = [
     Icon: Search,
     title: "Configure and Price",
     intro:
-      "Start by browsing 49 focused product families or describing what you need. No sales call is required for standard formats.",
+      "Start by browsing our focused product catalogue or describing what you need. No sales call is required for standard formats.",
     substeps: [
       {
         title: "Browse or describe",
@@ -39,7 +39,7 @@ const STEPS = [
     Icon: GitBranch,
     title: "We Source and Match",
     intro:
-      "Once you approve the plan, PackOS gets to work. We don't just assign one vendor — we assign the best one with backups in place.",
+      "Once you approve the plan, PackOS matches the specification to the best eligible route and plans alternate capacity where compatibility allows.",
     substeps: [
       {
         title: "SmartMatch factory selection",
@@ -47,9 +47,9 @@ const STEPS = [
           "PackOS matches your SKU spec to the most suitable factory from our verified network.",
       },
       {
-        title: "3 backup vendors assigned",
+        title: "Alternate routes assessed",
         detail:
-          "Two additional qualified vendors are confirmed for your order. If the primary delays — a backup ships immediately.",
+          "Compatible factories are assessed against the approved material, tooling and print specification before a backup route is recorded.",
       },
       {
         title: "Pre-production sample",

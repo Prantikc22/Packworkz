@@ -47,7 +47,7 @@ function ProductVisual() {
   return (
     <div className="pw-process-capabilities">
       <article className="catalogue">
-        <div><small>READY CATALOGUE</small><h4>49 focused product families</h4><p>Standard formats with MOQs and quantity breaks already mapped.</p></div>
+        <div><small>READY CATALOGUE</small><h4>Focused D2C + enterprise range</h4><p>Standard formats with MOQs and quantity breaks already mapped.</p></div>
         <div className="pw-capability-products" aria-hidden="true">
           <img src="/skus/Standup_Pouch.jpg" alt="" /><img src="/skus/mailerbox.jpg" alt="" /><img src="/skus/plasticbottles.jpg" alt="" />
         </div>

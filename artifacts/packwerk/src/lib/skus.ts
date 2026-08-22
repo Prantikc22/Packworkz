@@ -1,4 +1,4 @@
-// ── Packworkz SKU Catalog — 49 public families across 9 categories ────────────
+// ── Packworkz SKU source catalog across 9 categories ──────────────────────────
 // Each SKU has variants (decision-oriented options) and customization fields
 
 export type VariantGroup = {

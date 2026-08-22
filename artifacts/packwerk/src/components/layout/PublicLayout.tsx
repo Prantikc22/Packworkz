@@ -11,18 +11,19 @@ import {
 import { CATALOG_SKUS } from "@/lib/catalog";
 import { LAUNCH_PROMOTION_RATE } from "@workspace/commerce";
 import { CartDrawer } from "@/components/cart/CartDrawer";
+import { ExitOfferModal } from "@/components/leads/ExitOfferModal";
 import { useCart } from "@/lib/cart";
 
 // ── Per-page SEO metadata ────────────────────────────────────────────────────
 const PAGE_SEO: Record<string, { title: string; description: string; keywords: string }> = {
   "/": {
     title: "Packworkz — Packaging Manufacturer & Managed Platform India | D2C, FMCG, Pharma",
-    description: "Managed packaging for D2C, FMCG, pharma and enterprise teams. Browse 49 focused product families, see quantity pricing, create 3D previews and manage repeat orders in one workflow.",
+    description: "Managed packaging for D2C, FMCG, pharma and enterprise teams. Browse a curated product catalog, see quantity pricing, create 3D previews and manage repeat orders in one workflow.",
     keywords: "packaging manufacturer India, managed packaging platform, custom packaging India, D2C packaging manufacturer, FMCG packaging supplier India, packaging vendor India",
   },
   "/products": {
     title: "Packaging Products India | Pouches, Boxes, Bottles | Packworkz",
-    description: "Browse 49 focused packaging families including pouches, cartons, containers, mailers, labels, food-service packs and technical rollstock. See buying paths and quantity pricing online.",
+    description: "Browse curated packaging families including pouches, rigid boxes, cartons, containers, mailers, labels, food-service packs and technical rollstock. See buying paths and quantity pricing online.",
     keywords: "packaging manufacturer India, custom packaging manufacturer, stand-up pouch manufacturer India, corrugated box manufacturer, flexible packaging manufacturer India",
   },
   "/industries": {
@@ -72,7 +73,7 @@ const PAGE_SEO: Record<string, { title: string; description: string; keywords: s
   },
   "/design": {
     title: "Custom Packaging Design Service India | From ₹1,999 | Packworkz",
-    description: "Packaging design and 3D previews across 49 focused product families, with print-ready artwork, dieline handoff and design management.",
+    description: "Packaging design and 3D previews across a curated product catalog, with print-ready artwork, dieline handoff and design management.",
     keywords: "custom packaging design India, packaging design service, packaging artwork India, D2C packaging design, print-ready packaging",
   },
   "/mockup-studio": {
@@ -107,7 +108,7 @@ const PAGE_SEO: Record<string, { title: string; description: string; keywords: s
   },
   "/industries/d2c": {
     title: "D2C Packaging Manufacturer India | Custom Branded Pouches & Boxes | Packworkz",
-    description: "Custom branded packaging for D2C brands. Stand-up pouches, mailers, gift boxes and more. Low MOQ from 200 units. Fast 10–15 day delivery. Trusted by 150+ D2C brands.",
+    description: "Custom branded packaging for D2C brands including stand-up pouches, mailers, printed cartons and rigid gift boxes, with low-MOQ options and managed production support.",
     keywords: "D2C packaging manufacturer India, custom packaging D2C brand, branded packaging India, ecommerce packaging manufacturer",
   },
   "/industries/fmcg": {
@@ -186,7 +187,7 @@ const PRODUCT_GROUPS = [
     eyebrow: "SHIP & PROTECT",
     description: "Retail-ready packs through final delivery.",
     items: [
-      { icon: ShoppingBag, label: "Boxes & Cartons", desc: "Folding cartons and premium boxes", href: "/products?category=boxes" },
+      { icon: ShoppingBag, label: "Boxes & Cartons", desc: "Printed folding cartons and rigid boxes", href: "/products?category=boxes" },
       { icon: Layers, label: "E-commerce Packaging", desc: "Mailers, courier bags and shippers", href: "/products?category=ecommerce" },
       { icon: Gift, label: "Protective Packaging", desc: "Wrap, void fill and protective inserts", href: "/products?category=protective" },
     ],
@@ -454,7 +455,7 @@ function ProductsMenu() {
         ))}
       </div>
       <div className="po-mega-footer">
-        <Link href="/products" className="po-mega-footer-link">BROWSE ALL 49 PRODUCTS →</Link>
+        <Link href="/products" className="po-mega-footer-link">BROWSE THE FULL CATALOG →</Link>
         <Link href="/mockup-studio" className="po-mega-footer-link">OPEN 3D STUDIO →</Link>
         <Link href="/pack-ai" className="po-mega-footer-link">ASK PACKWORKZ AI →</Link>
         <Link href="/smartstock" className="po-mega-footer-link">EXPLORE SMARTSTOCK →</Link>
@@ -616,6 +617,70 @@ function AboutMenu() {
         <Link href="/contact" className="po-mega-footer-link">TALK TO THE TEAM →</Link>
       </div>
     </div>
+  );
+}
+
+function NewsletterSignup() {
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+
+  const submit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    const cleanEmail = email.trim().toLowerCase();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) {
+      setStatus("error");
+      return;
+    }
+    setStatus("sending");
+    try {
+      const response = await fetch("/api/leads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          source: "newsletter",
+          email: cleanEmail,
+          subject: "Newsletter signup",
+          message: "Visitor subscribed through the Packworkz website footer.",
+        }),
+      });
+      if (!response.ok) throw new Error("Subscription failed");
+      setStatus("sent");
+    } catch {
+      setStatus("error");
+    }
+  };
+
+  if (status === "sent") {
+    return <p role="status" style={{ color: "#86EFAC", fontSize: 13, lineHeight: 1.6 }}>You’re subscribed. Watch your inbox for practical packaging guidance.</p>;
+  }
+
+  return (
+    <form onSubmit={submit} className="flex flex-col gap-3" noValidate>
+      <label htmlFor="footer-newsletter" className="sr-only">Email address</label>
+      <input
+        id="footer-newsletter"
+        type="email"
+        autoComplete="email"
+        value={email}
+        onChange={(event) => { setEmail(event.target.value); if (status === "error") setStatus("idle"); }}
+        placeholder="Your Email Address"
+        aria-invalid={status === "error"}
+        style={{
+          background: "transparent", border: `1px solid ${status === "error" ? "#FCA5A5" : "rgba(255,255,255,0.2)"}`,
+          color: "white", padding: "10px 14px", fontSize: 13,
+          outline: "none", width: "100%",
+        }}
+      />
+      {status === "error" && <p role="alert" style={{ color: "#FCA5A5", fontSize: 11 }}>Enter a valid email and try again.</p>}
+      <button disabled={status === "sending"} style={{
+        background: "white", color: "#020617",
+        fontWeight: 700, fontSize: 13, padding: "10px 14px",
+        border: "none", cursor: status === "sending" ? "wait" : "pointer", width: "100%",
+        transition: "background 0.15s", opacity: status === "sending" ? 0.7 : 1,
+      }}>
+        {status === "sending" ? "Subscribing…" : "Subscribe"}
+      </button>
+    </form>
   );
 }
 
@@ -1304,6 +1369,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
       )}
 
       <CartDrawer />
+      <ExitOfferModal location={location} />
 
       <main className="flex-1">
         {children}
@@ -1419,25 +1485,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
           {/* Newsletter */}
           <div className="flex flex-col gap-4">
             <h4 style={{ color: "white", fontWeight: 700, fontSize: 13, lineHeight: 1.4 }}>Subscribe To Packworkz Newsletter</h4>
-            <input
-              type="email"
-              placeholder="Your Email Address"
-              style={{
-                background: "transparent", border: "1px solid rgba(255,255,255,0.2)",
-                color: "white", padding: "10px 14px", fontSize: 13,
-                outline: "none", width: "100%",
-              }}
-            />
-            <button style={{
-              background: "white", color: "#020617",
-              fontWeight: 700, fontSize: 13, padding: "10px 14px",
-              border: "none", cursor: "pointer", width: "100%",
-              transition: "background 0.15s",
-            }}
-              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "#E8A838"; (e.currentTarget as HTMLElement).style.color = "#0D1B2A"; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "white"; (e.currentTarget as HTMLElement).style.color = "#020617"; }}>
-              Subscribe
-            </button>
+            <NewsletterSignup />
           </div>
         </div>
 

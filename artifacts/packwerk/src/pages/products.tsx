@@ -99,7 +99,7 @@ export default function Products() {
           <div className="relative flex-1">
             <MS icon="search" className="absolute left-3 top-1/2 -translate-y-1/2 text-xl" style={{ color: "#74777d" }} />
             <input
-              placeholder="Search pouches, boxes, bottles, labels..."
+              placeholder="Search rigid boxes, cartons, pouches, bottles, labels..."
               value={search}
               onChange={(event) => setSearch(event.target.value)}
               className="w-full h-11 pl-10 pr-4 rounded border border-slate-200 bg-white text-sm focus:outline-none focus:border-blue-400"

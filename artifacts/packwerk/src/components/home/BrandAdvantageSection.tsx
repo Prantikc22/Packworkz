@@ -1,8 +1,17 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { GitBranch, ShieldCheck, Truck, CreditCard, Globe } from "lucide-react";
+import { GitBranch, ShieldCheck, Truck, CreditCard, Globe, BadgeIndianRupee } from "lucide-react";
 import { Link } from "wouter";
 
 const NODES = [
+  {
+    icon: BadgeIndianRupee,
+    label: "Better Rates at Every Scale",
+    stat: "The production route changes with your order size",
+    title: "Launch quantity or bulk run—use the right economics.",
+    body: "For smaller orders, we standardise proven sizes and use short-run print routes to avoid unnecessary tooling. At scale, we compare eligible factories, consolidate demand and negotiate against repeatable specifications. The result is a competitive landed rate without forcing a growing brand into enterprise MOQs.",
+    bigStat: "Right-size",
+    bigStatLabel: "factory, print method and freight route",
+  },
   {
     icon: GitBranch,
     label: "Multi-Vendor Backup",
@@ -131,7 +140,7 @@ export default function BrandAdvantageSection() {
               Why growing brands choose Packworkz over a single vendor.
             </h2>
             <p style={{ color: "#64748B", fontSize: 15, lineHeight: 1.7, marginBottom: 48, maxWidth: 400 }}>
-              Packworkz is not another vendor. It is a managed platform with backup coverage, owned QC, global compliance, and real-time visibility.
+              Packworkz is not another vendor. We match the order size to the right factory and production method, then manage backup coverage, QC, compliance and delivery in one workflow.
             </p>
 
             {/* Big animated stat */}

@@ -47,11 +47,11 @@ export default function Network() {
             <span style={{ color: "rgba(255,255,255,0.45)", fontSize: 10, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase" }}>OUR MANUFACTURING BACKBONE</span>
           </div>
           <h1 className="pw-reveal pw-d1" style={{ color: "white", fontSize: "clamp(2.8rem,6vw,4.8rem)", fontWeight: 900, lineHeight: 1.05, letterSpacing: "-2px", marginBottom: 24 }}>
-            500+ Verified<br />
-            <span style={{ color: "#60a5fa", fontStyle: "italic" }}>Factory Partners.</span>
+            A Curated<br />
+            <span style={{ color: "#60a5fa", fontStyle: "italic" }}>Factory Network.</span>
           </h1>
           <p className="pw-reveal pw-d2" style={{ color: "rgba(255,255,255,0.48)", fontSize: "clamp(15px,2vw,18px)", lineHeight: 1.75, maxWidth: 560, margin: "0 auto 48px" }}>
-            Every Packworkz order is backed by India's most rigorously vetted packaging manufacturer network — with 3 backup vendors assigned per order, by default.
+            Every specification is matched to eligible manufacturing routes, with alternate capacity planned where the format, tooling and approvals allow it.
           </p>
           <div className="pw-reveal pw-d3" style={{ display: "flex", gap: 14, justifyContent: "center", flexWrap: "wrap" }}>
             <span className="animated-border animated-border-white">
@@ -107,7 +107,7 @@ export default function Network() {
           <div className="pw-reveal" style={{ textAlign: "center", marginBottom: 56 }}>
             <p style={{ color: "#60a5fa", fontSize: 11, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", marginBottom: 14 }}>CATEGORY COVERAGE</p>
             <h2 style={{ color: "white", fontSize: "clamp(2rem,4vw,2.8rem)", fontWeight: 800, lineHeight: 1.1, letterSpacing: "-1px" }}>
-              49 focused product families. One connected network.
+              One focused catalogue. One connected network.
             </h2>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 10 }}>
@@ -148,13 +148,13 @@ export default function Network() {
             Put the network to work for your brand.
           </h2>
           <p style={{ color: "rgba(255,255,255,0.36)", fontSize: 15, lineHeight: 1.7, marginBottom: 40 }}>
-            500+ partners. 3 backup vendors per order. Zero single points of failure.
+            Specification-led matching, documented QC and alternate sourcing routes where eligible.
           </p>
           <div style={{ display: "flex", gap: 14, justifyContent: "center", flexWrap: "wrap" }}>
             <span className="animated-border animated-border-white">
               <Link href="/configure"><button className="btn-fill btn-amber px-8 py-3 text-sm pw-btn-transition">Get a Quote →</button></Link>
             </span>
-            <Link href="/products"><button className="btn-fill btn-outline-white px-8 py-3 text-sm pw-btn-transition">Browse 49 product families</button></Link>
+            <Link href="/products"><button className="btn-fill btn-outline-white px-8 py-3 text-sm pw-btn-transition">Browse the product catalogue</button></Link>
           </div>
           <p style={{ color: "rgba(255,255,255,0.28)", fontSize: 12, marginTop: 14, letterSpacing: "0.2px" }}>
             No minimum for samples · MOQ from 500 units for bulk

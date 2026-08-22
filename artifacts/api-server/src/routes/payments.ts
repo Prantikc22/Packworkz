@@ -72,7 +72,21 @@ function readDeliveryAddress(quote: any) {
   };
 }
 
-async function launchPromotionAvailable() {
+async function launchPromotionAvailable(customerEmail: string) {
+  const normalizedEmail = customerEmail.trim().toLowerCase();
+  if (!normalizedEmail) return false;
+
+  const priorPurchase = await sb
+    .from("quote_requests")
+    .select("id", { count: "exact", head: true })
+    .eq("email", normalizedEmail)
+    .eq("status", "paid");
+  if (priorPurchase.error) {
+    console.error("[payments/prepare-order] First-order check failed", priorPurchase.error);
+    return false;
+  }
+  if ((priorPurchase.count || 0) > 0) return false;
+
   const monthStart = new Date();
   monthStart.setUTCDate(1);
   monthStart.setUTCHours(0, 0, 0, 0);
@@ -272,7 +286,7 @@ router.post("/payments/prepare-order", async (req, res): Promise<void> => {
   }
 
   const promotionRequested = parsed.items.some((item: any) => item.promotionCode === LAUNCH_PROMOTION_CODE);
-  const promotionCode = promotionRequested && (recoveryMode || Number(existingOrder?.discount_applied || 0) > 0 || await launchPromotionAvailable())
+  const promotionCode = promotionRequested && (recoveryMode || Number(existingOrder?.discount_applied || 0) > 0 || await launchPromotionAvailable(String(quote.email || "")))
     ? LAUNCH_PROMOTION_CODE
     : undefined;
   const cartEstimate = calculateCommerceCartEstimate(parsed.items.map((item: any) => ({

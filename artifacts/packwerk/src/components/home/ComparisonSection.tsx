@@ -55,7 +55,7 @@ export default function ComparisonSection() {
             { feature: "Vendor redundancy",   good: "Backup sourcing routes can be assigned before production begins.",  bad: "One vendor. Their delay is your delay." },
             { feature: "Quality control",      good: "Inspection checkpoints and approvals stay attached to the order.", bad: "Vendor self-certifies. Rejection risk is yours." },
             { feature: "Pricing transparency", good: "Itemised estimates, approved changes, and one order record.",        bad: "Changes are scattered across calls and messages." },
-            { feature: "Product coverage",     good: "49 focused buying families, plus a managed route for specialist production.", bad: "Specialised in one category. Source the rest yourself." },
+            { feature: "Product coverage",     good: "A focused buying catalogue, plus a managed route for specialist production.", bad: "Specialised in one category. Source the rest yourself." },
             { feature: "Compliance & certs",   good: "Documents are matched to the selected material, format, and factory.", bad: "Certification varies by vendor. Risk sits with you." },
             { feature: "Design service",       good: "Print-ready artwork from ₹1,999. Files yours forever.",         bad: "Mostly unavailable. Third-party dependency." },
             { feature: "Order visibility",     good: "Real-time dashboard — status, dispatch, ETA in one place.",     bad: "WhatsApp updates. No audit trail." },

@@ -43,7 +43,7 @@ function buildJsonLd(route) {
       mainEntity: {
         "@type": "ItemList",
         name: "Packworkz packaging SKU catalog",
-        numberOfItems: 35,
+        numberOfItems: PRODUCT_ROUTE_DATA.length,
         itemListOrder: "https://schema.org/ItemListOrderAscending",
       },
     };
@@ -97,15 +97,12 @@ const PRODUCT_ROUTE_DATA = [
   ["BC-204", "cosmetic-jar", "Cosmetic Jar"],
   ["BC-205", "dropper-bottle", "Dropper Bottle"],
   ["BC-206", "airless-pump-bottle", "Airless Pump Bottle"],
+  ["BC-214", "custom-printed-shampoo-lotion-bottles", "Custom Printed Shampoo & Lotion Bottles"],
   ["TS-301", "cosmetic-tube", "Cosmetic Tube"],
-  ["BX-401", "straight-tuck-end-carton", "Straight Tuck End Carton"],
-  ["BX-412", "reverse-tuck-end-carton", "Reverse Tuck End Carton"],
-  ["BX-404", "auto-bottom-carton", "Auto-bottom Carton"],
-  ["BX-405", "sleeve-tray-box", "Sleeve and Tray Box"],
-  ["BX-406", "window-carton", "Window Carton"],
-  ["BX-402", "two-piece-rigid-box", "Two-piece Rigid Box"],
-  ["BX-403", "magnetic-closure-rigid-box", "Magnetic Closure Rigid Box"],
-  ["BX-408", "collapsible-rigid-box", "Collapsible Rigid Box"],
+  ["TS-306", "custom-printed-sustainable-cosmetic-tubes", "Custom Printed Mono-material & PCR Cosmetic Tubes"],
+  ["BX-401", "straight-tuck-end-carton", "Custom Printed Folding Carton"],
+  ["BX-402", "two-piece-rigid-box", "Custom Printed Two-piece Rigid Box"],
+  ["BX-403", "magnetic-closure-rigid-box", "Magnetic Closure Box"],
   ["EC-501", "mailer-box", "Mailer Box"],
   ["EC-502", "corrugated-shipping-box", "Corrugated Shipping Box"],
   ["EC-503", "food-delivery-box", "Food Delivery Box"],
@@ -151,7 +148,7 @@ const ROUTES = [
   {
     path: "/",
     title: "Packworkz — Packaging Manufacturer & Managed Platform India | D2C, FMCG, Pharma",
-    description: "Managed packaging for D2C, FMCG, pharma and enterprise teams. Browse 39 focused product families, see quantity pricing, create 3D previews and manage repeat orders in one workflow.",
+    description: "Managed packaging for D2C, FMCG, pharma and enterprise teams. Browse a curated product catalog, see quantity pricing, create 3D previews and manage repeat orders in one workflow.",
     keywords: "packaging manufacturer India, managed packaging platform, custom packaging India, D2C packaging manufacturer, FMCG packaging supplier India, packaging vendor India",
   },
   {
@@ -187,7 +184,7 @@ const ROUTES = [
   {
     path: "/contact",
     title: "Contact Packworkz | Custom Packaging India | +91 82089 90366",
-    description: "Contact Packworkz for custom packaging pricing, sample orders, or design enquiries. Call +91 82089 90366 or send an enquiry online. 48-hour response guaranteed.",
+    description: "Contact Packworkz for custom packaging pricing, sample orders, or design enquiries. Call +91 82089 90366 or send an enquiry online.",
     keywords: "contact Packworkz, packaging manufacturer contact India, packaging enquiry India",
   },
   {
@@ -198,8 +195,8 @@ const ROUTES = [
   },
   {
     path: "/network",
-    title: "Packworkz Manufacturer Network | 220+ Verified Packaging Factories India",
-    description: "220+ verified packaging manufacturers across India. 3 backup vendors assigned per order. Full traceability, QC certificates, and compliance documentation for every factory.",
+    title: "Packworkz Packaging Manufacturer Network India",
+    description: "See how Packworkz matches packaging specifications to eligible production routes, quality checkpoints and applicable supplier documentation across India.",
     keywords: "packaging manufacturer network India, verified packaging factories, packaging supplier network India",
   },
 
@@ -207,7 +204,7 @@ const ROUTES = [
   {
     path: "/configure",
     title: "Get a Custom Packaging Pricing Plan in 48 Hours | India | Packworkz",
-    description: "Submit packaging specs and receive a detailed, competitive pricing plan within 48 hours. Pouches, boxes, bottles, mailers and more. No vendor calls needed. 220+ brands trust Packworkz.",
+    description: "Submit packaging specs and receive a detailed, competitive pricing plan. Pouches, boxes, bottles, mailers and more, with one managed review route.",
     keywords: "custom packaging pricing plan India, packaging manufacturer pricing plan, get packaging pricing plan online, bulk packaging price India",
   },
   {
@@ -225,7 +222,7 @@ const ROUTES = [
   {
     path: "/design",
     title: "Custom Packaging Design Service India | From ₹1,999 | Packworkz",
-    description: "Packaging design and 3D previews across 39 focused product families, with print-ready artwork, dieline handoff and design management.",
+    description: "Packaging design and 3D previews across a curated product catalog, with print-ready artwork, dieline handoff and design management.",
     keywords: "custom packaging design India, packaging design service, packaging artwork India, D2C packaging design",
   },
   {
@@ -245,7 +242,7 @@ const ROUTES = [
   {
     path: "/products",
     title: "Packaging Products India | Pouches, Boxes, Bottles | Packworkz",
-    description: "Browse 39 focused packaging families including pouches, cartons, containers, mailers, labels, food-service packs and technical rollstock. See buying paths and quantity pricing online.",
+    description: "Browse curated packaging families including pouches, rigid boxes, cartons, containers, mailers, labels, food-service packs and technical rollstock. See buying paths and quantity pricing online.",
     keywords: "packaging manufacturer India, custom packaging manufacturer, stand-up pouch manufacturer India, corrugated box manufacturer, flexible packaging manufacturer India",
   },
 
@@ -262,7 +259,7 @@ const ROUTES = [
   {
     path: "/industries/d2c",
     title: "D2C Packaging Manufacturer India | Custom Branded Pouches & Boxes | Packworkz",
-    description: "Custom branded packaging for D2C brands. Stand-up pouches, mailers, gift boxes and more. Low MOQ from 200 units. Fast 10–15 day delivery. Trusted by 150+ D2C brands.",
+    description: "Custom branded packaging for D2C brands including stand-up pouches, mailers, printed cartons and rigid gift boxes, with low-MOQ options and managed production support.",
     keywords: "D2C packaging manufacturer India, custom packaging D2C brand, branded packaging India, ecommerce packaging manufacturer",
   },
   {
@@ -328,7 +325,7 @@ const ROUTES = [
 ];
 
 function buildSitemap() {
-  const lastmod = "2026-07-18";
+  const lastmod = new Date().toISOString().slice(0, 10);
   const entries = ROUTES.map(({ path }) => {
     const url = `https://packworkz.com${path === "/" ? "/" : path}`;
     const isProduct = path.startsWith("/products/");

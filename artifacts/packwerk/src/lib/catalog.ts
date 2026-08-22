@@ -136,20 +136,22 @@ const STOREFRONT_EXCLUSIONS = new Set([
   // Flexible variants consolidated into the four self-serve pouch families
   // and two enterprise flexible-film briefs below.
   "FP-102", "FP-106", "FP-107", "FP-108", "FP-109", "FP-111", "FP-113",
-  // Container shapes that are options within plastic/glass families, or sit
-  // outside the focused D2C and enterprise launch range.
+  // Container shapes that are options within plastic/glass families, plus
+  // specialist metal and industrial formats handled as managed requests.
   "BC-203", "BC-207", "BC-208", "BC-209", "BC-210", "BC-211", "BC-212",
-  // Keep cosmetic tubes public; specialist pharma and paper tubes enter via
+  // Keep the core cosmetic tube public; specialist tube formats enter through
   // the general production brief when needed.
   "TS-302", "TS-303", "TS-304", "TS-305",
-  // Keep three immediately understandable box families in the storefront:
-  // folding cartons, two-piece rigid boxes and magnetic-closure rigid boxes.
+  // Keep the clearest D2C box families public. Additional presentation-box
+  // constructions remain configuration options or managed requests.
   "BX-404", "BX-405", "BX-406", "BX-407", "BX-408", "BX-409", "BX-410", "BX-411", "BX-412",
   // Mailer material and return-strip choices are merged into two mailer pages.
   "EC-506", "EC-507", "EC-508", "EC-511", "EC-512", "EC-513",
-  // Protective consumables and inserts become options within two clear jobs.
+  // Protective consumables become options within two clear jobs; specialist
+  // tooling-led formats are handled as managed requests.
   "PR-603", "PR-604", "PR-605", "PR-606", "PR-607", "PR-608", "PR-609", "PR-610", "PR-611",
-  // Flexible rollstock is one enterprise brief with material choices.
+  // Flexible rollstock is consolidated; specialist pharma and bulk-industrial
+  // formats are handled through the production brief.
   "RL-702", "RL-703", "RL-706", "RL-707", "RL-708", "RL-709", "RL-710", "RL-711",
   // Closures and fitments stay as component options. The legacy all-in-one
   // paper-label family is replaced by pictured shape-specific SKUs.
@@ -213,24 +215,27 @@ const STOREFRONT_OVERRIDES: Record<string, Partial<Sku>> = {
     ],
   },
   "BX-401": {
-    name: "Straight Tuck End Carton",
+    name: "Custom Printed Folding Carton",
     slug: "straight-tuck-end-carton",
     moq: 100,
-    description: "The familiar retail carton with both tuck flaps closing in the same direction, shown and priced as its own production-ready format.",
-    use_case: "Beauty, supplements, food, electronics, pharma and retail products",
+    description: "A custom full-colour paperboard mono carton like the pictured snack packs, configured for the product, shelf presentation and packing line.",
+    use_case: "Snacks, confectionery, bakery, supplements, beauty, pharma and retail products",
     variants: [
+      { key: "structure", label: "Carton structure", options: ["Straight tuck end", "Reverse tuck end", "Auto-lock bottom"] },
       { key: "board", label: "Board", options: ["SBS/FBB", "Natural kraft", "Recycled board"] },
-      { key: "finish", label: "Finish", options: ["Uncoated", "Matte lamination", "Gloss lamination", "Soft touch"] },
+      { key: "print", label: "Custom print", options: ["Full-colour exterior", "Full-colour inside + outside", "Spot-colour print"] },
+      { key: "finish", label: "Finish", options: ["Uncoated", "Matte lamination", "Gloss lamination", "Foil / spot UV accent"] },
     ],
   },
   "BX-402": {
-    name: "Two-piece Rigid Box",
+    name: "Custom Printed Two-piece Rigid Box",
     slug: "two-piece-rigid-box",
-    description: "A classic lift-off lid and base box for premium presentation, shown and priced separately from magnetic and collapsible constructions.",
+    description: "A fully wrapped, custom-printed lift-off lid and base box for premium presentation, shown separately from folding cartons and magnetic constructions.",
     use_case: "Gifting, jewellery, beauty, fashion, electronics and premium D2C kits",
     variants: [
       { key: "insert", label: "Insert", options: ["None", "Paperboard", "EVA foam", "Moulded pulp"] },
-      { key: "finish", label: "Finish", options: ["Matte paper wrap", "Textured paper wrap", "Soft touch", "Foil accent"] },
+      { key: "print", label: "Custom print", options: ["Full-colour exterior", "Full-colour inside + outside", "Solid colour wrap"] },
+      { key: "finish", label: "Finish", options: ["Matte paper wrap", "Textured paper wrap", "Soft touch", "Foil + emboss accent"] },
     ],
   },
   "EC-504": {

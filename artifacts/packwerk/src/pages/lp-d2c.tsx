@@ -69,8 +69,8 @@ const COMPARE = [
   { aspect: "First sample",       old: "2–4 weeks",                    pw: "7–10 days" },
   { aspect: "Brief to delivery",  old: "6–12 weeks",                   pw: "14 days" },
   { aspect: "Re-order",           old: "Call / email vendor",           pw: "One click in dashboard" },
-  { aspect: "QC process",         old: "Hope for the best",             pw: "Owned QC + 3 backup factories" },
-  { aspect: "Vendor risk",        old: "1 vendor = 1 point of failure", pw: "3 backup vendors per order" },
+  { aspect: "QC process",         old: "Hope for the best",             pw: "Documented QC + eligible backup routes" },
+  { aspect: "Vendor risk",        old: "1 vendor = 1 point of failure", pw: "Alternate capacity assessed by specification" },
   { aspect: "Payment terms",      old: "Net-30/60 with hidden markup",  pw: "50/50 milestone, no credit markup" },
 ];
 
@@ -516,7 +516,7 @@ export default function LpD2c() {
                 opacity: heroLoaded ? 1 : 0, transition: "opacity 0.6s ease 0.1s",
               }}>
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="#E8A838"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" /></svg>
-                <span style={{ color: "#E8A838", fontSize: 12, fontWeight: 700 }}>220+ D2C &amp; FMCG brands trust Packworkz</span>
+                <span style={{ color: "#E8A838", fontSize: 12, fontWeight: 700 }}>Built for growing D2C &amp; FMCG brands</span>
               </div>
 
               <h1 style={{
@@ -1017,7 +1017,7 @@ export default function LpD2c() {
                 WHAT BRANDS SAY
               </p>
               <h2 style={{ color: "#0D1B2A", fontSize: "clamp(1.9rem, 4vw, 2.8rem)", fontWeight: 800, marginBottom: 0, fontFamily: "'Space Grotesk', sans-serif" }}>
-                220+ brands made the switch.
+                Ready to simplify your packaging stack?
               </h2>
             </div>
 

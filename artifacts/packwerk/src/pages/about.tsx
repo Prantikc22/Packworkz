@@ -138,7 +138,7 @@ export default function About() {
               For decades, brands sourced packaging through layers of middlemen — each taking a cut, each adding opacity. MOQs were impossibly high for new brands, lead times were unpredictable, and quality control was verbal. The result? Brands overpaid, understocked, and firefought constantly.
             </p>
             <p style={{ color: "rgba(255,255,255,0.48)", fontSize: 15, lineHeight: 1.8, marginBottom: 32 }}>
-              Packworkz collapses those layers. We connect brands directly to a curated network of 500+ verified factories — backed by our own 30-year manufacturing lens — and manage the entire journey: quoting, procurement, QC, logistics, and reorders. One platform. Zero guesswork.
+              Packworkz collapses those layers. We connect brands to a curated manufacturing network — backed by our own 30-year manufacturing lens — and manage the entire journey: quoting, procurement, QC, logistics, and reorders. One platform. Zero guesswork.
             </p>
             <span className="animated-border animated-border-white" style={{ display: "inline-block" }}>
               <Link href="/configure"><button className="btn-fill btn-amber px-8 py-3 text-sm pw-btn-transition">Get a Quote →</button></Link>

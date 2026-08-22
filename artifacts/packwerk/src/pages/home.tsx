@@ -1350,14 +1350,14 @@ export default function Home() {
           {/* ── Comparison rows ── */}
           <div style={{ maxWidth: 860, margin: "0 auto", display: "flex", flexDirection: "column", gap: 6 }}>
             {([
-              { feature: "Vendor redundancy",    good: "3 vetted backup vendors per order — production never stalls.",  bad: "One vendor. Their delay is your delay." },
+              { feature: "Vendor redundancy",    good: "Compatible backup routes planned where the specification allows.",  bad: "One vendor. Their delay is your delay." },
               { feature: "Quality control",       good: "Our team inspects every dispatch. Photo evidence in dashboard.", bad: "Vendor self-certifies. Rejection risk is yours." },
-              { feature: "Pricing transparency",  good: "Transparent pricing + 3% discount for upfront payment.",        bad: "Credit terms hide 10–15% markup per unit." },
-              { feature: "Product coverage",      good: "49 focused buying families, with specialist formats handled through one production brief.", bad: "Specialised in one category. Source the rest yourself." },
-              { feature: "Compliance & certs",    good: "ISO, BRC, FDA, FSC on file. Export-ready documentation.",       bad: "Certification varies by vendor. Risk sits with you." },
+              { feature: "Pricing transparency",  good: "Visible quantity pricing, delivery and first-order launch saving.", bad: "Extra tooling and freight often appear late." },
+              { feature: "Product coverage",      good: "A focused buying catalogue, with specialist formats handled through one production brief.", bad: "Specialised in one category. Source the rest yourself." },
+              { feature: "Compliance & certs",    good: "Applicable documents matched to the final format and factory.", bad: "Certification varies by vendor. Risk sits with you." },
               { feature: "Design service",        good: "Print-ready artwork from ₹1,999. Files yours forever.",         bad: "Mostly unavailable. Third-party dependency." },
               { feature: "Order visibility",      good: "Real-time dashboard — status, dispatch, ETA in one place.",     bad: "WhatsApp updates. No audit trail." },
-              { feature: "Problem resolution",    good: "48-hour resolution SLA. Dedicated account manager.",            bad: "Call them. Hope they answer." },
+              { feature: "Problem resolution",    good: "One support record across quote, production and delivery.",     bad: "Call them. Hope they answer." },
             ] as { feature: string; good: string; bad: string }[]).map((row, i) => (
               <div
                 key={i}
