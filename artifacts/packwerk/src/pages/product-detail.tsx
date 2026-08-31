@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, Redirect } from "wouter";
 import { calculateOrderEstimate } from "@/lib/pricing";
 import { Button } from "@/components/ui/button";
@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { getCategoryBySlug } from "@/lib/skus";
 import { CATALOG_SKUS, getCatalogImage, getConfigureHref, getMaxSelfServeQuantity, requiresQuote } from "@/lib/catalog";
+import { ARTICLES } from "@/lib/resources-data";
 import {
   COMMERCE_PRODUCTS,
   LAUNCH_PROMOTION_CODE,
@@ -49,6 +50,18 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
   const canonicalSlug = LEGACY_SLUG_ALIASES[slug] || slug;
   const product = CATALOG_SKUS.find((sku) => sku.slug === canonicalSlug);
   const [quantity, setQuantity] = useState<number>(0);
+  const [selectedSizeCode, setSelectedSizeCode] = useState(() => product ? COMMERCE_PRODUCTS[product.code]?.sizes[0]?.code || "" : "");
+  const [variantSelections, setVariantSelections] = useState<Record<string, string>>(() =>
+    Object.fromEntries((product?.variants || []).map((variant) => [variant.key, variant.options[0]])),
+  );
+
+  useEffect(() => {
+    setQuantity(0);
+    setSelectedSizeCode(product ? COMMERCE_PRODUCTS[product.code]?.sizes[0]?.code || "" : "");
+    setVariantSelections(
+      Object.fromEntries((product?.variants || []).map((variant) => [variant.key, variant.options[0]])),
+    );
+  }, [product?.code]);
 
   if (LEGACY_CATEGORY_SLUGS.has(slug)) {
     return <Redirect to={`/products?category=${slug}`} replace />;
@@ -69,15 +82,27 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
 
   const currentQty = quantity || product.moq;
   const commerceProduct = COMMERCE_PRODUCTS[product.code];
-  const defaultSize = commerceProduct?.sizes[0];
-  const defaultConfiguration = Object.fromEntries(product.variants.map((variant) => [variant.key, variant.options[0]]));
-  const estimate = calculateOrderEstimate(product, currentQty, "standard", "upload", defaultSize?.code, defaultConfiguration);
+  const activeSizeCode = selectedSizeCode || commerceProduct?.sizes[0]?.code;
+  const activeConfiguration = Object.fromEntries(product.variants.map((variant) => [variant.key, variantSelections[variant.key] || variant.options[0]]));
+  const estimate = calculateOrderEstimate(product, currentQty, "standard", "upload", activeSizeCode, activeConfiguration);
   const estimatedMin = estimate.low;
   const estimatedMax = estimate.high;
   const launchUnit = currentQty > 0 ? ((estimate.material || 0) - (estimate.discount || 0)) / currentQty : estimate.unit;
   const productImage = getCatalogImage(product);
   const category = getCategoryBySlug(product.category);
   const complianceCerts = product.is_eco ? ["FSC", "EPR-ready"] : ["ISO", "BRC-ready"];
+  const productTerms = `${product.name} ${product.category} ${product.description}`
+    .toLowerCase()
+    .split(/[^a-z0-9]+/)
+    .filter((term) => term.length > 3 && !["packaging", "custom", "india", "with"].includes(term));
+  const relatedGuides = ARTICLES
+    .map((article) => {
+      const haystack = `${article.title} ${article.description} ${article.keywords.join(" ")}`.toLowerCase();
+      return { article, score: productTerms.reduce((score, term) => score + (haystack.includes(term) ? 1 : 0), 0) };
+    })
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 3)
+    .map(({ article }) => article);
   const quantityRequiresQuote = requiresQuote(product, currentQty);
   const estimateExceedsOnlineLimit = "total" in estimate && Number(estimate.total || 0) > RAZORPAY_PAYMENT_LIMIT_RUPEES;
   const quoteRequired = quantityRequiresQuote || estimateExceedsOnlineLimit;
@@ -87,7 +112,11 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
   const quoteAwareConfigureHref = estimateExceedsOnlineLimit && baseConfigureHref.startsWith("/configure")
     ? baseConfigureHref.replace("/configure", "/procurement-plan")
     : baseConfigureHref;
-  const configureHref = `${quoteAwareConfigureHref}&qty=${currentQty}`;
+  const configParams = new URLSearchParams();
+  configParams.set("qty", String(currentQty));
+  if (activeSizeCode) configParams.set("size", activeSizeCode);
+  configParams.set("config", JSON.stringify(activeConfiguration));
+  const configureHref = `${quoteAwareConfigureHref}&${configParams.toString()}`;
   const addToCartHref = `${configureHref}${configureHref.includes("?") ? "&" : "?"}intent=cart`;
   const buyNowHref = `${configureHref}${configureHref.includes("?") ? "&" : "?"}intent=buy`;
 
@@ -205,6 +234,40 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
             </div>
 
             <div className="space-y-6">
+              {commerceProduct?.sizes.length ? (
+                <div>
+                  <Label htmlFor="product-size" className="font-semibold text-navy mb-2 block">
+                    {product.category === "labels" ? "Diameter / size" : "Size"}
+                  </Label>
+                  <select
+                    id="product-size"
+                    value={activeSizeCode}
+                    onChange={(event) => setSelectedSizeCode(event.target.value)}
+                    className="h-12 w-full border border-input bg-white px-3 text-sm text-navy"
+                  >
+                    {commerceProduct.sizes.map((size) => (
+                      <option key={size.code} value={size.code}>
+                        {formatMeasurementInCm(size.label)}{size.detail ? ` — ${formatMeasurementInCm(size.detail)}` : ""}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              ) : null}
+
+              {product.variants.map((variant) => (
+                <div key={variant.key}>
+                  <Label htmlFor={`product-${variant.key}`} className="font-semibold text-navy mb-2 block">{variant.label}</Label>
+                  <select
+                    id={`product-${variant.key}`}
+                    value={activeConfiguration[variant.key]}
+                    onChange={(event) => setVariantSelections((current) => ({ ...current, [variant.key]: event.target.value }))}
+                    className="h-12 w-full border border-input bg-white px-3 text-sm text-navy"
+                  >
+                    {variant.options.map((option) => <option key={option} value={option}>{option}</option>)}
+                  </select>
+                </div>
+              ))}
+
               <div>
                 <Label htmlFor="product-quantity" className="font-semibold text-navy mb-2 block">Quantity (Min {product.moq})</Label>
                 <Input 
@@ -216,7 +279,7 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
                   className="h-12"
                 />
                 {product.publicBuyingPath === "instant" && maxSelfServeQuantity > 0 && (
-                  <p className="mt-2 text-xs text-slate-500">Online checkout is available up to {maxSelfServeQuantity.toLocaleString("en-IN")} {product.moq_unit}. Enter a larger run to request reviewed bulk pricing.</p>
+                  <p className="mt-2 text-xs text-slate-500">Type any quantity below {product.quote_threshold?.toLocaleString("en-IN")} {product.moq_unit} for an instant estimate. Larger runs move to reviewed bulk pricing.</p>
                 )}
               </div>
 
@@ -232,13 +295,13 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
                   <p className="text-xs font-black uppercase tracking-wider text-muted mb-3">Quantity pricing</p>
                   <div className="grid gap-2">
                     {onlinePriceTiers.map((tier) => {
-                      const tierEstimate = calculateOrderEstimate(product, tier.min_qty, "standard", "upload", defaultSize?.code, defaultConfiguration);
+                      const tierEstimate = calculateOrderEstimate(product, tier.min_qty, "standard", "upload", activeSizeCode, activeConfiguration);
                       const tierLaunchUnit = tier.min_qty > 0
                         ? ((tierEstimate.material || 0) - (tierEstimate.discount || 0)) / tier.min_qty
                         : tier.unit_price * (1 - LAUNCH_PROMOTION_RATE);
                       return (
                         <button key={tier.min_qty} type="button" onClick={() => setQuantity(tier.min_qty)} className="flex items-center justify-between text-sm border border-slate-200 px-3 py-2 hover:border-blue transition-colors">
-                          <span className="font-semibold text-navy">{tier.min_qty.toLocaleString("en-IN")}+</span>
+                          <span className="font-semibold text-navy">{tier.min_qty.toLocaleString("en-IN")}</span>
                           <span className="text-right">
                             <span className="block font-black text-navy">{formatINR(tierLaunchUnit)} / unit</span>
                             {product.publicBuyingPath === "instant" && <span className="block text-[10px] text-slate-400 line-through">{formatINR(tierEstimate.unit)} list</span>}
@@ -254,7 +317,7 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
               {!quoteRequired && <div className="bg-surface p-4 rounded-xl space-y-3">
                 <div className="flex justify-between items-center text-sm">
                   <span className="text-muted">Estimated Total</span>
-                  <span className="font-bold text-navy">{formatINR(estimatedMin)} - {formatINR(estimatedMax)}</span>
+                  <span className="font-bold text-navy">{Math.abs(estimatedMax - estimatedMin) < 0.01 ? formatINR(estimatedMin) : `${formatINR(estimatedMin)} – ${formatINR(estimatedMax)}`}</span>
                 </div>
                 <div className="flex justify-between items-center text-sm">
                   <span className="text-muted">Launch unit rate</span>
@@ -317,6 +380,25 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
           </div>
         </div>
       </div>
+      <section className="border-t border-border bg-slate-50 px-4 py-12">
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-6 flex items-end justify-between gap-4">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.16em] text-primary">Buying guides</p>
+              <h2 className="mt-2 text-2xl font-black text-navy">Choose the specification with confidence</h2>
+            </div>
+            <Link href="/resources" className="hidden text-sm font-bold text-primary hover:underline sm:block">All guides →</Link>
+          </div>
+          <div className="grid gap-4 md:grid-cols-3">
+            {relatedGuides.map((guide) => (
+              <Link key={guide.slug} href={`/resources/${guide.slug}`} className="border border-border bg-white p-5 no-underline transition hover:-translate-y-0.5 hover:shadow-md">
+                <p className="text-xs font-bold uppercase tracking-wide text-primary">{guide.category}</p>
+                <h3 className="mt-2 text-base font-extrabold leading-snug text-navy">{guide.title}</h3>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

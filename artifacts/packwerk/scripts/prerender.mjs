@@ -15,7 +15,16 @@ const ROOT = join(__dirname, "..");
 const DIST = join(ROOT, "dist/public");
 const SERVER_BUNDLE = join(ROOT, "dist/server/entry-server.js");
 
-function buildJsonLd(route) {
+function absoluteUrl(value = "/opengraph.jpg") {
+  return value.startsWith("http") ? value : `https://packworkz.com${value.startsWith("/") ? value : `/${value}`}`;
+}
+
+function isoMonth(value) {
+  const parsed = new Date(`1 ${value}`);
+  return Number.isNaN(parsed.getTime()) ? undefined : parsed.toISOString().slice(0, 10);
+}
+
+function buildJsonLd(route, productCount) {
   const canonicalUrl = `https://packworkz.com${route.path === "/" ? "" : route.path}`;
   const baseOrg = {
     "@context": "https://schema.org",
@@ -43,26 +52,63 @@ function buildJsonLd(route) {
       mainEntity: {
         "@type": "ItemList",
         name: "Packworkz packaging SKU catalog",
-        numberOfItems: PRODUCT_ROUTE_DATA.length,
+        numberOfItems: productCount,
         itemListOrder: "https://schema.org/ItemListOrderAscending",
       },
     };
   }
 
-  if (route.path.startsWith("/products/") && route.path.split("/").length === 3) {
-    return {
+  if (route.kind === "product") {
+    const product = {
       "@context": "https://schema.org",
       "@type": "Product",
-      name: route.title.replace(" | Packworkz", ""),
+      name: route.name,
+      sku: route.sku,
+      category: route.category,
+      image: absoluteUrl(route.image),
       description: route.description,
       url: canonicalUrl,
       brand: baseOrg,
-      offers: {
+    };
+    if (route.buyingPath === "instant" && route.lowPrice > 0 && route.highPrice > 0) {
+      product.offers = {
         "@type": "AggregateOffer",
         priceCurrency: "INR",
+        lowPrice: route.lowPrice,
+        highPrice: route.highPrice,
+        offerCount: route.offerCount,
         availability: "https://schema.org/InStock",
         seller: baseOrg,
-      },
+        url: canonicalUrl,
+      };
+    }
+    return product;
+  }
+
+  if (route.kind === "article") {
+    const published = isoMonth(route.publishedDate);
+    return {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "BlogPosting",
+          headline: route.headline,
+          description: route.description,
+          image: absoluteUrl(route.image),
+          url: canonicalUrl,
+          mainEntityOfPage: canonicalUrl,
+          ...(published ? { datePublished: published, dateModified: published } : {}),
+          author: baseOrg,
+          publisher: baseOrg,
+        },
+        {
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            { "@type": "ListItem", position: 1, name: "Resources", item: "https://packworkz.com/resources" },
+            { "@type": "ListItem", position: 2, name: route.headline, item: canonicalUrl },
+          ],
+        },
+      ],
     };
   }
 
@@ -360,9 +406,9 @@ const ROUTES = [
   },
 ];
 
-function buildSitemap() {
+function buildSitemap(routes) {
   const lastmod = new Date().toISOString().slice(0, 10);
-  const entries = ROUTES.map(({ path }) => {
+  const entries = routes.map(({ path }) => {
     const url = `https://packworkz.com${path === "/" ? "/" : path}`;
     const isProduct = path.startsWith("/products/");
     const priority = path === "/" ? "1.0" : path === "/products" || path === "/configure" ? "0.9" : isProduct ? "0.8" : "0.7";
@@ -375,20 +421,32 @@ function buildSitemap() {
 
 async function prerender() {
   let render;
+  let dynamicSeo;
   try {
     const mod = await import(SERVER_BUNDLE);
     render = mod.render;
+    dynamicSeo = mod.getDynamicSeoRoutes();
   } catch (err) {
     console.error("❌  Failed to load SSR bundle:", err.message);
     console.error("   Run `pnpm --filter @workspace/packwerk run build:ssr` first.");
     process.exit(1);
   }
 
-  const template = readFileSync(join(DIST, "index.html"), "utf-8");
+  const routes = [
+    ...ROUTES.filter(({ path }) =>
+      path !== "/sustainable-catalog" &&
+      !/^\/products\/[^/]+$/.test(path) &&
+      !/^\/resources\/[^/]+$/.test(path)
+    ),
+    ...dynamicSeo.products,
+    ...dynamicSeo.resources,
+  ];
+  const template = readFileSync(join(DIST, "index.html"), "utf-8")
+    .replaceAll("__PRODUCT_FAMILY_COUNT__", String(dynamicSeo.productCount));
   let successCount = 0;
   let fallbackCount = 0;
 
-  for (const route of ROUTES) {
+  for (const route of routes) {
     const { path: routePath, title, description, keywords } = route;
     let appHtml = "";
 
@@ -451,6 +509,13 @@ async function prerender() {
       `$1${canonicalUrl}$2`,
     );
     html = html.replace(
+      /(<meta property="og:type" content=")[^"]*(")/,
+      `$1${route.kind === "article" ? "article" : route.kind === "product" ? "product" : "website"}$2`,
+    );
+    const socialImage = absoluteUrl(route.image);
+    html = html.replace(/(<meta property="og:image" content=")[^"]*(")/, `$1${socialImage}$2`);
+    html = html.replace(/(<meta name="twitter:image" content=")[^"]*(")/, `$1${socialImage}$2`);
+    html = html.replace(
       /(<meta name="twitter:title" content=")[^"]*(")/,
       `$1${title}$2`,
     );
@@ -467,7 +532,7 @@ async function prerender() {
       html = html.replace("</head>", `${canonicalTag}\n</head>`);
     }
 
-    const jsonLd = JSON.stringify(buildJsonLd(route)).replace(/</g, "\\u003c");
+    const jsonLd = JSON.stringify(buildJsonLd(route, dynamicSeo.productCount)).replace(/</g, "\\u003c");
     const jsonLdTag = `<script type="application/ld+json">${jsonLd}</script>`;
     html = html.replace("</head>", `${jsonLdTag}\n</head>`);
 
@@ -486,7 +551,7 @@ async function prerender() {
     process.stdout.write(`${status}  ${outPath}\n`);
   }
 
-  const sitemap = buildSitemap();
+  const sitemap = buildSitemap(routes);
   writeFileSync(join(ROOT, "public/sitemap.xml"), sitemap);
   writeFileSync(join(DIST, "sitemap.xml"), sitemap);
 

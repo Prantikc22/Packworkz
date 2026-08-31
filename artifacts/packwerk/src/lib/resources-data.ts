@@ -8,6 +8,7 @@ export type ResourceArticle = {
   heroImage: string;
   heroImageAlt: string;
   keywords: string[];
+  sources?: { label: string; href: string }[];
   content: ResourceSection[];
 };
 
@@ -114,6 +115,10 @@ const PRIORITY_GUIDES: PriorityGuide[] = [
     checklist: ["Identify the product category and applicable standard.", "Confirm food-contact packaging suitability.", "Prepare mandatory declarations and legibility checks.", "Verify barcode, MRP and Legal Metrology requirements where applicable.", "Approve final print proof before production."],
     note: "FSSAI updates and product-specific directions can change. This guide is operational guidance, not legal advice; verify the current regulations and amendments on fssai.gov.in before printing.",
     ctaText: "Browse food packaging →", ctaHref: "/industries/food",
+    sources: [
+      { label: "FSSAI regulations index", href: "https://www.fssai.gov.in/food-law/regulations" },
+      { label: "Food Safety and Standards (Packaging) Regulations, 2018", href: "https://www.fssai.gov.in/upload/uploadfiles/files/Gazette_Notification_Packaging_03_01_2019.pdf" },
+    ],
   },
   {
     slug: "best-packaging-coffee-beans-india",
@@ -253,6 +258,7 @@ const PRIORITY_ARTICLES: ResourceArticle[] = PRIORITY_GUIDES.map((guide) => ({
   heroImage: guide.heroImage,
   heroImageAlt: guide.heroImageAlt,
   keywords: guide.keywords,
+  sources: guide.sources,
   content: [
     { type: "p", text: guide.description },
     { type: "h2", text: "The short answer" },
@@ -271,8 +277,8 @@ const PRIORITY_ARTICLES: ResourceArticle[] = PRIORITY_GUIDES.map((guide) => ({
 const EXISTING_ARTICLES: ResourceArticle[] = [
   {
     slug: "d2c-brands-overpay-packaging-india",
-    title: "Why D2C Brands in India Overpay for Packaging by 15% (And How to Fix It)",
-    description: "Most D2C brands in India are unknowingly paying 10–18% more than they need to for packaging. Here's the exact breakdown — and how a managed packaging platform fixes it.",
+    title: "Why D2C Brands Overpay for Packaging (and How to Audit It)",
+    description: "A practical method for finding avoidable packaging cost across specifications, order quantities, tooling, freight and emergency purchases.",
     category: "Cost Optimisation",
     readTime: "6 min read",
     publishedDate: "May 2026",
@@ -280,24 +286,25 @@ const EXISTING_ARTICLES: ResourceArticle[] = [
     heroImageAlt: "D2C packaging cost optimisation - warehouse with packaging materials India",
     keywords: ["packaging supplier for D2C brands India", "reduce packaging costs India", "D2C packaging cost savings"],
     content: [
-      { type: "p", text: "If you're running a D2C brand in India and ordering packaging from 2–5 different vendors, there's a near certainty you're overpaying — by anywhere from 10% to 18% of your annual packaging spend. The worst part? Most founders never see it on a P&L line." },
+      { type: "p", text: "A low unit quote does not always produce the lowest landed packaging cost. D2C teams can lose margin through excess inventory, unsuitable specifications, duplicated tooling, freight, rejects and emergency replenishment. The size of the opportunity varies by brand, so it should be measured rather than assumed." },
       { type: "h2", text: "The Hidden Cost Stack" },
       { type: "p", text: "Packaging cost isn't just the per-unit price your vendor pricing plans. The real cost includes four layers that most finance teams never model:" },
       { type: "ul", items: [
-        "Vendor credit markup: Most small packaging vendors in India charge 10–14% implicit interest on Net-30/Net-60 terms. You're financing their working capital.",
-        "Over-specification: When you don't have a packaging expert on staff, you default to asking for thicker material, more print colours, or heavier flaps than the product actually needs. That's 8–12% wasted.",
-        "Fragmented ordering: Ordering 20,000 units across 4 vendors instead of 80,000 from one means you never hit the price break MOQ. That alone is a 6–9% premium.",
-        "Emergency orders: One delayed vendor causes a line-stop. You air-freight a replacement at 3× the cost. This happens to 60%+ of D2C brands at least once a year.",
+        "Commercial terms: compare the cash price, payment schedule, tooling and any financing cost separately.",
+        "Over-specification: extra material, colours or finishes add cost when they are not required for protection, compliance or conversion.",
+        "Fragmented ordering: multiple sizes and vendors can duplicate setup, tooling, freight and approval work.",
+        "Emergency orders: expedited production and transport are expensive symptoms of weak reorder planning.",
       ]},
-      { type: "h2", text: "The Vendor Consolidation Math" },
-      { type: "p", text: "Let's run it with a real example. A skincare D2C brand spends ₹4.5 lakh/month across 4 vendors — one for tubes, one for cartons, one for mailers, one for labels. Here's what consolidating to one managed platform saves:" },
+      { type: "h2", text: "Build a like-for-like cost model" },
+      { type: "p", text: "Compare each approved specification at the quantities you can realistically consume. Keep assumptions visible so a cheaper material or larger run is not mistaken for a procurement saving." },
       { type: "ul", items: [
-        "₹40,500/month from eliminating credit markup (at 12% annual rate)",
-        "₹31,500/month from spec optimisation (7% reduction)",
-        "₹27,000/month from MOQ-tier improvement (6%)",
-        "₹18,000/month from eliminating one emergency order per quarter",
+        "Unit conversion cost at the same dimensions, material and print coverage",
+        "One-time cylinders, plates, dies, screens and artwork charges",
+        "Expected rejects, inspection and replacement terms",
+        "Freight using actual or volumetric weight, plus tax",
+        "Inventory carrying cost and likely write-offs after artwork changes",
       ]},
-      { type: "callout", label: "Total Saving", text: "₹1.4 lakh/month → ₹16.8 lakh/year, simply from consolidating vendors and buying right." },
+      { type: "callout", label: "Use evidence", text: "Report savings only after comparing approved like-for-like specifications and realised invoices. A percentage without a baseline is not a reliable procurement claim." },
       { type: "h2", text: "What a Managed Platform Does Differently" },
       { type: "p", text: "A managed packaging platform like Packworkz doesn't just consolidate your vendors. It brings in procurement expertise on your behalf:" },
       { type: "ol", items: [
@@ -307,7 +314,7 @@ const EXISTING_ARTICLES: ResourceArticle[] = [
         "Milestone payment: 50% on order confirmation, 50% on sample approval — no credit, no interest, no surprises.",
       ]},
       { type: "h2", text: "How to Start" },
-      { type: "p", text: "The fastest way to quantify your overpayment is to run a quick savings calculation. Packworkz offers a free packaging audit for D2C brands spending more than ₹2 lakh/month on packaging — you'll know exactly where you stand within 48 hours." },
+      { type: "p", text: "The fastest way to find avoidable cost is to audit the last three purchase cycles, normalise every quote to landed cost and identify the SKUs responsible for emergency buying or obsolete stock." },
       { type: "p", text: "You can order a sample against eligible products in the focused catalogue before committing to a production run." },
       { type: "cta", ctaText: "Calculate Your Packaging Savings →", ctaHref: "/#calculator" },
       { type: "h2", text: "The D2C Packaging Audit Checklist" },
@@ -319,13 +326,13 @@ const EXISTING_ARTICLES: ResourceArticle[] = [
         "When did you last get your packaging spec reviewed by a neutral third party?",
         "Are you ordering packaging in volumes that hit the best MOQ tiers?",
       ]},
-      { type: "p", text: "If you answered \"yes\" to the delay question or \"4+\" for vendor count, you're almost certainly in the 10–18% overpayment bracket. Start with a sample order from one of our flexible packaging SKUs — specifically our Stand-Up Pouches or Kraft Mailers — and see the quality and pricing difference firsthand." },
+      { type: "p", text: "If delays, specification drift or frequent short-notice orders appear in the audit, start with one low-risk SKU. Validate samples and landed cost before changing the wider portfolio." },
     ],
   },
   {
     slug: "epr-compliance-packaging-india-2026",
     title: "EPR Compliance for Packaging in India: Complete 2026 Guide",
-    description: "Extended Producer Responsibility (EPR) is now mandatory for all packaging in India. Here's everything D2C, FMCG and pharma brands need to know to stay compliant in 2026.",
+    description: "A practical overview of India's plastic-packaging EPR framework for producers, importers and brand owners, with links to the current CPCB rules and portal.",
     category: "Compliance",
     readTime: "8 min read",
     publishedDate: "May 2026",
@@ -333,7 +340,7 @@ const EXISTING_ARTICLES: ResourceArticle[] = [
     heroImageAlt: "EPR compliant eco packaging India - sustainable packaging compliance guide 2026",
     keywords: ["EPR compliant packaging India", "EPR compliance packaging 2026", "extended producer responsibility India packaging"],
     content: [
-      { type: "p", text: "The Plastic Waste Management (Amendment) Rules 2022 and the subsequent EPR framework from CPCB have made Extended Producer Responsibility compliance non-negotiable for any brand using plastic packaging in India. As of 2026, non-compliance carries significant penalties — and more importantly, it creates real operational risk for D2C and FMCG brands." },
+      { type: "p", text: "India's Plastic Waste Management framework places EPR obligations on covered producers, importers and brand owners that introduce plastic packaging. The exact registration, target and reporting position depends on the entity, packaging category and current CPCB rules." },
       { type: "h2", text: "What is EPR for Packaging?" },
       { type: "p", text: "Extended Producer Responsibility requires brands, importers, and producers (PIBOs) who introduce plastic packaging into the market to take responsibility for the end-of-life management of that packaging. This means either: (a) collecting and channelling the equivalent weight of packaging waste for recycling, or (b) purchasing EPR certificates from registered recyclers." },
       { type: "h2", text: "Who Needs to Register?" },
@@ -347,40 +354,44 @@ const EXISTING_ARTICLES: ResourceArticle[] = [
       { type: "ol", items: [
         "Register on the CPCB EPR portal (Central Pollution Control Board) or via State PCBs",
         "File an annual return declaring total plastic packaging placed on market",
-        "Achieve EPR targets: 50% collection/recycling target for multi-layered plastic (MLP), with targets increasing each year",
+        "Meet the applicable recycling, reuse, recycled-content or end-of-life targets for each declared category",
         "Purchase EPR certificates if you cannot meet targets through direct collection",
         "Maintain documentation for audits",
       ]},
-      { type: "callout", label: "Key Deadline", text: "EPR targets for 2025-26 must be met and reported by June 30, 2026. Penalties for non-compliance are ₹10,000–₹1,00,000 per incident under the Environment Protection Act." },
+      { type: "callout", label: "Verify before filing", text: "Targets, filing dates, category definitions and environmental compensation can change. Confirm the current position on the CPCB portal or with a qualified compliance adviser before relying on a deadline." },
       { type: "h2", text: "Which Packaging Types Are Covered?" },
-      { type: "p", text: "All plastic packaging categories fall under EPR. This specifically includes:" },
+      { type: "p", text: "The framework separates plastic packaging into categories. Confirm the current wording in the CPCB guidelines before classifying a structure, especially a multi-layer laminate." },
       { type: "ul", items: [
-        "Category I: Rigid plastic packaging (PET jars, HDPE bottles, PP containers)",
-        "Category II: Flexible plastic packaging (BOPP/PE pouches, laminated films, shrink sleeves)",
-        "Category III: Multi-layered plastic packaging (PET/AL/PE pouches, tetrapaks)",
-        "Category IV: Plastic sheet/carry bags",
+        "Rigid plastic packaging such as eligible bottles, jars and containers",
+        "Flexible plastic packaging such as films, pouches, bags and labels",
+        "Multi-layered structures containing plastic alongside a non-plastic layer",
+        "Compostable plastic packaging subject to the applicable certification route",
       ]},
       { type: "h2", text: "EPR-Compliant Alternatives to Consider" },
       { type: "p", text: "The smart way to reduce your EPR obligation is to switch part of your packaging mix to non-plastic or easily-recyclable alternatives. Consider:" },
       { type: "ul", items: [
-        "Kraft paper stand-up pouches — fully recyclable, EPR obligation near zero",
-        "Compostable mailers — certified compostable, exempt from standard EPR targets",
-        "Mono-material PE pouches — much easier to recycle than MLP, lower EPR cost",
-        "Recycled content packaging — using PCR (post-consumer recycled) material counts towards EPR targets",
+        "Paper-led structures may reduce plastic use, but coatings and laminates still need to be identified.",
+        "Certified compostable plastic follows specific standards and documentation; do not assume a blanket exemption.",
+        "Mono-material structures can improve recyclability where collection and recycling systems accept them.",
+        "PCR content should be supported by supplier declarations and the documentation required for the applicable claim.",
       ]},
-      { type: "p", text: "Packworkz's sustainable packaging range includes EPR-compliant options across all categories, with full FSC and compostability certification documentation for your EPR filings. Browse our Sustainable Packaging SKUs for kraft, compostable, and mono-material options." },
+      { type: "p", text: "Packworkz can surface available material and supplier documentation against the final specification. Registration, reporting and claim approval remain the responsibility of the obligated business and its compliance advisers." },
       { type: "cta", ctaText: "Browse EPR-Compliant Packaging SKUs →", ctaHref: "/products/sustainable" },
       { type: "h2", text: "Practical Steps for D2C Brands" },
       { type: "ol", items: [
         "Audit your current packaging mix — list every material and weight per unit",
-        "Register on the CPCB EPR portal (cpcb.nic.in) — takes 5–7 days to approve",
+        "Check whether your entity and packaging role require registration on the CPCB EPR portal",
         "Set annual targets based on your packaging-in-market forecast for the year",
         "Switch high-volume SKUs to lower-obligation materials where possible",
         "Partner with a registered EPR compliance service for certificate procurement",
-        "File annual return by June 30",
+        "Confirm the current filing calendar and retain supporting records",
       ]},
       { type: "h2", text: "For Pharma and Export Brands" },
       { type: "p", text: "Pharma packaging has additional EPR complexity because the primary packaging (blister packs, vials, ampules) is often regulated under CDSCO, while secondary packaging falls under CPCB EPR. Export brands must comply with EPR in the destination country (BRC in UK, FDA requirements in US) in addition to Indian EPR for domestic sales." },
+    ],
+    sources: [
+      { label: "CPCB plastic-packaging EPR portal", href: "https://eprplastic.cpcb.gov.in/" },
+      { label: "CPCB official website", href: "https://cpcb.nic.in/" },
     ],
   },
   {
@@ -514,7 +525,7 @@ const EXISTING_ARTICLES: ResourceArticle[] = [
       { type: "p", text: "Place your first production order with the new platform for the lowest-risk SKU only. Keep 8 weeks of buffer from your old vendor while the new order runs. When the new order arrives and passes intake QC, you've proven the production chain. Now begin switching the next SKU in your ranked list." },
       { type: "h3", text: "Step 4: Notify and Phase Out Old Vendors (Week 10-16)" },
       { type: "p", text: "With 2–3 SKUs successfully migrated, notify your old vendors of reduced volume. Don't cancel all at once — wind down over 2–3 order cycles to avoid burning bridges (you may need them as emergency backup). Complete migration SKU by SKU until all production is consolidated." },
-      { type: "callout", label: "Packworkz Approach", text: "Every order placed with Packworkz is backed by 3 pre-qualified factory partners. If your primary factory delays, production shifts automatically. This is how we can guarantee timelines other platforms can't." },
+      { type: "callout", label: "Packworkz Approach", text: "Eligible specifications can be assessed for alternate production routes before a disruption. Any switch still requires material, tooling, colour and quality compatibility; timelines are confirmed against the approved order plan." },
       { type: "h2", text: "What to Look for in a Managed Packaging Platform" },
       { type: "ul", items: [
         "Multi-vendor backup: Does the platform maintain 2–3 backup factories per SKU, or are they single-sourced?",

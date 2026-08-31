@@ -4,6 +4,14 @@ Allow: /
 Disallow: /dashboard/
 Disallow: /admin/
 Disallow: /api/
+Disallow: /login
+Disallow: /signup
+Disallow: /change-password
+Disallow: /track-order
+Disallow: /cart/
+Disallow: /configure/step/
+Disallow: /configure/confirmed/
+Disallow: /lp/
 
 # Sitemap
 Sitemap: https://packworkz.com/sitemap.xml

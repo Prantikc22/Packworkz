@@ -10,6 +10,11 @@
   },
   "routes": [
     { "src": "/api/(.*)", "dest": "/api/server" },
+    { "src": "/sustainable-catalog", "status": 308, "headers": { "Location": "/sustainable" } },
+    { "src": "/(?:login|signup|change-password|track-order)", "dest": "/index.html", "headers": { "X-Robots-Tag": "noindex, nofollow" } },
+    { "src": "/cart(?:/.*)?", "dest": "/index.html", "headers": { "X-Robots-Tag": "noindex, nofollow" } },
+    { "src": "/configure/(?:step|confirmed)(?:/.*)?", "dest": "/index.html", "headers": { "X-Robots-Tag": "noindex, nofollow" } },
+    { "src": "/lp/(.*)", "dest": "/index.html", "headers": { "X-Robots-Tag": "noindex, nofollow" } },
     { "handle": "filesystem" },
     { "src": "/(.*)", "dest": "/index.html" }
   ]

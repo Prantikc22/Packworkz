@@ -767,6 +767,8 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
     const skuParam = rawSkuParam === "LC-801" ? "LC-816" : rawSkuParam;
     const productParam = search.get("product");
     const qtyParam = search.get("qty");
+    const sizeParam = search.get("size");
+    const configParam = search.get("config");
     const structureParam = search.get("structure");
     const match = skuParam
       ? SKUS.find(s => s.code === skuParam || s.id === skuParam || s.slug === skuParam)
@@ -778,12 +780,23 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
       setSelectedCategory(match.category);
       const defaults: Record<string, string> = {};
       match.variants.forEach(g => { defaults[g.key] = g.options[0]; });
+      if (configParam) {
+        try {
+          const requested = JSON.parse(configParam) as Record<string, string>;
+          match.variants.forEach((group) => {
+            if (group.options.includes(requested[group.key])) defaults[group.key] = requested[group.key];
+          });
+        } catch {
+          // Ignore malformed shared URLs and retain safe defaults.
+        }
+      }
       if (structureParam) {
         const structureGroup = match.variants.find((group) => group.key === "structure");
         if (structureGroup?.options.includes(structureParam)) defaults.structure = structureParam;
       }
       setVariantSelections(defaults);
-      setSelectedSizeCode(COMMERCE_PRODUCTS[match.code]?.sizes[0]?.code || "");
+      const sizes = COMMERCE_PRODUCTS[match.code]?.sizes || [];
+      setSelectedSizeCode(sizes.some((size) => size.code === sizeParam) ? sizeParam! : sizes[0]?.code || "");
     }
     if (qtyParam) {
       const q = parseInt(qtyParam);
@@ -1583,14 +1596,14 @@ const maxSelfServeQuantity = selectedSku ? getMaxSelfServeQuantity(selectedSku) 
                     </div>
                     <p className="text-xs text-slate-400">
                       {selectedSkuBuyingMode === "self"
-                        ? "Choose one of the production quantities above. Larger or custom runs move to a managed volume quote."
+                        ? `Choose a preset or type any quantity from ${selectedSkuMoq.toLocaleString()} to ${(selectedSku?.quote_threshold ? selectedSku.quote_threshold - 1 : maxSelfServeQuantity).toLocaleString()}. The estimate updates instantly.`
                         : qtyUnit === "pieces" ? `Minimum: ${selectedSkuMoq.toLocaleString()} pieces for ${selectedSku?.name || "this product"}` : "Minimum: 50 kg of packaging film"}
                     </p>
                     {selectedSkuBuyingMode === "assisted" && (
                       <div className="flex items-start gap-2 border border-slate-300 border-l-[3px] border-l-amber-500 bg-white p-3">
                         <span className="text-amber-500 text-base leading-none mt-0.5">ⓘ</span>
                         <p className="text-xs leading-snug" style={{ color: "#8A5A00" }}>
-                          <strong>Managed quote needed.</strong> This format, custom quantity, or enterprise volume needs a reviewed production rate. Submit the same specification and our team will price it manually.
+                          <strong>Managed quote needed.</strong> This format, configuration, payment value, or enterprise volume needs a reviewed production rate. Submit the same specification and our team will price it manually.
                         </p>
                       </div>
                     )}

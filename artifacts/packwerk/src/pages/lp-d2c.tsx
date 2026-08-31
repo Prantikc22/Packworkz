@@ -888,7 +888,7 @@ export default function LpD2c() {
               <h2 style={{ color: "#0D1B2A", fontSize: "clamp(1.9rem, 4vw, 2.8rem)", fontWeight: 800, lineHeight: 1.12, marginBottom: 12, fontFamily: "'Space Grotesk', sans-serif" }}>
                 How much is vendor chaos costing you?
               </h2>
-              <p style={{ color: "#64748B", fontSize: 17 }}>Most D2C brands overpay by 8–15% without realising it.</p>
+              <p style={{ color: "#64748B", fontSize: 17 }}>Find avoidable cost across specifications, tooling, quantities and freight.</p>
             </div>
 
             <div

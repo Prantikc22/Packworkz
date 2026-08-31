@@ -16,7 +16,20 @@ export default function ResourceDetail() {
     );
   }
 
-  const otherArticles = ARTICLES.filter(a => a.slug !== slug).slice(0, 3);
+  const articleTerms = new Set([
+    article.category.toLowerCase(),
+    ...article.keywords.flatMap((keyword) => keyword.toLowerCase().split(/\s+/)),
+  ]);
+  const otherArticles = ARTICLES
+    .filter((candidate) => candidate.slug !== slug)
+    .map((candidate) => {
+      const candidateTerms = [candidate.category.toLowerCase(), ...candidate.keywords.flatMap((keyword) => keyword.toLowerCase().split(/\s+/))];
+      const score = candidateTerms.reduce((total, term) => total + (articleTerms.has(term) ? 1 : 0), 0);
+      return { candidate, score };
+    })
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 3)
+    .map(({ candidate }) => candidate);
 
   return (
     <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", background: "white" }}>
@@ -72,6 +85,21 @@ export default function ResourceDetail() {
       {/* Article body */}
       <section style={{ maxWidth: 780, margin: "0 auto", padding: "56px 32px 80px" }}>
         <ArticleBody sections={article.content} />
+
+        {article.sources?.length ? (
+          <aside style={{ marginTop: 40, padding: "24px", background: "#F8FAFC", border: "1px solid #E2E8F0" }}>
+            <h2 style={{ color: "#0D1B2A", fontSize: 18, fontWeight: 800, marginBottom: 12 }}>Primary sources</h2>
+            <ul style={{ margin: 0, paddingLeft: 20 }}>
+              {article.sources.map((source) => (
+                <li key={source.href} style={{ marginBottom: 8 }}>
+                  <a href={source.href} target="_blank" rel="noreferrer" style={{ color: "#1B6CA8", fontWeight: 600 }}>
+                    {source.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </aside>
+        ) : null}
 
         {/* Tags */}
         <div style={{ marginTop: 48, paddingTop: 32, borderTop: "1px solid #E2EAF4" }}>

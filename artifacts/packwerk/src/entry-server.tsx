@@ -31,6 +31,41 @@ import Terms from "@/pages/terms";
 import Refund from "@/pages/refund";
 import TrackOrder from "@/pages/track-order";
 import { CartProvider } from "@/lib/cart";
+import { CATALOG_SKUS, getCatalogImage } from "@/lib/catalog";
+import { ARTICLES } from "@/lib/resources-data";
+
+export function getDynamicSeoRoutes() {
+  return {
+    productCount: CATALOG_SKUS.length,
+    products: CATALOG_SKUS.map((sku) => ({
+      path: `/products/${sku.slug}`,
+      title: `${sku.name.replace(/^Custom Printed /, "")} India | Packworkz`,
+      description: sku.publicBuyingPath === "instant"
+        ? `Buy custom ${sku.name.toLowerCase()} in India from ${sku.moq.toLocaleString("en-IN")} ${sku.moq_unit}. Compare sizes, materials, artwork and quantity pricing online with Packworkz.`
+        : `Source custom ${sku.name.toLowerCase()} in India from ${sku.moq.toLocaleString("en-IN")} ${sku.moq_unit}. Review materials, artwork and specifications, then request a managed Packworkz quote.`,
+      keywords: `${sku.name.toLowerCase()} India, custom ${sku.name.toLowerCase()}, ${sku.code}, packaging supplier India`,
+      kind: "product" as const,
+      name: sku.name,
+      sku: sku.code,
+      category: sku.category,
+      image: getCatalogImage(sku),
+      buyingPath: sku.publicBuyingPath,
+      lowPrice: sku.price_min,
+      highPrice: sku.price_max,
+      offerCount: sku.price_tiers?.length || 1,
+    })),
+    resources: ARTICLES.map((article) => ({
+      path: `/resources/${article.slug}`,
+      title: `${article.title} | Packworkz`,
+      description: article.description,
+      keywords: article.keywords.join(", "),
+      kind: "article" as const,
+      headline: article.title,
+      image: article.heroImage,
+      publishedDate: article.publishedDate,
+    })),
+  };
+}
 
 function makeStaticHook(path: string) {
   return () => [path, (_: string) => {}] as [string, (to: string) => void];
@@ -62,9 +97,6 @@ function SSRApp({ url }: { url: string }) {
               <PublicLayout><HowItWorks /></PublicLayout>
             </Route>
             <Route path="/sustainable">
-              <PublicLayout><Sustainable /></PublicLayout>
-            </Route>
-            <Route path="/sustainable-catalog">
               <PublicLayout><Sustainable /></PublicLayout>
             </Route>
             <Route path="/products">

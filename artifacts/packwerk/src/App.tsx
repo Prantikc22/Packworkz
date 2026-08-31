@@ -127,7 +127,7 @@ function Router() {
       <PublicRoute path="/how-it-works" component={HowItWorks} layout={PublicLayout} />
       <PublicRoute path="/sustainable" component={Sustainable} layout={PublicLayout} />
       <Route path="/sustainability"><Redirect to="/sustainable" /></Route>
-      <PublicRoute path="/sustainable-catalog" component={Sustainable} layout={PublicLayout} />
+      <Route path="/sustainable-catalog"><Redirect to="/sustainable" /></Route>
       <PublicRoute path="/about" component={About} layout={PublicLayout} />
       <PublicRoute path="/resources" component={Resources} layout={PublicLayout} />
       <PublicRoute path="/resources/:slug" component={ResourceDetail} layout={PublicLayout} />

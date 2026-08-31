@@ -8,7 +8,7 @@ import {
   ClipboardCheck, Truck, ShieldCheck, MapPinned, MessageSquare,
   ShoppingCart as ShoppingCartIcon,
 } from "lucide-react";
-import { CATALOG_SKUS } from "@/lib/catalog";
+import { CATALOG_SKUS, getCatalogImage } from "@/lib/catalog";
 import { LAUNCH_PROMOTION_RATE } from "@workspace/commerce";
 import { CartDrawer } from "@/components/cart/CartDrawer";
 import { ExitOfferModal } from "@/components/leads/ExitOfferModal";
@@ -1105,10 +1105,11 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     setIsLoggedIn(!!localStorage.getItem("packwerk_access_token"));
 
-    const canonicalUrl = `https://packworkz.com${location === "/" ? "" : location}`;
+    const pathname = location.split(/[?#]/)[0] || "/";
+    const canonicalUrl = `https://packworkz.com${pathname === "/" ? "" : pathname}`;
 
     // Resolve SEO: exact match → longest prefix → homepage fallback
-    const productSlug = location.match(/^\/products\/([^/?#]+)/)?.[1];
+    const productSlug = pathname.match(/^\/products\/([^/?#]+)/)?.[1];
     const product = productSlug
       ? CATALOG_SKUS.find((item) => item.slug === decodeURIComponent(productSlug))
       : undefined;
@@ -1119,7 +1120,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
           keywords: `${product.name} India, custom ${product.name}, packaging supplier India, Packworkz`,
         }
       : undefined;
-    const resourceSlug = location.match(/^\/resources\/([^/?#]+)/)?.[1];
+    const resourceSlug = pathname.match(/^\/resources\/([^/?#]+)/)?.[1];
     const resource = resourceSlug
       ? ARTICLES.find((article) => article.slug === decodeURIComponent(resourceSlug))
       : undefined;
@@ -1130,9 +1131,9 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
           keywords: resource.keywords.join(", "),
         }
       : undefined;
-    const seo = productSeo ?? resourceSeo ?? PAGE_SEO[location] ??
+    const seo = productSeo ?? resourceSeo ?? PAGE_SEO[pathname] ??
       (Object.entries(PAGE_SEO)
-        .filter(([k]) => k !== "/" && location.startsWith(k))
+        .filter(([k]) => k !== "/" && pathname.startsWith(k))
         .sort((a, b) => b[0].length - a[0].length)[0]?.[1]) ??
       PAGE_SEO["/"];
 
@@ -1155,8 +1156,23 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
     setMeta('meta[property="og:title"]', seo.title);
     setMeta('meta[property="og:description"]', seo.description);
     setMeta('meta[property="og:url"]', canonicalUrl);
+    setMeta('meta[property="og:type"]', resource ? "article" : product ? "product" : "website");
     setMeta('meta[name="twitter:title"]', seo.title);
     setMeta('meta[name="twitter:description"]', seo.description);
+
+    const imagePath = resource?.heroImage || (product ? getCatalogImage(product) : "/opengraph.jpg");
+    const imageUrl = imagePath.startsWith("http") ? imagePath : `https://packworkz.com${imagePath.startsWith("/") ? imagePath : `/${imagePath}`}`;
+    setMeta('meta[property="og:image"]', imageUrl);
+    setMeta('meta[name="twitter:image"]', imageUrl);
+
+    const noIndex = /^(\/login|\/signup|\/change-password|\/track-order|\/cart(?:\/|$)|\/configure\/step(?:\/|$)|\/configure\/confirmed(?:\/|$)|\/lp\/)/.test(pathname);
+    let robots = document.querySelector('meta[name="robots"]') as HTMLMetaElement | null;
+    if (!robots) {
+      robots = document.createElement("meta");
+      robots.name = "robots";
+      document.head.appendChild(robots);
+    }
+    robots.content = noIndex ? "noindex, nofollow" : "index, follow, max-image-preview:large";
 
     // Canonical
     let canonical = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;

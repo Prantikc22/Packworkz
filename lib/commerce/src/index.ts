@@ -7,6 +7,8 @@ export const LAUNCH_PROMOTION_MONTHLY_LIMIT = 100;
 // Supplier quotes are loaded with expected rejection/wastage (3%), inward
 // freight (3%) and production packing/handling (2%) before margin is tested.
 export const LANDED_COST_LOAD_RATE = 0.08;
+export const UNIT_PRICE_INCREASE_RUPEES = 1.5;
+export const MINIMUM_NET_UNIT_PRICE_RUPEES = 3.5;
 
 export type CommerceSize = {
   code: string;
@@ -242,7 +244,9 @@ export function getEffectiveCommerceTiers(skuCode: string): CommerceTier[] {
   return product.tiers.map((tier) => {
     const landedCost = costAtQuantity(skuCode, tier.minQty);
     const marginFloor = landedCost === undefined ? tier.unitPrice : roundUpCurrency(landedCost / (1 - TARGET_PRODUCT_GROSS_MARGIN));
-    return { ...tier, unitPrice: Math.max(tier.unitPrice, marginFloor) };
+    const increasedPrice = Math.max(tier.unitPrice, marginFloor) + UNIT_PRICE_INCREASE_RUPEES;
+    const launchSafeFloor = MINIMUM_NET_UNIT_PRICE_RUPEES / (1 - LAUNCH_PROMOTION_RATE);
+    return { ...tier, unitPrice: roundUpCurrency(Math.max(increasedPrice, launchSafeFloor)) };
   });
 }
 
@@ -298,9 +302,6 @@ export function calculateCommerceEstimate(input: CommerceEstimateInput): Commerc
     return { eligible: false, reason: "invalid_quantity", ...empty };
   }
   const effectiveTiers = getEffectiveCommerceTiers(input.skuCode);
-  if (!effectiveTiers.some((tier) => tier.minQty === input.quantity)) {
-    return { eligible: false, reason: "managed_quote", ...empty };
-  }
   if (input.quantity >= product.quoteThreshold) {
     return { eligible: false, reason: "managed_quote", ...empty };
   }
@@ -318,7 +319,8 @@ export function calculateCommerceEstimate(input: CommerceEstimateInput): Commerc
   const landedUnitCost = costAtQuantity(input.skuCode, input.quantity);
   const configurationMultiplier = configurationCostMultiplier(input.skuCode, input.configuration);
   const sizedLandedUnitCost = landedUnitCost === undefined ? undefined : Number((landedUnitCost * selectedSize.priceMultiplier * configurationMultiplier).toFixed(2));
-  const sizedTierPrice = tier.unitPrice * selectedSize.priceMultiplier * configurationMultiplier;
+  const baselineTierPrice = Math.max(0, tier.unitPrice - UNIT_PRICE_INCREASE_RUPEES);
+  const sizedTierPrice = baselineTierPrice * selectedSize.priceMultiplier * configurationMultiplier + UNIT_PRICE_INCREASE_RUPEES;
   const promotionCode = input.promotionCode?.toUpperCase() === LAUNCH_PROMOTION_CODE
     ? LAUNCH_PROMOTION_CODE
     : undefined;
@@ -326,7 +328,8 @@ export function calculateCommerceEstimate(input: CommerceEstimateInput): Commerc
   const sizedMarginFloor = sizedLandedUnitCost === undefined
     ? sizedTierPrice
     : sizedLandedUnitCost / ((1 - promotionRate) * (1 - TARGET_PRODUCT_GROSS_MARGIN));
-  const unitPrice = roundUpCurrency(Math.max(sizedTierPrice, sizedMarginFloor));
+  const minimumListPrice = MINIMUM_NET_UNIT_PRICE_RUPEES / (1 - promotionRate);
+  const unitPrice = roundUpCurrency(Math.max(sizedTierPrice, sizedMarginFloor, minimumListPrice));
   const netUnitRevenue = unitPrice * (1 - promotionRate);
   const grossMarginRate = sizedLandedUnitCost === undefined ? undefined : Number(((netUnitRevenue - sizedLandedUnitCost) / netUnitRevenue).toFixed(4));
   const material = Number((unitPrice * input.quantity).toFixed(2));
@@ -336,7 +339,7 @@ export function calculateCommerceEstimate(input: CommerceEstimateInput): Commerc
   const setup = input.artwork === "none" && !requiresBrandingSetup ? 0 : configurationSetupFee(input.skuCode, input.configuration);
   const artwork = input.artwork === "design" ? 1_999 : 0;
   const deliveryAdd = input.delivery === "blitz" ? 1_200 : input.delivery === "warehouse" ? 300 : 0;
-  const logistics = Number((Math.min(product.shippingCap, product.shippingBase + input.quantity * product.shippingPerUnit) + deliveryAdd).toFixed(2));
+  const logistics = Number((2 * (Math.min(product.shippingCap, product.shippingBase + input.quantity * product.shippingPerUnit) + deliveryAdd)).toFixed(2));
   const subtotal = Number((material - discount + setup + artwork + logistics).toFixed(2));
   const gst = Number((subtotal * GST_RATE).toFixed(2));
   const total = Number((subtotal + gst).toFixed(2));

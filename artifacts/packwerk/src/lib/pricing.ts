@@ -1,4 +1,4 @@
-import { calculateCommerceEstimate, LAUNCH_PROMOTION_CODE } from "@workspace/commerce";
+import { calculateCommerceEstimate, LAUNCH_PROMOTION_CODE, MINIMUM_NET_UNIT_PRICE_RUPEES, UNIT_PRICE_INCREASE_RUPEES } from "@workspace/commerce";
 
 export type PricingSku = {
   code?: string;
@@ -65,14 +65,14 @@ export function calculateOrderEstimate(
   const bandUnit = sku.estimate_band
     ? sku.estimate_band.unit_max - (sku.estimate_band.unit_max - sku.estimate_band.unit_min) * progress
     : sku.price_max - (sku.price_max - sku.price_min) * progress;
-  const unit = tierUnit ?? bandUnit;
+  const unit = Math.max(MINIMUM_NET_UNIT_PRICE_RUPEES, (tierUnit ?? bandUnit) + UNIT_PRICE_INCREASE_RUPEES);
   const material = unit * qty;
   const setup = sku.purchase_mode === "brief" && sku.estimate_band
     ? sku.estimate_band.setup_min
     : Math.max(2500, sku.price_max * sku.moq * 0.15);
   const baseLogistics = Math.min(qty * 0.9, 3500) + 800;
   const deliveryAdd = delivery === "blitz" ? 1200 : delivery === "warehouse" ? 300 : 0;
-  const logistics = baseLogistics + deliveryAdd;
+  const logistics = 2 * (baseLogistics + deliveryAdd);
   const artworkCost = artwork === "design" ? 1999 : 0;
   const low = material + setup + logistics + artworkCost;
   const estimateHigh = sku.estimate_band

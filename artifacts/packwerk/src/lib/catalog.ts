@@ -1,6 +1,6 @@
 import { SKUS, SKU_IMAGES, CATEGORIES, type Sku } from "./skus";
 import { EXPANDED_SKUS, type PurchaseMode } from "./catalog-expansion";
-import { COMMERCE_PRODUCTS, getEffectiveCommerceTiers } from "@workspace/commerce";
+import { COMMERCE_PRODUCTS, getEffectiveCommerceTiers, MINIMUM_NET_UNIT_PRICE_RUPEES, UNIT_PRICE_INCREASE_RUPEES } from "@workspace/commerce";
 
 export type BuyingMode = "self_serve" | "assisted";
 
@@ -379,17 +379,23 @@ export const CATALOG_SKUS: CatalogSku[] = ALL_CATALOG_SKUS.filter((sku) => !STOR
   const purchaseMode = resolveMode(sku);
   const commerceProduct = COMMERCE_PRODUCTS[sku.code];
   const commerceTiers = commerceProduct ? getEffectiveCommerceTiers(sku.code) : [];
-  const resolvedTiers = commerceProduct
+  const sourceTiers = commerceProduct
     ? commerceTiers.map((tier, index) => ({
         min_qty: tier.minQty,
         unit_price: tier.unitPrice,
         label: index === 0 ? "Launch quantity" : index === commerceTiers.length - 1 ? "Best online rate" : undefined,
       }))
     : purchaseMode === "brief" ? sku.price_tiers : defaultTiers(sku);
+  const resolvedTiers = commerceProduct
+    ? sourceTiers
+    : sourceTiers?.map((tier) => ({
+        ...tier,
+        unit_price: Math.max(MINIMUM_NET_UNIT_PRICE_RUPEES, Number((tier.unit_price + UNIT_PRICE_INCREASE_RUPEES).toFixed(2))),
+      }));
   return {
     ...sku,
-    price_min: resolvedTiers?.length ? resolvedTiers[resolvedTiers.length - 1].unit_price : sku.price_min,
-    price_max: resolvedTiers?.length ? resolvedTiers[0].unit_price : sku.price_max,
+    price_min: resolvedTiers?.length ? resolvedTiers[resolvedTiers.length - 1].unit_price : Math.max(MINIMUM_NET_UNIT_PRICE_RUPEES, sku.price_min + UNIT_PRICE_INCREASE_RUPEES),
+    price_max: resolvedTiers?.length ? resolvedTiers[0].unit_price : Math.max(MINIMUM_NET_UNIT_PRICE_RUPEES, sku.price_max + UNIT_PRICE_INCREASE_RUPEES),
     purchase_mode: purchaseMode,
     purchaseMode,
     price_tiers: resolvedTiers,
@@ -475,11 +481,8 @@ export function getMaxSelfServeQuantity(
 ): number {
   if (sku.publicBuyingPath === "quote") return 0;
 
-  const validatedTiers = (sku.price_tiers || [])
-    .map((tier) => tier.min_qty)
-    .filter((quantity) => !sku.quote_threshold || quantity < sku.quote_threshold);
-
-  return Math.max(sku.moq, ...validatedTiers);
+  if (sku.quote_threshold) return Math.max(sku.moq, sku.quote_threshold - 1);
+  return Math.max(sku.moq, ...(sku.price_tiers || []).map((tier) => tier.min_qty));
 }
 
 export function requiresQuote(sku: CatalogSku, quantity?: number): boolean {
@@ -487,11 +490,7 @@ export function requiresQuote(sku: CatalogSku, quantity?: number): boolean {
   if (!quantity) return false;
 
   const reachesConfiguredThreshold = Boolean(sku.quote_threshold && quantity >= sku.quote_threshold);
-  const onlineQuantities = (sku.price_tiers || [])
-    .map((tier) => tier.min_qty)
-    .filter((tierQuantity) => !sku.quote_threshold || tierQuantity < sku.quote_threshold);
-  const isListedOnlineQuantity = onlineQuantities.includes(quantity);
-  return reachesConfiguredThreshold || quantity > getMaxSelfServeQuantity(sku) || !isListedOnlineQuantity;
+  return reachesConfiguredThreshold || quantity > getMaxSelfServeQuantity(sku);
 }
 
 export function getConfigureHref(sku: CatalogSku, quantity?: number): string {

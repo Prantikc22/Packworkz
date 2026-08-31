@@ -3,11 +3,14 @@ import test from "node:test";
 import {
   COMMERCE_PRODUCTS,
   LAUNCH_PROMOTION_CODE,
+  LAUNCH_PROMOTION_RATE,
+  MINIMUM_NET_UNIT_PRICE_RUPEES,
   RAZORPAY_PAYMENT_LIMIT_RUPEES,
   TARGET_PRODUCT_GROSS_MARGIN,
   calculateCommerceCartEstimate,
   calculateCommerceEstimate,
   formatMeasurementInCm,
+  getEffectiveCommerceTiers,
   getMinimumQuantityForConfiguration,
 } from "./index.ts";
 
@@ -17,6 +20,30 @@ const configurationScenarios = [
   { finish: "Soft touch", closure: "Resealable zipper" },
   { material: "Metallised high-barrier film", branding: "Direct digital print" },
 ];
+
+test("every published commerce tier is increased by at least ₹1.50", () => {
+  for (const product of Object.values(COMMERCE_PRODUCTS)) {
+    const effective = getEffectiveCommerceTiers(product.code);
+    effective.forEach((tier, index) => {
+      assert.ok(tier.unitPrice >= product.tiers[index].unitPrice + 1.5);
+    });
+  }
+});
+
+test("standard delivery is doubled for every commerce product", () => {
+  for (const product of Object.values(COMMERCE_PRODUCTS)) {
+    const quantity = product.tiers[0].minQty;
+    const estimate = calculateCommerceEstimate({
+      skuCode: product.code,
+      quantity,
+      sizeCode: product.sizes[0].code,
+      artwork: "upload",
+      delivery: "standard",
+    });
+    const expected = 2 * Math.min(product.shippingCap, product.shippingBase + quantity * product.shippingPerUnit);
+    assert.equal(estimate.logistics, Number(expected.toFixed(2)), product.code);
+  }
+});
 
 test("every self-serve tier, size and configuration preserves the product margin floor", () => {
   let checked = 0;
@@ -42,6 +69,10 @@ test("every self-serve tier, size and configuration preserves the product margin
           assert.ok(
             (estimate.grossMarginRate ?? 0) >= TARGET_PRODUCT_GROSS_MARGIN,
             `${product.code}/${productSize.code}/${quantity} returned ${estimate.grossMarginRate}`,
+          );
+          assert.ok(
+            estimate.unitPrice * (1 - LAUNCH_PROMOTION_RATE) >= MINIMUM_NET_UNIT_PRICE_RUPEES,
+            `${product.code}/${productSize.code}/${quantity} fell below the ₹${MINIMUM_NET_UNIT_PRICE_RUPEES} net floor`,
           );
           checked += 1;
         }
@@ -75,7 +106,8 @@ test("the launch offer is applied while preserving product margin", () => {
   assert.equal(estimate.promotionCode, LAUNCH_PROMOTION_CODE);
   assert.ok(estimate.discount > 0);
   assert.ok((estimate.grossMarginRate ?? 0) >= TARGET_PRODUCT_GROSS_MARGIN);
-  assert.ok(estimate.total < 260, `Expected a competitive 25-label checkout, got ${estimate.total}`);
+  assert.equal(estimate.logistics, 99);
+  assert.ok(estimate.total < 350, `Expected a competitive 25-label checkout after the requested uplift, got ${estimate.total}`);
 });
 
 test("foodservice branding uses honest production minimums", () => {
@@ -125,7 +157,7 @@ test("compostable bio cups stay competitive and preserve guarded margins", () =>
     promotionCode: LAUNCH_PROMOTION_CODE,
   });
   assert.notEqual(plain.reason, "invalid_quantity");
-  assert.ok(plain.unitPrice <= 9.98, `Expected entry rate at or below the benchmark, got ${plain.unitPrice}`);
+  assert.ok(plain.unitPrice <= 10.5, `Expected the requested ₹1.50 uplift, got ${plain.unitPrice}`);
   assert.ok((plain.grossMarginRate ?? 0) >= TARGET_PRODUCT_GROSS_MARGIN);
 
   const withLid = calculateCommerceEstimate({
@@ -233,7 +265,7 @@ test("an empty cart cannot create a payment", () => {
   assert.equal(cart.amountPaise, 0);
 });
 
-test("an unlisted custom quantity is routed to a managed quote", () => {
+test("an unlisted custom quantity receives the nearest lower tier price", () => {
   const estimate = calculateCommerceEstimate({
     skuCode: "FP-101",
     quantity: 750,
@@ -241,6 +273,7 @@ test("an unlisted custom quantity is routed to a managed quote", () => {
     artwork: "upload",
     delivery: "standard",
   });
-  assert.equal(estimate.eligible, false);
-  assert.equal(estimate.reason, "managed_quote");
+  assert.equal(estimate.eligible, true);
+  assert.equal(estimate.reason, undefined);
+  assert.ok(estimate.total > 0);
 });
