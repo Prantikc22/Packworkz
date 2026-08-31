@@ -49,14 +49,14 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
   const { slug } = params;
   const canonicalSlug = LEGACY_SLUG_ALIASES[slug] || slug;
   const product = CATALOG_SKUS.find((sku) => sku.slug === canonicalSlug);
-  const [quantity, setQuantity] = useState<number>(0);
+  const [quantity, setQuantity] = useState<number | "">(() => product?.moq ?? "");
   const [selectedSizeCode, setSelectedSizeCode] = useState(() => product ? COMMERCE_PRODUCTS[product.code]?.sizes[0]?.code || "" : "");
   const [variantSelections, setVariantSelections] = useState<Record<string, string>>(() =>
     Object.fromEntries((product?.variants || []).map((variant) => [variant.key, variant.options[0]])),
   );
 
   useEffect(() => {
-    setQuantity(0);
+    setQuantity(product?.moq ?? "");
     setSelectedSizeCode(product ? COMMERCE_PRODUCTS[product.code]?.sizes[0]?.code || "" : "");
     setVariantSelections(
       Object.fromEntries((product?.variants || []).map((variant) => [variant.key, variant.options[0]])),
@@ -80,7 +80,7 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
     );
   }
 
-  const currentQty = quantity || product.moq;
+  const currentQty = quantity === "" ? product.moq : quantity;
   const commerceProduct = COMMERCE_PRODUCTS[product.code];
   const activeSizeCode = selectedSizeCode || commerceProduct?.sizes[0]?.code;
   const activeConfiguration = Object.fromEntries(product.variants.map((variant) => [variant.key, variantSelections[variant.key] || variant.options[0]]));
@@ -274,8 +274,14 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
                   id="product-quantity"
                   type="number" 
                   min={product.moq} 
-                  value={currentQty} 
-                  onChange={e => setQuantity(parseInt(e.target.value) || product.moq)}
+                  value={quantity}
+                  onChange={(event) => {
+                    const nextValue = event.target.value;
+                    setQuantity(nextValue === "" ? "" : Math.trunc(Number(nextValue)));
+                  }}
+                  onBlur={() => {
+                    if (quantity === "") setQuantity(product.moq);
+                  }}
                   className="h-12"
                 />
                 {product.publicBuyingPath === "instant" && maxSelfServeQuantity > 0 && (
