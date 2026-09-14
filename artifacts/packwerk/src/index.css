@@ -2961,6 +2961,9 @@ body, html {
 .pw-proof-logo:hover { transform: translateY(-2px); opacity: .82; }
 .pw-proof-logo img { display: block; width: 100%; height: 100%; max-width: 100%; max-height: 100%; object-fit: contain; filter: none; opacity: 1; }
 .pw-proof-logo-plum img { width: 92px; height: 42px; filter: brightness(0) invert(1); }
+.pw-proof-logo-amul img,
+.pw-proof-logo-haldirams img,
+.pw-proof-logo-bhikaram img { width: 126px; height: 44px; object-fit: contain; filter: grayscale(1) brightness(0) invert(1); opacity: .88; }
 .pw-proof-logo-bodycraft img { width: 102px; height: 42px; }
 .pw-proof-logo-oliva { background: transparent; }
 .pw-proof-logo-oliva img { width: 108px; transform: none; filter: brightness(0) invert(1); }

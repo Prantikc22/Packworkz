@@ -30,8 +30,9 @@ const STORIES = [
 
 const CUSTOMER_LOGOS = [
   { name: "Plum", src: "/images/logos/plum-official.svg" },
-  { name: "Happilo", src: "/images/logos/happilo-official.png" },
-  { name: "Bodycraft", src: "/images/logos/bodycraft-official.svg" },
+  { name: "Amul", src: "/images/logos/amul-wordmark.svg" },
+  { name: "Haldirams", src: "/images/logos/haldirams-wordmark.svg" },
+  { name: "Bhikaram", src: "/images/logos/bhikaram-wordmark.svg" },
   { name: "Oliva", src: "/images/logos/oliva-official.svg" },
 ];
 

@@ -33,17 +33,20 @@ const MARQUEE_1 = Array(6).fill(MARQUEE_PHRASES).flat();
 
 const LOGO_ROW_1 = [
   { name: "Plum",             file: "/images/logos/plum.png" },
+  { name: "Amul",             file: "/images/logos/amul-wordmark.svg" },
   { name: "The Souled Store", file: "/images/logos/souledstore.png" },
   { name: "Neeman's",         file: "/images/logos/neemans.png" },
   { name: "MVMT",             file: "/images/logos/mvmt.gif" },
   { name: "CosIQ",            file: "/images/logos/cosiq.png" },
-  { name: "Rage Coffee",      file: "/images/logos/ragecoffee.png" },
+  { name: "Haldirams",        file: "/images/logos/haldirams-wordmark.svg" },
 ];
 const LOGO_ROW_2 = [
   { name: "Mogu Mogu",        file: "/images/logos/mogumogi.png" },
   { name: "Olipop",           file: "/images/logos/olipop.webp" },
   { name: "Voltas",           file: "/images/logos/voltas.png" },
   { name: "Pilgrim",          file: "/images/logos/pilgrim.png" },
+  { name: "Bhikaram",         file: "/images/logos/bhikaram-wordmark.svg" },
+  { name: "Rage Coffee",      file: "/images/logos/ragecoffee.png" },
 ];
 
 const catalogCount = (category: string) => CATALOG_SKUS.filter((sku) => isCatalogSkuInCategory(sku, category)).length;
@@ -774,7 +777,7 @@ export default function Home() {
                 <span className="material-symbols-outlined" style={{ fontSize: 11, color: "#E8A838", fontVariationSettings: "'FILL' 1, 'wght' 700" }}>verified</span>
               </span>
               Packaging operations for{" "}
-              <span style={{ color: "rgba(255,255,255,0.78)", fontWeight: 600 }}>Plum, Happilo, Bodycraft</span>
+              <span style={{ color: "rgba(255,255,255,0.78)", fontWeight: 600 }}>Plum, Haldirams, Amul</span>
               {" "}and growing teams across India
             </p>
             <div className="flex flex-col sm:flex-row gap-4 mb-3" style={{ alignItems: "stretch" }}>
