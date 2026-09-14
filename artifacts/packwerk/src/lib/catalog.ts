@@ -34,6 +34,21 @@ const HYBRID_CODES = new Set([
   "FP-103", "FP-104", "BC-202", "BC-203", "BC-204", "BC-205", "BC-206", "TS-301", "BX-401", "EC-502", "EC-503", "SP-901", "SP-903", "SP-904",
 ]);
 
+// Online checkout is deliberately narrow. These are the few repeatable,
+// startup-friendly formats we can price safely without production review.
+// Everything else receives a specialist-confirmed commercial instead of a
+// misleading multiplied estimate.
+export const INSTANT_BUY_CODES = new Set([
+  "FP-101",
+  "EC-501", "EC-504", "EC-505", "EC-509", "EC-510",
+  "LC-804", "LC-805", "LC-808", "LC-810", "LC-811", "LC-815",
+  "LC-816", "LC-817", "LC-818", "LC-819", "LC-820",
+]);
+
+function resolvePublicBuyingPath(sku: Sku): "instant" | "quote" {
+  return INSTANT_BUY_CODES.has(sku.code) ? "instant" : "quote";
+}
+
 export const INDUSTRY_CATALOGS: IndustryCatalog[] = [
   {
     slug: "d2c",
@@ -377,6 +392,7 @@ function defaultQuoteThreshold(sku: Sku): number | undefined {
 export const CATALOG_SKUS: CatalogSku[] = ALL_CATALOG_SKUS.filter((sku) => !STOREFRONT_EXCLUSIONS.has(sku.code)).map((sourceSku) => {
   const sku: Sku = { ...sourceSku, ...STOREFRONT_OVERRIDES[sourceSku.code] };
   const purchaseMode = resolveMode(sku);
+  const publicBuyingPath = resolvePublicBuyingPath(sku);
   const commerceProduct = COMMERCE_PRODUCTS[sku.code];
   const commerceTiers = commerceProduct ? getEffectiveCommerceTiers(sku.code) : [];
   const sourceTiers = commerceProduct
@@ -399,18 +415,18 @@ export const CATALOG_SKUS: CatalogSku[] = ALL_CATALOG_SKUS.filter((sku) => !STOR
     purchase_mode: purchaseMode,
     purchaseMode,
     price_tiers: resolvedTiers,
-    estimate_band: sku.estimate_band ?? (purchaseMode !== "instant"
+    estimate_band: sku.estimate_band ?? (publicBuyingPath === "quote"
       ? { unit_min: sku.price_min, unit_max: sku.price_max, setup_min: 5000, setup_max: 50000 }
       : undefined),
-    buyingMode: purchaseMode === "brief" ? "assisted" : "self_serve",
+    buyingMode: publicBuyingPath === "quote" ? "assisted" : "self_serve",
     industrySlugs: INDUSTRY_BY_CATEGORY.get(sku.category) || ["d2c"],
     sustainableTier: sku.is_eco
       ? sku.category === "sustainable"
         ? "certified"
         : "recyclable"
       : undefined,
-    speedLabel: purchaseMode === "brief" ? "Production brief" : sku.is_smartstock ? "Fast dispatch" : `${sku.delivery_days_india} day lead time`,
-    publicBuyingPath: purchaseMode === "brief" ? "quote" : "instant",
+    speedLabel: publicBuyingPath === "quote" ? "Specialist confirmed" : sku.is_smartstock ? "Fast dispatch" : `${sku.delivery_days_india} day lead time`,
+    publicBuyingPath,
     quote_threshold: commerceProduct?.quoteThreshold ?? defaultQuoteThreshold(sku),
   };
 });

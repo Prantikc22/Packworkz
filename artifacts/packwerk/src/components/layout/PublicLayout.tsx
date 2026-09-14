@@ -15,6 +15,15 @@ import { ExitOfferModal } from "@/components/leads/ExitOfferModal";
 import { useCart } from "@/lib/cart";
 import { ARTICLES } from "@/lib/resources-data";
 
+function BrandLogo({ footer = false }: { footer?: boolean }) {
+  return (
+    <span className={`pw-brand-lockup ${footer ? "is-footer" : ""}`} aria-label="Packworkz">
+      <span className="pw-brand-mark" aria-hidden="true"><i /><b /></span>
+      <span>Packworkz</span>
+    </span>
+  );
+}
+
 // ── Per-page SEO metadata ────────────────────────────────────────────────────
 const PAGE_SEO: Record<string, { title: string; description: string; keywords: string }> = {
   "/": {
@@ -243,6 +252,15 @@ const RESOURCE_ITEMS = [
 
 // ── Styles injected once ──────────────────────────────────────────────────────
 const GLOBAL_STYLES = `
+  .pw-brand-lockup { display:inline-flex; align-items:center; gap:9px; color:#fff; font-family:'Space Grotesk',sans-serif; font-size:25px; font-weight:900; letter-spacing:-.045em; line-height:1; }
+  .pw-brand-lockup.is-footer { font-size:27px; }
+  .pw-brand-mark { position:relative; display:inline-block; width:22px; height:26px; flex:0 0 auto; }
+  .pw-brand-mark i,.pw-brand-mark b { position:absolute; display:block; transform:skewY(-14deg); border-radius:2px; }
+  .pw-brand-mark i { left:0; top:0; width:14px; height:18px; background:#f2b134; box-shadow:0 5px 14px rgba(242,177,52,.26); }
+  .pw-brand-mark b { right:0; bottom:0; width:12px; height:16px; background:#f8fafc; border:1px solid rgba(255,255,255,.45); }
+  .tinyshelf-badge { display:inline-flex; align-items:center; line-height:0; opacity:.92; transition:opacity .18s ease, transform .18s ease; }
+  .tinyshelf-badge:hover { opacity:1; transform:translateY(-1px); }
+  .tinyshelf-badge img { display:block; width:216px; height:64px; max-width:100%; object-fit:contain; }
   @keyframes dropIn {
     from { opacity: 0; transform: translateY(-8px); }
     to   { opacity: 1; transform: translateY(0); }
@@ -264,6 +282,12 @@ const GLOBAL_STYLES = `
       flex-direction: column !important;
       align-items: flex-start !important;
     }
+    .po-footer-topbar > div:last-child {
+      width: 100%;
+      flex-wrap: wrap;
+      gap: 14px !important;
+    }
+    .tinyshelf-badge img { width: 180px; height: auto; }
     .po-footer-bottom {
       padding: 16px 24px !important;
       flex-direction: column !important;
@@ -1225,13 +1249,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
       >
         {/* Logo */}
         <Link href="/" style={{ textDecoration: "none" }}>
-          <span className="pw-logo-reveal" style={{
-            fontSize: 32, fontWeight: 900, letterSpacing: "-0.03em",
-            color: "white", fontFamily: "'Space Grotesk', sans-serif",
-            cursor: "pointer", userSelect: "none",
-          }}>
-            Packworkz
-          </span>
+          <span style={{ display: "inline-flex", overflow: "visible", cursor: "pointer", userSelect: "none" }}><BrandLogo /></span>
         </Link>
 
         {/* Centre navigation */}
@@ -1406,7 +1424,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
 
         {/* Top bar: logo + socials + CTA */}
         <div className="po-footer-topbar" style={{ borderBottom: "1px solid rgba(255,255,255,0.08)", padding: "28px 64px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 16 }}>
-          <span style={{ fontSize: 34, fontWeight: 900, color: "white", letterSpacing: "-0.03em" }}>Packworkz</span>
+          <BrandLogo footer />
           <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
             {/* Social icons */}
             {[
@@ -1512,6 +1530,20 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
           <div className="flex flex-col gap-4">
             <h4 style={{ color: "white", fontWeight: 700, fontSize: 13, lineHeight: 1.4 }}>Subscribe To Packworkz Newsletter</h4>
             <NewsletterSignup />
+            <a
+              className="tinyshelf-badge"
+              href="https://www.tinyshelf.co/?ref=opencreativehq.com"
+              title="Featured on tinyshelf"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <img
+                src="https://www.tinyshelf.co/badge/tinyshelf-badge-dark-f4d1216a.svg"
+                alt="Featured on tinyshelf"
+                width={216}
+                height={64}
+              />
+            </a>
           </div>
         </div>
 

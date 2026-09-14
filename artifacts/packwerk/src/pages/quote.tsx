@@ -4,7 +4,7 @@ import { useSubmitQuote } from "@workspace/api-client-react";
 import { useToast } from "@/hooks/use-toast";
 import { CATEGORIES } from "@/lib/skus";
 import type { Sku, VariantGroup } from "@/lib/skus";
-import { CATALOG_SKUS as SKUS, getCatalogImage, getCatalogSkusByCategory as getSkusByCategory, getMaxSelfServeQuantity, requiresQuote } from "@/lib/catalog";
+import { CATALOG_SKUS as SKUS, getCatalogImage, getCatalogSkusByCategory as getSkusByCategory, getMaxSelfServeQuantity, requiresQuote, type CatalogSku } from "@/lib/catalog";
 import { openOrderPayment, openRazorpay, prepareOrderPayment, type PreparedOrderPayment } from "@/lib/razorpay";
 import { calculateOrderEstimate } from "@/lib/pricing";
 import { createConfiguredCartItem, useCart } from "@/lib/cart";
@@ -35,7 +35,9 @@ const MOBILE_SHOPPING_INTENTS = [
   { label: "Takeaway food", help: "Bowls, containers, bags and wraps", category: "sustainable", icon: "takeout_dining" },
   { label: "I know the exact format", help: "Open the complete packaging catalog", category: "all", icon: "view_module" },
 ] as const;
-const isAssistedSku = (sku: Sku | undefined) => sku?.purchase_mode === "brief";
+const isAssistedSku = (sku: Sku | CatalogSku | undefined) => Boolean(
+  sku && ("publicBuyingPath" in sku ? sku.publicBuyingPath === "quote" : sku.purchase_mode === "brief"),
+);
 
 function customisationNote(sku: Sku | undefined) {
   if (!sku) return "";
@@ -154,7 +156,7 @@ function OrderSummary({
           </div>
         </div>
 
-        {sku && (
+        {sku && buyingMode === "self" && (
           <div className="space-y-2 pt-2 border-t" style={{ borderColor: "rgba(255,255,255,0.08)" }}>
             <div className="flex justify-between text-sm">
               <span className="text-slate-400">Material Cost</span>
@@ -180,35 +182,48 @@ function OrderSummary({
               <span className="text-slate-400">Estimated delivery</span>
               <span className="text-white font-medium" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>₹{fmt(logistics)}</span>
             </div>
-            {buyingMode === "self" && (
-              <div className="flex justify-between text-sm pt-2 border-t" style={{ borderColor: "rgba(255,255,255,0.08)" }}>
-                <span className="text-slate-400">GST (18%)</span>
-                <span className="text-white font-medium">₹{fmt(gst ?? 0)}</span>
+            <div className="flex justify-between text-sm pt-2 border-t" style={{ borderColor: "rgba(255,255,255,0.08)" }}>
+              <span className="text-slate-400">GST (18%)</span>
+              <span className="text-white font-medium">₹{fmt(gst ?? 0)}</span>
+            </div>
+          </div>
+        )}
+
+        {sku && buyingMode === "assisted" && (
+          <div className="grid grid-cols-3 gap-2 border-y py-4" style={{ borderColor: "rgba(255,255,255,0.08)" }}>
+            {[
+              ["receipt_long", "Pricing"],
+              ["local_shipping", "Delivery"],
+              ["payments", "Payment"],
+            ].map(([icon, label]) => (
+              <div key={label} className="flex flex-col items-center gap-1.5 border-r text-center last:border-r-0" style={{ borderColor: "rgba(255,255,255,0.08)" }}>
+                <MS icon={icon} className="text-lg text-amber-400" />
+                <span className="text-[9px] font-black uppercase tracking-wider text-slate-300">{label}</span>
               </div>
-            )}
+            ))}
           </div>
         )}
 
         <div className="pt-3 border-t" style={{ borderColor: "rgba(255,255,255,0.08)" }}>
-          <div className="text-xs text-slate-500 uppercase tracking-wider mb-2">{buyingMode === "self" ? "Payable total" : "Estimated range"}</div>
+          <div className="text-xs text-slate-500 uppercase tracking-wider mb-2">{buyingMode === "self" ? "Payable total" : "Quote turnaround"}</div>
           {sku ? (
             <>
               <div className="font-black text-white leading-none" style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: "clamp(1.2rem,2.2vw,1.6rem)" }}>
-                {buyingMode === "self" ? `₹${fmt(total ?? low)}` : <>₹{fmt(low)} <span className="text-slate-400 font-bold text-base">–</span> ₹{fmt(high)}</>}
+                {buyingMode === "self" ? `₹${fmt(total ?? low)}` : "Within 4 business hours"}
               </div>
               <div className="mt-3 flex items-center gap-1.5 border-t px-0 pt-2" style={{ borderColor: "rgba(255,255,255,0.16)" }}>
                 <span className="text-xs font-bold" style={{ color: "#60a5fa" }}>
                   {buyingMode === "self"
                     ? `₹${fmt(perPiece)} packaging rate per piece, before GST and delivery`
-                    : `₹${fmt(low / qty)} – ₹${fmt(high / qty)} estimated per piece`}
+                    : "Handled during India working hours"}
                 </span>
               </div>
-              {qty >= ((sku as any).moq || 500) * 3 && (
+              {buyingMode === "self" && qty >= ((sku as any).moq || 500) * 3 && (
                 <div className="mt-2 border-l-2 border-emerald-400 pl-2 text-xs" style={{ color: "#86efac" }}>
                   ✓ Volume discount applied — order more, pay less per piece
                 </div>
               )}
-              <div className="text-xs text-slate-500 mt-1.5">{buyingMode === "self" ? "Payable total includes GST, setup and the estimated delivery shown above. Final freight may be adjusted if packed weight, volume or serviceability differs." : "Excludes GST. Final pricing and delivery follow engineering and artwork review."}</div>
+              <div className="text-xs text-slate-500 mt-1.5">{buyingMode === "self" ? "Payable total includes GST, setup and the estimated delivery shown above. Final freight may be adjusted if packed weight, volume or serviceability differs." : "Your reviewed commercial includes confirmed pricing, delivery milestones and payment schedule. Nothing is charged before approval."}</div>
               {buyingMode === "self" && !paymentEligible && (
                 <div className="mt-3 border border-slate-600 border-l-[3px] border-l-amber-400 bg-transparent p-3 text-xs leading-relaxed" style={{ color: "#FBD38D" }}>
                   Online payment is currently available up to ₹{RAZORPAY_PAYMENT_LIMIT_RUPEES.toLocaleString("en-IN")}. Submit this order plan and our team will confirm the payment route and production slot.
@@ -239,9 +254,9 @@ function OrderSummary({
                   { n: "2", text: "Review instant-buy and managed-quote items together in one cart" },
                   { n: "3", text: "Enter delivery and contact details once for the complete cart" },
                 ] : buyingMode === "assisted" ? [
-                  { n: "1", text: "A packaging engineer checks compatibility and tooling" },
-                  { n: "2", text: "You receive a production-ready technical quote" },
-                  { n: "3", text: "Approve the specification before production starts" },
+                  { n: "1", text: "A packaging specialist checks specifications, tooling and capacity" },
+                  { n: "2", text: "Your detailed quote arrives within 4 business hours (India time)" },
+                  { n: "3", text: "Pricing, delivery milestones and payment schedule arrive together" },
                 ] : [
                   { n: "1", text: "Your selected size, material, finish and artwork stay attached" },
                   { n: "2", text: "Enter delivery and invoice details once at checkout" },
@@ -532,7 +547,7 @@ function ConfirmationScreen({ quoteId, buyingMode }: { quoteId: string; buyingMo
     : paymentFailedOrCancelled
       ? "Nothing was charged. Your cart and saved order plan are still available, so you can retry securely without configuring the products again."
     : isQuote
-      ? "Compatibility, tooling, supplier capacity and the production rate will be reviewed before we send an itemised commercial plan."
+      ? "Your specialist is reviewing specifications, supplier capacity and freight. A detailed commercial with pricing, delivery milestones and payment schedule will arrive within 4 business hours during India working hours."
       : requiresConfirmation
         ? prepared?.message || "Your specification is saved. Our team will confirm payment and the production slot directly."
         : "Your size, quantity, artwork route, delivery and GST are already attached. Pay without configuring anything again.";
@@ -554,9 +569,10 @@ function ConfirmationScreen({ quoteId, buyingMode }: { quoteId: string; buyingMo
     ["02", "Order plan saved", "Your products, quantities, artwork choices and delivery details remain attached."],
     ["03", "Retry when ready", "Use the secure payment button below; the server rechecks the amount before Razorpay opens."],
   ] : isQuote ? [
-    ["01", "Technical review", "Material, dimensions, tooling and compliance are checked."],
-    ["02", "Itemised commercial", "You receive final pricing, lead time and payment milestones."],
-    ["03", "Approval before production", "No tooling or manufacturing begins without your approval."],
+    ["01", "Specialist review", "Material, dimensions, tooling, compliance and production capacity are checked."],
+    ["02", "Detailed quote in 4 business hours", "Sent during India working hours with final pricing and every relevant commercial line."],
+    ["03", "Schedules included", "Delivery milestones and the payment schedule arrive in the same quote."],
+    ["04", "Approval before production", "No tooling, payment collection or manufacturing begins without your approval."],
   ] : gatewayPending ? [
     ["01", "Specification saved", "Your exact product, size, quantity and artwork route are already in Packworkz."],
     ["02", "Online checkout activation", "Once the payment gateway is live, eligible orders continue directly to secure payment here."],
@@ -1144,6 +1160,24 @@ const maxSelfServeQuantity = selectedSku ? getMaxSelfServeQuantity(selectedSku) 
         </div>
       </div>
 
+      {selectedSkuBuyingMode === "assisted" && selectedSku && (
+        <section className="pw-quote-promise" aria-label="Detailed quote service promise">
+          <div className="pw-quote-promise-copy">
+            <span className="pw-quote-clock"><MS icon="schedule" /></span>
+            <div>
+              <small>PACKWORKZ QUOTE DESK · INDIA TIME</small>
+              <strong>Detailed quote in 4 business hours</strong>
+              <p>One reviewed commercial—not a blind online estimate.</p>
+            </div>
+          </div>
+          <div className="pw-quote-deliverables">
+            <span><MS icon="receipt_long" /><b>Confirmed pricing</b></span>
+            <span><MS icon="local_shipping" /><b>Delivery schedule</b></span>
+            <span><MS icon="payments" /><b>Payment schedule</b></span>
+          </div>
+        </section>
+      )}
+
       {/* ── Content ── */}
       <div className="max-w-6xl mx-auto px-4 md:px-8 py-7 md:py-10">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
@@ -1338,7 +1372,9 @@ const maxSelfServeQuantity = selectedSku ? getMaxSelfServeQuantity(selectedSku) 
                           </div>
                         )}
                         <div className="mt-5 pt-4 border-t border-slate-200 text-xs font-bold text-slate-600">
-                          MOQ {selectedSku.moq.toLocaleString()} {selectedSku.moq_unit} · ₹{selectedSku.price_min.toFixed(2)}-₹{selectedSku.price_max.toFixed(2)}/unit
+                          {selectedSkuBuyingMode === "assisted"
+                            ? `MOQ ${selectedSku.moq.toLocaleString()} ${selectedSku.moq_unit} · detailed quote in 4 business hours`
+                            : `MOQ ${selectedSku.moq.toLocaleString()} ${selectedSku.moq_unit} · ₹${selectedSku.price_min.toFixed(2)}-₹${selectedSku.price_max.toFixed(2)}/unit`}
                         </div>
                       </div>
                     </div>
@@ -1347,7 +1383,7 @@ const maxSelfServeQuantity = selectedSku ? getMaxSelfServeQuantity(selectedSku) 
                     <p className="text-xs leading-relaxed text-slate-700">
                       <strong>{selectedSkuBuyingMode === "assisted" ? "Managed quote:" : "Instant buy:"}</strong>{" "}
                       {selectedSkuBuyingMode === "assisted"
-                        ? "This product needs a quick expert check before we confirm price and production timing."
+                        ? "This format moves through a specialist review. You receive confirmed pricing, delivery milestones and payment schedule within 4 business hours during India working hours."
                         : "Choose a standard size and quantity now. You will see the current order value before sharing contact details."}
                     </p>
                   </div>
@@ -1382,7 +1418,9 @@ const maxSelfServeQuantity = selectedSku ? getMaxSelfServeQuantity(selectedSku) 
                             <div className="font-black text-navy text-base mb-1">{sku.name}</div>
                             <div className="text-xs text-slate-500 leading-relaxed line-clamp-2">{sku.description}</div>
                             <div className="text-xs font-bold mt-2" style={{ color: "#64748B" }}>
-                              MOQ {sku.moq.toLocaleString()} {sku.moq_unit} · ₹{sku.price_min.toFixed(2)}-₹{sku.price_max.toFixed(2)}/unit
+                              {isAssistedSku(sku)
+                                ? `MOQ ${sku.moq.toLocaleString()} ${sku.moq_unit} · detailed quote in 4 business hours`
+                                : `MOQ ${sku.moq.toLocaleString()} ${sku.moq_unit} · ₹${sku.price_min.toFixed(2)}-₹${sku.price_max.toFixed(2)}/unit`}
                             </div>
                           </div>
                         </button>
@@ -1986,9 +2024,9 @@ const maxSelfServeQuantity = selectedSku ? getMaxSelfServeQuantity(selectedSku) 
                         { n: "2", title: "Complete secure payment", body: "Razorpay collects payment on Packworkz without asking you to configure the product again.", color: "#E8A838" },
                         { n: "3", title: "Track now, create an account when useful", body: "Checkout works as a guest. Track with your reference and contact detail, or create an account after payment to keep orders and quotes together.", color: "#22C55E" },
                       ] : [
-                        { n: "1", title: "We review your spec", body: "Same day — our team checks SKU, quantity, and delivery requirements.", color: "#1B6CA8" },
-                        { n: "2", title: "You receive an itemised pricing plan", body: "Within 48 hours via WhatsApp and email — line-item breakdown, no surprises.", color: "#E8A838" },
-                        { n: "3", title: "You approve before anything starts", body: "Nothing is ordered or produced until you give the green light.", color: "#22C55E" },
+                        { n: "1", title: "We review the production brief", body: "A specialist checks specification, tooling, capacity and destination.", color: "#1B6CA8" },
+                        { n: "2", title: "Detailed quote in 4 business hours", body: "Pricing, delivery milestones and payment schedule arrive together during India working hours.", color: "#E8A838" },
+                        { n: "3", title: "You approve before anything starts", body: "Nothing is charged, tooled or produced until you give the green light.", color: "#22C55E" },
                       ]).map((step, i) => (
                         <div key={i} style={{ display: "flex", gap: 12, padding: "10px 0", borderBottom: i < 2 ? "1px solid #E8ECF4" : "none", alignItems: "flex-start" }}>
                           <div style={{ width: 22, height: 22, borderRadius: "50%", background: step.color, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 1 }}>

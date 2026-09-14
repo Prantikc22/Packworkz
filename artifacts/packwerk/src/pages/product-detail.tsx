@@ -222,15 +222,16 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
           <div className="sticky top-24 bg-white border border-border p-6 shadow-sm">
             <div className="mb-6">
               <div className="text-sm text-muted mb-1">{product.publicBuyingPath === "quote" || quoteRequired ? "Reviewed bulk pricing" : "Launch checkout rate"}</div>
-              <div className="text-3xl font-bold text-navy">
+              <div className={quoteRequired ? "text-2xl font-bold leading-tight text-navy" : "text-3xl font-bold text-navy"}>
                 {product.publicBuyingPath === "quote"
-                  ? `${formatINR(product.price_min)} - ${formatINR(product.price_max)}`
+                  ? "Detailed quote in 4 business hours"
                   : quoteRequired
-                    ? "Get a custom quote"
+                    ? "Detailed quote in 4 business hours"
                     : `from ${formatINR(launchUnit)}`}
                 {!quoteRequired && <span className="text-sm font-normal text-muted ml-1">/ {product.moq_unit.replace(/s$/, "")}</span>}
               </div>
               {product.publicBuyingPath === "instant" && !quoteRequired && <p className="mt-2 text-xs text-slate-500">For the smallest listed size and selected quantity, before GST. Estimated delivery is shown separately at checkout.</p>}
+              {quoteRequired && <p className="mt-2 text-xs leading-relaxed text-slate-500">Reviewed during India working hours. Your commercial includes confirmed pricing, delivery milestones and payment schedule.</p>}
             </div>
 
             <div className="space-y-6">
@@ -296,6 +297,21 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
                 </div>
               )}
 
+              {quoteRequired && (
+                <div className="grid grid-cols-3 overflow-hidden border border-slate-200 bg-slate-50">
+                  {[
+                    ["receipt_long", "Final pricing"],
+                    ["local_shipping", "Delivery plan"],
+                    ["payments", "Payment plan"],
+                  ].map(([icon, label]) => (
+                    <div key={label} className="flex min-h-20 flex-col items-center justify-center gap-2 border-r border-slate-200 px-2 text-center last:border-r-0">
+                      <span className="material-symbols-outlined text-xl text-amber-600">{icon}</span>
+                      <span className="text-[10px] font-black leading-tight text-navy">{label}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+
               {onlinePriceTiers.length > 0 && (
                 <div className="border-y border-border py-4">
                   <p className="text-xs font-black uppercase tracking-wider text-muted mb-3">Quantity pricing</p>
@@ -340,12 +356,13 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
               <div className="space-y-3">
                 <div className="flex justify-between items-center text-sm border-t border-border pt-4">
                   <span className="text-muted">Delivery (India)</span>
-                  <span className="font-semibold text-navy">{quoteRequired ? "Confirmed in quote" : `${product.delivery_days_india} Days`}</span>
+                  <span className="font-semibold text-navy">{quoteRequired ? "Included in quote" : `${product.delivery_days_india} Days`}</span>
                 </div>
                 <div className="flex justify-between items-center text-sm">
                   <span className="text-muted">Delivery (Global)</span>
-                  <span className="font-semibold text-navy">{quoteRequired ? "Confirmed in quote" : `${product.delivery_days_india + 14} Days`}</span>
+                  <span className="font-semibold text-navy">{quoteRequired ? "Included in quote" : `${product.delivery_days_india + 14} Days`}</span>
                 </div>
+                {quoteRequired && <div className="flex justify-between items-center text-sm"><span className="text-muted">Payment schedule</span><span className="font-semibold text-navy">Included in quote</span></div>}
               </div>
 
               <div className="pt-6 space-y-3 border-t border-border">
@@ -358,7 +375,7 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
                     </Link>
                     <Link href={buyNowHref}>
                       <Button className="w-full h-14 bg-navy text-white hover:bg-[#17324a] font-black text-lg">
-                        Get quote now
+                        Build detailed quote
                       </Button>
                     </Link>
                   </div>

@@ -41,15 +41,16 @@ export default function About() {
         <div className="pw-glow-drift absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse 65% 55% at 50% 40%, rgba(27,108,168,0.16) 0%, transparent 70%)" }} />
         <div className="pw-glow-drift-slow absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse 40% 35% at 70% 60%, rgba(59,130,246,0.08) 0%, transparent 60%)" }} />
         <div style={{ position: "relative", zIndex: 1, maxWidth: 800, margin: "0 auto" }}>
-          <div className="pw-reveal" style={{ display: "inline-flex", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 9999, padding: "6px 18px", marginBottom: 28 }}>
-            <span style={{ color: "rgba(255,255,255,0.45)", fontSize: 10, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase" }}>OUR STORY</span>
+          <div className="pw-reveal" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "rgba(232,168,56,0.08)", border: "1px solid rgba(232,168,56,0.28)", borderRadius: 9999, padding: "7px 18px", marginBottom: 28 }}>
+            <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#E8A838", boxShadow: "0 0 12px rgba(232,168,56,.75)" }} />
+            <span style={{ color: "#F2C66D", fontSize: 10, fontWeight: 800, letterSpacing: "2px", textTransform: "uppercase" }}>KALYANI ROTOPACK PVT LTD · MANUFACTURING SINCE 1993</span>
           </div>
           <h1 className="pw-reveal pw-d1" style={{ color: "white", fontSize: "clamp(2.8rem,6vw,5rem)", fontWeight: 900, lineHeight: 1.05, letterSpacing: "-2px", marginBottom: 24 }}>
             30 Years of Manufacturing.<br />
             <span style={{ color: "#60a5fa", fontStyle: "italic" }}>One Platform. Every Brand.</span>
           </h1>
           <p className="pw-reveal pw-d2" style={{ color: "rgba(255,255,255,0.50)", fontSize: "clamp(15px,2vw,18px)", lineHeight: 1.75, maxWidth: 600, margin: "0 auto 48px" }}>
-            Packworkz is built on the backbone of Kalyani Rotopack Pvt Ltd — a 30-year-old packaging manufacturing operation — now reimagined as India's first managed packaging platform.
+            Packworkz is the digital procurement platform built by Kalyani Rotopack Pvt Ltd, bringing more than three decades of hands-on flexible-packaging manufacturing to growing and enterprise brands.
           </p>
           <div className="pw-reveal pw-d3" style={{ display: "flex", gap: 14, justifyContent: "center", flexWrap: "wrap" }}>
             <span className="animated-border animated-border-white">
@@ -83,7 +84,7 @@ export default function About() {
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 72, alignItems: "center" }}>
             <div>
               <h2 className="pw-reveal pw-d1" style={{ color: "white", fontSize: "clamp(1.8rem,3.5vw,2.8rem)", fontWeight: 800, lineHeight: 1.12, letterSpacing: "-0.5px", marginBottom: 28 }}>
-                Built on Three Decades of Packaging Manufacturing
+                Kalyani Rotopack Pvt Ltd:<br />the manufacturing backbone behind Packworkz
               </h2>
               <div className="pw-reveal pw-d2" style={{ color: "rgba(255,255,255,0.65)", fontSize: 16, lineHeight: 1.85 }}>
                 <p style={{ marginBottom: 18 }}>
@@ -232,7 +233,7 @@ export default function About() {
             Ready to fix your packaging?
           </h2>
           <p style={{ color: "rgba(255,255,255,0.36)", fontSize: 15, lineHeight: 1.7, marginBottom: 40 }}>
-            Talk to our team. Get a pricing plan in 24 hours. No commitment required.
+            Talk to our team. Get a detailed quote with delivery and payment schedules in 4 business hours during India working hours.
           </p>
           <div style={{ display: "flex", gap: 14, justifyContent: "center", flexWrap: "wrap" }}>
             <span className="animated-border animated-border-white">

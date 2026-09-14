@@ -18,7 +18,7 @@ const MS = ({ icon, className = "", style }: { icon: string; className?: string;
 const FILTERS: Array<{ key: PublicPath | "all"; label: string; hint: string; icon: string }> = [
   { key: "all", label: "All packaging", hint: "Full D2C + enterprise range", icon: "inventory_2" },
   { key: "instant", label: "Instant buy", hint: "Tier price shown", icon: "shopping_cart" },
-  { key: "quote", label: "Request quote", hint: "Technical or high-volume", icon: "precision_manufacturing" },
+  { key: "quote", label: "Request quote", hint: "Detailed plan in 4 business hours", icon: "precision_manufacturing" },
 ];
 
 const MOCKUP_FORMAT_BY_SKU: Record<string, string> = {
@@ -31,6 +31,11 @@ const MOCKUP_FORMAT_BY_SKU: Record<string, string> = {
   "BC-207": "jar",
   "TS-301": "tube",
 };
+
+const CATEGORY_TILES = CATEGORIES.map((cat) => {
+  const sample = CATALOG_SKUS.find((sku) => isCatalogSkuInCategory(sku, cat.slug));
+  return sample ? { ...cat, image: getCatalogImage(sample) } : null;
+}).filter(Boolean) as Array<(typeof CATEGORIES)[number] & { image: string }>;
 
 export default function Products() {
   const searchStr = useSearch();
@@ -71,16 +76,17 @@ export default function Products() {
 
   const totalInstant = CATALOG_SKUS.filter((sku) => sku.publicBuyingPath === "instant").length;
   const totalQuote = CATALOG_SKUS.filter((sku) => sku.publicBuyingPath === "quote").length;
+  const spotlightSku = CATALOG_SKUS.find((sku) => category ? isCatalogSkuInCategory(sku, category) : sku.code === "RL-701") || CATALOG_SKUS[0];
 
   return (
     <div className="products-page min-h-screen" style={{ background: "#F8F9FC", fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-      <section className="bg-white border-b border-slate-200 px-4 sm:px-6 lg:px-8 2xl:px-10 pt-[124px] pb-5">
-        <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
+      <section className="pw-products-intro bg-white border-b border-slate-200 px-4 sm:px-6 lg:px-8 2xl:px-10 pt-[124px] pb-7">
+        <div className="mx-auto flex max-w-[1450px] flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
           <div>
             <p className="text-[11px] font-black uppercase tracking-[0.2em]" style={{ color: "#1B6CA8" }}>Packaging catalog</p>
-            <h1 className="mt-1 text-3xl md:text-4xl font-black leading-tight" style={{ color: "#0D1B2A" }}>Find your packaging and start ordering.</h1>
+            <h1 className="mt-1 text-3xl md:text-4xl font-black leading-tight" style={{ color: "#0D1B2A" }}>Find the right format. Get the right buying path.</h1>
             <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-600">
-              Compare sizes, minimums and quantity pricing. Standard runs can be bought online; technical and enterprise volumes move to a reviewed quote.
+              Buy selected labels and D2C staples online. Every other format gets a specialist-reviewed quote with pricing, delivery and payment schedules.
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-2">
@@ -92,6 +98,29 @@ export default function Products() {
             </Link>
             <Link href="/enterprise" className="px-3 py-2 text-xs font-black text-blue-800">High volumes or multiple SKUs? Enterprise →</Link>
           </div>
+        </div>
+        <div className="pw-products-showcase mx-auto mt-6 max-w-[1450px]">
+          <div className="pw-products-showcase-copy">
+            <span>{category ? getCategoryLabel(category) : "PACKAGING FOR GROWING & ENTERPRISE BRANDS"}</span>
+            <h2>{category ? `Explore ${getCategoryLabel(category).toLowerCase()}.` : "Packaging selected around how you actually buy."}</h2>
+            <p>{category ? spotlightSku.use_case : "Checkout selected repeatable formats immediately. For everything else, brief us once and receive a production-ready commercial within four business hours."}</p>
+            <div>
+              <Link href={getConfigureHref(spotlightSku)}>{spotlightSku.publicBuyingPath === "instant" ? "Configure this format" : "Start a managed quote"} <MS icon="arrow_forward" /></Link>
+              <Link href="/pack-ai" className="is-text">Help me choose</Link>
+            </div>
+          </div>
+          <div className="pw-products-showcase-media">
+            <img src={getCatalogImage(spotlightSku)} alt={spotlightSku.name} loading="eager" />
+            <span>{spotlightSku.name}<small>{spotlightSku.publicBuyingPath === "instant" ? "Instant buy available" : "Detailed quote · 4 business hours"}</small></span>
+          </div>
+        </div>
+        <div className="pw-products-family-rail mx-auto mt-7 max-w-[1450px]" aria-label="Browse packaging categories">
+          {CATEGORY_TILES.map((cat) => (
+            <button key={cat.slug} type="button" onClick={() => setCategory(cat.slug)} className={category === cat.slug ? "is-active" : ""}>
+              <span><img src={cat.image} alt="" loading="eager" /></span>
+              <strong>{cat.label}</strong>
+            </button>
+          ))}
         </div>
       </section>
 
@@ -255,8 +284,8 @@ export default function Products() {
 
                       <div className="pw-catalog-card-commerce">
                         <div>
-                          <small>{sku.publicBuyingPath === "quote" ? "Indicative unit range" : "Starting unit price"}</small>
-                          <strong>{sku.publicBuyingPath === "quote" ? `${formatINR(sku.price_min)} - ${formatINR(sku.price_max)}` : `${formatINR(sku.price_tiers?.[0]?.unit_price ?? sku.price_max)} / ${sku.moq_unit.replace(/s$/, "")}`}</strong>
+                          <small>{sku.publicBuyingPath === "quote" ? "Specialist-reviewed commercial" : "Starting unit price"}</small>
+                          <strong>{sku.publicBuyingPath === "quote" ? "Detailed quote in 4 business hours" : `${formatINR(sku.price_tiers?.[0]?.unit_price ?? sku.price_max)} / ${sku.moq_unit.replace(/s$/, "")}`}</strong>
                         </div>
                         {sku.publicBuyingPath === "instant" ? (
                           <div className="pw-catalog-card-actions">
@@ -269,7 +298,7 @@ export default function Products() {
                           </div>
                         ) : (
                           <Link href={getConfigureHref(sku)} className="pw-catalog-card-primary is-quote">
-                            Get a quote <MS icon="arrow_forward" />
+                            Build my quote <MS icon="arrow_forward" />
                           </Link>
                         )}
                       </div>
@@ -295,6 +324,16 @@ export default function Products() {
           )}
         </main>
       </div>
+
+      <section className="pw-products-expert-cta">
+        <div>
+          <span>ONE BRIEF. A COMPLETE COMMERCIAL.</span>
+          <h2>Get a production-ready quote in 4 business hours.</h2>
+          <p>Share the product, quantity and destination. We return confirmed specifications, pricing, delivery milestones and payment schedule during India working hours.</p>
+          <Link href="/procurement-plan">Start my detailed quote <MS icon="arrow_forward" /></Link>
+        </div>
+        <img src={getCatalogImage(spotlightSku)} alt={`${spotlightSku.name} packaging production example`} loading="lazy" />
+      </section>
     </div>
   );
 }

@@ -35,76 +35,70 @@ const ELIGIBILITY = [
 ];
 
 const DEMO_SKUS = [
-  { name: "Mailer Box 9x6x3", stock: 18400, daily: 920, lead: 10, buffer: 5500, vendor: "Bengaluru Node", risk: "Medium", unitCost: 24, revenueRisk: 460000 },
-  { name: "Stand-up Pouch 250g", stock: 32600, daily: 740, lead: 14, buffer: 9000, vendor: "Ahmedabad Flex", risk: "Low", unitCost: 10, revenueRisk: 610000 },
-  { name: "Poly Mailer M", stock: 7200, daily: 680, lead: 7, buffer: 4200, vendor: "Delhi E-com", risk: "High", unitCost: 6, revenueRisk: 380000 },
+  { code: "EC-501", name: "Mailer box · 9 × 6 × 3 in", stock: 18400, daily: 920, lead: 10, buffer: 5500, vendor: "Bengaluru corrugation route", lastReceipt: "12 Aug" },
+  { code: "FP-101", name: "Stand-up pouch · 250 g", stock: 32600, daily: 740, lead: 14, buffer: 9000, vendor: "Ahmedabad flexible route", lastReceipt: "08 Aug" },
+  { code: "EC-504", name: "Courier mailer · M", stock: 7200, daily: 680, lead: 7, buffer: 4200, vendor: "Delhi ecommerce route", lastReceipt: "19 Aug" },
 ];
+
+function getStockStatus(stock: number, daily: number, lead: number) {
+  const cover = stock / daily;
+  if (cover <= lead + 4) return { label: "Action due", tone: "critical" };
+  if (cover <= lead + 14) return { label: "Plan soon", tone: "watch" };
+  return { label: "Healthy", tone: "healthy" };
+}
 
 export function SmartStockDemo({ standalone = false }: { standalone?: boolean }) {
   const [campaignLift, setCampaignLift] = useState(18);
   const [selected, setSelected] = useState(2);
-  const [hoveredBar, setHoveredBar] = useState<number | null>(null);
   const sku = DEMO_SKUS[selected];
   const adjustedDaily = Math.round(sku.daily * (1 + campaignLift / 100));
   const daysLeft = Math.max(1, Math.floor(sku.stock / adjustedDaily));
   const reorderIn = Math.max(0, daysLeft - sku.lead - 4);
   const suggestedQty = Math.ceil((adjustedDaily * 45 + sku.buffer) / 100) * 100;
-  const annualEmergencySavings = Math.round(suggestedQty * sku.unitCost * 0.28 * 4);
-  const revenueProtected = Math.round(sku.revenueRisk * (1 + campaignLift / 100));
-  const workingCapitalReleased = Math.round(suggestedQty * sku.unitCost * 0.14);
-  const annualImpact = annualEmergencySavings + revenueProtected + workingCapitalReleased;
-
-  const alertColor = reorderIn <= 2 ? "#E8A838" : "#AFC1D2";
+  const projectedAtArrival = Math.max(0, sku.stock - adjustedDaily * sku.lead);
+  const selectedStatus = getStockStatus(sku.stock, adjustedDaily, sku.lead);
 
   const forecast = useMemo(() => {
-    return Array.from({ length: 10 }, (_, i) => {
-      const projected = Math.max(0, sku.stock - adjustedDaily * (i + 1) * 3);
-      return {
-        day: (i + 1) * 3,
-        units: projected,
-        height: Math.max(8, Math.round((projected / sku.stock) * 100)),
-      };
+    return Array.from({ length: 11 }, (_, index) => {
+      const day = index * 3;
+      return { day, units: Math.max(0, sku.stock - adjustedDaily * day) };
     });
   }, [adjustedDaily, sku]);
+
+  const chartPoints = forecast.map((point, index) => {
+    const x = 18 + (index / (forecast.length - 1)) * 524;
+    const y = 18 + (1 - point.units / sku.stock) * 134;
+    return `${x.toFixed(1)},${Math.min(152, y).toFixed(1)}`;
+  }).join(" ");
+  const safetyLineY = Math.min(152, 18 + (1 - sku.buffer / sku.stock) * 134);
 
   return (
     <section className={`smartstock-demo-section${standalone ? " smartstock-demo-standalone" : ""}`}>
       <div className="smartstock-demo-shell">
-        <div style={{ display: "grid", gridTemplateColumns: "0.78fr 1.22fr", gap: 40, alignItems: "center" }} className="smartstock-demo-grid">
-          <div>
+        <div className="smartstock-demo-grid">
+          <div className="smartstock-demo-copy">
             {standalone && (
               <Link href="/smartstock" className="smartstock-demo-back">
                 <span className="material-symbols-outlined">arrow_back</span>
                 About SmartStock
               </Link>
             )}
-            <p style={{ color: "#1B6CA8", fontSize: 11, fontWeight: 800, letterSpacing: 0, textTransform: "uppercase", marginBottom: 14 }}>
-              {standalone ? "INTERACTIVE DEMO / SAMPLE DATA" : "SMARTSTOCK™ / AI INVENTORY"}
+            <p className="smartstock-demo-eyebrow">SmartStock™ · Reorder planning</p>
+            <h2>{standalone ? "Change one assumption. See the plan update." : "Know what needs ordering before it becomes urgent."}</h2>
+            <p className="smartstock-demo-intro">
+              Stock on hand, recent consumption and supplier lead time come together in one review. Every recommendation stays visible and reviewable—nothing is ordered automatically.
             </p>
-            <h2 style={{ color: "#0D1B2A", fontFamily: "'Space Grotesk', sans-serif", fontSize: "clamp(2.2rem,4vw,4rem)", lineHeight: 1.05, fontWeight: 900, letterSpacing: 0, marginBottom: 16 }}>
-              {standalone ? "Change the forecast. See the decision." : "Your next packaging order, already anticipated."}
-            </h2>
-            <p style={{ color: "#64748B", fontSize: 16, lineHeight: 1.8, marginBottom: 26 }}>
-              {standalone ? (
-                "Adjust the expected increase in orders or switch SKUs. SmartStock instantly recalculates when to reorder, how much to buy, and the cost of waiting."
-              ) : (
-                <><strong style={{ color: "#0D1B2A" }}>SmartStock</strong> learns from repeat orders, signals risk early, and prepares the quantity and supplier path before a packaging shortage becomes urgent.</>
-              )}
-            </p>
-            <div className="smartstock-try-hint">
-              <span className="material-symbols-outlined">touch_app</span>
-              Try it: move the slider or select a different SKU
-            </div>
             <div className="smartstock-control-card">
-              <div style={{ display: "flex", justifyContent: "space-between", gap: 12, marginBottom: 12 }}>
+              <p className="smartstock-assumption-label">Planning assumption</p>
+              <div className="smartstock-control-head">
                 <span className="smartstock-control-label">
-                  Expected demand increase
+                  Expected demand change
                   <button type="button" className="smartstock-help" aria-label="What does expected demand increase mean?">
                     <span className="material-symbols-outlined">help</span>
                     <span className="smartstock-tooltip" role="tooltip">The extra orders you expect from a sale, product launch, festive period, or marketing campaign.</span>
                   </button>
                 </span>
-                <strong style={{ color: "#1B6CA8" }}>+{campaignLift}%</strong>
+                <strong>+{campaignLift}%</strong>
               </div>
               <input
                 type="range"
@@ -112,121 +106,114 @@ export function SmartStockDemo({ standalone = false }: { standalone?: boolean })
                 max="60"
                 value={campaignLift}
                 onChange={(event) => setCampaignLift(Number(event.target.value))}
-                style={{ width: "100%", accentColor: "#1B6CA8" }}
+                aria-label="Expected demand change"
               />
+              <div className="smartstock-range-labels"><span>No change</span><span>+60%</span></div>
             </div>
             <Link href="/smartstock" className="smartstock-learn-more">
-              Learn how SmartStock works <span className="material-symbols-outlined">arrow_forward</span>
+              See eligibility and workflow <span className="material-symbols-outlined">arrow_forward</span>
             </Link>
           </div>
 
           <div className="smartstock-demo-stage">
-          <div className="smartstock-dashboard">
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-              <div>
-                <p style={{ color: "rgba(255,255,255,0.45)", fontSize: 11, letterSpacing: 0, textTransform: "uppercase", fontWeight: 800 }}>SmartStock inventory view</p>
-                <h3 style={{ color: "white", fontFamily: "'Space Grotesk', sans-serif", fontSize: 20, fontWeight: 900, marginTop: 4 }}>Packaging command center</h3>
-              </div>
-              <span style={{ background: "rgba(255,255,255,0.05)", color: "#C7D5E5", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 2, padding: "7px 10px", fontSize: 11, fontWeight: 800 }}>LIVE SIMULATION</span>
-            </div>
-
-            <div className="smartstock-impact-strip">
-              <span>Simulated 12-month impact</span>
-              <strong>₹{annualImpact.toLocaleString("en-IN")}</strong>
-              <small>cost avoided + revenue protected + cash released</small>
-            </div>
-
-            <p className="smartstock-dashboard-hint"><span className="material-symbols-outlined">ads_click</span> Select a SKU to update the forecast</p>
-            <div className="smartstock-sku-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 10, marginBottom: 14 }}>
-              {DEMO_SKUS.map((item, i) => (
-                <button
-                  key={item.name}
-                  onClick={() => setSelected(i)}
-                  style={{
-                    textAlign: "left",
-                    border: selected === i ? "1px solid #5E8FD0" : "1px solid rgba(255,255,255,0.10)",
-                    background: selected === i ? "rgba(65,111,174,0.18)" : "rgba(255,255,255,0.05)",
-                    color: "white",
-                    borderRadius: 2,
-                    padding: 12,
-                    cursor: "pointer",
-                  }}
-                >
-                  <strong style={{ display: "block", fontSize: 12, lineHeight: 1.35 }}>{item.name}</strong>
-                  <span style={{ color: "rgba(255,255,255,0.48)", fontSize: 11 }}>{item.stock.toLocaleString()} units</span>
-                </button>
-              ))}
-            </div>
-
-            <div style={{ display: "grid", gridTemplateColumns: "1.05fr 0.95fr", gap: 12 }} className="smartstock-panel-grid">
-              <div style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.09)", borderRadius: 2, padding: 18 }}>
-                <div style={{ display: "flex", justifyContent: "space-between", gap: 12, marginBottom: 18 }}>
-                  <div>
-                    <p style={{ color: "rgba(255,255,255,0.48)", fontSize: 11, textTransform: "uppercase", letterSpacing: 0, fontWeight: 800 }}>Selected SKU</p>
-                    <h4 style={{ color: "white", fontFamily: "'Space Grotesk', sans-serif", fontWeight: 900, fontSize: 18, marginTop: 4 }}>{sku.name}</h4>
-                  </div>
-                  <span style={{ color: alertColor, fontWeight: 900 }}>{sku.risk} risk</span>
+            <div className="smartstock-workspace">
+              <header className="smartstock-workspace-head">
+                <div>
+                  <p>Inventory review</p>
+                  <h3>Packaging reorder plan</h3>
                 </div>
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 10 }}>
-                  {[
-                    { label: "Days left", value: daysLeft },
-                    { label: "Reorder in", value: `${reorderIn}d` },
-                    { label: "Daily burn", value: adjustedDaily },
-                  ].map((stat) => (
-                    <div key={stat.label} style={{ background: "rgba(255,255,255,0.06)", borderRadius: 2, padding: 12 }}>
-                      <p style={{ color: "white", fontSize: 24, fontWeight: 900, lineHeight: 1 }}>{stat.value}</p>
-                      <span style={{ color: "rgba(255,255,255,0.45)", fontSize: 10, textTransform: "uppercase", letterSpacing: 0 }}>{stat.label}</span>
-                    </div>
-                  ))}
+                <span className="smartstock-data-state"><i /> Sample data · updated today</span>
+              </header>
+
+              <div className="smartstock-table" role="listbox" aria-label="Packaging SKUs">
+                <div className="smartstock-table-head" aria-hidden="true">
+                  <span>Packaging SKU</span><span>On hand</span><span>Cover</span><span>Lead time</span><span>Status</span>
                 </div>
-                <div className="smartstock-forecast-chart">
-                  {forecast.map((point, i) => (
+                {DEMO_SKUS.map((item, index) => {
+                  const itemDaily = Math.round(item.daily * (1 + campaignLift / 100));
+                  const itemCover = Math.max(1, Math.floor(item.stock / itemDaily));
+                  const itemStatus = getStockStatus(item.stock, itemDaily, item.lead);
+                  return (
                     <button
                       type="button"
-                      key={point.day}
-                      className="smartstock-forecast-bar"
-                      aria-label={`Day ${point.day}: ${point.units.toLocaleString("en-IN")} units projected`}
-                      onMouseEnter={() => setHoveredBar(i)}
-                      onMouseLeave={() => setHoveredBar(null)}
-                      onFocus={() => setHoveredBar(i)}
-                      onBlur={() => setHoveredBar(null)}
-                      style={{
-                        height: `${point.height}%`,
-                        background: point.height < 25 ? "#C7933A" : point.height < 45 ? "#70859B" : "#3F6FA8",
-                      }}
+                      role="option"
+                      aria-selected={selected === index}
+                      key={item.code}
+                      className={`smartstock-table-row${selected === index ? " is-selected" : ""}`}
+                      onClick={() => setSelected(index)}
                     >
-                      <span className={`smartstock-chart-tooltip${hoveredBar === i ? " visible" : ""}`}>
-                        <strong>Day {point.day}</strong>
-                        {point.units.toLocaleString("en-IN")} units left
-                      </span>
+                      <span className="smartstock-sku-name"><small>{item.code}</small><strong>{item.name}</strong></span>
+                      <span>{item.stock.toLocaleString("en-IN")}</span>
+                      <span>{itemCover} days</span>
+                      <span>{item.lead} days</span>
+                      <span className={`smartstock-status smartstock-status-${itemStatus.tone}`}><i />{itemStatus.label}</span>
                     </button>
-                  ))}
-                </div>
-                <div className="smartstock-chart-caption"><span>Today</span><span>Projected stock over 30 days</span><span>Day 30</span></div>
+                  );
+                })}
               </div>
 
-              <div style={{ display: "grid", gap: 12 }}>
-                <div style={{ background: "#ffffff", borderRadius: 2, padding: 18 }}>
-                  <p style={{ color: "#64748B", fontSize: 11, fontWeight: 800, textTransform: "uppercase", letterSpacing: 0 }}>Recommended reorder</p>
-                  <h4 style={{ color: "#0D1B2A", fontFamily: "'Space Grotesk', sans-serif", fontSize: 26, fontWeight: 900, margin: "8px 0 4px" }}>{suggestedQty.toLocaleString()} units</h4>
-                  <p style={{ color: "#64748B", fontSize: 13, lineHeight: 1.55 }}>Place reorder through {sku.vendor}. Holds 45 days of expected demand plus safety buffer.</p>
-                </div>
-                <div className="smartstock-value-stack">
-                  <div><span>Emergency cost avoided</span><strong>₹{annualEmergencySavings.toLocaleString("en-IN")}</strong></div>
-                  <div><span>Revenue protected</span><strong>₹{revenueProtected.toLocaleString("en-IN")}</strong></div>
-                  <div><span>Working capital released</span><strong>₹{workingCapitalReleased.toLocaleString("en-IN")}</strong></div>
-                </div>
-                <Link href="/configure">
-                  <button className="btn-fill btn-amber w-full py-3 text-sm">
-                    <span>Review reorder plan</span>
-                  </button>
-                </Link>
+              <div className="smartstock-plan-grid">
+                <section className="smartstock-forecast-panel">
+                  <div className="smartstock-panel-head">
+                    <div><p>{sku.code} · Selected SKU</p><h4>{sku.name}</h4></div>
+                    <span className={`smartstock-status smartstock-status-${selectedStatus.tone}`}><i />{selectedStatus.label}</span>
+                  </div>
+                  <dl className="smartstock-metrics">
+                    <div><dt>On hand</dt><dd>{sku.stock.toLocaleString("en-IN")}</dd></div>
+                    <div><dt>Daily usage</dt><dd>{adjustedDaily.toLocaleString("en-IN")}</dd></div>
+                    <div><dt>Days of cover</dt><dd>{daysLeft}</dd></div>
+                    <div><dt>Supplier lead</dt><dd>{sku.lead} days</dd></div>
+                  </dl>
+                  <div className="smartstock-chart-head"><strong>Projected stock</strong><span>Next 30 days</span></div>
+                  <div className="smartstock-line-chart">
+                    <svg viewBox="0 0 560 176" role="img" aria-label={`Projected stock for ${sku.name} over 30 days`}>
+                      <defs>
+                        <linearGradient id="smartstockArea" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor="#2368b3" stopOpacity="0.22" />
+                          <stop offset="100%" stopColor="#2368b3" stopOpacity="0" />
+                        </linearGradient>
+                      </defs>
+                      <line x1="18" y1={safetyLineY} x2="542" y2={safetyLineY} className="smartstock-safety-line" />
+                      <text x="538" y={Math.max(12, safetyLineY - 7)} textAnchor="end" className="smartstock-safety-label">Safety stock</text>
+                      <polygon points={`18,152 ${chartPoints} 542,152`} fill="url(#smartstockArea)" />
+                      <polyline points={chartPoints} className="smartstock-chart-line" />
+                      {forecast.map((point, index) => {
+                        const [cx, cy] = chartPoints.split(" ")[index].split(",");
+                        return <circle key={point.day} cx={cx} cy={cy} r="3.5"><title>{`Day ${point.day}: ${point.units.toLocaleString("en-IN")} units`}</title></circle>;
+                      })}
+                    </svg>
+                    <div className="smartstock-chart-axis"><span>Today</span><span>Day 15</span><span>Day 30</span></div>
+                  </div>
+                </section>
+
+                <aside className="smartstock-reorder-panel">
+                  <div>
+                    <p className="smartstock-next-label">Recommended next step</p>
+                    <span className={`smartstock-review-timing smartstock-review-${selectedStatus.tone}`}>
+                      {reorderIn === 0 ? "Review now" : `Review in ${reorderIn} days`}
+                    </span>
+                    <h4>{suggestedQty.toLocaleString("en-IN")} units</h4>
+                    <p>Draft quantity for 45 days of demand plus the current safety-stock policy.</p>
+                  </div>
+                  <dl className="smartstock-plan-details">
+                    <div><dt>Route</dt><dd>{sku.vendor}</dd></div>
+                    <div><dt>Stock at arrival</dt><dd>{projectedAtArrival.toLocaleString("en-IN")} units</dd></div>
+                    <div><dt>Safety stock</dt><dd>{sku.buffer.toLocaleString("en-IN")} units</dd></div>
+                    <div><dt>Last receipt</dt><dd>{sku.lastReceipt}</dd></div>
+                  </dl>
+                  <Link href={`/configure?sku=${sku.code}`} className="smartstock-review-button">
+                    Draft reorder request <span className="material-symbols-outlined">arrow_forward</span>
+                  </Link>
+                </aside>
               </div>
+              <footer className="smartstock-workspace-foot">
+                <span className="material-symbols-outlined">info</span>
+                Sample planning view. Recommendations depend on confirmed stock, order history and supplier lead times, and are reviewed before placement.
+              </footer>
             </div>
-          </div>
-          {!standalone && (
-            <p className="smartstock-demo-note"><strong>Feel the value before signing in.</strong> This sample dashboard recalculates the reorder decision as you change demand or switch SKUs.</p>
-          )}
+            {!standalone && (
+              <p className="smartstock-demo-note">Use the demand assumption or choose a row to see the plan recalculate.</p>
+            )}
           </div>
         </div>
       </div>
