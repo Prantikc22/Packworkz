@@ -137,14 +137,6 @@ export default function Enterprise() {
               <Link className="pw-marketing-button is-outline-light" href="/contact" onClick={() => trackMarketingEvent("enterprise_contact_started", { placement: "hero" })}>Talk to packaging expert</Link>
             </div>
           </div>
-          <div className="pw-ent-status" aria-label="Illustrative procurement workflow">
-            <div className="pw-ent-status-head"><strong>Procurement overview</strong><span><i /> Workflow</span></div>
-            <div><span>Active SKUs</span><b>Approved specifications</b></div>
-            <div><span>Suppliers</span><b>Primary + backup routes</b></div>
-            <div><span>Production / QC</span><b>Tracked checkpoints</b></div>
-            <div><span>Delivery</span><b>Dispatch milestones</b></div>
-            <small>Illustrative operating view</small>
-          </div>
         </div>
         <div className="pw-marketing-container pw-ent-trust" aria-label="Packworkz enterprise strengths">
           {[

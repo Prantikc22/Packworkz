@@ -54,14 +54,6 @@
 .pw-ent-hero h1 { margin-bottom: 0; font-size: clamp(3.25rem,5.3vw,6.5rem); font-weight: 850; letter-spacing: -.062em; line-height: .96; }
 .pw-ent-hero h1 em,.pw-grow-hero h1 em { color: #f4b746; font-style: normal; }
 .pw-ent-hero-copy > p:last-of-type { max-width: 590px; margin-top: 24px; color: #d8e0e8; font-size: 17px; line-height: 1.62; }
-.pw-ent-status { justify-self: end; width: min(100%,310px); margin-top: 84px; padding: 18px; border: 1px solid rgba(214,227,239,.26); background: rgba(11,30,48,.92); box-shadow: 0 18px 40px rgba(3,12,22,.22); }
-.pw-ent-status-head { display: flex; justify-content: space-between; gap: 10px; padding-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,.17); font-size: 12px; }
-.pw-ent-status-head span { color: #9acfb3; font-size: 10px; }
-.pw-ent-status-head i { display: inline-block; width: 6px; height: 6px; margin-right: 3px; border-radius: 50%; background: #57cf8e; }
-.pw-ent-status > div:not(.pw-ent-status-head) { display: flex; justify-content: space-between; gap: 10px; padding: 11px 0; border-bottom: 1px solid rgba(255,255,255,.11); font-size: 10px; }
-.pw-ent-status > div:not(.pw-ent-status-head) span { color: #9dafbf; }
-.pw-ent-status > div:not(.pw-ent-status-head) b { max-width: 150px; text-align: right; font-weight: 700; }
-.pw-ent-status > small { display: block; margin-top: 10px; color: #8ea2b5; font-size: 9px; }
 .pw-ent-trust { position: relative; z-index: 1; display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); border-top: 1px solid rgba(255,255,255,.19); }
 .pw-ent-trust > div { display: flex; align-items: center; gap: 12px; min-height: 76px; padding: 12px 24px; }
 .pw-ent-trust > div:first-child { padding-left: 0; }
@@ -233,7 +225,6 @@
 @media (max-width: 900px) {
   .pw-marketing-section { padding: 78px 0; }
   .pw-ent-hero-inner { grid-template-columns: 1fr; }
-  .pw-ent-status { display: none; }
   .pw-ent-spec-grid,.pw-ent-benchmark-grid,.pw-ent-comparison-grid,.pw-ent-smartstock-grid,.pw-grow-preview-grid,.pw-grow-scale-grid { grid-template-columns: 1fr; }
   .pw-ent-benchmark-copy > img { width: 100%; max-height: 210px; }
   .pw-ent-capabilities-grid { grid-template-columns: 1fr; }
