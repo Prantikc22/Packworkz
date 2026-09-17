@@ -762,7 +762,7 @@ export default function Home() {
 
         <div className="pw-editorial-metrics" aria-label="Packworkz manufacturing network">
           <HeroMetric Icon={CalendarDays} target={33} suffix="+ years" label="Manufacturing heritage" />
-          <HeroMetric Icon={Factory} target={10000} suffix="+ T/yr" label="Combined network capacity" />
+          <HeroMetric Icon={Factory} target={10000} suffix="+ T/month" label="Combined network capacity" />
           <HeroMetric Icon={Users} target={50} suffix="+ supplier partners" label="Managed manufacturing network" />
           <HeroMetric Icon={Globe2} text="Worldwide delivery" label="India and global markets" />
         </div>
