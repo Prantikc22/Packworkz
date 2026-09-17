@@ -1658,7 +1658,7 @@ const maxSelfServeQuantity = selectedSku ? getMaxSelfServeQuantity(selectedSku) 
             {/* ── STEP 2: Design & Delivery (consolidated) ── */}
             {stepNum === 2 && (
               <>
-                <StepHeader step={2} total={displayedTotalSteps} title="Brand and delivery" subtitle="Add your design, choose delivery, and decide whether you need a sample first." />
+                <StepHeader step={2} total={displayedTotalSteps} title="Brand and delivery" subtitle="Add your artwork and delivery details for this packaging request." />
 
                 {/* Artwork section */}
                 <div className="bg-white rounded-lg border border-slate-200 p-6">

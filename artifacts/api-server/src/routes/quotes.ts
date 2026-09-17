@@ -23,9 +23,7 @@ router.post("/quotes", async (req, res): Promise<void> => {
     total_estimated_min,
     total_estimated_max,
     artwork_option,
-    sample_option,
     design_paid,
-    sample_paid,
     buying_mode,
   } = req.body;
 
@@ -54,7 +52,8 @@ router.post("/quotes", async (req, res): Promise<void> => {
     : "items";
 
   const resolvedArtwork = artwork_option || firstItem?.artwork_status || "none";
-  const resolvedSample = sample_option || (firstItem?.sample_requested ? firstItem?.sample_tier : "none");
+  // Sample kits are purchased through the dedicated kit checkout, not quotes.
+  const resolvedSample = "none";
 
   const quotePayload = {
     quote_id: quoteId,
@@ -129,7 +128,7 @@ router.post("/quotes", async (req, res): Promise<void> => {
       artworkOption: resolvedArtwork,
       sampleOption: resolvedSample,
       designPaid: !!design_paid,
-      samplePaid: !!sample_paid,
+      samplePaid: false,
       pincode: delivery_pincode,
       notes: notes || undefined,
       estimatedMin: total_estimated_min ? Number(total_estimated_min) : undefined,
@@ -153,7 +152,7 @@ router.post("/quotes", async (req, res): Promise<void> => {
       preferred_timeline: preferred_timeline || "standard",
       notes: notes || "",
       design_paid: design_paid ? "Yes" : "No",
-      sample_paid: sample_paid ? "Yes" : "No",
+      sample_paid: "No",
       submission_date: new Date().toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" }),
     }).catch(err => console.error("[sheetdb] quote submit failed:", err)),
 
