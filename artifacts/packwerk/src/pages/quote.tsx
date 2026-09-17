@@ -682,7 +682,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
   const stepNum = params?.step ? parseInt(params.step) : params?.id ? 99 : 1;
   const [, setLocation] = useLocation();
   const { toast } = useToast();
-  const { addItem } = useCart();
+  const { addItem, closeCart } = useCart();
   const [purchaseIntent] = useState<"cart" | "buy">(() => {
     if (typeof window === "undefined") return "buy";
     const intent = new URLSearchParams(window.location.search).get("intent") || loadDraft().purchaseIntent;
@@ -996,6 +996,7 @@ const maxSelfServeQuantity = selectedSku ? getMaxSelfServeQuantity(selectedSku) 
         return;
       }
       addItem(item);
+      if (purchaseIntent !== "cart") closeCart();
       try {
         sessionStorage.setItem("packworkz_checkout_prefill", JSON.stringify({
           contactName,

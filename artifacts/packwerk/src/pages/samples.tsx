@@ -143,7 +143,7 @@ export default function Samples() {
           </div>
         </div>
         <div className="pw-sample-hero-visual">
-          <img src="/images/flow-packaging-still-life-v2.webp" alt="Open kraft sample box with a pouch, carton and label roll from the Packworkz sample kit" />
+          <img src="/images/sample-kit-hero-v1.webp" alt="Open kraft sample box with a pouch, carton, label roll and material swatches from the Packworkz sample kit" />
           <span className="pw-sample-visual-note">Touch.<br />Compare.<br />Choose better.</span>
         </div>
       </section>
@@ -227,7 +227,7 @@ export default function Samples() {
             </div>
             <aside className="pw-sample-summary" aria-label="Order summary">
               <h3>Order summary</h3>
-              <div className="pw-sample-summary-product"><img src="/images/flow-packaging-still-life-v2.webp" alt="Packworkz sample kit" /><span><b>Packworkz Sample Kit</b><small>25–50+ packaging samples</small></span><strong>₹299</strong></div>
+              <div className="pw-sample-summary-product"><img src="/images/sample-kit-hero-v1.webp" alt="Packworkz sample kit" /><span><b>Packworkz Sample Kit</b><small>25–50+ packaging samples</small></span><strong>₹299</strong></div>
               <div className="pw-sample-summary-line"><span>Shipping</span><strong>₹100</strong></div>
               <div className="pw-sample-summary-total"><span>Total</span><strong>₹399</strong></div>
               <button type="submit" disabled={paymentState === "opening" || paymentState === "saving" || paymentState === "pending"}>
