@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { Link } from "wouter";
+import { FileText, PackageCheck, ShieldCheck } from "lucide-react";
 
 const PROBLEM_CARDS = [
   { title: "Production halted",   desc: "One missing pouch stops 10,000 units from shipping. The real cost is lost sales, not the pouch." },
@@ -48,8 +49,8 @@ function getStockStatus(stock: number, daily: number, lead: number) {
 }
 
 export function SmartStockDemo({ standalone = false }: { standalone?: boolean }) {
-  const [campaignLift, setCampaignLift] = useState(18);
-  const [selected, setSelected] = useState(2);
+  const [campaignLift, setCampaignLift] = useState(standalone ? 18 : 0);
+  const [selected, setSelected] = useState(standalone ? 2 : 1);
   const sku = DEMO_SKUS[selected];
   const adjustedDaily = Math.round(sku.daily * (1 + campaignLift / 100));
   const daysLeft = Math.max(1, Math.floor(sku.stock / adjustedDaily));
@@ -86,9 +87,14 @@ export function SmartStockDemo({ standalone = false }: { standalone?: boolean })
             <p className="smartstock-demo-eyebrow">SmartStock™ · Reorder planning</p>
             <h2>{standalone ? "Change one assumption. See the plan update." : "Know what needs ordering before it becomes urgent."}</h2>
             <p className="smartstock-demo-intro">
-              Stock on hand, recent consumption and supplier lead time come together in one review. Every recommendation stays visible and reviewable—nothing is ordered automatically.
+              Stock on hand, recent consumption and supplier lead times are reviewed together, so your team can reorder confidently and avoid last-minute shortages.
             </p>
-            <div className="smartstock-control-card">
+            {!standalone && <div className="smartstock-home-benefits">
+              <div><span><PackageCheck size={25} strokeWidth={1.8} /></span><p><strong>See stock cover clearly</strong><small>Get a real-time view of stock on hand and days of cover.</small></p></div>
+              <div><span><FileText size={25} strokeWidth={1.8} /></span><p><strong>Review reorder recommendations</strong><small>See what to order, when and why.</small></p></div>
+              <div><span><ShieldCheck size={25} strokeWidth={1.8} /></span><p><strong>Avoid last-minute stockouts</strong><small>Stay ahead of demand and keep operations moving.</small></p></div>
+            </div>}
+            {standalone && <div className="smartstock-control-card">
               <p className="smartstock-assumption-label">Planning assumption</p>
               <div className="smartstock-control-head">
                 <span className="smartstock-control-label">
@@ -109,20 +115,20 @@ export function SmartStockDemo({ standalone = false }: { standalone?: boolean })
                 aria-label="Expected demand change"
               />
               <div className="smartstock-range-labels"><span>No change</span><span>+60%</span></div>
-            </div>
-            <Link href="/smartstock" className="smartstock-learn-more">
-              See eligibility and workflow <span className="material-symbols-outlined">arrow_forward</span>
+            </div>}
+            <Link href={standalone ? "/smartstock" : "/smartstock/demo"} className="smartstock-learn-more">
+              {standalone ? "See eligibility and workflow" : "See SmartStock in action"} <span className="material-symbols-outlined">arrow_forward</span>
             </Link>
           </div>
 
           <div className="smartstock-demo-stage">
             <div className="smartstock-workspace">
+              <div className="smartstock-brand-head"><span className="smartstock-brand-lockup" aria-label="Packworkz"><span className="smartstock-brand-mark" aria-hidden="true"><i /><b /></span><span>Packworkz</span></span><small>Smart procurement for<br />what moves the world.</small></div>
               <header className="smartstock-workspace-head">
                 <div>
-                  <p>Inventory review</p>
                   <h3>Packaging reorder plan</h3>
                 </div>
-                <span className="smartstock-data-state"><i /> Sample data · updated today</span>
+                <span className="smartstock-data-state">Sample data · updated today</span>
               </header>
 
               <div className="smartstock-table" role="listbox" aria-label="Packaging SKUs">
@@ -142,7 +148,7 @@ export function SmartStockDemo({ standalone = false }: { standalone?: boolean })
                       className={`smartstock-table-row${selected === index ? " is-selected" : ""}`}
                       onClick={() => setSelected(index)}
                     >
-                      <span className="smartstock-sku-name"><small>{item.code}</small><strong>{item.name}</strong></span>
+                      <span className="smartstock-sku-name"><img src={item.code === "EC-501" ? "/skus/mailerbox.jpg" : item.code === "FP-101" ? "/skus/Standup_Pouch.jpg" : "/skus/courierbag.jpg"} alt="" /><span><strong>{item.code}</strong><small>{item.name}</small></span></span>
                       <span>{item.stock.toLocaleString("en-IN")}</span>
                       <span>{itemCover} days</span>
                       <span>{item.lead} days</span>
@@ -192,7 +198,7 @@ export function SmartStockDemo({ standalone = false }: { standalone?: boolean })
                     <span className={`smartstock-review-timing smartstock-review-${selectedStatus.tone}`}>
                       {reorderIn === 0 ? "Review now" : `Review in ${reorderIn} days`}
                     </span>
-                    <h4>{suggestedQty.toLocaleString("en-IN")} units</h4>
+                    <h4>Order {suggestedQty.toLocaleString("en-IN")} units</h4>
                     <p>Draft quantity for 45 days of demand plus the current safety-stock policy.</p>
                   </div>
                   <dl className="smartstock-plan-details">

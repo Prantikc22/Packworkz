@@ -30,11 +30,44 @@ const STORIES = [
 
 const CUSTOMER_LOGOS = [
   { name: "Plum", src: "/images/logos/plum-official.svg" },
-  { name: "Amul", src: "/images/logos/amul-wordmark.svg" },
-  { name: "Haldirams", src: "/images/logos/haldirams-wordmark.svg" },
-  { name: "Bhikaram", src: "/images/logos/bhikaram-wordmark.svg" },
+  { name: "Amul", src: "/images/logos/amul-official.png" },
+  { name: "Haldirams", src: "/images/logos/haldirams-official.png" },
+  { name: "Bhikaram", src: "/images/logos/bhikharam-chandmal-official.png" },
   { name: "Oliva", src: "/images/logos/oliva-official.svg" },
+  { name: "Olipop", src: "/images/logos/olipop.webp" },
+  { name: "Radico", src: "/images/logos/radico-official.webp" },
+  { name: "Biskfarm", src: "/images/logos/biskfarm-official.webp" },
 ];
+
+function CustomerLogo({ name, src }: { name: string; src: string }) {
+  if (name === "Amul" || name === "Haldirams" || name === "Bhikaram") {
+    const isAmul = name === "Amul";
+    const width = isAmul ? 720 : name === "Haldirams" ? 520 : 620;
+    const height = isAmul ? 405 : name === "Haldirams" ? 296 : 316;
+    // Crop only transparent margins or the coloured badge field. The visible
+    // wordmarks remain pixels from the supplied original logo artwork.
+    const viewBox = isAmul ? "0 74 720 262" : name === "Haldirams" ? "72 42 376 193" : "42 54 536 202";
+    const filterId = `pw-original-white-${name.toLowerCase()}`;
+
+    return (
+      <svg viewBox={viewBox} role="img" aria-label={name}>
+        <defs>
+          <filter id={filterId} colorInterpolationFilters="sRGB">
+            <feColorMatrix
+              type="matrix"
+              values={isAmul
+                ? "0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1 0"
+                : "0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0.1 1.5 1.5 0 -2.1"}
+            />
+          </filter>
+        </defs>
+        <image href={src} width={width} height={height} filter={`url(#${filterId})`} />
+      </svg>
+    );
+  }
+
+  return <img src={src} alt={name} loading="lazy" />;
+}
 
 export default function TestimonialsSection() {
   return (
@@ -70,7 +103,7 @@ export default function TestimonialsSection() {
 
         <div className="pw-proof-brands">
           <span>Packaging workflows used across</span>
-          <div>{CUSTOMER_LOGOS.map((logo) => <div key={logo.name} className={`pw-proof-logo pw-proof-logo-${logo.name.toLowerCase()}`}><img src={logo.src} alt={logo.name} loading="lazy" /></div>)}</div>
+          <div>{CUSTOMER_LOGOS.map((logo) => <div key={logo.name} className={`pw-proof-logo pw-proof-logo-${logo.name.toLowerCase()}`}><CustomerLogo name={logo.name} src={logo.src} /></div>)}</div>
           <Link href="/contact">Talk to the team <ArrowRight size={16} /></Link>
         </div>
       </div>

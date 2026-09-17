@@ -1,222 +1,132 @@
+import { FormEvent, useState } from "react";
 import { Link } from "wouter";
+import { ArrowRight, Box, CheckCircle2, PackageOpen, ShieldCheck, SwatchBook, Truck } from "lucide-react";
 
-const MS = ({ icon, className = "", style }: { icon: string; className?: string; style?: React.CSSProperties }) => (
-  <span className={`material-symbols-outlined ${className}`} style={style}>{icon}</span>
-);
-const MsFilled = ({ icon, className = "", style }: { icon: string; className?: string; style?: React.CSSProperties }) => (
-  <span className={`material-symbols-outlined ms-filled ${className}`} style={style}>{icon}</span>
-);
+const KIT_CONTENTS = [
+  { Icon: PackageOpen, title: "25–50+ physical samples", text: "Pouches, cartons, labels, mailers, rigid packs, bottles and foodservice formats." },
+  { Icon: SwatchBook, title: "Material and finish swatches", text: "Kraft, barrier films, boards, labels, laminates and lower-impact structures." },
+  { Icon: ShieldCheck, title: "Practical selection guide", text: "Compare protection, print quality, finish, stiffness and likely production route." },
+  { Icon: Truck, title: "Delivered across India", text: "The kit is ₹299. Shipping is calculated from your delivery postcode." },
+];
 
-const TIERS = [
-  {
-    name: "Standard",
-    price: "₹2,999",
-    sub: "per unit",
-    badge: null,
-    badgeColor: "",
-    covered: "Corrugated Boxes, Mailers, Paper Bags",
-    best: "Structural testing, sizing validation",
-    turnaround: "48–72 hours",
-    cta: "CHOOSE STANDARD",
-    dark: false,
-    features: [
-      "Unprinted physical sample",
-      "Exact size and structure",
-      "Standard corrugated / paper materials",
-      "No print proof included",
-    ],
-  },
-  {
-    name: "Premium",
-    price: "₹4,999",
-    sub: "per unit",
-    badge: "OFTEN REQUESTED",
-    badgeColor: "#E8A838",
-    covered: "Rigid Boxes, UV Spot, Premium Lamination, Foil Stamping",
-    best: "Luxury brands, high-fidelity finish check",
-    turnaround: "4–5 Working Days",
-    cta: "CHOOSE PREMIUM",
-    dark: true,
-    features: [
-      "Digitally printed with your artwork",
-      "Exact size and structure",
-      "Premium materials & finishes",
-      "Spot UV, foil, or emboss available",
-    ],
-  },
-  {
-    name: "Complex",
-    price: "₹7,999",
-    sub: "per unit",
-    badge: null,
-    badgeColor: "",
-    covered: "Custom inserts, Multi-component, Fold electronics",
-    best: "Unboxing experience, multi-assembly packaging",
-    turnaround: "7–10 Working Days",
-    cta: "CHOOSE COMPLEX",
-    dark: false,
-    features: [
-      "Fully customized structure",
-      "Offset printed with your artwork",
-      "All specialized finishes (foil, spot UV)",
-      "3D structural dieline included",
-    ],
-  },
+const FORMAT_CARDS = [
+  { number: "01", title: "Flexible packs", text: "Stand-up, flat-bottom and barrier pouch examples.", image: "/images/flow-packaging-still-life-v2.webp" },
+  { number: "02", title: "Boxes and cartons", text: "Folding cartons, rigid structures and ecommerce mailers.", image: "/images/sustainability-kraft-sourcing-v1.webp" },
+  { number: "03", title: "Labels and materials", text: "Label stocks, finishes, films and substrate swatches.", image: "/images/sustainability-material-layers-v1.webp" },
+];
+
+const FAQS = [
+  ["Are these printed with my branding?", "This is a discovery kit containing representative production samples and material swatches. Once you shortlist a format, Packworkz can scope a custom branded prototype separately."],
+  ["How many samples will I receive?", "Every kit contains at least 25 samples. Most contain 35–50+ pieces depending on current format and material availability."],
+  ["Is shipping included in ₹299?", "Shipping is charged separately according to the delivery postcode and the packed kit weight."],
+  ["Can I request a specific category?", "Yes. Choose your main interest in the request form and add any specific pouch, box, bottle, label or foodservice requirement in the notes."],
 ];
 
 export default function Samples() {
+  const [submitted, setSubmitted] = useState(false);
+
+  const requestKit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    const message = [
+      "Hi Packworkz, I want the ₹299 packaging sample kit.",
+      `Name: ${data.get("name")}`,
+      `Company: ${data.get("company") || "Not provided"}`,
+      `Phone: ${data.get("phone")}`,
+      `Pincode: ${data.get("pincode")}`,
+      `Main interest: ${data.get("interest")}`,
+      `Notes: ${data.get("notes") || "None"}`,
+    ].join("\n");
+    setSubmitted(true);
+    window.open(`https://wa.me/918208990366?text=${encodeURIComponent(message)}`, "_blank", "noopener,noreferrer");
+  };
+
   return (
-    <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-
-      {/* ── HERO ─────────────────────────────────── */}
-      <section className="relative min-h-[65vh] flex flex-col justify-center px-8 md:px-20 overflow-hidden"
-        style={{ background: "linear-gradient(135deg, #020617 0%, #0f172a 50%, #1e3a8a 100%)" }}>
-        <div className="absolute inset-0 opacity-30">
-          <img src="https://images.unsplash.com/photo-1566576912321-d58ddd7a6088?w=1400&h=700&fit=crop&q=60"
-            alt="" className="w-full h-full object-cover" />
-          <div className="absolute inset-0" style={{ background: "rgba(2,6,23,0.85)" }} />
-        </div>
-        <div className="relative z-10 max-w-3xl py-24">
-          <p className="font-bold tracking-[0.25em] text-xs uppercase mb-6" style={{ color: "#1B6CA8" }}>PHYSICAL VALIDATION</p>
-          <h1 className="clash-display text-white mb-6" style={{ fontSize: "clamp(2.5rem,6vw,4.5rem)", lineHeight: 1.05 }}>
-            See it. Touch it.<br />Approve it.<br />Then order.
-          </h1>
-          <p className="text-slate-300 text-lg mb-3 max-w-xl leading-relaxed">
-            Don&rsquo;t leave your brand to chance. Order a custom sample of your production-ready packaging.{" "}
-            <span className="font-bold underline decoration-[#E8A838]" style={{ color: "#E8A838" }}>The sampling fee is fully adjusted against your main production order.</span>
-          </p>
-          <div className="mt-10">
-            <Link href="/products">
-              <button className="btn-fill btn-amber px-8 py-4 uppercase tracking-wide text-sm">
-                <span>BROWSE PRODUCTS TO SAMPLE</span>
-                <span className="material-symbols-outlined text-lg" style={{ position: "relative", zIndex: 1 }}>arrow_forward</span>
-              </button>
-            </Link>
+    <main className="pw-sample-page">
+      <section className="pw-sample-hero">
+        <div className="pw-sample-hero-copy">
+          <p className="pw-sample-eyebrow">PACKAGING SAMPLE KIT</p>
+          <h1>Feel 25–50+ packaging samples before choosing one.</h1>
+          <p className="pw-sample-lead">Compare structures, materials, finishes and print quality at your own desk. A curated Packworkz sample kit arrives at your doorstep for one small fee.</p>
+          <div className="pw-sample-price"><strong>₹299</strong><span>+ shipping<br /><small>one curated kit</small></span></div>
+          <div className="pw-sample-actions">
+            <a href="#sample-kit-order">Get the sample kit <ArrowRight size={18} /></a>
+            <Link href="/products">Browse packaging</Link>
           </div>
+          <div className="pw-sample-mini-proof">
+            <span><CheckCircle2 size={16} /> 25 sample minimum</span>
+            <span><CheckCircle2 size={16} /> Category preferences included</span>
+            <span><CheckCircle2 size={16} /> Pan-India delivery</span>
+          </div>
+        </div>
+        <div className="pw-sample-hero-visual">
+          <img src="/images/flow-packaging-still-life-v2.webp" alt="Assorted packaging formats included in a Packworkz sample kit" />
+          <div><b>25–50+</b><span>formats, materials<br />and finishes</span></div>
         </div>
       </section>
 
-      {/* ── LIFECYCLE ────────────────────────────── */}
-      <section className="py-20 px-8 md:px-20 bg-white">
-        <div className="max-w-5xl mx-auto">
-          <h2 className="text-2xl font-bold mb-2" style={{ color: "#0D1B2A", fontFamily: "'Space Grotesk', sans-serif" }}>
-            The Sampling Lifecycle
-          </h2>
-          <div className="w-12 h-0.5 mb-12" style={{ background: "#E8A838" }} />
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-            {[
-              { n: "01", nColor: "#0D1B2A", title: "Find", desc: "Choose from our catalog of structured boxes, mailers, or rigid packaging. Upload your artwork or specify dimensions.", cta: "→ SEARCH CATALOG", href: "/products" },
-              { n: "02", nColor: "#E8A838", title: "Order", desc: "Select your tier and checkout. Our engineers review your files for structural integrity before manufacturing the unit.", cta: "→ INSTANT CHECKOUT", href: "/configure" },
-              { n: "03", nColor: "#0D1B2A", title: "Approve", desc: "Receive your physical sample. If you&rsquo;re happy, hit 'Produce' in your dashboard. The sample cost is deducted from the total.", cta: "→ FINAL PRODUCTION", href: "/dashboard" },
-            ].map(step => (
-              <div key={step.n}>
-                <div className="w-10 h-10 rounded flex items-center justify-center font-bold text-white mb-5 text-sm" style={{ background: step.nColor, fontFamily: "'Space Grotesk', sans-serif" }}>{step.n}</div>
-                <h3 className="text-xl font-bold mb-3" style={{ color: "#0D1B2A" }}>{step.title}</h3>
-                <p className="text-sm leading-relaxed mb-4" style={{ color: "#44474c" }} dangerouslySetInnerHTML={{ __html: step.desc }} />
-                <Link href={step.href}>
-                  <span className="text-xs font-bold uppercase tracking-wider cursor-pointer hover:underline" style={{ color: "#1B6CA8" }}>{step.cta}</span>
-                </Link>
-              </div>
-            ))}
-          </div>
+      <section className="pw-sample-included pw-reveal">
+        <div className="pw-sample-section-head">
+          <p>WHAT ARRIVES</p>
+          <h2>A useful packaging library, not a handful of random pieces.</h2>
+          <span>We curate the kit around your category while keeping enough variety to compare unfamiliar options.</span>
+        </div>
+        <div className="pw-sample-included-grid">
+          {KIT_CONTENTS.map(({ Icon, title, text }, index) => (
+            <article className={`pw-reveal pw-d${index + 1}`} key={title}><Icon size={28} strokeWidth={1.55} /><h3>{title}</h3><p>{text}</p></article>
+          ))}
         </div>
       </section>
 
-      {/* ── TIERS ────────────────────────────────── */}
-      <section className="py-20 px-8 md:px-20" style={{ background: "#F2F3F6" }}>
-        <div className="max-w-6xl mx-auto">
-          <h2 className="clash-display text-4xl text-center mb-3" style={{ color: "#0D1B2A" }}>Precision Sampling Tiers</h2>
-          <p className="text-center mb-16" style={{ color: "#44474c" }}>Select the level of fidelity required for your brand validation.</p>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {TIERS.map(tier => (
-              <div
-                key={tier.name}
-                className="rounded-lg p-8 relative overflow-hidden flex flex-col"
-                style={tier.dark
-                  ? { background: "#020617", border: "2px solid #1B6CA8" }
-                  : { background: "white", border: "1px solid #E7E8EB" }}
-              >
-                {tier.badge && (
-                  <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-px px-5 py-1.5 rounded-b text-xs font-bold uppercase tracking-widest"
-                    style={{ background: tier.badgeColor, color: "#0F1C2C" }}>
-                    {tier.badge}
-                  </div>
-                )}
-                <div className={`mb-6 ${tier.badge ? "pt-4" : ""}`}>
-                  <h3 className="text-2xl font-bold mb-1" style={{ color: tier.dark ? "white" : "#0D1B2A" }}>{tier.name}</h3>
-                  <div className="flex items-baseline gap-1">
-                    <span className="text-4xl font-black" style={{ fontFamily: "'Space Grotesk', sans-serif", color: tier.dark ? "#E8A838" : "#1B6CA8" }}>{tier.price}</span>
-                    <span className="text-sm" style={{ color: tier.dark ? "rgba(255,255,255,0.5)" : "#74777d" }}>{tier.sub}</span>
-                  </div>
-                </div>
-
-                <div className="space-y-3 mb-6 flex-1">
-                  <div className="rounded p-3" style={{ background: tier.dark ? "rgba(255,255,255,0.07)" : "#F2F3F6" }}>
-                    <p className="text-xs font-bold uppercase mb-1" style={{ color: tier.dark ? "#E8A838" : "#1B6CA8" }}>COVERED SKUs</p>
-                    <p className="text-sm" style={{ color: tier.dark ? "rgba(255,255,255,0.7)" : "#44474c" }}>{tier.covered}</p>
-                  </div>
-                  <div className="rounded p-3" style={{ background: tier.dark ? "rgba(255,255,255,0.07)" : "#F2F3F6" }}>
-                    <p className="text-xs font-bold uppercase mb-1" style={{ color: tier.dark ? "#E8A838" : "#1B6CA8" }}>BEST FOR</p>
-                    <p className="text-sm" style={{ color: tier.dark ? "rgba(255,255,255,0.7)" : "#44474c" }}>{tier.best}</p>
-                  </div>
-                  {tier.features.map(f => (
-                    <div key={f} className="flex items-start gap-2">
-                      <MsFilled icon="check_circle" className="text-base shrink-0 mt-0.5" style={{ color: tier.dark ? "#1B6CA8" : "#22C55E" }} />
-                      <span className="text-sm" style={{ color: tier.dark ? "rgba(255,255,255,0.7)" : "#44474c" }}>{f}</span>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="mt-4">
-                  <p className="text-xs uppercase tracking-widest mb-4 font-bold" style={{ color: tier.dark ? "rgba(255,255,255,0.4)" : "#74777d" }}>
-                    TURNAROUND: {tier.turnaround}
-                  </p>
-                  <Link href="/products">
-                    <button
-                      className="w-full py-3.5 rounded font-bold text-sm uppercase tracking-wide hover:opacity-90 active:scale-95 transition-all"
-                      style={tier.dark
-                        ? { background: "#E8A838", color: "#0F1C2C" }
-                        : { background: "#020617", color: "white" }}
-                    >
-                      {tier.cta}
-                    </button>
-                  </Link>
-                </div>
-              </div>
-            ))}
-          </div>
+      <section className="pw-sample-formats">
+        <div className="pw-sample-section-head pw-reveal">
+          <p>EXPLORE BY TOUCH</p>
+          <h2>Shortlist faster when the material is in your hands.</h2>
+        </div>
+        <div className="pw-sample-format-grid">
+          {FORMAT_CARDS.map((card, index) => (
+            <article className={`pw-reveal pw-d${index + 1}`} key={card.number}>
+              <img src={card.image} alt={card.title} />
+              <div><span>{card.number}</span><h3>{card.title}</h3><p>{card.text}</p></div>
+            </article>
+          ))}
         </div>
       </section>
 
-      {/* ── COMMODITY NOTE ───────────────────────── */}
-      <section className="py-16 px-8 md:px-20 bg-white">
-        <div className="max-w-4xl mx-auto border border-slate-200 rounded-lg p-8 flex gap-6 items-start">
-          <div className="w-12 h-12 rounded flex items-center justify-center shrink-0" style={{ background: "#F2F3F6" }}>
-            <MS icon="info" className="text-2xl" style={{ color: "#1B6CA8" }} />
-          </div>
-          <div>
-            <h3 className="font-bold text-lg mb-2" style={{ color: "#0D1B2A" }}>Commodity SKU Policy</h3>
-            <p className="text-sm leading-relaxed mb-3" style={{ color: "#44474c" }}>
-              Standard commodity items such as <strong>bubble wrap, packaging tape, honeycomb paper,</strong> and <strong>stretch film</strong> do not require physical samples. We offer generic swatches or technical data sheets for these materials free of charge on request.
-            </p>
-            <button className="text-sm font-bold hover:underline flex items-center gap-1" style={{ color: "#1B6CA8" }}>
-              <MS icon="download" className="text-base" /> Get Data Sheets
-            </button>
-          </div>
+      <section className="pw-sample-steps">
+        <div className="pw-sample-section-head pw-reveal"><p>HOW IT WORKS</p><h2>Three steps. No complicated sample purchase flow.</h2></div>
+        <div className="pw-sample-step-grid">
+          {[
+            ["01", "Tell us what you sell", "Choose your industry and the formats you want to inspect."],
+            ["02", "Confirm shipping", "Our team confirms the kit contents, shipping charge and payment link."],
+            ["03", "Open, compare, shortlist", "Use the enclosed guide, then ask Packworkz to quote the formats you prefer."],
+          ].map(([number, title, text], index) => <article className={`pw-reveal pw-d${index + 1}`} key={number}><b>{number}</b><h3>{title}</h3><p>{text}</p></article>)}
         </div>
       </section>
 
-      {/* ── CTA ──────────────────────────────────── */}
-      <section className="py-20 px-8 text-center" style={{ background: "#020617" }}>
-        <h2 className="clash-display text-white text-4xl mb-6">Ready to touch your brand?</h2>
-        <Link href="/products">
-          <button className="btn-fill btn-amber px-10 py-5 uppercase tracking-wide text-base mx-auto">
-            <span>BROWSE PRODUCTS TO SAMPLE</span>
-            <span className="material-symbols-outlined" style={{ position: "relative", zIndex: 1 }}>arrow_forward</span>
-          </button>
-        </Link>
+      <section id="sample-kit-order" className="pw-sample-order">
+        <div className="pw-sample-order-copy pw-reveal">
+          <p>REQUEST YOUR KIT</p>
+          <h2>Start with samples. Order with confidence.</h2>
+          <span>Share a few delivery details. The sample team will confirm the curation, shipping charge and secure payment link on WhatsApp.</span>
+          <div className="pw-sample-order-price"><strong>₹299</strong><small>kit price<br />shipping extra</small></div>
+        </div>
+        <form className="pw-sample-form pw-reveal pw-d1" onSubmit={requestKit}>
+          <label>Full name<input name="name" required placeholder="Your name" /></label>
+          <label>Company<input name="company" placeholder="Brand or company" /></label>
+          <label>WhatsApp number<input name="phone" required inputMode="tel" placeholder="+91" /></label>
+          <label>Delivery pincode<input name="pincode" required inputMode="numeric" pattern="[0-9]{6}" placeholder="6-digit pincode" /></label>
+          <label className="pw-sample-form-wide">Main interest<select name="interest" defaultValue="Mixed sample kit"><option>Mixed sample kit</option><option>Pouches and flexible packaging</option><option>Boxes and cartons</option><option>Bottles and jars</option><option>Labels and sleeves</option><option>Foodservice packaging</option></select></label>
+          <label className="pw-sample-form-wide">Anything specific?<textarea name="notes" rows={3} placeholder="Tell us the formats or materials you want included" /></label>
+          <button className="pw-sample-form-wide" type="submit">{submitted ? "Continue on WhatsApp" : "Request my ₹299 sample kit"}<ArrowRight size={18} /></button>
+          <small className="pw-sample-form-wide">You will receive the final shipping charge before payment.</small>
+        </form>
       </section>
-    </div>
+
+      <section className="pw-sample-faq">
+        <div className="pw-sample-section-head pw-reveal"><p>GOOD TO KNOW</p><h2>Sample kit questions.</h2></div>
+        <div>{FAQS.map(([question, answer]) => <details className="pw-reveal" key={question}><summary>{question}</summary><p>{answer}</p></details>)}</div>
+      </section>
+    </main>
   );
 }

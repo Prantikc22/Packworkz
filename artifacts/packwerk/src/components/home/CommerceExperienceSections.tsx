@@ -1,198 +1,106 @@
-import { lazy, Suspense, useEffect, useState } from "react";
-import { ArrowRight, BellRing, Boxes, Check, CircleDollarSign, ClipboardCheck, Leaf, PackageCheck, PenTool, RefreshCcw, Route, ShieldCheck, ShoppingCart, Sparkles, Truck } from "lucide-react";
+import { ArrowRight, Check, FileText, Layers3, Leaf, PackageCheck, Recycle, ShieldCheck } from "lucide-react";
 import { Link } from "wouter";
 
-const PackagingMockupCanvas = lazy(() => import("@/components/mockup/PackagingMockupCanvas").then((module) => ({ default: module.PackagingMockupCanvas })));
-
-const PROCESS = [
+const FLOW_STEPS = [
   {
-    id: "choose",
-    label: "Choose",
-    icon: Boxes,
-    eyebrow: "01 / Product",
-    title: "Start from the shelf, not a blank form.",
-    body: "Browse launch-ready packaging with MOQ, quantity pricing and the right buying path already visible.",
-    bullets: ["Instant-buy standard formats", "Configurable material and finish", "Production briefs for technical runs"],
+    number: "01",
+    title: "Choose",
+    description: "Browse standard formats or tell us what you need.",
   },
   {
-    id: "design",
-    label: "Design",
-    icon: PenTool,
-    eyebrow: "02 / Design",
-    title: "Make it yours in a live 3D preview.",
-    body: "Apply your brand direction before dielines and production samples. Rotate the pack, test color and export a review image.",
-    bullets: ["Live packaging preview", "Logo and brand-color upload", "Production-ready artwork handoff"],
+    number: "02",
+    title: "Design",
+    description: "Upload artwork, get dielines and review proofs with our team.",
   },
   {
-    id: "order",
-    label: "Order",
-    icon: ShoppingCart,
-    eyebrow: "03 / Ordering",
-    title: "Buy instantly, or request one managed quote.",
-    body: "Standard formats show the exact quantity break and checkout path. Rollstock, tooling and regulated packs move to a managed quote with one accountable owner.",
-    bullets: ["Only two clear buying paths", "GST and delivery captured once", "Enterprise quantities get a sharper reviewed rate"],
+    number: "03",
+    title: "Order",
+    description: "Buy standard formats instantly or get a managed quote for custom and high volumes.",
   },
   {
-    id: "smartstock",
-    label: "SmartStock",
-    icon: RefreshCcw,
-    eyebrow: "04 / SmartStock",
-    title: "Turn every approved pack into an easier repeat order.",
-    body: "SmartStock watches consumption, lead time and risk so the next order is prepared before packaging becomes urgent.",
-    bullets: ["Earlier stockout signals", "Approved specs stay attached", "Supplier and quantity recommendation"],
+    number: "04",
+    title: "SmartStock",
+    description: "Track production, get updates and reorder faster as you grow.",
   },
 ];
 
-function ProductVisual() {
-  return (
-    <div className="pw-process-capabilities">
-      <article className="catalogue">
-        <div><small>READY CATALOGUE</small><h4>Focused D2C + enterprise range</h4><p>Standard formats with MOQs and quantity breaks already mapped.</p></div>
-        <div className="pw-capability-products" aria-hidden="true">
-          <img src="/skus/Standup_Pouch.jpg" alt="" /><img src="/skus/mailerbox.jpg" alt="" /><img src="/skus/plasticbottles.jpg" alt="" />
-        </div>
-      </article>
-      <article className="sizing">
-        <div><small>STANDARD SIZING</small><h4>Choose a production-ready size</h4><p>Instant-buy products use fixed, tested dimensions.</p></div>
-        <div className="pw-capability-size" aria-hidden="true"><span>140</span><span>220</span><span>80</span><i /></div>
-      </article>
-      <article className="tailored">
-        <div><small>TAILOR-MADE</small><h4>Go beyond the catalogue</h4><p>Tooling, rollstock and regulated formats move to one managed brief.</p></div>
-        <img src="/skus/rigidbox.jpg" alt="Premium tailor-made rigid packaging" />
-      </article>
-      <article className="production">
-        <div><small>VETTED PRODUCTION</small><h4>The right route for every specification</h4><p>Supplier fit, artwork and QC checkpoints stay attached.</p></div>
-        <div className="pw-capability-checks"><span><Check size={14} /> Material matched</span><span><Check size={14} /> Artwork reviewed</span><span><Check size={14} /> Production tracked</span></div>
-      </article>
-    </div>
-  );
-}
+function FlowVisual({ step }: { step: string }) {
+  if (step === "Choose") {
+    return (
+      <figure className="pw-flow-visual pw-flow-visual-choose">
+        <img src="/categories/flexiblepacks.webp" alt="A selection of flexible packaging formats" loading="lazy" />
+        <figcaption><span>Pouches</span><span>Boxes</span><span>Labels</span><span>Bottles</span></figcaption>
+      </figure>
+    );
+  }
 
-function SmartStockVisual() {
-  return (
-    <div className="pw-stock-command">
-      <div className="pw-stock-command-head">
-        <span><Sparkles size={15} /> SMARTSTOCK AI</span>
-        <b><i /> Forecast live</b>
-      </div>
-      <div className="pw-stock-command-main">
-        <div className="pw-stock-signal">
-          <small>250 g stand-up pouch</small>
-          <strong>28</strong>
-          <p>days before projected stockout</p>
-          <span><BellRing size={14} /> Reorder window opened early</span>
-        </div>
-        <div className="pw-stock-chart" aria-label="Animated projected packaging stock curve">
-          <div className="pw-stock-chart-head"><span>On-hand inventory</span><b>18,420 units</b></div>
-          <svg viewBox="0 0 620 210" preserveAspectRatio="none" role="img">
-            <defs><linearGradient id="stock-command-fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#49a3df" stopOpacity=".28"/><stop offset="1" stopColor="#49a3df" stopOpacity="0"/></linearGradient></defs>
-            <path className="stock-area" d="M0 28 C85 38 145 52 205 69 S325 96 392 122 S500 158 620 184 L620 210 L0 210 Z" />
-            <path className="stock-line" pathLength="1" d="M0 28 C85 38 145 52 205 69 S325 96 392 122 S500 158 620 184" />
-            <line className="stock-trigger" x1="392" x2="392" y1="8" y2="205" />
-            <circle className="stock-pulse" cx="392" cy="122" r="7" />
-            <text x="407" y="105">REORDER TRIGGER</text>
-          </svg>
-          <div className="pw-stock-axis"><span>Today</span><span>Projected demand · 60 days</span><span>Day 60</span></div>
-        </div>
-      </div>
-      <div className="pw-stock-plan">
-        <div><span><Route size={16} /> SUPPLIER ROUTE</span><strong>Ahmedabad Flex</strong><small>2 backups verified</small></div>
-        <div><span><PackageCheck size={16} /> RECOMMENDED</span><strong>18,000 units</strong><small>45 days + safety stock</small></div>
-        <div><span><CircleDollarSign size={16} /> COST AVOIDED</span><strong>₹1.8L</strong><small>vs emergency sourcing</small></div>
-      </div>
-      <div className="pw-stock-command-action"><span><Check size={15} /> Approved spec, artwork and GST profile attached</span><button type="button">Review plan <ArrowRight size={16} /></button></div>
-    </div>
-  );
-}
-
-function OrderVisual() {
-  const quantities = [
-    { qty: 500, unit: 48, saving: 0 },
-    { qty: 1000, unit: 39, saving: 19 },
-    { qty: 2500, unit: 31, saving: 35 },
-  ];
-  const [selected, setSelected] = useState(1);
-  const [stage, setStage] = useState(0);
-
-  useEffect(() => {
-    const timer = window.setInterval(() => setStage((value) => (value + 1) % 4), 1700);
-    return () => window.clearInterval(timer);
-  }, []);
-
-  const choice = quantities[selected];
-  const total = choice.qty * choice.unit;
-
-  return (
-    <div className="pw-order-command">
-      <div className="pw-order-command-head"><span>LIVE ORDER / EC-501</span><b><i /> Ready to buy</b></div>
-      <div className="pw-order-command-main">
-        <div className="pw-order-proof">
-          <img src="/skus/mailerbox.jpg" alt="Custom mailer box" />
-          <span><Check size={14} /> Artwork proof approved</span>
-          <div><small>Custom mailer box</small><strong>9 x 6 x 3 inch</strong><p>Full-colour print · matte finish · kraft board</p></div>
-        </div>
-        <div className="pw-order-pricing">
-          <div className="pw-order-pricing-head"><span>Choose an order quantity</span><small>Price drops as volume grows</small></div>
-          <div className="pw-order-price-options">
-            {quantities.map((option, index) => (
-              <button key={option.qty} type="button" className={selected === index ? "active" : ""} onClick={() => setSelected(index)}>
-                <span>{option.qty.toLocaleString("en-IN")}</span><b>₹{option.unit}<small>/unit</small></b>{option.saving > 0 && <em>Save {option.saving}%</em>}
-              </button>
-            ))}
+  if (step === "Design") {
+    return (
+      <figure className="pw-flow-visual pw-flow-visual-design" aria-label="Packaging artwork and dieline preview">
+        <div className="pw-flow-artwork-sheet">
+          <span className="pw-flow-artwork-label">ARTWORK / 01</span>
+          <div className="pw-flow-dieline">
+            <span className="pw-flow-dieline-side" />
+            <span className="pw-flow-dieline-front"><b>Good things<br />inside.</b><i /></span>
+            <span className="pw-flow-dieline-side" />
           </div>
-          <div className="pw-order-saving"><span>Quantity-break saving</span><div><i style={{ width: `${choice.saving}%` }} /></div><b>{choice.saving || 0}%</b></div>
-          <div className="pw-order-price-total"><span>Total before GST</span><strong>₹{total.toLocaleString("en-IN")}</strong></div>
+          <span className="pw-flow-artwork-measure">PRINT · FOLD · FINISH</span>
         </div>
-      </div>
-      <div className="pw-order-progress" aria-label="Order workflow">
-        {["Spec checked", "Artwork approved", "Production booked", "Dispatch tracked"].map((label, index) => (
-          <div key={label} className={index <= stage ? "active" : ""}><i>{index < stage ? <Check size={12} /> : index + 1}</i><span>{label}</span></div>
-        ))}
-      </div>
-      <div className="pw-order-command-action"><span><Truck size={15} /> Delivery and GST are locked before payment</span><button type="button">Continue to payment <ArrowRight size={16} /></button></div>
-    </div>
+        <figcaption><Check size={14} aria-hidden="true" /> Proof ready for review</figcaption>
+      </figure>
+    );
+  }
+
+  if (step === "Order") {
+    return (
+      <figure className="pw-flow-visual pw-flow-visual-order">
+        <img src="/skus/mailerbox.jpg" alt="Mailer boxes ready for dispatch" loading="lazy" />
+      </figure>
+    );
+  }
+
+  return (
+    <figure className="pw-flow-visual pw-flow-visual-stock">
+      <img src="/kalyani-factory.png" alt="Packaging production at the Kalyani facility" loading="lazy" />
+      <figcaption><Check size={15} aria-hidden="true" /> Production on track</figcaption>
+    </figure>
   );
 }
 
 export function PackagingProcessSection() {
-  const [active, setActive] = useState(0);
-  const item = PROCESS[active];
-
-  useEffect(() => {
-    const timer = window.setInterval(() => setActive((value) => (value + 1) % PROCESS.length), 8000);
-    return () => window.clearInterval(timer);
-  }, []);
-
   return (
-    <section className="pw-platform-section">
-      <div className="pw-platform-inner">
-        <div className="pw-platform-heading">
-          <p>THE PACKWORKZ FLOW</p>
-          <h2>Making packaging simple.</h2>
-          <span>Instant buy for standard formats. Managed quotes for technical production.</span>
-        </div>
-        <div className="pw-platform-tabs" role="tablist" aria-label="Packworkz process">
-          {PROCESS.map((step, index) => {
-            const Icon = step.icon;
-            return <button key={step.id} type="button" className={active === index ? "active" : ""} onClick={() => setActive(index)}><Icon size={18} /> {step.label}<i /></button>;
-          })}
-        </div>
-        <div className="pw-platform-panel">
-          <div className="pw-platform-copy">
-            <p>{item.eyebrow}</p>
-            <h3>{item.title}</h3>
-            <span>{item.body}</span>
-            <ul>{item.bullets.map((bullet) => <li key={bullet}><Check size={16} /> {bullet}</li>)}</ul>
-            <Link href={item.id === "design" ? "/mockup-studio" : item.id === "smartstock" ? "/smartstock" : item.id === "choose" ? "/products" : "/configure"}>
-              {item.id === "design" ? "Open 3D studio" : item.id === "smartstock" ? "See SmartStock" : item.id === "choose" ? "Browse the catalog" : "Start configuration"} <ArrowRight size={17} />
-            </Link>
+    <section className="pw-flow-section" aria-labelledby="pw-flow-title">
+      <div className="pw-flow-inner">
+        <div className="pw-flow-intro">
+          <div className="pw-flow-intro-copy scroll-animate">
+            <p className="pw-flow-eyebrow">THE PACKWORKZ FLOW</p>
+            <h2 id="pw-flow-title">From idea to<br />repeat orders.</h2>
+            <p className="pw-flow-summary">
+              A simpler way to source, customise and scale your packaging — whether you need a few hundred pieces or millions.
+            </p>
           </div>
-          <div className="pw-platform-visual">
-            {item.id === "choose" && <ProductVisual />}
-            {item.id === "design" && <Suspense fallback={<div className="pw-mockup-loading">Loading 3D preview...</div>}><PackagingMockupCanvas format="mailer" color="#0F4C5C" brandName="Northstar" finish="matte" autoRotate /></Suspense>}
-            {item.id === "order" && <OrderVisual />}
-            {item.id === "smartstock" && <SmartStockVisual />}
+          <div className="pw-flow-still-life scroll-animate scroll-animate-delay-1">
+            <img src="/images/flow-packaging-still-life-v2.webp" alt="Packworkz mailer box, navy pouch, folding carton and label roll in a sunlit packaging still-life" loading="lazy" />
           </div>
+        </div>
+
+        <ol className="pw-flow-steps">
+          {FLOW_STEPS.map((step, index) => (
+            <li className={`pw-flow-step scroll-animate scroll-animate-delay-${index + 1}`} key={step.number}>
+              <div className="pw-flow-step-track" aria-hidden="true">
+                <span>{step.number}</span>
+                <i />
+              </div>
+              <h3>{step.title}</h3>
+              <p>{step.description}</p>
+              <FlowVisual step={step.title} />
+            </li>
+          ))}
+        </ol>
+
+        <div className="pw-flow-footer scroll-animate">
+          <Link href="/how-it-works" className="pw-flow-cta">See how it works <ArrowRight size={21} aria-hidden="true" /></Link>
+          <p>SAME PACKAGING PARTNER.<br />AT EVERY STAGE OF YOUR GROWTH.</p>
         </div>
       </div>
     </section>
@@ -200,35 +108,60 @@ export function PackagingProcessSection() {
 }
 
 const SUSTAINABILITY_ITEMS = [
-  { image: "/skus/recycledbox.jpg", icon: ClipboardCheck, badge: "Evidence matched", title: "Material transparency", body: "See the structure, recycled-content option and evidence needed before an environmental claim reaches your artwork." },
-  { image: "/skus/kraftpaperpacks.jpg", icon: ShieldCheck, badge: "Supplier documents", title: "Responsible sourcing", body: "Route paper, fibre and compostable products through suppliers that can provide the relevant certificates and declarations." },
-  { image: "/images/foodservice-containers-premium.jpg", icon: PackageCheck, badge: "Right-sized spec", title: "Right-size foodservice", body: "Compare bowl, tub, dip-cup and bagasse formats before paying to ship unnecessary air or over-engineered layers." },
-  { image: "/images/sustainable-bg.webp", icon: Leaf, badge: "Claim guidance", title: "End-of-life guidance", body: "Give customers clear disposal language based on the actual pack structure, local collection reality and verified certification." },
+  { image: "/images/sustainability-kraft-sourcing-v1.webp", imageAlt: "Kraft pouches and cartons", icon: ShieldCheck, eyebrow: "RESPONSIBLE SOURCING", title: "Verified from the source.", body: "Supplier declarations and relevant certificates collected in one place.", proof: "Supplier documentation", proofDetail: "MATCHED TO THE SPECIFICATION" },
+  { image: "/images/foodservice-containers-premium.jpg", imageAlt: "Paper foodservice tubs, bowls and trays", icon: PackageCheck, eyebrow: "RIGHT-SIZE FOODSERVICE", title: "Right size for less impact.", body: "Bowls, tubs, trays and fibre formats that reduce over-packaging.", proof: "Fit for purpose", proofDetail: "LESS MATERIAL. SAME PERFORMANCE." },
+  { image: "/images/sustainability-recycling-box-v1.webp", imageAlt: "Recyclable kraft carton", icon: Recycle, eyebrow: "END-OF-LIFE GUIDANCE", title: "Clear guidance. Greater recovery.", body: "Disposal language aligned to pack structure, local recovery and verified certification.", proof: "Aligned to local systems", proofDetail: "VERIFIED END-OF-LIFE PATHWAYS" },
 ];
 
 export function SustainabilityProofSection() {
   return (
     <section id="sustainability" className="pw-sustainability-proof">
-      <div className="pw-sustainability-heading">
-        <p>BETTER PACKAGING, WITH PROOF</p>
-        <h2>Sustainability should survive scrutiny.</h2>
-        <span>Lower-impact choices are useful only when the material, supplier evidence and customer claim all agree.</span>
-      </div>
-      <div className="pw-sustainability-grid">
-        {SUSTAINABILITY_ITEMS.map((item) => {
-          const Icon = item.icon;
-          return (
-            <article key={item.title}>
-              <div className="pw-sustainability-image"><img src={item.image} alt={`${item.title} packaging example`} /><span><Icon size={18} /> {item.badge}</span></div>
-              <h3>{item.title}</h3>
-              <p>{item.body}</p>
-            </article>
-          );
-        })}
-      </div>
-      <div className="pw-sustainability-actions">
-        <Link href="/sustainable" className="btn-fill btn-navy">Explore lower-impact packaging <ArrowRight size={17} /></Link>
-        <span>No blanket “eco” claims. Evidence is matched to the exact material and supplier.</span>
+      <div className="pw-sustainability-inner">
+        <div className="pw-sustainability-heading">
+          <p>BETTER PACKAGING, WITH PROOF</p>
+          <h2>Sustainability should<br />survive scrutiny.</h2>
+          <span>Lower-impact choices are useful only when the material, supplier evidence<br className="pw-sustainability-desktop-break" /> and customer claim all agree.</span>
+        </div>
+
+        <div className="pw-sustainability-grid">
+          <article className="pw-sustainability-feature">
+            <img src="/images/sustainability-material-layers-v1.webp" alt="Layered samples of fibre, corrugated and recycled packaging material" loading="lazy" />
+            <div className="pw-sustainability-feature-copy">
+              <p>MATERIAL TRANSPARENCY</p>
+              <h3>Start with<br />what it’s made of.</h3>
+              <span>See the substrate structure, recycled-content options and evidence before claims.</span>
+              <Link href="/sustainable" aria-label="Learn more about packaging materials"><span><ArrowRight size={20} /></span>Learn more</Link>
+            </div>
+            <div className="pw-sustainability-feature-proof"><Leaf size={25} /><span><strong>Multiple material options</strong><small>FIBRE / RECYCLED CONTENT / VERIFIED DATA</small></span></div>
+          </article>
+          {SUSTAINABILITY_ITEMS.map((item) => {
+            const Icon = item.icon;
+            return (
+              <article className="pw-sustainability-card" key={item.title}>
+                <div className="pw-sustainability-image"><img src={item.image} alt={item.imageAlt} loading="lazy" /></div>
+                <div className="pw-sustainability-card-body">
+                  <p className="pw-sustainability-card-eyebrow">{item.eyebrow}</p>
+                  <h3>{item.title}</h3>
+                  <p>{item.body}</p>
+                  <div className="pw-sustainability-card-proof"><Icon size={22} /><span><strong>{item.proof}</strong><small>{item.proofDetail}</small></span></div>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+
+        <div className="pw-sustainability-footer">
+          <div className="pw-sustainability-criteria">
+            <span><Layers3 size={22} />Material<br />composition</span>
+            <span><FileText size={22} />Supplier<br />documentation</span>
+            <span><ShieldCheck size={22} />Claim<br />language</span>
+            <span><Recycle size={22} />Recovery<br />suitability</span>
+          </div>
+          <div className="pw-sustainability-footer-cta">
+            <p><Leaf size={26} /><span><strong>No blanket eco claims.</strong><small>Evidence is matched to the exact material and supplier.</small></span></p>
+            <Link href="/sustainable">Explore lower-impact packaging <ArrowRight size={20} /></Link>
+          </div>
+        </div>
       </div>
     </section>
   );

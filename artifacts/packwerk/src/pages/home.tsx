@@ -11,6 +11,8 @@ import {
   Search, GitBranch, ShieldCheck, Truck,
   Leaf, Droplets, FileCheck, ArrowRight, ArrowLeft,
   Package, ShoppingBag, Box, Tag, Gift,
+  CalendarDays, Factory, Users, Globe2, Handshake,
+  Settings2, MapPin,
 } from "lucide-react";
 
 const WHATSAPP_NUM = "918208990366";
@@ -26,27 +28,94 @@ const MS = ({ icon, className = "", style }: IconProps) => (
   <span className={`material-symbols-outlined ${className}`} style={style}>{icon}</span>
 );
 
-const MARQUEE_PHRASES = [
-  "One platform.", `${CATALOG_SKUS.length} packaging families.`, "Backup sourcing routes.", "Documented QC checkpoints.", "One order record.",
-];
-const MARQUEE_1 = Array(6).fill(MARQUEE_PHRASES).flat();
+function HeroMetric({
+  Icon,
+  target,
+  suffix = "",
+  text,
+  label,
+}: {
+  Icon: React.ElementType;
+  target?: number;
+  suffix?: string;
+  text?: string;
+  label: string;
+}) {
+  const metricRef = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState(false);
+  const [value, setValue] = useState(0);
 
-const LOGO_ROW_1 = [
-  { name: "Plum",             file: "/images/logos/plum.png" },
-  { name: "Amul",             file: "/images/logos/amul-wordmark.svg" },
-  { name: "The Souled Store", file: "/images/logos/souledstore.png" },
-  { name: "Neeman's",         file: "/images/logos/neemans.png" },
-  { name: "MVMT",             file: "/images/logos/mvmt.gif" },
-  { name: "CosIQ",            file: "/images/logos/cosiq.png" },
-  { name: "Haldirams",        file: "/images/logos/haldirams-wordmark.svg" },
+  useEffect(() => {
+    const element = metricRef.current;
+    if (!element) return;
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        setVisible(true);
+        observer.disconnect();
+      }
+    }, { threshold: 0.35 });
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!visible || target === undefined) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setValue(target);
+      return;
+    }
+    let frame = 0;
+    const start = performance.now();
+    const duration = 1350;
+    const update = (now: number) => {
+      const progress = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 4);
+      setValue(Math.round(target * eased));
+      if (progress < 1) frame = requestAnimationFrame(update);
+    };
+    frame = requestAnimationFrame(update);
+    return () => cancelAnimationFrame(frame);
+  }, [target, visible]);
+
+  const renderedValue = target === undefined
+    ? text
+    : `${target >= 1000 ? value.toLocaleString("en-IN") : value}${suffix}`;
+
+  return (
+    <div ref={metricRef} className={`pw-editorial-metric ${visible ? "is-visible" : ""}`}>
+      <span className="pw-editorial-metric-icon"><Icon size={34} strokeWidth={1.7} /></span>
+      <span className="pw-editorial-metric-copy">
+        <strong>{renderedValue}</strong>
+        <small>{label}</small>
+      </span>
+    </div>
+  );
+}
+
+const MARQUEE_FACTS = [
+  { value: String(CATALOG_SKUS.length), label: "configured product families" },
+  { value: "25", label: "unit MOQ on selected formats" },
+  { value: "2", label: "clear buying paths" },
+  { value: "3D", label: "artwork preview before production" },
+  { value: "QC", label: "documented checkpoints" },
+  { value: "Global", label: "delivery from India" },
 ];
-const LOGO_ROW_2 = [
-  { name: "Mogu Mogu",        file: "/images/logos/mogumogi.png" },
-  { name: "Olipop",           file: "/images/logos/olipop.webp" },
-  { name: "Voltas",           file: "/images/logos/voltas.png" },
-  { name: "Pilgrim",          file: "/images/logos/pilgrim.png" },
-  { name: "Bhikaram",         file: "/images/logos/bhikaram-wordmark.svg" },
-  { name: "Rage Coffee",      file: "/images/logos/ragecoffee.png" },
+
+const FEATURED_CUSTOMERS = [
+  { name: "Amul", file: "/images/logos/amul-official.png", className: "is-amul" },
+  { name: "Haldiram's", file: "/images/logos/haldirams-official.png", className: "is-haldirams" },
+  { name: "Bhikharam Chandmal", file: "/images/logos/bhikharam-chandmal-official.png", className: "is-bhikharam" },
+];
+const CUSTOMER_LOGOS = [
+  { name: "Plum", file: "/images/logos/plum.png", className: "is-plum" },
+  { name: "Olipop", file: "/images/logos/olipop.webp", className: "is-olipop" },
+  { name: "Radico", file: "/images/logos/radico-official.webp", className: "is-radico" },
+  { name: "Biskfarm", file: "/images/logos/biskfarm-official.webp", className: "is-biskfarm" },
+  { name: "The Souled Store", file: "/images/logos/souledstore.png" },
+  { name: "Neeman's", file: "/images/logos/neemans.png" },
+  { name: "Voltas", file: "/images/logos/voltas.png" },
+  { name: "Pilgrim", file: "/images/logos/pilgrim.png", className: "is-pilgrim" },
+  { name: "Rage Coffee", file: "/images/logos/ragecoffee.png", className: "is-rage" },
 ];
 
 const catalogCount = (category: string) => CATALOG_SKUS.filter((sku) => isCatalogSkuInCategory(sku, category)).length;
@@ -142,7 +211,7 @@ const INDUSTRY_SOLUTIONS: Record<string, {
   "food-beverage": {
     title: "Food brands, cloud kitchens, beverage launches",
     subtitle: "Barrier pouches, glass jars, spout packs, and food-safe cartons selected for shelf life, leakage control, and repeat purchase.",
-    image: INDUSTRY_IMAGES.food,
+    image: "/images/hero-products-branded-haze-v5.png",
     proof: "Best for shelf life, freshness, and FSSAI-ready launches",
     best: ["Stand-up pouches", "Spout pouches", "Glass jars", "Bagasse trays"],
     stack: [
@@ -235,6 +304,17 @@ const INDUSTRY_SOLUTIONS: Record<string, {
       { label: "Marketplace ready", desc: "Barcode labels, tamper seals, and shippers suited for fulfilment centres." },
     ],
   },
+};
+
+const INDUSTRY_STACK_IMAGES: Record<string, string[]> = {
+  "food-beverage": ["/skus/Standup_Pouch.jpg", "/skus/glassjar.jpg", "/skus/compostablepacks.jpg"],
+  pharma: ["/skus/plasticbottles.jpg", "/skus/foldingbox.jpg", "/skus/foaminsert.jpg"],
+  cosmetics: ["/skus/cosmetictubes.jpg", "/skus/foldingbox.jpg", "/skus/rigidbox.jpg"],
+  ecommerce: ["/skus/mailerbox.jpg", "/skus/courierbag.jpg", "/skus/rigidbox.jpg"],
+  fmcg: ["/skus/Standup_Pouch.jpg", "/skus/printedpackagingrolls.jpg", "/skus/labels.jpg"],
+  industrial: ["/skus/corrugatedbox.jpg", "/skus/plasticbottles.jpg", "/skus/foaminsert.jpg"],
+  agriculture: ["/skus/zipper.jpg", "/skus/corrugatedbox.jpg", "/skus/labels.jpg"],
+  electronics: ["/skus/foaminsert.jpg", "/skus/rigidbox.jpg", "/skus/mailerbox.jpg"],
 };
 
 const PAIN_POINTS = [
@@ -519,7 +599,6 @@ export default function Home() {
   const [stepsVisible, setStepsVisible] = useState(false);
   const [stepVisible, setStepVisible] = useState([false, false, false, false]);
   const [activeStep, setActiveStep] = useState(-1);
-  const [heroParallax, setHeroParallax] = useState(0);
   const [showAllComparisons, setShowAllComparisons] = useState(false);
   const [activeIndustrySlug, setActiveIndustrySlug] = useState(INDUSTRIES[0].slug);
 
@@ -559,13 +638,6 @@ export default function Home() {
     }, { threshold: 0.15 });
     obs.observe(el);
     return () => obs.disconnect();
-  }, []);
-
-  // Hero parallax on scroll
-  useEffect(() => {
-    const onScroll = () => setHeroParallax(window.scrollY);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   // Per-step intersection observers (run after first render)
@@ -635,189 +707,64 @@ export default function Home() {
       {/* ══════════════════════════════════════════════════════════ */}
       {/*  SECTION 1 — HERO                                         */}
       {/* ══════════════════════════════════════════════════════════ */}
-      <section
-        className="relative overflow-hidden"
-        style={{
-          background: "linear-gradient(135deg, #020817 0%, #071a45 40%, #153e9f 100%)",
-          minHeight: "100svh",
-        }}
-      >
-        {/* Subtle geometric lines */}
-        <div className="absolute inset-0 opacity-[0.07] pointer-events-none">
-          <svg width="100%" height="100%" preserveAspectRatio="none" viewBox="0 0 100 100">
-            <path d="M0,20 L20,0 L100,0 L100,80 L80,100 L0,100 Z" fill="none" stroke="white" strokeWidth="0.15" />
-            <path d="M10,30 L30,10 L90,10 L90,70 L70,90 L10,90 Z" fill="none" stroke="white" strokeWidth="0.1" />
-          </svg>
-        </div>
-
-        {/* Blue radial glow behind products */}
-        <div
-          className="hidden lg:block absolute pointer-events-none"
-          style={{
-            right: "-2%",
-            bottom: "-5%",
-            width: "58%",
-            height: "110%",
-            background: "radial-gradient(circle at 50% 60%, rgba(59,130,246,0.38) 0%, transparent 65%)",
-          }}
-        />
-
-        {/* Golden arc ring behind products */}
-        <svg
-          className="hidden lg:block absolute pointer-events-none"
-          style={{ right: "1%", bottom: "2%", width: "52%", height: "90%", opacity: heroLoaded ? 0.55 : 0, transition: "opacity 1.2s ease" }}
-          viewBox="0 0 500 500"
-          fill="none"
-        >
-          <circle cx="250" cy="270" r="210" stroke="url(#goldArc)" strokeWidth="1.5" />
-          <circle cx="250" cy="270" r="238" stroke="url(#goldArc2)" strokeWidth="0.7" />
-          <circle cx="250" cy="270" r="185" stroke="url(#goldArc)" strokeWidth="0.4" strokeOpacity="0.5" />
-          <defs>
-            <linearGradient id="goldArc" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stopColor="#E8A838" stopOpacity="0" />
-              <stop offset="35%" stopColor="#E8A838" stopOpacity="0.9" />
-              <stop offset="65%" stopColor="#f5d08a" stopOpacity="0.7" />
-              <stop offset="100%" stopColor="#E8A838" stopOpacity="0" />
-            </linearGradient>
-            <linearGradient id="goldArc2" x1="1" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#E8A838" stopOpacity="0" />
-              <stop offset="50%" stopColor="#E8A838" stopOpacity="0.5" />
-              <stop offset="100%" stopColor="#E8A838" stopOpacity="0" />
-            </linearGradient>
-          </defs>
-        </svg>
-
-        {/* Floor reflection — flipped image fading up from bottom edge */}
-        <picture>
-          <source srcSet="/images/hero-products-transparent.webp" type="image/webp" />
-          <img
-            src="/images/hero-products-transparent.png"
-            aria-hidden="true"
-            className="hidden lg:block absolute pointer-events-none select-none"
-            loading="eager"
-            style={{
-              right: 0,
-              bottom: 0,
-              height: "28%",
-              width: "auto",
-              maxWidth: "56%",
-              objectFit: "contain",
-              objectPosition: "right top",
-              transform: "scaleY(-1)",
-              opacity: heroLoaded ? 0.22 : 0,
-              transition: "opacity 1.2s ease",
-              maskImage: "linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.2) 50%, transparent 100%)",
-              WebkitMaskImage: "linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.2) 50%, transparent 100%)",
-              filter: "blur(3px) saturate(0.6)",
-            }}
-          />
-        </picture>
-
-        {/* Main product image — with parallax depth */}
-        <picture className="hidden lg:block absolute pointer-events-none" style={{ right: 0, bottom: 0, height: "85%", maxWidth: "56%", aspectRatio: "748/498" }}>
-          <source srcSet="/images/hero-products-transparent.webp" type="image/webp" />
-          <img
-            src="/images/hero-products-transparent.png"
-            alt="Premium packaging products"
-            width="748"
-            height="498"
-            fetchPriority="high"
-            loading="eager"
-            style={{
-              width: "auto",
-              height: "100%",
-              objectFit: "contain",
-              objectPosition: "right bottom",
-              aspectRatio: "748/498",
-              opacity: heroLoaded ? 1 : 0,
-              transition: "opacity 1s ease",
-              animation: heroLoaded ? "heroProductFloat 5s ease-in-out infinite" : "none",
-              filter: "drop-shadow(0 24px 48px rgba(0,0,20,0.65)) drop-shadow(0 0 60px rgba(59,130,246,0.2))",
-              transform: `translateY(${heroParallax * 0.22}px) scale(${1 + heroParallax * 0.00008})`,
-            }}
-          />
-        </picture>
-
-        {/* Depth layer: secondary glow orb that moves faster for parallax depth */}
-        <div
-          className="hidden lg:block absolute pointer-events-none"
-          style={{
-            right: "8%", bottom: "10%", width: 340, height: 340,
-            borderRadius: "50%",
-            background: "radial-gradient(circle, rgba(59,130,246,0.13) 0%, transparent 70%)",
-            transform: `translateY(${heroParallax * 0.35}px)`,
-            transition: "transform 0.05s linear",
-          }}
-        />
-
-        {/* Vignette — protects left text, softens right edges */}
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{ background: "radial-gradient(ellipse at 72% 50%, transparent 28%, rgba(2,8,23,0.5) 100%)" }}
-        />
-
-        {/* Left content */}
-        <div className="relative z-10 max-w-7xl mx-auto px-8 md:px-20 pt-28 pb-14">
-          {/* All text + CTAs + stats pinned to left column */}
-          <div className="lg:max-w-[54%]">
-            <h1 className="clash-display text-white leading-[1.05] mb-6" style={{ fontSize: "clamp(2.6rem, 5vw, 4.7rem)" }}>
-              <span className="block lg:whitespace-nowrap">Your Packaging.</span>
-              <span className="block lg:whitespace-nowrap">Sorted. Forever.</span>
+      <section className="pw-editorial-hero">
+        <div className="pw-editorial-hero-shell">
+          <div className={`pw-editorial-hero-copy ${heroLoaded ? "is-ready" : ""}`}>
+            <div className="pw-editorial-eyebrow"><i /> Packaging for a brighter tomorrow</div>
+            <h1>
+              Your Packaging.<br />
+              Sorted. <em>Forever.</em>
             </h1>
-            <p className="text-blue-100 text-lg md:text-xl mb-3 max-w-lg font-light">
-              Design. Source. QC. Deliver. One platform. Zero vendor chaos.
+            <p className="pw-editorial-lead">
+              Design. Manufacture. Source. QC. Deliver.<br />
+              One partner from first prototype to scaled production.
             </p>
-            <p style={{ color: "rgba(255,255,255,0.48)", fontSize: 13, marginBottom: 18, letterSpacing: "0.1px", display: "flex", alignItems: "center", gap: 7, flexWrap: "wrap" }}>
-              <span style={{
-                display: "inline-flex", alignItems: "center", justifyContent: "center",
-                width: 18, height: 18, borderRadius: "50%",
-                background: "transparent", border: "1px solid rgba(232,168,56,0.65)",
-                flexShrink: 0,
-              }}>
-                <span className="material-symbols-outlined" style={{ fontSize: 11, color: "#E8A838", fontVariationSettings: "'FILL' 1, 'wght' 700" }}>verified</span>
-              </span>
-              Packaging operations for{" "}
-              <span style={{ color: "rgba(255,255,255,0.78)", fontWeight: 600 }}>Plum, Haldirams, Amul</span>
-              {" "}and growing teams across India
+            <p className="pw-editorial-brand-proof">
+              Packaging operations for <strong>Plum, Haldirams and Amul</strong> — and growing teams across India.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 mb-3" style={{ alignItems: "stretch" }}>
-              <span className="animated-border animated-border-white" style={{ display: "flex" }}>
-                <Link href="/products" style={{ flex: 1, display: "flex" }}>
-                  <button className="btn-fill btn-amber px-8 py-3 text-left" style={{ flex: 1 }}>
-                    <span><strong style={{ display: "block", fontSize: 15 }}>Shop Packaging</strong><small style={{ display: "block", marginTop: 2, fontSize: 10, opacity: .68, textTransform: "none", letterSpacing: 0 }}>For startups & growing brands</small></span><MS icon="arrow_forward" />
-                  </button>
+
+            <div className="pw-editorial-actions">
+              <div>
+                <Link href="/products" className="pw-editorial-primary">
+                  <span>Shop Packaging</span><ArrowRight size={20} />
                 </Link>
-              </span>
-              <Link href="/enterprise" style={{ display: "flex" }}>
-                <button className="btn-fill btn-outline-white px-8 py-3 text-left" style={{ flex: 1 }}>
-                  <span><strong style={{ display: "block", fontSize: 15 }}>Packworkz Enterprise</strong><small style={{ display: "block", marginTop: 2, fontSize: 10, opacity: .62, textTransform: "none", letterSpacing: 0 }}>For multi-SKU procurement</small></span>
-                </button>
-              </Link>
-            </div>
-            <div style={{ marginBottom: 24, display: "flex", alignItems: "center", gap: 18, flexWrap: "wrap" }}>
-              <p style={{ color: "rgba(255,255,255,0.42)", fontSize: 12, letterSpacing: "0.2px" }}>
-                MOQs from 25 units on selected formats · enterprise volumes supported
-              </p>
-              <Link href="/mockup-studio" style={{ color: "#93c5fd", fontSize: 12, fontWeight: 800, textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 5 }}>
-                Preview artwork in 3D <MS icon="view_in_ar" className="text-base" />
-              </Link>
+                <small>For startups &amp; growing brands</small>
+              </div>
+              <div>
+                <Link href="/enterprise" className="pw-editorial-secondary">
+                  <span>Packworkz Enterprise</span><ArrowRight size={20} />
+                </Link>
+                <small>For high-volume &amp; multi-SKU procurement</small>
+              </div>
             </div>
 
-            {/* Stats badges — locked inside left column */}
-            <div className="pw-hero-proof-row pt-7 border-t border-white/15">
-              {[
-                { icon: "inventory_2",       value: String(CATALOG_SKUS.length), label: "Configured SKU Families" },
-                { icon: "public",            value: "India", label: "Delivery Network" },
-                { icon: "verified",          value: "QC", label: "Documented Checkpoints" },
-              ].map((s) => (
-                <div key={s.label} className="flex items-center gap-2">
-                  <span className="material-symbols-outlined text-amber-400" style={{ fontSize: 17 }}>{s.icon}</span>
-                  <span className="text-white font-bold text-sm">{s.value}</span>
-                  <span className="text-blue-300 text-xs uppercase tracking-wider">{s.label}</span>
-                </div>
-              ))}
+            <div className="pw-editorial-heritage">
+              <Handshake size={29} strokeWidth={1.7} />
+              <span>Backed by Kalyani Rotopack&apos;s 33-year manufacturing heritage and extended through our managed supplier network.</span>
             </div>
           </div>
+
+          <div className={`pw-editorial-visual ${heroLoaded ? "is-ready" : ""}`}>
+            <div className="pw-editorial-visual-halo" aria-hidden="true" />
+            <picture>
+              <source media="(max-width: 700px)" srcSet="/images/hero-studio-packaging-v6.webp" />
+              <img
+                src="/images/hero-studio-packaging-wide-v12.webp"
+                alt="Stand-up pouches, carton, jar, rigid box and label roll representing Packworkz packaging capabilities"
+                width="2662"
+                height="941"
+                fetchPriority="high"
+                loading="eager"
+              />
+            </picture>
+          </div>
+        </div>
+
+        <div className="pw-editorial-metrics" aria-label="Packworkz manufacturing network">
+          <HeroMetric Icon={CalendarDays} target={33} suffix="+ years" label="Manufacturing heritage" />
+          <HeroMetric Icon={Factory} target={10000} suffix="+ T/yr" label="Combined network capacity" />
+          <HeroMetric Icon={Users} target={50} suffix="+ supplier partners" label="Managed manufacturing network" />
+          <HeroMetric Icon={Globe2} text="Worldwide delivery" label="India and global markets" />
         </div>
       </section>
 
@@ -870,10 +817,13 @@ export default function Home() {
           </div>
 
           <div className="pw-ai-entry">
-            <div className="pw-ai-entry-icon"><MS icon="auto_awesome" /></div>
+            <div className="pw-ai-entry-icon" aria-hidden="true">
+              <Package size={25} strokeWidth={1.8} />
+              <Search className="pw-ai-entry-icon-search" size={13} strokeWidth={2.4} />
+            </div>
             <div>
               <strong>Not sure what packaging fits?</strong>
-              <span>Tell Packworkz AI what you sell. It will suggest a practical format, MOQ, and sampling plan.</span>
+              <span>Describe what you sell. Get a practical format, MOQ and sampling plan.</span>
             </div>
             <Link href="/pack-ai">
               <button className="btn-fill btn-amber px-6 py-3 text-sm pw-btn-transition">
@@ -887,109 +837,63 @@ export default function Home() {
       {/* ══════════════════════════════════════════════════════════ */}
       {/*  TEXT MARQUEE STRIP                                        */}
       {/* ══════════════════════════════════════════════════════════ */}
-      <div className="overflow-hidden py-3 border-y border-white/10" style={{ background: "#1e3a8a" }}>
-        <div className="animate-marquee">
-          {MARQUEE_1.map((t, i) => (
-            <span key={i} className="text-white font-bold tracking-[0.2em] text-xs uppercase mx-6">
-              {t}
-              {i % MARQUEE_PHRASES.length < MARQUEE_PHRASES.length - 1 && (
-                <span className="mx-6 opacity-30">·</span>
-              )}
-            </span>
+      <div className="pw-catalog-tape" aria-label="Packworkz service highlights">
+        <div className="pw-catalog-tape-track">
+          {[0, 1].map((group) => (
+            <div className="pw-catalog-tape-group" aria-hidden={group === 1} key={group}>
+              {MARQUEE_FACTS.map((fact) => (
+                <span className="pw-catalog-tape-item" key={`${group}-${fact.value}-${fact.label}`}>
+                  <strong>{fact.value}</strong><span>{fact.label}</span>
+                </span>
+              ))}
+            </div>
           ))}
         </div>
       </div>
 
-      {/* ══════════════════════════════════════════════════════════ */}
-      {/*  SECTION 3B — OUR CUSTOMERS (2-col: text + marquee)      */}
-      {/* ══════════════════════════════════════════════════════════ */}
-      <section className="pw-theme-surface" style={{ background: "#FFFFFF", borderBottom: "1px solid #E2EAF4", padding: "72px 0", overflow: "hidden" }}>
-        <div className="po-customers-grid" style={{ maxWidth: 1200, margin: "0 auto", padding: "0 40px", display: "grid", gridTemplateColumns: "1fr 1.5fr", gap: 72, alignItems: "center" }}>
-
-          {/* Left: text */}
-          <div>
-            <h2 className="scroll-animate scroll-animate-delay-1" style={{ color: "#0D1B2A", fontSize: 34, fontWeight: 800, lineHeight: 1.15, marginBottom: 18 }}>
-              Trusted by growing brands
-            </h2>
-            <p className="scroll-animate scroll-animate-delay-2" style={{ color: "#475569", fontSize: 15, lineHeight: 1.75, marginBottom: 32 }}>
-              From D2C beauty and wellness to FMCG and pharma, teams use Packworkz for consistent, compliant, beautifully produced packaging.
-            </p>
-            <div style={{ display: "flex", gap: 36, alignItems: "center" }}>
-              <div>
-                <p style={{ color: "#0D1B2A", fontSize: 30, fontWeight: 800, lineHeight: 1, marginBottom: 4 }}>Multi-category</p>
-                <p style={{ color: "#94A3B8", fontSize: 12, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.5px" }}>Packaging coverage</p>
-              </div>
-              <div style={{ width: 1, height: 44, background: "#E2EAF4" }} />
-              <div>
-                <p style={{ color: "#0D1B2A", fontSize: 30, fontWeight: 800, lineHeight: 1, marginBottom: 4 }}>One record</p>
-                <p style={{ color: "#94A3B8", fontSize: 12, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.5px" }}>Quote to delivery</p>
-              </div>
+      <section className="pw-trust-section">
+        <div className="pw-trust-inner">
+          <div className="pw-trust-top">
+            <div className="pw-trust-copy">
+              <div className="pw-trust-eyebrow"><i /> Trusted by growing brands</div>
+              <h2>Trusted by<br /><em>leading</em> brands.</h2>
+              <p>From consumer food and FMCG to beauty, wellness and ecommerce, teams use Packworkz for consistent, compliant packaging at every scale.</p>
             </div>
-          </div>
 
-          {/* Right: 2-row logo marquee */}
-          <div style={{
-            overflow: "hidden",
-            maskImage: "linear-gradient(to right, transparent 0%, black 14%, black 86%, transparent 100%)",
-            WebkitMaskImage: "linear-gradient(to right, transparent 0%, black 14%, black 86%, transparent 100%)",
-          }}>
-            {/* Row 1 — standard speed, unique set */}
-            <div style={{ overflow: "hidden", marginBottom: 20 }}>
-              <div className="logo-row">
-                {[...LOGO_ROW_1, ...LOGO_ROW_1].map((logo, i) => (
-                  <div key={i} style={{
-                    width: 160, height: 72, flexShrink: 0,
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                    marginRight: 2,
-                  }}>
-                    <img
-                      src={logo.file} alt={logo.name}
-                      style={{ width: "100%", height: "100%", objectFit: "contain", display: "block" }}
-                    />
+            <div className="pw-trust-logo-wall" aria-label="Selected Packworkz customers">
+              <div className="pw-trust-featured">
+                {FEATURED_CUSTOMERS.map((logo) => (
+                  <div className={`pw-trust-logo pw-trust-logo-featured ${logo.className}`} key={logo.name}>
+                    <img src={logo.file} alt={logo.name} loading="eager" />
                   </div>
                 ))}
               </div>
-            </div>
-
-            {/* Row 2 — slower, different set */}
-            <div style={{ overflow: "hidden" }}>
-              <div className="logo-row-slow">
-                {[...LOGO_ROW_2, ...LOGO_ROW_2].map((logo, i) => (
-                  <div key={i} style={{
-                    width: 160, height: 72, flexShrink: 0,
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                    marginRight: 2,
-                  }}>
-                    <img
-                      src={logo.file} alt={logo.name}
-                      style={{ width: "100%", height: "100%", objectFit: "contain", display: "block" }}
-                    />
+              <div className="pw-trust-supporting">
+                {CUSTOMER_LOGOS.map((logo) => (
+                  <div className={`pw-trust-logo ${logo.className ?? ""}`} key={logo.name}>
+                    <img src={logo.file} alt={logo.name} loading="eager" />
                   </div>
                 ))}
               </div>
             </div>
           </div>
 
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════════════════════ */}
-      {/*  SECTION 3C — HERITAGE STRIP                              */}
-      {/* ══════════════════════════════════════════════════════════ */}
-      <section style={{ background: "#0D1B2A", padding: "52px 40px" }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto", display: "flex", alignItems: "center", gap: 48, flexWrap: "wrap", justifyContent: "space-between" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
-            <div style={{ width: 4, height: 52, background: "#E8A838", borderRadius: 2, flexShrink: 0 }} />
-            <div>
-              <p className="scroll-animate" style={{ color: "#E8A838", fontSize: 10, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", marginBottom: 6 }}>Our Manufacturing Heritage</p>
-              <p className="scroll-animate" style={{ color: "white", fontSize: 18, fontWeight: 800, lineHeight: 1.3, margin: 0 }}>
-                Backed by 30 years of packaging manufacturing — <span style={{ color: "rgba(255,255,255,0.55)", fontWeight: 500 }}>Kalyani Rotopack Pvt Ltd, est. 1993.</span>
-              </p>
+          <div className="pw-heritage-showcase">
+            <img className="pw-heritage-image" src="/images/hero-packaging-bg.webp" alt="Premium packaging manufactured through the Packworkz network" loading="lazy" />
+            <div className="pw-heritage-shade" aria-hidden="true" />
+            <div className="pw-heritage-content">
+              <div className="pw-heritage-eyebrow"><i /> Our manufacturing heritage</div>
+              <h3>Backed by <em>33 years</em> of<br />packaging manufacturing.</h3>
+              <p>Packworkz is backed by Kalyani Rotopack Pvt Ltd, established in 1993, with owned manufacturing capability and an extended managed supplier network.</p>
+              <Link href="/about" className="pw-heritage-cta">Read Our Story <ArrowRight size={18} /></Link>
+            </div>
+            <div className="pw-heritage-facts" aria-label="Manufacturing network facts">
+              <div><Factory size={26} /><span><strong>3 owned</strong><small>manufacturing plants</small></span></div>
+              <div><CalendarDays size={26} /><span><strong>33+ years</strong><small>manufacturing heritage</small></span></div>
+              <div><Users size={26} /><span><strong>50+ partners</strong><small>managed supplier network</small></span></div>
+              <div><Globe2 size={26} /><span><strong>Worldwide</strong><small>India and global markets</small></span></div>
             </div>
           </div>
-          <a href="/about" style={{ textDecoration: "none", flexShrink: 0 }}>
-            <button className="btn-fill btn-outline-white px-6 py-2.5 text-sm pw-btn-transition" style={{ whiteSpace: "nowrap" }}>Read Our Story →</button>
-          </a>
         </div>
       </section>
 
@@ -1137,32 +1041,25 @@ export default function Home() {
       {/* ══════════════════════════════════════════════════════════ */}
       {/*  SECTORS WE SERVE — light/dark aware solution showcase     */}
       {/* ══════════════════════════════════════════════════════════ */}
-      <section className="pw-sector-section" style={{ padding: "104px 0" }}>
-        <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 40px" }}>
+      <section className="pw-sector-section">
+        <div className="pw-sector-shell">
           <div className="pw-sector-layout">
             <aside className="pw-sector-copy">
-              <p className="font-bold tracking-[0.22em] text-sm uppercase mb-5 scroll-animate" style={{ color: "#1B6CA8" }}>SECTORS WE SERVE</p>
-              <h2 className="clash-display scroll-animate scroll-animate-delay-1">
-                Packaging engineered for your industry.
-              </h2>
-              <p className="scroll-animate scroll-animate-delay-2">
-                Explore practical packaging stacks selected for your product, supply chain, compliance needs, and route to market.
-              </p>
-              <div className="pw-sector-note scroll-animate scroll-animate-delay-3">
-                <span>Instant buy for standard SKUs.</span>
-                <span>Managed quotes for rolls, films, and technical packs.</span>
+              <p className="pw-sector-eyebrow">SECTORS WE SERVE</p>
+              <h2 className="clash-display">Packaging built around your industry.</h2>
+              <p className="pw-sector-intro">Explore packaging solutions tailored to your product, supply chain and compliance needs.</p>
+              <div className="pw-sector-benefits">
+                <div><Box size={29} strokeWidth={1.7} /><span><strong>Wide range of formats</strong><small>From pouches to cartons, labels to rollstock</small></span></div>
+                <div><ShoppingBag size={29} strokeWidth={1.7} /><span><strong>Standard + custom buying paths</strong><small>Instant buy for standard SKUs, managed quotes for technical packs</small></span></div>
+                <div><Globe2 size={29} strokeWidth={1.7} /><span><strong>Pan-India supply. Worldwide delivery.</strong><small>Consistent quality, on-time, every time.</small></span></div>
               </div>
-              <Link href="/industries">
-                <button className="btn-fill btn-navy px-6 py-3 text-sm pw-btn-transition">
-                  <span>View all industry pages</span>
-                  <MS icon="arrow_forward" className="text-base" />
-                </button>
-              </Link>
+              <Link href="/industries" className="pw-sector-all-link">View all industries <ArrowRight size={19} /></Link>
             </aside>
 
             <div className="pw-sector-showcase">
               <div className="pw-sector-tab-header">
-                <div><strong>Explore all 8 industries</strong><span>Select an industry to update the playbook</span></div>
+                <strong>Explore all 8 industries</strong>
+                <Link href="/contact" className="pw-sector-expert-link">Not sure? Talk to our team <ArrowRight size={17} /></Link>
                 <div className="pw-sector-tab-controls" aria-label="Scroll industries">
                   <button type="button" onClick={() => moveIndustryTabs(-1)} title="Previous industries"><ArrowLeft size={16} /></button>
                   <button type="button" onClick={() => moveIndustryTabs(1)} title="Next industries"><ArrowRight size={16} /></button>
@@ -1184,8 +1081,7 @@ export default function Home() {
                 ))}
               </div>
 
-              <Link href={`/industries/${activeIndustry.slug}`} style={{ textDecoration: "none" }}>
-                <article className="pw-sector-card">
+              <article className={`pw-sector-card${activeIndustry.slug === "food-beverage" ? " is-food" : ""}`}>
                   <img src={activeIndustrySolution.image} alt={activeIndustry.label} />
                   <div className="pw-sector-card-overlay" />
                   <div className="pw-sector-card-content">
@@ -1195,30 +1091,32 @@ export default function Home() {
                     </div>
                     <h3>{activeIndustrySolution.title}</h3>
                     <p>{activeIndustrySolution.subtitle}</p>
+                    <div className="pw-sector-card-actions">
+                      <Link href={`/industries/${activeIndustry.slug}`} className="pw-sector-card-primary">View solutions <ArrowRight size={18} /></Link>
+                      <Link href="/contact" className="pw-sector-card-secondary">Talk to an expert</Link>
+                    </div>
                   </div>
-                  <div className="pw-sector-proof">
-                    <span>{activeIndustrySolution.proof}</span>
-                    <strong>View solution <MS icon="arrow_forward" className="text-base" /></strong>
-                  </div>
-                </article>
-              </Link>
+              </article>
 
               <div className="pw-sector-solution-strip">
                 {activeIndustrySolution.stack.map((item, index) => (
-                  <div key={item.label} className="pw-sector-solution">
+                  <Link href={`/industries/${activeIndustry.slug}`} key={item.label} className="pw-sector-solution">
                     <span>{String(index + 1).padStart(2, "0")}</span>
+                    <img src={INDUSTRY_STACK_IMAGES[activeIndustry.slug][index]} alt="" />
                     <h4>{item.label}</h4>
                     <p>{item.desc}</p>
-                  </div>
-                ))}
-              </div>
-
-              <div className="pw-sector-best-row" aria-label="Recommended packaging formats">
-                {activeIndustrySolution.best.map((item) => (
-                  <span key={item}>{item}</span>
+                    <ArrowRight className="pw-sector-solution-arrow" size={20} />
+                  </Link>
                 ))}
               </div>
             </div>
+          </div>
+          <div className="pw-sector-footer">
+            <div><Box size={31} strokeWidth={1.6} /><span><strong>Industry-ready formats</strong><small>Pouches, cartons, labels & more</small></span></div>
+            <div><Settings2 size={31} strokeWidth={1.6} /><span><strong>Managed sourcing</strong><small>The right solution for your needs</small></span></div>
+            <div><MapPin size={31} strokeWidth={1.6} /><span><strong>Pan-India supply</strong><small>Consistent quality, on-time</small></span></div>
+            <div><Globe2 size={31} strokeWidth={1.6} /><span><strong>Worldwide delivery</strong><small>Serving brands in 50+ countries</small></span></div>
+            <p>Same packaging partner.<br />At every stage of your growth.</p>
           </div>
         </div>
       </section>
@@ -1646,103 +1544,22 @@ export default function Home() {
       {/* ══════════════════════════════════════════════════════════ */}
       {/*  SECTION 13 — FINAL CTA                                   */}
       {/* ══════════════════════════════════════════════════════════ */}
-      <section
-        className="relative overflow-hidden"
-        style={{ background: "#08080f", padding: "160px 0" }}
-      >
-        {/* Rich blue spotlight — Remarqd-style radial glow at bottom center */}
-        <div className="absolute inset-0 pointer-events-none" style={{
-          background: "radial-gradient(ellipse 65% 60% at 50% 90%, rgba(27,108,168,0.55) 0%, rgba(13,40,90,0.30) 40%, transparent 70%)",
-        }} />
-        {/* Amber accent ring */}
-        <div className="absolute inset-0 pointer-events-none" style={{
-          background: "radial-gradient(ellipse 35% 25% at 50% 100%, rgba(232,168,56,0.18) 0%, transparent 60%)",
-        }} />
-
-        {/* Content */}
-        <div className="relative" style={{
-          zIndex: 1, maxWidth: 600, margin: "0 auto", padding: "0 32px",
-          display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center",
-        }}>
-
-          {/* Eyebrow — frosted pill tag */}
-          <div className="scroll-animate" style={{ marginBottom: 28 }}>
-            <span style={{
-              display: "inline-flex", alignItems: "center",
-              background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)",
-              borderRadius: 9999, padding: "7px 20px",
-              color: "rgba(255,255,255,0.55)", fontSize: 11, fontWeight: 600,
-              letterSpacing: "2.5px", textTransform: "uppercase",
-            }}>
-              YOUR MOVE
-            </span>
+      <section className="pw-final-cta" aria-labelledby="pw-final-cta-title">
+        <div className="pw-final-cta-shade" aria-hidden="true" />
+        <div className="pw-final-cta-shell">
+          <div className="pw-final-cta-content">
+            <h2 id="pw-final-cta-title">Packaging sorted.<br /><em>Forever.</em></h2>
+            <p>From your first sample to repeat production,<br />manage packaging through one accountable partner.</p>
+            <div className="pw-final-cta-actions">
+              <Link href="/products">Browse packaging <ArrowRight size={20} /></Link>
+              <Link href="/contact">Talk to our team</Link>
+            </div>
+            <div className="pw-final-cta-proof">
+              <span><Factory size={27} strokeWidth={1.5} /><strong>33+ years<small>manufacturing heritage</small></strong></span>
+              <span><GitBranch size={27} strokeWidth={1.5} /><strong>Managed<small>supplier network</small></strong></span>
+              <span><Globe2 size={27} strokeWidth={1.5} /><strong>Worldwide<small>delivery</small></strong></span>
+            </div>
           </div>
-
-          {/* Headline — split like Remarqd */}
-          <h2 className="scroll-animate scroll-animate-delay-1" style={{
-            color: "#FFFFFF", fontSize: "clamp(2.4rem, 5.5vw, 60px)", fontWeight: 800,
-            lineHeight: 1.05, letterSpacing: "-2px", marginBottom: 8,
-          }}>
-            Packaging sorted.
-          </h2>
-          <h2 className="scroll-animate scroll-animate-delay-2 clash-display" style={{
-            color: "#E8A838", fontSize: "clamp(2.4rem, 5.5vw, 60px)", fontWeight: 800,
-            lineHeight: 1.05, letterSpacing: "-2px", marginBottom: 28, fontStyle: "italic",
-          }}>
-            Forever.
-          </h2>
-
-          {/* Subheadline */}
-          <p className="scroll-animate scroll-animate-delay-2" style={{
-            color: "rgba(255,255,255,0.45)", fontSize: 17,
-            maxWidth: 420, marginBottom: 44, lineHeight: 1.7,
-          }}>
-            Build a clear packaging specification, sourcing path, and order record in one place.
-          </p>
-
-          {/* CTAs — sharp animated-border (our design) */}
-          <div className="scroll-animate scroll-animate-delay-3 flex flex-col sm:flex-row gap-4 justify-center mb-5" style={{ alignItems: "stretch" }}>
-            <span className="animated-border animated-border-white" style={{ display: "flex" }}>
-              <Link href="/products" style={{ flex: 1, display: "flex" }}>
-                <button className="btn-fill btn-amber px-10 py-4 text-base whitespace-nowrap" style={{ flex: 1 }}>
-                  Browse packaging formats →
-                </button>
-              </Link>
-            </span>
-            <a
-              href={`https://wa.me/${WHATSAPP_NUM}?text=Hi%20Packworkz%2C%20I%27d%20like%20to%20discuss%20packaging.`}
-              target="_blank" rel="noopener noreferrer" style={{ display: "flex" }}
-            >
-              <button className="btn-fill btn-outline-white px-10 py-4 text-base whitespace-nowrap" style={{ flex: 1 }}>
-                Talk to a human first
-              </button>
-            </a>
-          </div>
-
-          <p className="scroll-animate scroll-animate-delay-4" style={{
-            color: "rgba(255,255,255,0.22)", fontSize: 13, letterSpacing: "0.3px",
-          }}>
-            No commitment · No sales pitch · Just results
-          </p>
-
-          {/* Trust strip */}
-          <div style={{
-            display: "flex", justifyContent: "center", alignItems: "center",
-            gap: 12, flexWrap: "wrap", marginTop: 40,
-          }}>
-            {["Pricing plan in 48 hours", "No commitment until you approve", "Sample from ₹2,999", "Design from ₹1,999"].map((item, i) => (
-              <div key={item} style={{ display: "flex", alignItems: "center", gap: 16 }}>
-                {i > 0 && (
-                  <span style={{ color: "rgba(255,255,255,0.2)", fontSize: 16, lineHeight: 1 }}>·</span>
-                )}
-                <span style={{ display: "flex", alignItems: "center", gap: 6, whiteSpace: "nowrap" }}>
-                  <span style={{ color: "#4ade80", fontSize: 13, fontWeight: 700, lineHeight: 1 }}>✓</span>
-                  <span style={{ color: "rgba(255,255,255,0.55)", fontSize: 13 }}>{item}</span>
-                </span>
-              </div>
-            ))}
-          </div>
-
         </div>
       </section>
 

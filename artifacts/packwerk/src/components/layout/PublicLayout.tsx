@@ -6,10 +6,9 @@ import {
   ChevronDown, BookOpen, Info, Network,
   Users, Mail, Calculator, FileText, Lightbulb, Bot, Palette,
   ClipboardCheck, Truck, ShieldCheck, MapPinned, MessageSquare,
-  ShoppingCart as ShoppingCartIcon,
+  ShoppingCart as ShoppingCartIcon, ArrowRight, X,
 } from "lucide-react";
 import { CATALOG_SKUS, getCatalogImage } from "@/lib/catalog";
-import { LAUNCH_PROMOTION_RATE } from "@workspace/commerce";
 import { CartDrawer } from "@/components/cart/CartDrawer";
 import { ExitOfferModal } from "@/components/leads/ExitOfferModal";
 import { useCart } from "@/lib/cart";
@@ -258,9 +257,6 @@ const GLOBAL_STYLES = `
   .pw-brand-mark i,.pw-brand-mark b { position:absolute; display:block; transform:skewY(-14deg); border-radius:2px; }
   .pw-brand-mark i { left:0; top:0; width:14px; height:18px; background:#f2b134; box-shadow:0 5px 14px rgba(242,177,52,.26); }
   .pw-brand-mark b { right:0; bottom:0; width:12px; height:16px; background:#f8fafc; border:1px solid rgba(255,255,255,.45); }
-  .tinyshelf-badge { display:inline-flex; align-items:center; line-height:0; opacity:.92; transition:opacity .18s ease, transform .18s ease; }
-  .tinyshelf-badge:hover { opacity:1; transform:translateY(-1px); }
-  .tinyshelf-badge img { display:block; width:216px; height:64px; max-width:100%; object-fit:contain; }
   @keyframes dropIn {
     from { opacity: 0; transform: translateY(-8px); }
     to   { opacity: 1; transform: translateY(0); }
@@ -287,7 +283,6 @@ const GLOBAL_STYLES = `
       flex-wrap: wrap;
       gap: 14px !important;
     }
-    .tinyshelf-badge img { width: 180px; height: auto; }
     .po-footer-bottom {
       padding: 16px 24px !important;
       flex-direction: column !important;
@@ -355,6 +350,14 @@ const GLOBAL_STYLES = `
   .po-nav-link:hover::after { transform: translateX(0); }
   .po-nav-link:hover { color: #FFFFFF; }
   .po-nav-link.active { color: #F7C95C; }
+  .pw-nav-home-light .pw-brand-lockup { color:#0d1b2a; }
+  .pw-nav-home-light .pw-brand-mark b { background:#0d1b2a; border-color:#0d1b2a; }
+  .pw-nav-home-light .po-nav-link { color:#32475a; }
+  .pw-nav-home-light .po-nav-link::after { background:rgba(13,27,42,.06); }
+  .pw-nav-home-light .po-nav-link:hover { color:#0d1b2a; }
+  .pw-nav-home-light .po-nav-link.active { color:#b87500; }
+  .pw-nav-home-light .po-cta-btn { padding:10px 24px; border-radius:999px; background:#0d1b2a; color:#fff; }
+  .pw-nav-home-light .po-cta-btn::before { background:#18344a; }
 
   /* Amber CTA button fill animation */
   .po-cta-btn {
@@ -508,6 +511,9 @@ function IndustriesMenu() {
         <section className="po-mega-column">
           <div style={{ color: "#1B6CA8", fontSize: 11, fontWeight: 800, letterSpacing: "0.13em" }}>BUILD & LAUNCH</div>
           <p style={{ color: "#718096", fontSize: 12, lineHeight: 1.5, margin: "5px 0 12px" }}>Low-MOQ packs for brands building repeat demand.</p>
+          <Link href="/solutions/growing-brands" className="po-mega-link">
+            <IconBox Icon={Zap} /><span><strong style={{ display: "block", fontSize: 14 }}>Growing Brands</strong><small style={{ color: "#718096", fontSize: 11 }}>Low MOQ launch support</small></span><span className="po-mega-arrow">→</span>
+          </Link>
           {INDUSTRIES.slice(0, 3).map(ind => (
             <Link key={ind.href} href={ind.href} className="po-mega-link">
               <IconBox Icon={ind.icon} /><strong style={{ fontSize: 14 }}>{ind.label}</strong><span className="po-mega-arrow">→</span>
@@ -517,6 +523,9 @@ function IndustriesMenu() {
         <section className="po-mega-column">
           <div style={{ color: "#1B6CA8", fontSize: 11, fontWeight: 800, letterSpacing: "0.13em" }}>SCALE OPERATIONS</div>
           <p style={{ color: "#718096", fontSize: 12, lineHeight: 1.5, margin: "5px 0 12px" }}>Managed formats for growing and regulated teams.</p>
+          <Link href="/enterprise" className="po-mega-link">
+            <IconBox Icon={Factory} /><span><strong style={{ display: "block", fontSize: 14 }}>Enterprise Procurement</strong><small style={{ color: "#718096", fontSize: 11 }}>Multi-SKU managed sourcing</small></span><span className="po-mega-arrow">→</span>
+          </Link>
           {INDUSTRIES.slice(3, 6).map(ind => (
             <Link key={ind.href} href={ind.href} className="po-mega-link">
               <IconBox Icon={ind.icon} /><strong style={{ fontSize: 14 }}>{ind.label}</strong><span className="po-mega-arrow">→</span>
@@ -1106,6 +1115,36 @@ function PackAIWidget() {
   );
 }
 
+function SampleSupportWidget({ location }: { location: string }) {
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    if (location !== "/" || !window.matchMedia("(min-width: 900px)").matches) return;
+    const timer = window.setTimeout(() => setOpen(true), 1800);
+    return () => window.clearTimeout(timer);
+  }, [location]);
+
+  if (location.startsWith("/samples")) return null;
+
+  return (
+    <aside className={`pw-sample-widget ${open ? "is-open" : ""}`} aria-label="Packaging sample kit">
+      {open && (
+        <div className="pw-sample-widget-card">
+          <button type="button" className="pw-sample-widget-close" onClick={() => setOpen(false)} aria-label="Close sample prompt"><X size={17} /></button>
+          <span className="pw-sample-widget-kicker">FEEL IT BEFORE YOU ORDER IT</span>
+          <strong>Get 25–50+ packaging samples.</strong>
+          <p>A curated material and format kit delivered to your doorstep for <b>₹299 + shipping</b>.</p>
+          <Link href="/samples" className="pw-sample-widget-link">Get a sample kit <ArrowRight size={17} /></Link>
+        </div>
+      )}
+      <button type="button" className="pw-sample-widget-trigger" onClick={() => setOpen(value => !value)} aria-expanded={open}>
+        <Package size={22} />
+        <span>Get samples<small>₹299 + shipping</small></span>
+      </button>
+    </aside>
+  );
+}
+
 // ── Public Layout ─────────────────────────────────────────────────────────────
 export function PublicLayout({ children }: { children: React.ReactNode }) {
   const [location] = useLocation();
@@ -1119,6 +1158,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
   const isHome = location === "/";
   const navFloating = scrolled;
   const navSolid = scrolled || !isHome;
+  const navHomeLight = isHome && !scrolled;
 
   useEffect(() => {
     document.documentElement.classList.remove("dark");
@@ -1218,24 +1258,12 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
     <div className="min-h-screen flex flex-col" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
       <style>{GLOBAL_STYLES}</style>
 
-      <Link
-        href="/configure"
-        className="pw-launch-strip h-10 flex items-center justify-center px-4 text-center no-underline"
-        style={{ background: "#F7F9FC", color: "#0B3FA0", borderBottom: "1px solid #DCE5F2" }}
-        aria-label={`Claim ${Math.round(LAUNCH_PROMOTION_RATE * 100)}% launch saving on your order`}
-      >
-        <span className="text-[10px] sm:text-xs font-black uppercase tracking-[0.08em] sm:tracking-[0.12em]">
-          Launch offer: {Math.round(LAUNCH_PROMOTION_RATE * 100)}% off your first online order
-          <span className="hidden sm:inline font-bold opacity-75"> · applied automatically at checkout</span>
-        </span>
-      </Link>
-
       {/* ── NAV ── */}
       <header
-        className={`fixed flex items-center justify-between px-6 md:px-10 h-[68px] ${navSolid ? "pw-nav-floating" : "pw-nav-top"}`}
+        className={`fixed flex items-center justify-between px-6 md:px-10 h-[68px] ${navHomeLight ? "pw-nav-home-light" : navSolid ? "pw-nav-floating" : "pw-nav-top"}`}
         style={{
           zIndex: 1000,
-          top: navFloating ? 0 : 40,
+          top: 0,
           left: "50%",
           width: "100%",
           transform: "translateX(-50%)",
@@ -1260,8 +1288,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
           <NavItem label="Industries" active={location.startsWith("/industries")} mega>
             <IndustriesMenu />
           </NavItem>
-          <NavItem label="Growing Brands" href="/solutions/growing-brands" active={location.startsWith("/solutions/growing-brands")} />
-          <NavItem label="Enterprise" href="/enterprise" active={location.startsWith("/enterprise")} />
+          <NavItem label="Get a Sample" href="/samples" active={location.startsWith("/samples")} />
           <NavItem label="Sustainability" href="/sustainable" active={location.startsWith("/sustainable")} />
           <NavItem label="Resources" active={location.startsWith("/resources")} mega>
             <ResourcesMenu />
@@ -1294,8 +1321,8 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
           <button
             type="button"
             onClick={openCart}
-            className="relative grid h-11 w-11 place-items-center text-white transition-colors hover:text-amber"
-            style={{ background: "transparent", border: "none", cursor: "pointer" }}
+            className="relative grid h-11 w-11 place-items-center transition-colors hover:text-amber"
+            style={{ background: "transparent", border: "none", cursor: "pointer", color: navHomeLight ? "#0D1B2A" : "white" }}
             aria-label={`Open cart${cartCount ? `, ${cartCount} items` : ""}`}
           >
             <ShoppingCartIcon size={21} />
@@ -1307,7 +1334,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
           </button>
 
           {/* Mobile hamburger only */}
-          <button className="lg:hidden p-2 ml-1" style={{ color: "white", background: "none", border: "none", cursor: "pointer", lineHeight: 1 }} onClick={() => setMobileOpen(!mobileOpen)}>
+          <button className="lg:hidden p-2 ml-1" style={{ color: navHomeLight ? "#0D1B2A" : "white", background: "none", border: "none", cursor: "pointer", lineHeight: 1 }} onClick={() => setMobileOpen(!mobileOpen)}>
             <span className="material-symbols-outlined" style={{ fontSize: 28 }}>{mobileOpen ? "close" : "menu"}</span>
           </button>
         </div>
@@ -1315,13 +1342,12 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
 
       {/* Mobile drawer */}
       {mobileOpen && (
-        <div className="fixed inset-x-0 bottom-0 z-40 overflow-y-auto" style={{ top: navFloating ? 68 : 108, background: "#0D1B2A" }}>
+        <div className="fixed inset-x-0 bottom-0 z-40 overflow-y-auto" style={{ top: 68, background: "#0D1B2A" }}>
           <nav className="flex flex-col px-8 py-8 gap-1">
             {[
               { label: "Products", href: "/products" },
               { label: "Industries", href: "/industries" },
-              { label: "Growing Brands", href: "/solutions/growing-brands" },
-              { label: "Enterprise", href: "/enterprise" },
+              { label: "Get a Sample", href: "/samples" },
               { label: "Sustainability", href: "/sustainable" },
             ].map(item => (
               <Link key={item.href} href={item.href} onClick={() => setMobileOpen(false)}
@@ -1413,6 +1439,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
       )}
 
       <CartDrawer />
+      <SampleSupportWidget location={location} />
       <ExitOfferModal location={location} />
 
       <main className="flex-1">
@@ -1530,20 +1557,6 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
           <div className="flex flex-col gap-4">
             <h4 style={{ color: "white", fontWeight: 700, fontSize: 13, lineHeight: 1.4 }}>Subscribe To Packworkz Newsletter</h4>
             <NewsletterSignup />
-            <a
-              className="tinyshelf-badge"
-              href="https://www.tinyshelf.co/?ref=opencreativehq.com"
-              title="Featured on tinyshelf"
-              target="_blank"
-              rel="noreferrer"
-            >
-              <img
-                src="https://www.tinyshelf.co/badge/tinyshelf-badge-dark-f4d1216a.svg"
-                alt="Featured on tinyshelf"
-                width={216}
-                height={64}
-              />
-            </a>
           </div>
         </div>
 

@@ -20,6 +20,30 @@ const revealObserver = new IntersectionObserver(
 );
 
 function scanRevealElements() {
+  const animatedGroups = [
+    ".pw-home .pw-starter-heading",
+    ".pw-home .pw-starter-card",
+    ".pw-home .pw-family-directory",
+    ".pw-home .pw-sector-copy > *",
+    ".pw-home .pw-sector-solution",
+    ".pw-home .pw-home-smartstock-demo .smartstock-demo-copy",
+    ".pw-home .pw-home-smartstock-demo .smartstock-demo-shell",
+    ".pw-home .pw-proof-metrics > div",
+    ".pw-home .pw-testimonial-card",
+    ".pw-home .pw-proof-logo",
+    ".pw-home .pw-advantage-feature",
+    ".pw-home .pw-sustainability-card",
+    ".pw-home .pw-final-cta-content > *",
+    ".pw-sample-page section > div > h2",
+    ".pw-sample-page article",
+  ].join(",");
+
+  document.querySelectorAll<HTMLElement>(animatedGroups).forEach((el, index) => {
+    if (el.classList.contains("scroll-animate") || el.classList.contains("pw-reveal")) return;
+    el.classList.add("pw-reveal");
+    el.style.setProperty("--pw-delay", `${(index % 4) * 70}ms`);
+  });
+
   document.querySelectorAll(".pw-reveal:not(.pw-in), .pw-fadein:not(.pw-in)").forEach((el) => {
     revealObserver.observe(el);
   });
