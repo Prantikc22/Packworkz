@@ -4398,36 +4398,65 @@ body, html {
 }
 @media (max-width: 1050px) {
   .pw-home .pw-editorial-hero-shell {
-    min-height: 760px;
-    grid-template-columns: 1fr;
-    padding: 104px 28px 42px;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 104px 28px 0;
   }
   .pw-home .pw-editorial-hero-copy { width: min(72vw, 700px); }
   .pw-home .pw-editorial-hero::before {
     background: linear-gradient(90deg, rgba(255,255,255,.98) 0%, rgba(255,255,255,.93) 48%, rgba(255,255,255,.42) 72%, rgba(255,255,255,.08) 100%);
   }
-  .pw-home .pw-editorial-visual { margin: 0; }
-  .pw-home .pw-editorial-visual img { width: 100%; margin: 0; object-position: 58% 55%; }
+  .pw-home .pw-editorial-visual {
+    position: relative;
+    inset: auto;
+    order: 2;
+    width: calc(100% + 56px);
+    height: 420px;
+    min-height: 420px;
+    margin: 36px -28px 0;
+    align-self: auto;
+    opacity: 1;
+    overflow: hidden;
+  }
+  .pw-home .pw-editorial-visual picture { position: absolute; inset: 0; }
+  .pw-home .pw-editorial-visual img { width: 100%; height: 100%; margin: 0; object-fit: cover; object-position: 58% 55%; }
 }
 @media (max-width: 700px) {
   .pw-home .pw-editorial-hero-shell {
-    min-height: 900px;
-    padding: 92px 20px 30px;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 92px 20px 0;
   }
   .pw-home .pw-editorial-hero-copy { width: 100%; }
   .pw-home .pw-editorial-hero::before {
     background: linear-gradient(180deg, rgba(255,255,255,.99) 0%, rgba(255,255,255,.98) 61%, rgba(255,255,255,.84) 75%, rgba(255,255,255,.18) 100%);
   }
-  .pw-home .pw-editorial-visual { margin: 0; }
+  .pw-home .pw-editorial-visual {
+    position: relative;
+    inset: auto;
+    order: 2;
+    width: calc(100% + 40px);
+    height: 330px;
+    min-height: 330px;
+    margin: 34px -20px 0;
+    align-self: auto;
+    opacity: 1;
+    overflow: hidden;
+  }
+  .pw-home .pw-editorial-visual picture { position: absolute; inset: 0; }
   .pw-home .pw-editorial-visual img {
-    top: auto;
-    bottom: 0;
+    top: 0;
+    bottom: auto;
     width: 100%;
     height: 100%;
     margin: 0;
-    object-fit: contain;
-    object-position: center bottom;
+    object-fit: cover;
+    object-position: center 58%;
   }
+  .pw-home .pw-editorial-visual.is-ready { transform: none; }
+  .pw-home .pw-editorial-metrics { margin-top: 0; }
 }
 
 /* The reference keeps the navigation on a clean white rail above the scene. */
@@ -4481,6 +4510,18 @@ body, html {
     font-size: 12.5px;
     line-height: 1.5;
   }
+}
+
+/* On phones the heritage showcase is a compact, continuous card: the image
+   follows the copy directly instead of leaving a tall dark gap above it. */
+@media (max-width: 680px) {
+  .pw-heritage-showcase { min-height: 635px; margin-top: 38px; }
+  .pw-heritage-image { height: 42%; }
+  .pw-heritage-content { padding: 30px 22px 0; }
+  .pw-heritage-content h3 { margin-top: 14px; font-size: clamp(2rem, 10vw, 2.7rem); }
+  .pw-heritage-content > p { font-size: 13px; line-height: 1.55; }
+  .pw-heritage-cta { margin-top: 18px; }
+  .pw-heritage-facts { padding: 14px 14px; }
 }
 
 @media (max-width: 700px) {

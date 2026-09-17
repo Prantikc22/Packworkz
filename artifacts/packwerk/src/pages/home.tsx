@@ -856,7 +856,7 @@ export default function Home() {
           <div className="pw-trust-top">
             <div className="pw-trust-copy">
               <div className="pw-trust-eyebrow"><i /> Trusted by growing brands</div>
-              <h2>Trusted by<br /><em>leading</em> brands.</h2>
+              <h2>Trusted by <em>leading</em> brands.</h2>
               <p>From consumer food and FMCG to beauty, wellness and ecommerce, teams use Packworkz for consistent, compliant packaging at every scale.</p>
             </div>
 

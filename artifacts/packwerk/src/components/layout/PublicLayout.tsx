@@ -222,6 +222,8 @@ const PRODUCT_GROUPS = [
   },
 ];
 
+const MOBILE_PRODUCT_ITEMS = PRODUCT_GROUPS.flatMap(group => group.items);
+
 // ── Industry mega-menu data ───────────────────────────────────────────────────
 const INDUSTRIES = [
   { icon: Zap,              label: "D2C Brands",           href: "/industries/d2c" },
@@ -233,6 +235,8 @@ const INDUSTRIES = [
   { icon: Gem,              label: "Jewellery & Luxury",   href: "/industries/luxury" },
   { icon: Globe,            label: "Exports & Global",     href: "/industries/exports" },
 ];
+
+const MOBILE_INDUSTRY_ITEMS = INDUSTRIES;
 
 const ABOUT_ITEMS = [
   { icon: Info,     label: "Our Story",       href: "/about" },
@@ -1149,6 +1153,8 @@ function SampleSupportWidget({ location }: { location: string }) {
 export function PublicLayout({ children }: { children: React.ReactNode }) {
   const [location] = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [mobileProductsOpen, setMobileProductsOpen] = useState(false);
+  const [mobileIndustriesOpen, setMobileIndustriesOpen] = useState(false);
   const [mobileAboutOpen, setMobileAboutOpen] = useState(false);
   const [mobileResourcesOpen, setMobileResourcesOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -1344,17 +1350,70 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
       {mobileOpen && (
         <div className="fixed inset-x-0 bottom-0 z-40 overflow-y-auto" style={{ top: 68, background: "#0D1B2A" }}>
           <nav className="flex flex-col px-8 py-8 gap-1">
-            {[
-              { label: "Products", href: "/products" },
-              { label: "Industries", href: "/industries" },
-              { label: "Get a Sample", href: "/samples" },
-              { label: "Sustainability", href: "/sustainable" },
-            ].map(item => (
-              <Link key={item.href} href={item.href} onClick={() => setMobileOpen(false)}
-                style={{ fontSize: 22, fontWeight: 900, textTransform: "uppercase", color: "white", textDecoration: "none", padding: "10px 0", borderBottom: "1px solid rgba(255,255,255,0.07)" }}>
-                {item.label}
-              </Link>
-            ))}
+            <button
+              type="button"
+              onClick={() => setMobileProductsOpen(o => !o)}
+              style={{
+                display: "flex", alignItems: "center", justifyContent: "space-between",
+                fontSize: 22, fontWeight: 900, textTransform: "uppercase", color: "white",
+                background: "none", border: "none", borderBottom: "1px solid rgba(255,255,255,0.07)",
+                padding: "10px 0", cursor: "pointer", width: "100%", textAlign: "left",
+              }}
+            >
+              Products
+              <ChevronDown size={18} color="rgba(255,255,255,0.5)" style={{ transition: "transform 0.2s", transform: mobileProductsOpen ? "rotate(180deg)" : "rotate(0deg)", flexShrink: 0 }} />
+            </button>
+            {mobileProductsOpen && (
+              <div style={{ paddingLeft: 8, paddingBottom: 4, borderBottom: "1px solid rgba(255,255,255,0.07)" }}>
+                <Link href="/products" onClick={() => { setMobileOpen(false); setMobileProductsOpen(false); }}
+                  style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 4px", fontSize: 15, fontWeight: 800, color: "#E8A838", textDecoration: "none" }}>
+                  <Package size={16} /> Browse all products
+                </Link>
+                {MOBILE_PRODUCT_ITEMS.map(item => (
+                  <Link key={item.href} href={item.href} onClick={() => { setMobileOpen(false); setMobileProductsOpen(false); }}
+                    style={{ display: "flex", alignItems: "center", gap: 12, padding: "9px 4px", fontSize: 15, fontWeight: 700, color: "rgba(255,255,255,0.7)", textDecoration: "none" }}>
+                    <item.icon size={16} color="#E8A838" /> {item.label}
+                  </Link>
+                ))}
+              </div>
+            )}
+
+            <button
+              type="button"
+              onClick={() => setMobileIndustriesOpen(o => !o)}
+              style={{
+                display: "flex", alignItems: "center", justifyContent: "space-between",
+                fontSize: 22, fontWeight: 900, textTransform: "uppercase", color: "white",
+                background: "none", border: "none", borderBottom: "1px solid rgba(255,255,255,0.07)",
+                padding: "10px 0", cursor: "pointer", width: "100%", textAlign: "left",
+              }}
+            >
+              Industries
+              <ChevronDown size={18} color="rgba(255,255,255,0.5)" style={{ transition: "transform 0.2s", transform: mobileIndustriesOpen ? "rotate(180deg)" : "rotate(0deg)", flexShrink: 0 }} />
+            </button>
+            {mobileIndustriesOpen && (
+              <div style={{ paddingLeft: 8, paddingBottom: 4, borderBottom: "1px solid rgba(255,255,255,0.07)" }}>
+                <Link href="/industries" onClick={() => { setMobileOpen(false); setMobileIndustriesOpen(false); }}
+                  style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 4px", fontSize: 15, fontWeight: 800, color: "#E8A838", textDecoration: "none" }}>
+                  <Globe size={16} /> View all industries
+                </Link>
+                {MOBILE_INDUSTRY_ITEMS.map(item => (
+                  <Link key={item.href} href={item.href} onClick={() => { setMobileOpen(false); setMobileIndustriesOpen(false); }}
+                    style={{ display: "flex", alignItems: "center", gap: 12, padding: "9px 4px", fontSize: 15, fontWeight: 700, color: "rgba(255,255,255,0.7)", textDecoration: "none" }}>
+                    <item.icon size={16} color="#E8A838" /> {item.label}
+                  </Link>
+                ))}
+              </div>
+            )}
+
+            <Link href="/samples" onClick={() => setMobileOpen(false)}
+              style={{ fontSize: 22, fontWeight: 900, textTransform: "uppercase", color: "white", textDecoration: "none", padding: "10px 0", borderBottom: "1px solid rgba(255,255,255,0.07)" }}>
+              Get a Sample
+            </Link>
+            <Link href="/sustainable" onClick={() => setMobileOpen(false)}
+              style={{ fontSize: 22, fontWeight: 900, textTransform: "uppercase", color: "white", textDecoration: "none", padding: "10px 0", borderBottom: "1px solid rgba(255,255,255,0.07)" }}>
+              Sustainability
+            </Link>
 
             <button
               onClick={() => setMobileResourcesOpen(o => !o)}
