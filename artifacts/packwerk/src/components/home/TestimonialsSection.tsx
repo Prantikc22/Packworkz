@@ -36,7 +36,6 @@ const CUSTOMER_LOGOS = [
   { name: "Oliva", src: "/images/logos/oliva-official.svg" },
   { name: "Olipop", src: "/images/logos/olipop.webp" },
   { name: "Radico", src: "/images/logos/radico-official.webp" },
-  { name: "Biskfarm", src: "/images/logos/biskfarm-official.webp" },
 ];
 
 function CustomerLogo({ name, src }: { name: string; src: string }) {

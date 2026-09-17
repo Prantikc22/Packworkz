@@ -4385,6 +4385,68 @@ body, html {
     border-inline-color: rgba(91, 115, 139, .22);
   }
 }
+
+/* Bring the desktop CTA's cinematic treatment into the compact mobile layout.
+   The copy sits on a translucent panel so it stays legible over the ribbon
+   artwork while the full background still supplies the visual energy. */
+@media (max-width: 640px) {
+  .pw-final-cta {
+    min-height: 660px;
+    padding: 54px 0 30px;
+    background-position: 58% center;
+  }
+
+  .pw-final-cta-shade {
+    background:
+      linear-gradient(180deg, rgba(5, 18, 31, .18) 0%, rgba(5, 18, 31, .34) 30%, rgba(5, 18, 31, .9) 100%),
+      linear-gradient(90deg, rgba(5, 18, 31, .2), rgba(5, 18, 31, .2));
+  }
+
+  .pw-final-cta-shell {
+    width: calc(100% - 28px);
+    min-height: 576px;
+    display: flex;
+    align-items: center;
+  }
+
+  .pw-final-cta-content {
+    width: 100%;
+    padding: 38px 20px 28px;
+    border: 1px solid rgba(255, 255, 255, .18);
+    background: linear-gradient(180deg, rgba(7, 23, 38, .7), rgba(7, 23, 38, .9));
+    box-shadow: 0 22px 48px rgba(0, 0, 0, .24);
+    backdrop-filter: blur(5px);
+  }
+
+  .pw-final-cta-content h2 {
+    margin-bottom: 16px;
+    font-size: clamp(2.9rem, 14vw, 4.4rem);
+  }
+
+  .pw-final-cta-content > p {
+    color: #d2dbe4;
+    font-size: 14px;
+    line-height: 1.55;
+  }
+
+  .pw-final-cta-actions {
+    margin-top: 25px;
+    gap: 10px;
+  }
+
+  .pw-final-cta-actions a {
+    min-height: 52px;
+  }
+
+  .pw-final-cta-proof {
+    margin-top: 30px;
+    gap: 8px;
+  }
+
+  .pw-final-cta-proof > span {
+    padding: 0 5px;
+  }
+}
 .pw-home .pw-editorial-metrics {
   position: relative;
   z-index: 4;
