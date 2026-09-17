@@ -94,7 +94,7 @@ const TESTIMONIALS = [
 // ─── Steps ────────────────────────────────────────────────────────────────────
 const STEPS = [
   { n: "01", Icon: MessageSquare, title: "Brief us in 10 minutes", desc: "Tell us your product, MOQ, timeline, and any design files — via WhatsApp, form, or a quick call." },
-  { n: "02", Icon: FlaskConical,  title: "Receive sample in 7–10 days", desc: "We source from our factory network and ship a physical sample to your door. From ₹2,999, no commitment." },
+  { n: "02", Icon: FlaskConical,  title: "Explore a packaging sample kit", desc: "Compare 25–50+ real packaging samples at your desk. ₹299 plus ₹100 shipping across India." },
   { n: "03", Icon: CheckCircle,   title: "Approve & pay first 50%", desc: "Pay 50% on order confirmation. We begin production immediately — no waiting." },
   { n: "04", Icon: Truck,         title: "Delivered in 14 days total", desc: "Balance due on sample approval. Your order ships and arrives doorstep — on time, every time." },
 ];
@@ -558,7 +558,7 @@ export default function LpD2c() {
                   <div>
                     <p style={{ color: "white", fontWeight: 800, fontSize: 15, marginBottom: 3 }}>First Order Price Match Guarantee</p>
                     <p style={{ color: "rgba(255,255,255,0.55)", fontSize: 14, lineHeight: 1.6, margin: 0 }}>
-                      We match your current vendor's price — or we cover the difference. Sample from ₹2,999. No commitment until you approve.
+                      We match your current vendor's price — or we cover the difference. No commitment until you approve.
                     </p>
                   </div>
                 </div>
@@ -574,7 +574,7 @@ export default function LpD2c() {
                   Start Configuration →
                 </Link>
                 <Link href="/samples" className="lp-cta-secondary">
-                  Order a Sample ₹2,999
+                  Get a Sample Kit · ₹299 + shipping
                 </Link>
               </div>
             </div>
@@ -1153,7 +1153,7 @@ export default function LpD2c() {
               <span className="lp-gradient-text">packaging operations?</span>
             </h2>
             <p style={{ color: "rgba(255,255,255,0.6)", fontSize: 18, lineHeight: 1.7, marginBottom: 44, maxWidth: 520, margin: "0 auto 44px" }}>
-              Get a pricing plan in 48 hours. Sample from ₹2,999. No commitment until you approve. India's fastest packaging platform.
+              Get a pricing plan in 48 hours. Explore samples for ₹299 plus ₹100 shipping. No commitment until you approve.
             </p>
 
             <div className="lp-cta-row" style={{ display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap" }}>

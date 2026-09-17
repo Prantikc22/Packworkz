@@ -184,10 +184,6 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
                     <dd className="mt-1 font-semibold text-navy">{product.moq.toLocaleString("en-IN")} {product.moq_unit}</dd>
                   </div>
                   <div>
-                    <dt className="text-sm font-medium text-muted">Sample Tier</dt>
-                    <dd className="mt-1 font-semibold text-navy capitalize">{product.sample_tier}</dd>
-                  </div>
-                  <div>
                     <dt className="text-sm font-medium text-muted">Delivery India</dt>
                     <dd className="mt-1 font-semibold text-navy">{product.delivery_days_india} Days</dd>
                   </div>
@@ -393,9 +389,9 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
                     </Link>
                   </div>
                 )}
-                <Link href={`/samples?product=${product.id}`}>
+                <Link href="/samples">
                   <Button variant="outline" className="w-full h-12">
-                    Get Sample ({formatINR(product.sample_price)})
+                    Get sample kit · ₹299 + ₹100 shipping
                   </Button>
                 </Link>
               </div>

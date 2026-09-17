@@ -71,9 +71,9 @@ const PAGE_SEO: Record<string, { title: string; description: string; keywords: s
     keywords: "packaging procurement plan India, packaging roll pricing, technical packaging supplier India, managed packaging sourcing",
   },
   "/samples": {
-    title: "Order Packaging Samples India | From ₹2,999 | Packworkz",
-    description: "Order physical packaging samples before bulk production. Choose a standard or express sample route; dispatch timing and format availability are confirmed before fulfilment.",
-    keywords: "packaging samples India, order packaging samples, custom packaging sample, packaging manufacturer sample India",
+    title: "Packaging Sample Kit India | 25–50+ Samples for ₹299 | Packworkz",
+    description: "Buy a curated kit of 25–50+ packaging samples, material swatches and finishes for ₹299 plus ₹100 shipping across India. Pay securely with Razorpay.",
+    keywords: "packaging sample kit India, packaging samples India, buy packaging samples, pouch box label samples, packaging material swatches",
   },
   "/sustainable": {
     title: "Sustainable Packaging Materials India | Packworkz",
@@ -1133,13 +1133,13 @@ function SampleSupportWidget({ location }: { location: string }) {
           <button type="button" className="pw-sample-widget-close" onClick={() => setOpen(false)} aria-label="Close sample prompt"><X size={17} /></button>
           <span className="pw-sample-widget-kicker">FEEL IT BEFORE YOU ORDER IT</span>
           <strong>Get 25–50+ packaging samples.</strong>
-          <p>A curated material and format kit delivered to your doorstep for <b>₹299 + shipping</b>.</p>
+          <p>A curated material and format kit delivered to your doorstep for <b>₹299 + ₹100 shipping</b>.</p>
           <Link href="/samples" className="pw-sample-widget-link">Get a sample kit <ArrowRight size={17} /></Link>
         </div>
       )}
       <button type="button" className="pw-sample-widget-trigger" onClick={() => setOpen(value => !value)} aria-expanded={open}>
         <Package size={22} />
-        <span>Get samples<small>₹299 + shipping</small></span>
+        <span>Get samples<small>₹299 + ₹100 shipping</small></span>
       </button>
     </aside>
   );

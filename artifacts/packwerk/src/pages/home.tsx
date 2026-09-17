@@ -786,7 +786,7 @@ export default function Home() {
                   <img src={getCatalogImage(sku)} alt={`${sku.name} custom printed packaging`} loading="eager" />
                 </div>
                 <div className="pw-starter-copy">
-                  <small>{sku.purchase_mode === "brief" ? "Specialist confirmed" : "Buy online"}</small>
+                  <small>{sku.publicBuyingPath === "quote" ? "Request a quote" : "Buy instantly"}</small>
                   <h3>{sku.name}</h3>
                   <p>{sku.use_case}</p>
                   <div><strong>MOQ {sku.moq.toLocaleString()} {sku.moq_unit}</strong><ArrowRight size={17} /></div>

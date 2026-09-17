@@ -3,6 +3,7 @@ import { sb } from "../lib/supabase";
 import { generateId } from "../lib/generateId";
 import { sendDesignConfirmation, sendSampleConfirmation } from "../lib/email";
 import { notifySlack } from "../lib/slack";
+import Razorpay from "razorpay";
 
 const router: IRouter = Router();
 
@@ -95,11 +96,53 @@ router.post("/sample-requests", async (req, res): Promise<void> => {
     sample_tier,
     amount_paid,
     razorpay_payment_id,
+    razorpay_order_id,
+    shipping_address,
+    pincode,
+    order_note,
     user_id,
   } = req.body;
 
-  if (!contact_name || !email || !phone || !product_id || !sample_tier || !amount_paid) {
+  if (!contact_name || !email || !phone || !sample_tier || !amount_paid || !razorpay_payment_id || !razorpay_order_id || !shipping_address || !pincode) {
     res.status(400).json({ error: "Missing required fields" });
+    return;
+  }
+
+  const keyId = process.env.RAZORPAY_KEY_ID;
+  const keySecret = process.env.RAZORPAY_KEY_SECRET;
+  if (!keyId || !keySecret) {
+    res.status(503).json({ error: "Payment verification is not configured" });
+    return;
+  }
+
+  try {
+    const razorpay = new Razorpay({ key_id: keyId, key_secret: keySecret });
+    const [payment, order] = await Promise.all([
+      razorpay.payments.fetch(String(razorpay_payment_id)),
+      razorpay.orders.fetch(String(razorpay_order_id)),
+    ]);
+    const notes = (order.notes || {}) as Record<string, string>;
+    if (
+      payment.status !== "captured" ||
+      String(payment.order_id || "") !== String(razorpay_order_id) ||
+      Number(payment.amount) !== 39_900 ||
+      Number(order.amount) !== 39_900 ||
+      Number(amount_paid) !== 399 ||
+      sample_tier !== "kit" ||
+      notes.service !== "sample_kit"
+    ) {
+      res.status(400).json({ error: "The verified payment does not match this sample kit" });
+      return;
+    }
+  } catch (error: any) {
+    console.error("[sample-requests] payment verification error:", error?.message);
+    res.status(502).json({ error: "The sample payment could not be verified" });
+    return;
+  }
+
+  const duplicate = await sb.from("sample_requests").select("sample_id,id").eq("razorpay_payment_id", razorpay_payment_id).maybeSingle();
+  if (duplicate.data) {
+    res.json({ sample_id: duplicate.data.sample_id, id: duplicate.data.id, duplicate: true });
     return;
   }
 
@@ -113,11 +156,16 @@ router.post("/sample-requests", async (req, res): Promise<void> => {
       contact_name,
       email,
       phone,
-      product_id,
+      product_id: product_id ?? null,
       sample_tier,
       amount_paid,
       razorpay_payment_id: razorpay_payment_id ?? null,
       status: "paid",
+      admin_notes: [
+        `Shipping address: ${shipping_address}`,
+        `Pincode: ${pincode}`,
+        order_note ? `Customer note: ${order_note}` : "",
+      ].filter(Boolean).join("\n"),
     })
     .select()
     .single();
@@ -145,7 +193,7 @@ router.post("/sample-requests", async (req, res): Promise<void> => {
         { label: "Contact", value: contact_name },
         { label: "Email", value: email },
         { label: "Phone", value: phone },
-        { label: "Product ID", value: product_id },
+        { label: "Delivery", value: `${shipping_address}, ${pincode}` },
         { label: "Paid", value: `₹${amount_paid}` },
       ],
     }),

@@ -39,7 +39,6 @@ const HYBRID_CODES = new Set([
 // Everything else receives a specialist-confirmed commercial instead of a
 // misleading multiplied estimate.
 export const INSTANT_BUY_CODES = new Set([
-  "FP-101",
   "EC-501", "EC-504", "EC-505", "EC-509", "EC-510",
   "LC-804", "LC-805", "LC-808", "LC-810", "LC-811", "LC-815",
   "LC-816", "LC-817", "LC-818", "LC-819", "LC-820",

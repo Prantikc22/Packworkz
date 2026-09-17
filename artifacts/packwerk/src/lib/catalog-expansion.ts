@@ -66,8 +66,6 @@ function buildSku(seed: Seed, index: number): Sku {
     moq_unit: seed.moqUnit ?? (seed.category === "rolls" ? "kg" : seed.code.startsWith("LC-9") && seed.name.includes("Tape") ? "rolls" : "units"),
     is_smartstock: seed.mode !== "brief" && index % 3 !== 0,
     is_eco: Boolean(seed.eco),
-    sample_tier: seed.mode === "brief" ? "complex" : seed.mode === "hybrid" ? "premium" : "standard",
-    sample_price: seed.mode === "brief" ? 4999 : seed.mode === "hybrid" ? 2999 : 999,
     delivery_days_india: seed.lead ?? (seed.mode === "brief" ? 24 : seed.mode === "hybrid" ? 18 : 10),
     variants: seed.variants ?? [PRINT_VARIANT, FINISH_VARIANT],
     customization_fields: seed.fields ?? SIZE_FIELDS,

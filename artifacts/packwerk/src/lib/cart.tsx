@@ -20,7 +20,6 @@ export type CartItem = {
   artworkOption: "upload" | "design" | "none";
   artworkFileUrl?: string;
   deliveryOption: "standard" | "blitz" | "warehouse";
-  sampleOption: "express" | "standard" | "none";
 };
 
 type CartContextValue = {
@@ -69,7 +68,6 @@ export function createDefaultCartItem(sku: CatalogSku, quantity = sku.moq): Cart
     customSpecs: {},
     artworkOption: "upload",
     deliveryOption: "standard",
-    sampleOption: "none",
   };
 }
 
@@ -83,7 +81,6 @@ export function createConfiguredCartItem(
     artworkOption: CartItem["artworkOption"];
     artworkFileUrl?: string;
     deliveryOption: CartItem["deliveryOption"];
-    sampleOption?: CartItem["sampleOption"];
   },
 ): CartItem | null {
   const managedItem = sku.publicBuyingPath !== "instant" || requiresQuote(sku, configuration.quantity);
@@ -112,7 +109,6 @@ export function createConfiguredCartItem(
     artworkOption: configuration.artworkOption,
     artworkFileUrl: configuration.artworkFileUrl,
     deliveryOption: configuration.deliveryOption,
-    sampleOption: configuration.sampleOption || "none",
   };
 }
 
@@ -160,9 +156,6 @@ export function getCartConfigurationDetails(item: CartItem) {
     { label: "Delivery", value: item.deliveryOption === "blitz" ? "Priority" : item.deliveryOption === "warehouse" ? "SmartStock warehousing" : "Standard" },
   ];
 
-  if (item.sampleOption && item.sampleOption !== "none") {
-    details.push({ label: "Sample", value: item.sampleOption === "express" ? "Express sample" : "Standard sample" });
-  }
   return details;
 }
 

@@ -19,7 +19,7 @@ export default function Refund() {
           },
           {
             title: "Sample Orders",
-            body: "Sample orders (₹2,999 Standard · ₹4,999 Express) are non-refundable once production has commenced. If the sample does not meet specifications agreed at the time of order, Packworkz will produce a revised sample at no additional charge. The ₹1,999 design service fee is fully adjustable against your first bulk order.",
+            body: "The packaging sample kit costs ₹299 plus ₹100 shipping. If the delivered kit is incomplete or damaged, contact orders@packworkz.com with your sample reference and photos so our team can review the issue. The ₹1,999 design service fee is fully adjustable against your first bulk order.",
             highlight: false,
           },
           {

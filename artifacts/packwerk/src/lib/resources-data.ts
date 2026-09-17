@@ -430,8 +430,8 @@ const EXISTING_ARTICLES: ResourceArticle[] = [
       { type: "p", text: "Choose a stand-up pouch when: (a) you're launching at scale and cost per unit matters significantly, (b) your product has high fill weights (>200g) where the format is structurally appropriate, (c) you're filling on an automated VFFS or HFFS line, or (d) you're in a category (snacks, staples, spices) where stand-ups are the category norm and differentiation comes from print and design rather than format." },
       { type: "h2", text: "When to Choose Flat Bottom Pouch" },
       { type: "p", text: "Choose a flat bottom pouch when: (a) your brand positioning is premium or artisan and your price point justifies the format premium, (b) you're launching specialty coffee, protein/supplement powder, or a gift product, (c) you want maximum shelf presence in modern trade or on Amazon where images drive conversion, or (d) you want the 5 printable panels to tell a fuller brand story." },
-      { type: "callout", label: "Packworkz Tip", text: "If you're unsure, order a physical sample of both formats in your dimensions from Packworkz (from ₹2,999 each) before committing to production. Holding both filled with your product will make the decision obvious." },
-      { type: "cta", ctaText: "Order a Sample Pouch from ₹2,999 →", ctaHref: "/samples" },
+      { type: "callout", label: "Packworkz Tip", text: "If you're unsure, compare both structures with the Packworkz packaging sample kit before committing to production. It includes physical formats and material swatches; custom branded prototypes can be scoped separately." },
+      { type: "cta", ctaText: "Explore the ₹299 sample kit →", ctaHref: "/samples" },
       { type: "h2", text: "Material Options for Both Formats" },
       { type: "p", text: "Both formats are available in the same material combinations:" },
       { type: "ul", items: [

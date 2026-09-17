@@ -30,8 +30,6 @@ export type Sku = {
   moq_unit: string;
   is_smartstock: boolean;
   is_eco: boolean;
-  sample_tier: "standard" | "premium" | "complex";
-  sample_price: number;
   delivery_days_india: number;
   variants: VariantGroup[];
   customization_fields: CustomField[];
@@ -81,7 +79,7 @@ export const SKUS: Sku[] = [
     description: "Gusseted base stand-up pouch ideal for retail display. Supports multiple closure and material combinations.",
     use_case: "Snacks, coffee, pet food, spices, dry goods",
     price_min: 8.90, price_max: 32.00, moq: 250, moq_unit: "units",
-    is_smartstock: true, is_eco: false, sample_tier: "standard", sample_price: 2999, delivery_days_india: 12,
+    is_smartstock: true, is_eco: false, delivery_days_india: 12,
     variants: [
       { key: "closure", label: "Closure Type", options: ["None", "Zipper", "Spout"] },
       { key: "material", label: "Material", options: ["Plastic (BOPP/PE)", "Kraft Paper", "Metalized Film"] },
@@ -114,7 +112,7 @@ export const SKUS: Sku[] = [
     description: "Simple center-seal pillow bag for high-speed packing lines. Compact, lightweight, and cost-effective.",
     use_case: "Candies, biscuits, sachets, agricultural inputs",
     price_min: 2.00, price_max: 8.50, moq: 2000, moq_unit: "units",
-    is_smartstock: true, is_eco: false, sample_tier: "standard", sample_price: 2999, delivery_days_india: 10,
+    is_smartstock: true, is_eco: false, delivery_days_india: 10,
     variants: [
       { key: "material", label: "Material", options: ["Plastic (BOPP/PE)", "Kraft Paper", "Metalized Film"] },
       { key: "finish", label: "Finish", options: ["Matte", "Glossy"] },
@@ -134,7 +132,7 @@ export const SKUS: Sku[] = [
     description: "Premium shelf-display pouch with flat bottom and optional side gussets for wide visibility.",
     use_case: "Specialty coffee, protein powder, premium snacks, tea",
     price_min: 8.00, price_max: 28.00, moq: 500, moq_unit: "units",
-    is_smartstock: false, is_eco: false, sample_tier: "premium", sample_price: 4999, delivery_days_india: 14,
+    is_smartstock: false, is_eco: false, delivery_days_india: 14,
     variants: [
       { key: "closure", label: "Closure Type", options: ["None", "Zipper", "Spout"] },
       { key: "material", label: "Material", options: ["Plastic (BOPP/PE)", "Kraft Paper", "Metalized Film"] },
@@ -156,7 +154,7 @@ export const SKUS: Sku[] = [
     description: "Liquid-ready pouch with welded spout fitment for controlled dispensing.",
     use_case: "Baby food, juices, sauces, ketchup, energy drinks",
     price_min: 9.00, price_max: 32.00, moq: 500, moq_unit: "units",
-    is_smartstock: false, is_eco: false, sample_tier: "premium", sample_price: 4999, delivery_days_india: 14,
+    is_smartstock: false, is_eco: false, delivery_days_india: 14,
     variants: [
       { key: "material", label: "Material", options: ["Plastic (BOPP/PE)", "Kraft Paper", "Metalized Film"] },
       { key: "finish", label: "Finish", options: ["Matte", "Glossy"] },
@@ -177,7 +175,7 @@ export const SKUS: Sku[] = [
     description: "Single-serve sachet or stick pack for portion-controlled packaging.",
     use_case: "Sugar, salt, condiments, instant coffee, ORS, supplements",
     price_min: 0.80, price_max: 4.00, moq: 5000, moq_unit: "units",
-    is_smartstock: true, is_eco: false, sample_tier: "standard", sample_price: 1999, delivery_days_india: 10,
+    is_smartstock: true, is_eco: false, delivery_days_india: 10,
     variants: [
       { key: "format", label: "Format", options: ["Sachet (3-side seal)", "Stick Pack (4-side seal)"] },
       { key: "material", label: "Material", options: ["Plastic (BOPP/PE)", "Metalized Film", "Kraft Paper"] },
@@ -199,7 +197,7 @@ export const SKUS: Sku[] = [
     description: "Versatile plastic bottle in PET or HDPE, suitable for food, beverage, personal care, and agrochemical use.",
     use_case: "Water, juices, shampoos, cooking oils, agrochemicals",
     price_min: 8.00, price_max: 45.00, moq: 500, moq_unit: "units",
-    is_smartstock: true, is_eco: false, sample_tier: "standard", sample_price: 2999, delivery_days_india: 10,
+    is_smartstock: true, is_eco: false, delivery_days_india: 10,
     variants: [
       { key: "material", label: "Material", options: ["PET (clear/colored)", "HDPE (opaque)"] },
       { key: "cap_type", label: "Cap / Closure", options: ["Screw Cap", "Pump", "Spray", "Flip-top"] },
@@ -220,7 +218,7 @@ export const SKUS: Sku[] = [
     description: "Premium glass bottle for beverages, spirits, sauces, and premium liquids. Available in clear and colored glass.",
     use_case: "Craft beer, wine, spirits, hot sauces, kombucha, essential oils",
     price_min: 22.00, price_max: 120.00, moq: 200, moq_unit: "units",
-    is_smartstock: false, is_eco: true, sample_tier: "premium", sample_price: 4999, delivery_days_india: 18,
+    is_smartstock: false, is_eco: true, delivery_days_india: 18,
     variants: [
       { key: "color", label: "Glass Color", options: ["Clear", "Amber", "Green", "Cobalt Blue"] },
       { key: "cap_type", label: "Closure", options: ["Crown Cap", "Cork", "Screw Cap", "ROPP Aluminum"] },
@@ -240,7 +238,7 @@ export const SKUS: Sku[] = [
     description: "Wide-mouth glass jar for food, cosmetics, and specialty products. Airtight lid options available.",
     use_case: "Jams, honey, pickles, spreads, face creams, candles",
     price_min: 18.00, price_max: 90.00, moq: 200, moq_unit: "units",
-    is_smartstock: false, is_eco: true, sample_tier: "premium", sample_price: 4999, delivery_days_india: 18,
+    is_smartstock: false, is_eco: true, delivery_days_india: 18,
     variants: [
       { key: "color", label: "Glass Color", options: ["Clear", "Amber", "Frosted"] },
       { key: "lid_type", label: "Lid Type", options: ["Metal Twist-off", "Plastisol Lined", "Wooden Lid"] },
@@ -259,7 +257,7 @@ export const SKUS: Sku[] = [
     description: "Elegant cosmetic-grade jar in acrylic, PETG, or glass. Ideal for high-end skincare and beauty brands.",
     use_case: "Face cream, body butter, hair mask, serums, beard balm",
     price_min: 12.00, price_max: 75.00, moq: 200, moq_unit: "units",
-    is_smartstock: false, is_eco: false, sample_tier: "premium", sample_price: 4999, delivery_days_india: 14,
+    is_smartstock: false, is_eco: false, delivery_days_india: 14,
     variants: [
       { key: "material", label: "Material", options: ["Acrylic", "PETG (Plastic)", "Glass"] },
       { key: "lid_type", label: "Lid Type", options: ["Standard", "Flat", "Inner Cap"] },
@@ -279,7 +277,7 @@ export const SKUS: Sku[] = [
     description: "Precision dropper bottle for serums, essential oils, CBD, and pharma liquids. Tamper-evident options available.",
     use_case: "Face serums, essential oils, CBD tinctures, eye drops, aromatherapy",
     price_min: 15.00, price_max: 60.00, moq: 200, moq_unit: "units",
-    is_smartstock: false, is_eco: false, sample_tier: "standard", sample_price: 2999, delivery_days_india: 12,
+    is_smartstock: false, is_eco: false, delivery_days_india: 12,
     variants: [
       { key: "material", label: "Material", options: ["Glass (Amber)", "Glass (Clear)", "PETG (Plastic)"] },
       { key: "dropper", label: "Dropper Type", options: ["Standard Rubber Bulb", "Child-Resistant", "Plastic Pipette"] },
@@ -297,7 +295,7 @@ export const SKUS: Sku[] = [
     description: "Vacuum-based airless pump bottle. No contamination, precise dose control. Preferred by premium skincare brands.",
     use_case: "Serums, moisturizers, foundations, sunscreens, anti-aging creams",
     price_min: 28.00, price_max: 130.00, moq: 200, moq_unit: "units",
-    is_smartstock: false, is_eco: false, sample_tier: "complex", sample_price: 7999, delivery_days_india: 18,
+    is_smartstock: false, is_eco: false, delivery_days_india: 18,
     variants: [
       { key: "material", label: "Body Material", options: ["Plastic (ABS)", "Aluminum", "PCR Plastic (Recycled)"] },
       { key: "finish", label: "Finish", options: ["Glossy", "Matte", "Metallic Spray"] },
@@ -319,7 +317,7 @@ export const SKUS: Sku[] = [
     description: "Flexible squeeze tube in HDPE, LDPE, or laminate. Available with flip-top, disc-top, and nozzle closures.",
     use_case: "Toothpaste, lotions, sunscreen, hair color, hand cream, pharma gels",
     price_min: 5.00, price_max: 22.00, moq: 1000, moq_unit: "units",
-    is_smartstock: true, is_eco: false, sample_tier: "standard", sample_price: 2999, delivery_days_india: 12,
+    is_smartstock: true, is_eco: false, delivery_days_india: 12,
     variants: [
       { key: "material", label: "Material", options: ["HDPE / LDPE (Plastic)", "Laminate (Multi-layer)", "ABL (Aluminum Barrier)"] },
       { key: "cap_type", label: "Cap / Nozzle", options: ["Flip-top Cap", "Disc-top Cap", "Nozzle (Pharma)", "Screw Cap"] },
@@ -340,7 +338,7 @@ export const SKUS: Sku[] = [
     description: "Thermoformed PVC/PET blister with aluminum or card backing. Pharma-grade and retail-grade options.",
     use_case: "Tablets, capsules, batteries, small hardware, stationary",
     price_min: 1.50, price_max: 12.00, moq: 2000, moq_unit: "units",
-    is_smartstock: false, is_eco: false, sample_tier: "complex", sample_price: 7999, delivery_days_india: 18,
+    is_smartstock: false, is_eco: false, delivery_days_india: 18,
     variants: [
       { key: "blister_material", label: "Blister Material", options: ["PVC", "PET (Eco)", "PVDC (Barrier)"] },
       { key: "backing", label: "Backing", options: ["Aluminum Foil", "Card (Paper)", "PET Film"] },
@@ -361,7 +359,7 @@ export const SKUS: Sku[] = [
     description: "Straight-line or reverse tuck-end folding carton in SBS or duplex board. Full color print with UV/aqueous options.",
     use_case: "FMCG, pharma, personal care, food, electronics retail",
     price_min: 14.00, price_max: 52.00, moq: 25, moq_unit: "units",
-    is_smartstock: true, is_eco: false, sample_tier: "standard", sample_price: 2999, delivery_days_india: 12,
+    is_smartstock: true, is_eco: false, delivery_days_india: 12,
     variants: [
       { key: "tuck_style", label: "Box Style", options: ["Straight Tuck End (STE)", "Reverse Tuck End (RTE)", "Auto-Lock Bottom"] },
       { key: "board", label: "Board Type", options: ["SBS (White)", "Duplex Board", "Kraft Board"] },
@@ -384,7 +382,7 @@ export const SKUS: Sku[] = [
     description: "Chipboard-based rigid set-up box. Can be wrapped in paper, fabric, or leatherette with various interior finishing options.",
     use_case: "Premium gifting, electronics, watches, luxury goods, corporate packs",
     price_min: 145.00, price_max: 340.00, moq: 50, moq_unit: "units",
-    is_smartstock: false, is_eco: false, sample_tier: "premium", sample_price: 4999, delivery_days_india: 18,
+    is_smartstock: false, is_eco: false, delivery_days_india: 18,
     variants: [
       { key: "box_type", label: "Box Type", options: ["Lid & Base (Shoebox)", "Neck & Shoulder", "Clamshell", "Book Style"] },
       { key: "wrap", label: "Outer Wrap", options: ["Art Paper", "Linen", "Leatherette", "Velvet"] },
@@ -406,7 +404,7 @@ export const SKUS: Sku[] = [
     description: "Premium collapsible magnetic-closure box. Flat-pack design reduces shipping costs. Ideal for D2C brand gifting.",
     use_case: "D2C gifting, subscription boxes, luxury retail, electronics unboxing",
     price_min: 169.00, price_max: 395.00, moq: 50, moq_unit: "units",
-    is_smartstock: false, is_eco: false, sample_tier: "premium", sample_price: 4999, delivery_days_india: 18,
+    is_smartstock: false, is_eco: false, delivery_days_india: 18,
     variants: [
       { key: "finish", label: "Outer Finish", options: ["Matte Lamination", "Glossy Lamination", "Soft-touch Velvet"] },
       { key: "print", label: "Print Treatment", options: ["Plain (Single Color)", "Full Color", "Foil Stamp", "UV Spot + Foil"] },
@@ -429,7 +427,7 @@ export const SKUS: Sku[] = [
     description: "Self-locking tuck-top mailer box in corrugated or rigid board. Premium unboxing experience for D2C brands.",
     use_case: "D2C shipping, subscription boxes, fashion, food kits, cosmetics",
     price_min: 14.00, price_max: 34.00, moq: 50, moq_unit: "units",
-    is_smartstock: true, is_eco: false, sample_tier: "standard", sample_price: 2999, delivery_days_india: 10,
+    is_smartstock: true, is_eco: false, delivery_days_india: 10,
     variants: [
       { key: "board", label: "Board Type", options: ["Corrugated (3-ply)", "Corrugated (5-ply)", "Rigid Grey Board"] },
       { key: "print", label: "Print", options: ["Plain (Kraft)", "Single Color", "Full Color (inside+out)"] },
@@ -450,7 +448,7 @@ export const SKUS: Sku[] = [
     description: "Standard RSC or die-cut corrugated shipping box. Available in 3-ply and 5-ply configurations.",
     use_case: "General e-commerce shipping, FMCG bulk dispatch, B2B warehouse",
     price_min: 8.00, price_max: 35.00, moq: 500, moq_unit: "units",
-    is_smartstock: true, is_eco: false, sample_tier: "standard", sample_price: 2999, delivery_days_india: 10,
+    is_smartstock: true, is_eco: false, delivery_days_india: 10,
     variants: [
       { key: "ply", label: "Board Strength", options: ["3-ply (Standard)", "5-ply (Heavy Duty)", "7-ply (Industrial)"] },
       { key: "style", label: "Box Style", options: ["RSC (Regular Slotted)", "Die-cut", "Self-locking (No tape)"] },
@@ -472,7 +470,7 @@ export const SKUS: Sku[] = [
     description: "Thermal or standard corrugated box for food delivery. Grease-resistant coating and FSSAI-compliant materials.",
     use_case: "Cloud kitchens, QSR, tiffin services, meal kit delivery, bakeries",
     price_min: 10.00, price_max: 40.00, moq: 200, moq_unit: "units",
-    is_smartstock: true, is_eco: false, sample_tier: "standard", sample_price: 2999, delivery_days_india: 10,
+    is_smartstock: true, is_eco: false, delivery_days_india: 10,
     variants: [
       { key: "type", label: "Box Type", options: ["Standard (Non-thermal)", "Thermal Insulated", "Tamper-evident"] },
       { key: "material", label: "Board", options: ["Corrugated (3-ply)", "Kraft Board", "Duplex with PE coating"] },
@@ -491,7 +489,7 @@ export const SKUS: Sku[] = [
     description: "Lightweight tamper-evident courier bag in poly or kraft paper. Self-seal adhesive strip. Pre-printed or blank options.",
     use_case: "E-commerce courier shipping, clothing, documents, books",
     price_min: 2.50, price_max: 10.00, moq: 1000, moq_unit: "units",
-    is_smartstock: true, is_eco: false, sample_tier: "standard", sample_price: 1999, delivery_days_india: 8,
+    is_smartstock: true, is_eco: false, delivery_days_india: 8,
     variants: [
       { key: "material", label: "Material", options: ["Poly (LDPE)", "Kraft Paper", "Co-extruded (Strong)"] },
       { key: "print", label: "Print", options: ["Blank / Unprinted", "Single Color (Logo)", "Full Color"] },
@@ -511,7 +509,7 @@ export const SKUS: Sku[] = [
     description: "Classic bubble wrap rolls or inflated air pillow packs for void-fill and product cushioning in transit.",
     use_case: "Fragile goods, electronics, ceramics, glassware, e-commerce void fill",
     price_min: 1200, price_max: 5000, moq: 1, moq_unit: "rolls",
-    is_smartstock: true, is_eco: false, sample_tier: "standard", sample_price: 1999, delivery_days_india: 7,
+    is_smartstock: true, is_eco: false, delivery_days_india: 7,
     variants: [
       { key: "type", label: "Type", options: ["Bubble Wrap Roll", "Air Pillows (pre-inflated)", "Bubble Bags"] },
       { key: "bubble_size", label: "Bubble Size", options: ["Small (10mm)", "Medium (20mm)", "Large (25mm)"] },
@@ -530,7 +528,7 @@ export const SKUS: Sku[] = [
     description: "Custom die-cut EPE foam or EPS thermocol inserts shaped to product contours for maximum protection.",
     use_case: "Electronics, fragile items, medical devices, instruments, toolkits",
     price_min: 15.00, price_max: 180.00, moq: 100, moq_unit: "units",
-    is_smartstock: false, is_eco: false, sample_tier: "complex", sample_price: 7999, delivery_days_india: 14,
+    is_smartstock: false, is_eco: false, delivery_days_india: 14,
     variants: [
       { key: "material", label: "Insert Material", options: ["EPE Foam", "EPS Thermocol", "Polyurethane Foam", "Moulded Pulp (Eco)"] },
       { key: "type", label: "Insert Type", options: ["Die-cut Flat", "Profile / Contoured", "Cradle Insert", "Full Shell"] },
@@ -552,7 +550,7 @@ export const SKUS: Sku[] = [
     description: "Custom-printed flexible packaging roll for form-fill-seal (FFS) machines. BOPP/PE and BOPP/CPP base structures.",
     use_case: "Snacks, wafers, namkeen, biscuits, instant noodles, dry fruits",
     price_min: 180, price_max: 450, moq: 100, moq_unit: "kg",
-    is_smartstock: false, is_eco: false, sample_tier: "complex", sample_price: 7999, delivery_days_india: 21,
+    is_smartstock: false, is_eco: false, delivery_days_india: 21,
     variants: [
       { key: "structure", label: "Laminate Structure", options: ["BOPP / PE", "BOPP / CPP", "PET / PE", "MET PET / PE"] },
       { key: "barrier", label: "Barrier Level", options: ["Low (standard)", "Medium (moisture)", "High (oxygen + moisture)"] },
@@ -574,7 +572,7 @@ export const SKUS: Sku[] = [
     description: "High-barrier laminated roll for products requiring extended shelf-life. Aluminum and metallized structures.",
     use_case: "Coffee, dairy products, ready meals, pharmaceutical sachets, frozen foods",
     price_min: 240, price_max: 600, moq: 100, moq_unit: "kg",
-    is_smartstock: false, is_eco: false, sample_tier: "complex", sample_price: 7999, delivery_days_india: 21,
+    is_smartstock: false, is_eco: false, delivery_days_india: 21,
     variants: [
       { key: "structure", label: "Laminate Structure", options: ["PET / AL / PE (High Barrier)", "BOPP / PVDC / PE", "MET PET / CPP"] },
       { key: "barrier", label: "Barrier Level", options: ["Medium", "High", "Ultra-high"] },
@@ -595,7 +593,7 @@ export const SKUS: Sku[] = [
     description: "Recyclable mono-material or compostable flexible roll to replace traditional multi-layer laminates.",
     use_case: "Organic food brands, eco-conscious FMCG, sustainable private labels",
     price_min: 220, price_max: 550, moq: 100, moq_unit: "kg",
-    is_smartstock: false, is_eco: true, sample_tier: "complex", sample_price: 7999, delivery_days_india: 21,
+    is_smartstock: false, is_eco: true, delivery_days_india: 21,
     variants: [
       { key: "material", label: "Material", options: ["Mono BOPP (Recyclable)", "PLA / PBAT (Compostable)", "Paper / PE", "PCR-PE (Recycled)"] },
       { key: "finish", label: "Finish", options: ["Matte", "Glossy", "Natural Kraft"] },
@@ -617,7 +615,7 @@ export const SKUS: Sku[] = [
     description: "Comprehensive label supply: pressure-sensitive, shrink sleeve, in-mould, and wet-glue. All substrates and finishes.",
     use_case: "Bottles, jars, tubes, cartons, flexible packs, FMCG, pharma",
     price_min: 0.50, price_max: 8.00, moq: 1000, moq_unit: "units",
-    is_smartstock: true, is_eco: false, sample_tier: "standard", sample_price: 1999, delivery_days_india: 10,
+    is_smartstock: true, is_eco: false, delivery_days_india: 10,
     variants: [
       { key: "label_type", label: "Label Type", options: ["Pressure Sensitive (PSL)", "Shrink Sleeve", "In-Mould Label", "Wet-Glue"] },
       { key: "material", label: "Material", options: ["BOPP", "Paper", "PET", "PE"] },
@@ -638,7 +636,7 @@ export const SKUS: Sku[] = [
     description: "Full range of closures: screw caps, pumps, sprayers, and flip-tops. Compatible with standard neck sizes.",
     use_case: "Bottles (PET/glass), tubes, jars, dispensers",
     price_min: 2.00, price_max: 35.00, moq: 500, moq_unit: "units",
-    is_smartstock: true, is_eco: false, sample_tier: "standard", sample_price: 1999, delivery_days_india: 8,
+    is_smartstock: true, is_eco: false, delivery_days_india: 8,
     variants: [
       { key: "type", label: "Closure Type", options: ["Screw Cap", "Lotion Pump", "Spray Pump", "Trigger Sprayer", "Disc-top Cap", "Flip-top Cap"] },
       { key: "material", label: "Material", options: ["Plastic (PP/PE)", "Aluminum", "PCR Plastic"] },
@@ -657,7 +655,7 @@ export const SKUS: Sku[] = [
     description: "Zipper press-to-close strips and injection-moulded spout fitments for flexible packaging.",
     use_case: "Stand-up pouches, spouted pouches, reclosable bags",
     price_min: 0.80, price_max: 6.00, moq: 2000, moq_unit: "units",
-    is_smartstock: false, is_eco: false, sample_tier: "standard", sample_price: 1999, delivery_days_india: 12,
+    is_smartstock: false, is_eco: false, delivery_days_india: 12,
     variants: [
       { key: "type", label: "Fitment Type", options: ["Zipper Strip (press-to-close)", "Spout + Cap (18mm)", "Spout + Sports Cap", "Child-resistant Spout"] },
     ],
@@ -676,7 +674,7 @@ export const SKUS: Sku[] = [
     description: "Unbleached kraft paper packaging: bags, wraps, and boxes. FSC-certified and recyclable.",
     use_case: "Bakeries, organic food, retail, gifting, stationery, e-commerce",
     price_min: 3.00, price_max: 22.00, moq: 500, moq_unit: "units",
-    is_smartstock: true, is_eco: true, sample_tier: "standard", sample_price: 2999, delivery_days_india: 10,
+    is_smartstock: true, is_eco: true, delivery_days_india: 10,
     variants: [
       { key: "format", label: "Format", options: ["Kraft Paper Bag", "Kraft Box", "Kraft Wrap Roll"] },
       { key: "handle", label: "Handle (for bags)", options: ["None", "Twisted Paper Handle", "Flat Paper Handle", "Cotton Handle"] },
@@ -695,7 +693,7 @@ export const SKUS: Sku[] = [
     description: "Home or industrial compostable bags, pouches, and films certified to EN 13432 / ASTM D6400.",
     use_case: "Organic food, zero-waste brands, farmer's markets, specialty retail",
     price_min: 8.00, price_max: 45.00, moq: 500, moq_unit: "units",
-    is_smartstock: false, is_eco: true, sample_tier: "premium", sample_price: 4999, delivery_days_india: 14,
+    is_smartstock: false, is_eco: true, delivery_days_india: 14,
     variants: [
       { key: "material", label: "Base Material", options: ["PLA / PBAT blend", "Cellulose Film", "Starch-based Film"] },
       { key: "format", label: "Format", options: ["Flat Bag", "Stand-up Pouch", "Film Roll"] },
@@ -714,7 +712,7 @@ export const SKUS: Sku[] = [
     description: "PCR (post-consumer recycled) plastic packaging with documented chain of custody. Reduces virgin plastic use.",
     use_case: "FMCG brands with sustainability commitments, export packaging with EU compliance",
     price_min: 6.00, price_max: 38.00, moq: 500, moq_unit: "units",
-    is_smartstock: false, is_eco: true, sample_tier: "premium", sample_price: 4999, delivery_days_india: 14,
+    is_smartstock: false, is_eco: true, delivery_days_india: 14,
     variants: [
       { key: "material", label: "Recycled Material", options: ["PCR-PE", "PCR-PET", "rHDPE (Recycled HDPE)"] },
       { key: "format", label: "Format", options: ["Bag / Pouch", "Bottle", "Film / Roll"] },
@@ -732,7 +730,7 @@ export const SKUS: Sku[] = [
     description: "Moulded sugarcane bagasse or recycled pulp trays, bowls, containers, and inserts. Microwave-safe and composable.",
     use_case: "Food service (QSR, cloud kitchens), moulded inserts, eco trays for retail",
     price_min: 4.00, price_max: 30.00, moq: 200, moq_unit: "units",
-    is_smartstock: true, is_eco: true, sample_tier: "standard", sample_price: 2999, delivery_days_india: 10,
+    is_smartstock: true, is_eco: true, delivery_days_india: 10,
     variants: [
       { key: "material", label: "Pulp Source", options: ["Sugarcane Bagasse", "Wheat Straw Pulp", "Recycled Newspaper Pulp"] },
       { key: "format", label: "Format", options: ["Plate / Tray", "Bowl", "Clamshell Container", "Moulded Insert"] },

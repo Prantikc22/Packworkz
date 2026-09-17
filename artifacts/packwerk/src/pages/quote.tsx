@@ -768,9 +768,6 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
   // ── Delivery ─────────────────────────────────────────────────────────────
   const [deliveryOption, setDeliveryOption] = useState<DeliveryOption>(() => loadDraft().deliveryOption || "standard");
 
-  // ── Sample ───────────────────────────────────────────────────────────────
-  const [sampleOption, setSampleOption] = useState<"express" | "standard" | "none">(() => loadDraft().sampleOption || "none");
-  const [samplePaid, setSamplePaid] = useState<boolean>(() => loadDraft().samplePaid ?? false);
   const [notes, setNotes] = useState<string>(() => loadDraft().notes || "");
   const [checkoutLaunching, setCheckoutLaunching] = useState(false);
 
@@ -829,7 +826,7 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
     selectedCategory, selectedSkuId, qty, customQtyInput, qtyUnit, variantSelections, customFieldValues, selectedSizeCode, ecoFilter,
     artworkOption, designPaid, artworkFileUrl,
     deliveryOption,
-    sampleOption, samplePaid, notes,
+    notes,
     purchaseIntent,
   });
 
@@ -989,7 +986,6 @@ const maxSelfServeQuantity = selectedSku ? getMaxSelfServeQuantity(selectedSku) 
         artworkOption,
         artworkFileUrl: artworkFileUrl || undefined,
         deliveryOption,
-        sampleOption,
       });
       if (!item) {
         toast({
@@ -1045,15 +1041,15 @@ const maxSelfServeQuantity = selectedSku ? getMaxSelfServeQuantity(selectedSku) 
             ...(Object.keys(customFieldValues).length ? customFieldValues : {}),
             ...(selectedSizeCode ? { standard_size: selectedSizeCode } : {}),
           },
-          sample_requested: sampleOption !== "none",
-          sample_tier: sampleOption === "express" ? "premium" : sampleOption === "standard" ? "standard" : "none",
+          sample_requested: false,
+          sample_tier: "none",
           design_paid: designPaid,
-          sample_paid: samplePaid,
+          sample_paid: false,
         }],
         artwork_option: artworkOption,
-        sample_option: sampleOption,
+        sample_option: "none",
         design_paid: designPaid,
-        sample_paid: samplePaid,
+        sample_paid: false,
         buying_mode: selectedSkuBuyingMode,
       } as any
     }, {
@@ -1802,126 +1798,6 @@ const maxSelfServeQuantity = selectedSku ? getMaxSelfServeQuantity(selectedSku) 
                   </div>
                 </div>
 
-                <div className="bg-white border border-slate-200 p-5">
-                  <div className="font-bold text-slate-800 text-sm mb-1" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>Do you need a sample first?</div>
-                  <p className="text-xs text-slate-500 mb-4">Most repeat orders skip this. First-time or high-risk packs can request a physical sample before bulk production.</p>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                    {([
-                      { id: "none" as const, title: "No, continue", body: "Go directly to artwork review and production." },
-                      { id: "standard" as const, title: "Yes, standard", body: "We confirm format, timing and the ₹2,999 sample fee." },
-                      { id: "express" as const, title: "Yes, priority", body: "We confirm the fastest available sample route and ₹4,999 fee." },
-                    ]).map((option) => (
-                      <button
-                        key={option.id}
-                        type="button"
-                        onClick={() => { setSampleOption(option.id); setSamplePaid(false); }}
-                        className="min-h-[78px] border p-3 text-left transition-colors"
-                        style={{ borderColor: sampleOption === option.id ? "#0D1B2A" : "#DCE4EE", background: "#FFFFFF", boxShadow: sampleOption === option.id ? "inset 0 -3px 0 #1B6CA8" : "none" }}
-                      >
-                        <strong className="block text-sm text-slate-900">{option.title}</strong>
-                        <span className="block mt-1 text-xs leading-relaxed text-slate-500">{option.body}</span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </>
-            )}
-
-            {/* Sampling now lives inside Brand & delivery; keep this retired screen unreachable. */}
-            {false && (
-              <>
-                <StepHeader step={3} total={displayedTotalSteps} title="Sample Request" subtitle="Validate structure and print before bulk production." />
-                <div className="bg-white rounded-lg border border-slate-200 p-6">
-                  <p className="text-sm text-slate-500 mb-6">Sampling fee is fully adjusted against your production order. No extra charge.</p>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    {/* Card A: Express */}
-                    <div
-                      className="p-5 rounded-xl border-2 cursor-pointer transition-all"
-                      style={{ borderColor: sampleOption === "express" ? "#0D1B2A" : "#E2E8F0", background: "white", boxShadow: sampleOption === "express" ? "inset 0 -3px 0 #E8A838" : "none" }}
-                      onClick={() => { setSampleOption("express"); setSamplePaid(false); }}
-                    >
-                      <div className="flex items-start justify-between mb-3">
-                        <span className="text-xs font-black uppercase tracking-wider px-2 py-1 rounded" style={{ background: "#E8A838", color: "#0D1B2A" }}>EXPRESS</span>
-                        {sampleOption === "express" && <CheckCircle2 className="w-5 h-5" style={{ color: "#E8A838" }} />}
-                      </div>
-                      <p className="font-black text-slate-800 mb-1">Express Sample Kit</p>
-                      <p className="font-black text-lg mb-3" style={{ color: "#E8A838" }}>₹4,999</p>
-                      <ul className="space-y-1 mb-4">
-                        {["3–5 samples", "Priority manufacturing", "5-day delivery", "Full print + structure test"].map(f => (
-                          <li key={f} className="text-xs text-slate-500 flex items-center gap-1.5"><span style={{ color: "#E8A838" }}>✓</span> {f}</li>
-                        ))}
-                      </ul>
-                      {sampleOption === "express" && (
-                        samplePaid ? (
-                          <div className="flex items-center gap-2 text-xs font-bold" style={{ color: "#16a34a" }}>
-                            <CheckCircle2 className="w-4 h-4" /> Express slot confirmed ✓
-                          </div>
-                        ) : (
-                          <button
-                            onClick={async (e) => {
-                              e.stopPropagation();
-                              try {
-                                await openRazorpay({ amount: 499900, description: "Express Sample Kit", notes: { service: "sample_express" }, onSuccess: () => setSamplePaid(true), onPending: () => toast({ title: "Payment confirmation pending", description: "Please do not pay again while Razorpay confirms it." }), onError: (message) => toast({ variant: "destructive", title: "Payment could not be verified", description: message }), onDismiss: () => {} });
-                              } catch {}
-                            }}
-                            className="w-full py-2.5 rounded-lg text-sm font-bold transition-all hover:brightness-110"
-                            style={{ background: "#E8A838", color: "#0D1B2A" }}>
-                            Pay ₹4,999 — Book Express Slot
-                          </button>
-                        )
-                      )}
-                    </div>
-
-                    {/* Card B: Standard */}
-                    <div
-                      className="p-5 rounded-xl border-2 cursor-pointer transition-all"
-                      style={{ borderColor: sampleOption === "standard" ? "#0D1B2A" : "#E2E8F0", background: "white", boxShadow: sampleOption === "standard" ? "inset 0 -3px 0 #1B6CA8" : "none" }}
-                      onClick={() => { setSampleOption("standard"); setSamplePaid(false); }}
-                    >
-                      <div className="flex items-start justify-between mb-3">
-                        <span className="border border-blue-700 bg-white px-2 py-1 text-xs font-black uppercase tracking-wider text-blue-800">STANDARD</span>
-                        {sampleOption === "standard" && <CheckCircle2 className="w-5 h-5" style={{ color: "#1B6CA8" }} />}
-                      </div>
-                      <p className="font-black text-slate-800 mb-1">Standard Sample</p>
-                      <p className="font-black text-lg mb-3" style={{ color: "#1B6CA8" }}>₹2,999</p>
-                      <ul className="space-y-1 mb-4">
-                        {["1–2 samples", "Standard manufacturing", "10-day delivery", "Basic spec verification"].map(f => (
-                          <li key={f} className="text-xs text-slate-500 flex items-center gap-1.5"><span style={{ color: "#1B6CA8" }}>✓</span> {f}</li>
-                        ))}
-                      </ul>
-                      {sampleOption === "standard" && (
-                        samplePaid ? (
-                          <div className="flex items-center gap-2 text-xs font-bold" style={{ color: "#16a34a" }}><CheckCircle2 className="w-4 h-4" /> Standard sample confirmed</div>
-                        ) : (
-                          <button
-                            onClick={async (event) => {
-                              event.stopPropagation();
-                              try { await openRazorpay({ amount: 299900, description: "Standard Sample", notes: { service: "sample_standard" }, onSuccess: () => setSamplePaid(true), onPending: () => toast({ title: "Payment confirmation pending", description: "Please do not pay again while Razorpay confirms it." }), onError: (message) => toast({ variant: "destructive", title: "Payment could not be verified", description: message }), onDismiss: () => {} }); } catch {}
-                            }}
-                            className="w-full py-2.5 rounded-lg text-sm font-bold transition-all hover:brightness-110"
-                            style={{ background: "#1B6CA8", color: "white" }}>
-                            Pay ₹2,999 — Order Sample
-                          </button>
-                        )
-                      )}
-                    </div>
-
-                    {/* Card C: Skip */}
-                    <div
-                      className="p-5 rounded-xl border-2 cursor-pointer transition-all"
-                      style={{ borderColor: sampleOption === "none" ? "#94A3B8" : "#E2E8F0", background: sampleOption === "none" ? "rgba(148,163,184,0.06)" : "white" }}
-                      onClick={() => { setSampleOption("none"); setSamplePaid(false); }}
-                    >
-                      <div className="flex items-start justify-between mb-3">
-                        <span className="text-xs font-black uppercase tracking-wider px-2 py-1 rounded" style={{ background: "rgba(148,163,184,0.15)", color: "#64748B" }}>SKIP</span>
-                        {sampleOption === "none" && <CheckCircle2 className="w-5 h-5" style={{ color: "#94A3B8" }} />}
-                      </div>
-                      <p className="font-black text-slate-800 mb-1">Skip for Now</p>
-                      <p className="font-black text-lg mb-3 text-slate-400">Free</p>
-                      <p className="text-xs text-slate-500">Go straight to bulk production. You can request a sample later from your dashboard.</p>
-                    </div>
-                  </div>
-                </div>
               </>
             )}
 
@@ -1966,7 +1842,6 @@ const maxSelfServeQuantity = selectedSku ? getMaxSelfServeQuantity(selectedSku) 
                           : artworkOption === "design" ? `Design Service — ₹1,999 ${designPaid ? "✓ Paid" : "(pending payment)"}` : "Plain / unprinted"],
                         ["Delivery", deliveryOption === "standard" ? "Standard Pro (Free)" : deliveryOption === "blitz" ? "Blitz Logistics (+₹1,200)" : "Warehouse Hold (+₹300 handling)"],
                         ["Delivery address", selectedSkuBuyingMode === "self" ? "Collected at checkout" : "Confirmed after quote approval"],
-                        ["Sample", sampleOption === "express" ? `Express Kit — ₹4,999 ${samplePaid ? "✓ Paid" : "(pending payment)"}` : sampleOption === "standard" ? `Standard — ₹2,999 ${samplePaid ? "✓ Paid" : "(pending payment)"}` : "Skipped"],
                       ].map(([k, v]) => (
                         <div key={String(k)} className="flex justify-between text-sm">
                           <span className="text-slate-400">{k}</span>
@@ -1983,29 +1858,15 @@ const maxSelfServeQuantity = selectedSku ? getMaxSelfServeQuantity(selectedSku) 
                       <span className="text-slate-500"> you can pay now or we'll follow up before starting design.</span>
                     </div>
                   )}
-                  {(sampleOption !== "none" && !samplePaid) && (
-                    <div className="border border-slate-300 border-l-[3px] border-l-amber-500 bg-white p-4 text-sm">
-                      <span className="font-bold" style={{ color: "#92600A" }}>Sample confirmation pending —</span>
-                      <span className="text-slate-500"> we will confirm availability, timing and the fee before production.</span>
-                    </div>
-                  )}
 
                   {selectedSkuBuyingMode === "self" && (
                     <div className="border border-slate-200 bg-slate-50 p-5">
                       <p className="text-[10px] font-black uppercase tracking-[0.18em] text-slate-500">Useful additions</p>
                       <h2 className="mt-1 text-base font-black text-slate-900">Add only what helps this order</h2>
-                      <div className="mt-4 grid sm:grid-cols-3 gap-2">
+                      <div className="mt-4 grid sm:grid-cols-2 gap-2">
                         <button type="button" onClick={() => { setArtworkOption("design"); setDesignPaid(false); }} className="min-h-20 border border-slate-300 bg-white p-3 text-left hover:border-blue-500">
                           <strong className="block text-sm text-slate-900">Artwork support</strong>
                           <span className="mt-1 block text-xs leading-relaxed text-slate-500">₹1,999, added once at checkout</span>
-                        </button>
-                        <button type="button" onClick={() => {
-                          setSampleOption("standard");
-                          setSamplePaid(false);
-                          toast({ title: "Sample requested", description: "We will confirm availability and timing before production." });
-                        }} className="min-h-20 border border-slate-300 bg-white p-3 text-left hover:border-blue-500">
-                          <strong className="block text-sm text-slate-900">Review a sample</strong>
-                          <span className="mt-1 block text-xs leading-relaxed text-slate-500">Compare sample routes before bulk production</span>
                         </button>
                         <a href="/configure?sku=LC-816" target="_blank" rel="noopener noreferrer" className="min-h-20 border border-slate-300 bg-white p-3 text-left hover:border-blue-500">
                           <strong className="block text-sm text-slate-900">Matching labels</strong>

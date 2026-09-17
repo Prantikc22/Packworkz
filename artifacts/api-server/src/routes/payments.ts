@@ -22,8 +22,7 @@ function getRazorpay(): Razorpay | null {
 const router = Router();
 const SERVICE_AMOUNTS: Record<string, number> = {
   design: 199_900,
-  sample_standard: 299_900,
-  sample_express: 499_900,
+  sample_kit: 39_900,
 };
 
 function safeEqualHex(left: string, right: string) {

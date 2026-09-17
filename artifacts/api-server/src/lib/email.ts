@@ -43,18 +43,13 @@ function emailHeader(tagline: string) {
 function paymentBox(opts: {
   designNeeded: boolean;
   designPaid: boolean;
-  sampleOption: string;
-  samplePaid: boolean;
   paymentLink?: string;
 }) {
   const needsDesignPay = opts.designNeeded && !opts.designPaid;
-  const needsSamplePay = opts.sampleOption === "express" && !opts.samplePaid;
-
-  if (!needsDesignPay && !needsSamplePay) return "";
+  if (!needsDesignPay) return "";
 
   const items: string[] = [];
   if (needsDesignPay) items.push(`• <strong>Design Service — ₹1,999</strong>: Print-ready artwork &amp; dieline (adjusted against production order)`);
-  if (needsSamplePay) items.push(`• <strong>Express Sample Kit — ₹4,999</strong>: Physical sample dispatched in 5 business days (fully adjusted against production order)`);
 
   const payButton = opts.paymentLink
     ? `<div style="margin-top:16px"><a href="${opts.paymentLink}" style="display:inline-block;background:#E8A838;color:#0D1B2A;padding:12px 28px;text-decoration:none;font-weight:800;font-size:14px;border-radius:6px">Pay Now →</a></div>`
@@ -93,12 +88,6 @@ export async function sendQuoteConfirmation(opts: {
     : opts.artworkOption === "upload" ? "Artwork upload selected — please email your files after payment"
     : "No artwork — plain / unprinted";
 
-  const sampleLine = opts.sampleOption === "express"
-    ? opts.samplePaid ? "Express sample kit booked ✓ — delivery in 5 days"
-      : "Express sample selected — payment required to confirm slot"
-    : opts.sampleOption === "standard" ? "Standard sample — ₹2,999, adjusted against production"
-    : "No sample — proceeding directly to bulk production";
-
   const budgetRow = (opts.estimatedMin && opts.estimatedMax)
     ? `<tr><td style="padding:6px 0;color:#64748B">Estimated Budget</td><td style="padding:6px 0;font-weight:700;text-align:right">₹${opts.estimatedMin.toLocaleString("en-IN")} – ₹${opts.estimatedMax.toLocaleString("en-IN")}</td></tr>`
     : "";
@@ -124,13 +113,12 @@ export async function sendQuoteConfirmation(opts: {
             <tr><td style="padding:6px 0;color:#64748B">Quantity</td><td style="padding:6px 0;font-weight:700;text-align:right">${opts.qty.toLocaleString("en-IN")} units</td></tr>
             ${budgetRow}
             <tr><td style="padding:6px 0;color:#64748B">Artwork</td><td style="padding:6px 0;font-weight:700;text-align:right;font-size:12px">${artworkLine}</td></tr>
-            <tr><td style="padding:6px 0;color:#64748B">Sample</td><td style="padding:6px 0;font-weight:700;text-align:right;font-size:12px">${sampleLine}</td></tr>
             ${opts.pincode ? `<tr><td style="padding:6px 0;color:#64748B">Delivery Pincode</td><td style="padding:6px 0;font-weight:700;text-align:right">${opts.pincode}</td></tr>` : ""}
             ${opts.notes ? `<tr><td style="padding:6px 0;color:#64748B;vertical-align:top">Notes</td><td style="padding:6px 0;font-weight:500;text-align:right;font-size:13px">${opts.notes}</td></tr>` : ""}
           </table>
         </div>
 
-        ${paymentBox({ designNeeded: opts.artworkOption === "design", designPaid: opts.designPaid, sampleOption: opts.sampleOption, samplePaid: opts.samplePaid, paymentLink: opts.paymentLink })}
+        ${paymentBox({ designNeeded: opts.artworkOption === "design", designPaid: opts.designPaid, paymentLink: opts.paymentLink })}
 
         <div style="background:#F0F7FF;border:1px solid #BAD7F2;padding:18px 22px;margin-bottom:28px;border-radius:4px">
           <p style="font-size:13px;font-weight:700;color:#1B6CA8;margin:0 0 8px">What happens next?</p>
@@ -217,7 +205,6 @@ export async function sendAdminQuoteNotification(opts: {
             ${specRows}
             <tr><td style="padding:6px 0;color:#64748B">Artwork</td><td style="padding:6px 0;font-weight:700;text-align:right">${opts.artworkOption}</td></tr>
             ${artworkFileRow}
-            <tr><td style="padding:6px 0;color:#64748B">Sample</td><td style="padding:6px 0;font-weight:700;text-align:right">${opts.sampleOption}</td></tr>
             ${opts.pincode ? `<tr><td style="padding:6px 0;color:#64748B">Pincode</td><td style="padding:6px 0;font-weight:700;text-align:right">${opts.pincode}</td></tr>` : ""}
             ${opts.estimatedMin ? `<tr><td style="padding:6px 0;color:#64748B">Est. Budget</td><td style="padding:6px 0;font-weight:700;text-align:right">₹${opts.estimatedMin.toLocaleString("en-IN")} – ₹${(opts.estimatedMax ?? opts.estimatedMin).toLocaleString("en-IN")}</td></tr>` : ""}
             ${opts.notes ? `<tr><td style="padding:6px 0;color:#64748B;vertical-align:top">Notes</td><td style="padding:6px 0;font-weight:500;text-align:right;font-size:13px">${opts.notes}</td></tr>` : ""}
@@ -303,9 +290,9 @@ export async function sendSampleConfirmation(opts: {
   amountPaid: number;
   paymentLink?: string;
 }) {
-  const isExpress = opts.sampleTier === "express";
-  const deliveryDays = isExpress ? "5 business days" : "10–12 business days";
-  const tierLabel = isExpress ? "Express Sample Kit" : "Standard Sample Kit";
+  const dispatchDays = "2–3 business days";
+  const deliveryDays = "5–8 business days";
+  const tierLabel = "Packaging Sample Kit";
 
   const html = `
     <div style="font-family:'Plus Jakarta Sans',sans-serif;max-width:560px;margin:0 auto;color:#0D1B2A">
@@ -314,8 +301,8 @@ export async function sendSampleConfirmation(opts: {
         <p style="font-size:13px;color:#1B6CA8;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px">Sample Order Confirmed</p>
         <h1 style="font-size:26px;font-weight:900;margin:0 0 20px">Sample is on its way, ${opts.name.split(" ")[0]}!</h1>
         <p style="font-size:15px;color:#475569;line-height:1.7;margin-bottom:28px">
-          Your sample kit will be dispatched within <strong>1–2 business days</strong> and delivered in
-          <strong>${deliveryDays}</strong>. The amount paid is fully adjustable against your production order.
+          Your sample kit will be dispatched within <strong>${dispatchDays}</strong> and delivered in
+          <strong>${deliveryDays}</strong>.
         </p>
         <div style="background:#F8F9FC;border:1px solid #E2EAF4;padding:24px;margin-bottom:28px;border-radius:4px">
           <p style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#94A3B8;margin-bottom:14px">Sample Order Summary</p>
@@ -323,15 +310,15 @@ export async function sendSampleConfirmation(opts: {
             <tr><td style="padding:6px 0;color:#64748B">Sample ID</td><td style="padding:6px 0;font-weight:700;text-align:right;font-family:monospace;color:#1B6CA8">${opts.sampleId}</td></tr>
             <tr><td style="padding:6px 0;color:#64748B">Kit Type</td><td style="padding:6px 0;font-weight:700;text-align:right">${tierLabel}</td></tr>
             <tr><td style="padding:6px 0;color:#64748B">Estimated Delivery</td><td style="padding:6px 0;font-weight:700;text-align:right">${deliveryDays}</td></tr>
+            <tr><td style="padding:6px 0;color:#64748B">Sample kit</td><td style="padding:6px 0;font-weight:700;text-align:right">₹299</td></tr>
+            <tr><td style="padding:6px 0;color:#64748B">Shipping</td><td style="padding:6px 0;font-weight:700;text-align:right">₹100</td></tr>
             <tr><td style="padding:6px 0;color:#64748B">Amount Paid</td><td style="padding:6px 0;font-weight:700;text-align:right;color:#16A34A">₹${opts.amountPaid.toLocaleString("en-IN")} ✓</td></tr>
-            <tr><td style="padding:6px 0;color:#64748B">Credit on Order</td><td style="padding:6px 0;font-weight:700;text-align:right;color:#1B6CA8">₹${opts.amountPaid.toLocaleString("en-IN")} adjustable</td></tr>
           </table>
         </div>
         <div style="background:#F0FDF4;border:1px solid #BBF7D0;padding:18px;margin-bottom:28px;border-radius:4px">
           <p style="font-size:13px;font-weight:700;color:#16A34A;margin-bottom:6px">Good to know</p>
           <p style="font-size:13px;color:#475569;line-height:1.6;margin:0">
-            The ₹${opts.amountPaid.toLocaleString("en-IN")} you paid will be fully credited against your production order.
-            Share feedback on the sample and we'll optimise before bulk production.
+            Compare the materials and formats in your kit, then use your shortlist to choose the right packaging for your brand.
           </p>
         </div>
         <p style="font-size:14px;color:#475569;line-height:1.7">
