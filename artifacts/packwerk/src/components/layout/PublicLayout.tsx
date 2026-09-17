@@ -1696,7 +1696,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
             <MapPinned size={21} aria-hidden="true" />
             <span>
               <strong id="po-footer-locations-title">Our locations</strong>
-              <small>Manufacturing in Kolkata. Client support in Bengaluru.</small>
+              <small>3 owned factories in Kolkata, with additional supply lines across India.</small>
             </span>
           </div>
           <div className="po-footer-location">
