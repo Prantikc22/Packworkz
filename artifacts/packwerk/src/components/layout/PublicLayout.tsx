@@ -6,7 +6,7 @@ import {
   ChevronDown, BookOpen, Info, Network,
   Users, Mail, Calculator, FileText, Lightbulb, Bot, Palette,
   ClipboardCheck, Truck, ShieldCheck, MapPinned, MessageSquare,
-  ShoppingCart as ShoppingCartIcon, ArrowRight, X,
+  ShoppingCart as ShoppingCartIcon, ArrowRight, Phone, X,
 } from "lucide-react";
 import { CATALOG_SKUS, getCatalogImage } from "@/lib/catalog";
 import { CartDrawer } from "@/components/cart/CartDrawer";
@@ -292,12 +292,83 @@ const GLOBAL_STYLES = `
       flex-direction: column !important;
       align-items: flex-start !important;
     }
+    .po-footer-locations {
+      margin: 0 24px 30px !important;
+      grid-template-columns: 1fr !important;
+    }
   }
   @media (max-width: 480px) {
     .po-footer-grid {
       grid-template-columns: 1fr !important;
       padding: 24px 20px !important;
     }
+    .po-footer-locations {
+      margin: 0 20px 24px !important;
+    }
+  }
+
+  .po-footer-locations {
+    margin: 0 64px 42px;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) minmax(0, 1fr);
+    gap: 0;
+    border: 1px solid rgba(255,255,255,.1);
+    background: rgba(15,23,42,.62);
+  }
+  .po-footer-locations-title,
+  .po-footer-location {
+    min-width: 0;
+    padding: 24px 26px;
+  }
+  .po-footer-locations-title {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    border-right: 1px solid rgba(255,255,255,.1);
+  }
+  .po-footer-locations-title svg,
+  .po-footer-location svg { flex: 0 0 auto; color: #E8A838; }
+  .po-footer-locations-title span { display: grid; gap: 5px; }
+  .po-footer-locations-title strong {
+    color: #fff;
+    font-size: 13px;
+    letter-spacing: .13em;
+    text-transform: uppercase;
+  }
+  .po-footer-locations-title small { color: #64748b; font-size: 12px; line-height: 1.45; }
+  .po-footer-location { border-right: 1px solid rgba(255,255,255,.1); }
+  .po-footer-location:last-child { border-right: 0; }
+  .po-footer-location h4 { margin: 0 0 8px; color: #fff; font-size: 14px; font-weight: 750; }
+  .po-footer-location address { margin: 0; color: #94a3b8; font-size: 13px; font-style: normal; line-height: 1.65; }
+  .po-footer-location a {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: 12px;
+    color: #d7e0ea;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+  }
+  .po-footer-location a:hover { color: #E8A838; }
+
+  @media (max-width: 980px) {
+    .po-footer-locations { grid-template-columns: 1fr 1fr; }
+    .po-footer-locations-title {
+      grid-column: 1 / -1;
+      border-right: 0;
+      border-bottom: 1px solid rgba(255,255,255,.1);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .po-footer-locations-title,
+    .po-footer-location { padding: 20px; }
+    .po-footer-location {
+      border-right: 0;
+      border-bottom: 1px solid rgba(255,255,255,.1);
+    }
+    .po-footer-location:last-child { border-bottom: 0; }
   }
 
   /* ── Mobile content padding ── */
@@ -1618,6 +1689,31 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
             <NewsletterSignup />
           </div>
         </div>
+
+        {/* Locations */}
+        <section className="po-footer-locations" aria-labelledby="po-footer-locations-title">
+          <div className="po-footer-locations-title">
+            <MapPinned size={21} aria-hidden="true" />
+            <span>
+              <strong id="po-footer-locations-title">Our locations</strong>
+              <small>Manufacturing in Kolkata. Client support in Bengaluru.</small>
+            </span>
+          </div>
+          <div className="po-footer-location">
+            <h4>Owned Unit</h4>
+            <address>2, R.N. Tagore Road, Dakshineswar,<br />Kolkata — 700076</address>
+            <a href="tel:+918208990366" aria-label="Call Packworkz Owned Unit at plus 91 820 899 0366">
+              <Phone size={15} aria-hidden="true" /> +91 820 899 0366
+            </a>
+          </div>
+          <div className="po-footer-location">
+            <h4>Bengaluru Office</h4>
+            <address>Brigade IRV Centre, Nallurhalli Road,<br />Whitefield, Bengaluru — 560066</address>
+            <a href="tel:+918208990366" aria-label="Call Packworkz Bengaluru Office at plus 91 820 899 0366">
+              <Phone size={15} aria-hidden="true" /> +91 820 899 0366
+            </a>
+          </div>
+        </section>
 
         {/* Bottom bar */}
         <div className="po-footer-bottom" style={{ borderTop: "1px solid rgba(255,255,255,0.08)", padding: "18px 64px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
