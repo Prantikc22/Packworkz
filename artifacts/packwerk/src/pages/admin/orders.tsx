@@ -3,9 +3,10 @@ import { useAdminListOrders, useAdminUpdateOrderStatus } from "@workspace/api-cl
 import { Loader2, Edit2, X, Check, ExternalLink } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
-const ORDER_STATUSES = ["confirmed", "in_production", "qc_check", "dispatched", "delivered", "cancelled"];
+const ORDER_STATUSES = ["payment_pending", "confirmed", "in_production", "qc_check", "dispatched", "delivered", "cancelled"];
 
 const STATUS_COLORS: Record<string, string> = {
+  payment_pending:"bg-orange-50 text-orange-700 border border-orange-200",
   confirmed:    "bg-blue-50 text-blue-700 border border-blue-200",
   in_production:"bg-blue-50 text-blue-700 border border-blue-200",
   qc_check:     "bg-amber-50 text-amber-700 border border-amber-200",
@@ -26,6 +27,7 @@ interface EditState {
   estimated_delivery: string;
   total_price: string;
   internal_notes: string;
+  advance_paid: boolean;
 }
 
 function EditOrderModal({ order, onClose, onSave, saving }: {
@@ -42,9 +44,10 @@ function EditOrderModal({ order, onClose, onSave, saving }: {
     estimated_delivery: order.estimated_delivery ? order.estimated_delivery.slice(0, 10) : "",
     total_price: order.total_price ? String(order.total_price) : "",
     internal_notes: order.internal_notes ?? "",
+    advance_paid: false,
   });
 
-  const set = (key: keyof EditState, val: string) => setForm(f => ({ ...f, [key]: val }));
+  const set = (key: keyof EditState, val: string | boolean) => setForm(f => ({ ...f, [key]: val }));
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
@@ -76,6 +79,21 @@ function EditOrderModal({ order, onClose, onSave, saving }: {
               ))}
             </select>
           </div>
+
+          {order.quote_request_id && !order.advance_paid && (
+            <label className="flex items-start gap-3 p-4 border border-amber-300 bg-amber-50 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={form.advance_paid}
+                onChange={e => set("advance_paid", e.target.checked)}
+                className="mt-0.5 h-4 w-4 accent-[#0D1B2A]"
+              />
+              <span>
+                <span className="block text-[12px] font-black text-[#0D1B2A]">Advance payment verified</span>
+                <span className="block text-[11px] text-[#64748B] mt-1">Record the received advance and mark its invoice paid. Required before a payment-pending order enters production.</span>
+              </span>
+            </label>
+          )}
 
           {/* Order value */}
           <div>
@@ -195,8 +213,8 @@ export default function AdminOrders() {
           refetch();
           setEditingOrder(null);
         },
-        onError: () => {
-          toast({ variant: "destructive", title: "Failed to update order" });
+        onError: (error: any) => {
+          toast({ variant: "destructive", title: "Order not updated", description: error?.message || "Please try again." });
         },
         onSettled: () => setSaving(false),
       }

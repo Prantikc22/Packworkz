@@ -10,7 +10,9 @@ const MS = ({ icon, className = "", style }: { icon: string; className?: string;
 const WHATSAPP_NUM = "918208990366";
 
 const STATUS_CONFIG: Record<string, { label: string; bg: string; color: string }> = {
-  confirmed:    { label: "IN PRODUCTION", bg: "rgba(27,108,168,0.12)",   color: "#1B6CA8" },
+  payment_pending: { label: "ADVANCE DUE", bg: "rgba(232,168,56,0.15)", color: "#B45309" },
+  payment_processing: { label: "VERIFYING PAYMENT", bg: "rgba(232,168,56,0.15)", color: "#B45309" },
+  confirmed:    { label: "ORDER CONFIRMED", bg: "rgba(27,108,168,0.12)", color: "#1B6CA8" },
   in_production:{ label: "IN PRODUCTION", bg: "rgba(27,108,168,0.12)",   color: "#1B6CA8" },
   qc_check:     { label: "QC CHECK",      bg: "rgba(232,168,56,0.15)",   color: "#D97706" },
   dispatched:   { label: "DISPATCHED",    bg: "rgba(139,92,246,0.12)",   color: "#7C3AED" },
@@ -34,6 +36,18 @@ function fmt(n: number) {
 
 function fmtINR(n: number) {
   return `₹${fmt(n)}`;
+}
+
+function effectiveStatus(order: any) {
+  return order.advance_amount > 0 && !order.advance_paid ? "payment_pending" : order.status;
+}
+
+function formatDelivery(value?: string | null) {
+  if (!value) return "—";
+  if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+    return new Date(`${value}T00:00:00`).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" });
+  }
+  return value;
 }
 
 export default function DashboardOverview() {
@@ -90,8 +104,8 @@ export default function DashboardOverview() {
   const overview = data as any;
   const recentOrders = (overview?.recent_orders as any[]) ?? [];
   const activeOrders = overview?.active_orders ?? 0;
-  const inProd = recentOrders.filter((order) => order.status === "confirmed" || order.status === "in_production" || order.status === "qc").length;
-  const dispatched = recentOrders.filter((order) => order.status === "dispatched").length;
+  const inProd = recentOrders.filter((order) => ["confirmed", "in_production", "qc", "qc_check"].includes(effectiveStatus(order))).length;
+  const dispatched = recentOrders.filter((order) => effectiveStatus(order) === "dispatched").length;
   const pendingQuotes = overview?.pending_quotes ?? 0;
   const totalSaved = overview?.total_saved ?? 0;
   const ordersCompleted = overview?.orders_completed ?? 0;
@@ -239,7 +253,7 @@ export default function DashboardOverview() {
             <table className="w-full text-[13px]">
               <thead>
                 <tr className="border-b border-[#F1F3F5]">
-                  {["ORDER ID", "PRODUCT", "QTY", "STATUS", "EST. DELIVERY", "TRACK"].map((h, i) => (
+                  {["ORDER ID", "PRODUCT", "QTY", "STATUS", "EST. DELIVERY", "NEXT STEP"].map((h, i) => (
                     <th key={h} className="px-6 py-3 text-left font-black text-[11px] uppercase tracking-wider" style={{ color: "#94A3B8", textAlign: i === 5 ? "right" : "left" }}>{h}</th>
                   ))}
                 </tr>
@@ -256,20 +270,23 @@ export default function DashboardOverview() {
                       <td className="px-6 py-4" style={{ color: "#64748B" }}>
                         {firstItem?.quantity ? `${fmt(firstItem.quantity)} units` : "—"}
                       </td>
-                      <td className="px-6 py-4"><StatusChip status={order.status} /></td>
+                      <td className="px-6 py-4"><StatusChip status={effectiveStatus(order)} /></td>
                       <td className="px-6 py-4" style={{ color: "#64748B" }}>
-                        {order.estimated_delivery
-                          ? new Date(order.estimated_delivery).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })
-                          : "—"}
+                        {formatDelivery(order.delivery_date_label || order.estimated_delivery)}
                       </td>
                       <td className="px-6 py-4 text-right">
-                        {order.tracking_url ? (
+                        {effectiveStatus(order) === "payment_pending" && order.payment_link ? (
+                          <a href={order.payment_link} target="_blank" rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 px-3 py-1.5 font-black text-[11px] uppercase" style={{ background: "#E8A838", color: "#0D1B2A" }}>
+                            Pay advance <MS icon="open_in_new" className="text-sm" />
+                          </a>
+                        ) : order.tracking_url ? (
                           <a href={order.tracking_url} target="_blank" rel="noopener noreferrer"
                             className="inline-flex items-center gap-1 font-black text-[12px] hover:underline" style={{ color: "#1B6CA8" }}>
                             Track <MS icon="open_in_new" className="text-sm" />
                           </a>
                         ) : (
-                          <span style={{ color: "#CBD5E1" }}>—</span>
+                          <Link href="/dashboard/orders"><span className="font-black text-[11px] uppercase" style={{ color: "#1B6CA8" }}>View progress →</span></Link>
                         )}
                       </td>
                     </tr>
@@ -295,12 +312,13 @@ export default function DashboardOverview() {
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
             {pendingQuotesList.map((q: any) => {
               const daysLeft = Math.max(0, Math.round((new Date(q.created_at).getTime() + 7 * 86400000 - Date.now()) / 86400000));
+              const paymentPending = q.status === "payment_pending" || q.status === "payment_processing";
               return (
                 <div key={q.id} className="bg-white border border-[#E7E8EB] p-5">
                   <div className="flex items-start justify-between mb-3">
                     <span className="font-black text-[15px]" style={{ color: "#E8A838", fontFamily: "monospace" }}>{q.quote_id}</span>
-                    <span className="text-[11px] font-bold px-2 py-0.5" style={{ background: daysLeft < 2 ? "rgba(186,26,26,0.1)" : "rgba(232,168,56,0.1)", color: daysLeft < 2 ? "#ba1a1a" : "#D97706" }}>
-                      {daysLeft < 2 ? `⚠ ${daysLeft}d left` : `${daysLeft}d left`}
+                    <span className="text-[11px] font-bold px-2 py-0.5" style={{ background: paymentPending ? "rgba(27,108,168,0.1)" : daysLeft < 2 ? "rgba(186,26,26,0.1)" : "rgba(232,168,56,0.1)", color: paymentPending ? "#1B6CA8" : daysLeft < 2 ? "#ba1a1a" : "#D97706" }}>
+                      {paymentPending ? "Advance due" : daysLeft < 2 ? `⚠ ${daysLeft}d left` : `${daysLeft}d left`}
                     </span>
                   </div>
                   <p className="text-[13px] mb-1" style={{ color: "#0D1B2A" }}>
@@ -312,7 +330,7 @@ export default function DashboardOverview() {
                     </p>
                   )}
                   <Link href="/dashboard/quotes">
-                    <button className="btn-fill btn-amber px-4 py-2 text-[12px] w-full"><span>Review Pricing →</span></button>
+                    <button className="btn-fill btn-amber px-4 py-2 text-[12px] w-full"><span>{paymentPending ? "Open payment →" : "Review quote →"}</span></button>
                   </Link>
                 </div>
               );

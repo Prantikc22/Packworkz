@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useGetDashboardQuotes, useAcceptDashboardQuote } from "@workspace/api-client-react";
 import { Loader2, MessageCircle, CheckCircle } from "lucide-react";
 import { Link, useLocation } from "wouter";
@@ -22,18 +22,32 @@ function daysSince(dateStr: string) {
   return Math.floor((Date.now() - new Date(dateStr).getTime()) / 86400000);
 }
 
+function getAdvancePercent(terms?: string | null) {
+  const text = String(terms || "");
+  if (/\b(net[- ]?\d+|credit)\b/i.test(text) && !/advance/i.test(text)) return 0;
+  const match = text.match(/(?:advance|upfront)[^\d]{0,12}(\d+(?:\.\d+)?)\s*%/i)
+    || text.match(/(\d+(?:\.\d+)?)\s*%[^,;.]{0,20}(?:advance|upfront|before production)/i);
+  return match ? Math.min(100, Math.max(0, Number(match[1]))) : 50;
+}
+
+function getAdvanceAmount(quote: any) {
+  const total = Number(quote.quoted_amount || quote.total_estimated_max || 0);
+  return Math.round(total * getAdvancePercent(quote.payment_terms)) / 100;
+}
+
 function ConfirmModal({ quote, onConfirm, onCancel, loading }: {
   quote: any; onConfirm: () => void; onCancel: () => void; loading: boolean;
 }) {
   const firstItem = Array.isArray(quote.items) ? quote.items[0] : null;
+  const advanceAmount = getAdvanceAmount(quote);
   return (
     <div className="fixed inset-0 z-[60] flex items-center justify-center p-4" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
       <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" onClick={onCancel} />
       <div className="relative bg-white max-w-md w-full shadow-2xl p-8">
-        <p className="text-[11px] font-black uppercase tracking-widest mb-2" style={{ color: "#94A3B8" }}>CONFIRM ORDER</p>
-        <h2 className="font-black text-[22px] mb-1" style={{ color: "#0D1B2A" }}>Confirm your order?</h2>
+        <p className="text-[11px] font-black uppercase tracking-widest mb-2" style={{ color: "#94A3B8" }}>ADVANCE PAYMENT</p>
+        <h2 className="font-black text-[22px] mb-1" style={{ color: "#0D1B2A" }}>Reserve this production order</h2>
         <p className="text-[13px] mb-6" style={{ color: "#64748B" }}>
-          Once confirmed, production will begin and cannot be cancelled.
+          Your order will remain payment pending until Packworkz verifies the advance. Production starts after verification.
         </p>
 
         <div className="border border-[#E7E8EB] p-4 mb-6 space-y-2">
@@ -65,6 +79,12 @@ function ConfirmModal({ quote, onConfirm, onCancel, loading }: {
             <span style={{ color: "#64748B" }}>Payment terms</span>
             <span className="font-bold" style={{ color: "#0D1B2A" }}>{quote.payment_terms || "50% advance, 50% on delivery"}</span>
           </div>
+          {advanceAmount > 0 && (
+            <div className="flex justify-between text-[13px] pt-2 border-t border-[#E7E8EB]">
+              <span className="font-bold" style={{ color: "#64748B" }}>Advance due now</span>
+              <span className="font-black" style={{ color: "#0D1B2A" }}>₹{fmt(advanceAmount)}</span>
+            </div>
+          )}
         </div>
 
         <div className="flex gap-3">
@@ -75,7 +95,7 @@ function ConfirmModal({ quote, onConfirm, onCancel, loading }: {
             {loading ? (
               <span className="flex items-center justify-center gap-2"><Loader2 className="w-4 h-4 animate-spin" /> Confirming…</span>
             ) : (
-              <span>Confirm Order</span>
+              <span>{advanceAmount > 0 ? `Continue to pay ₹${fmt(advanceAmount)}` : "Confirm order"}</span>
             )}
           </button>
         </div>
@@ -93,6 +113,12 @@ export default function DashboardQuotes() {
   const { data: quotes, isLoading, refetch } = useGetDashboardQuotes(activeTab);
   const { mutate: acceptQuote, isPending: accepting } = useAcceptDashboardQuote();
 
+  const focusedQuoteId = typeof window === "undefined" ? null : new URLSearchParams(window.location.search).get("quote");
+  useEffect(() => {
+    if (!focusedQuoteId || !quotes) return;
+    document.getElementById(`quote-${focusedQuoteId}`)?.scrollIntoView({ behavior: "smooth", block: "center" });
+  }, [focusedQuoteId, quotes]);
+
   const showToast = (msg: string) => {
     setToast(msg);
     setTimeout(() => setToast(null), 4000);
@@ -103,20 +129,27 @@ export default function DashboardQuotes() {
     acceptQuote(acceptingQuote.id, {
       onSuccess: (data) => {
         setAcceptingQuote(null);
-        showToast("Order confirmed! Your production has begun.");
+        showToast(data.message || "Payment request created.");
         refetch();
-        setTimeout(() => navigate("/dashboard/orders"), 1500);
+        if (data.payment_url) {
+          window.location.assign(data.payment_url);
+        } else {
+          setTimeout(() => navigate("/dashboard/payments"), 800);
+        }
       },
-      onError: () => {
+      onError: (error: any) => {
         setAcceptingQuote(null);
-        showToast("Error confirming order. Please try again.");
+        showToast(error?.message || "Payment could not be started. Please try again.");
       },
     });
   };
 
   return (
     <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-      <h1 className="font-black text-[28px] mb-6 leading-tight" style={{ color: "#0D1B2A", letterSpacing: "-0.01em" }}>Quotes</h1>
+      <div className="mb-6">
+        <h1 className="font-black text-[28px] leading-tight" style={{ color: "#0D1B2A", letterSpacing: "-0.01em" }}>Quotes</h1>
+        <p className="text-[13px] mt-1" style={{ color: "#64748B" }}>Review commercial terms, delivery, and the payment needed to start production.</p>
+      </div>
 
       {/* Tabs */}
       <div className="flex gap-0 border-b border-[#E7E8EB] mb-6">
@@ -135,13 +168,13 @@ export default function DashboardQuotes() {
       {isLoading ? (
         <div className="flex justify-center py-20"><Loader2 className="w-8 h-8 animate-spin" style={{ color: "#1B6CA8" }} /></div>
       ) : activeTab === "pending" ? (
-        /* ── Pending Pricing Plans ── */
+        /* ── Pending quotes ── */
         <div className="space-y-4">
           {(!quotes || (quotes as any[]).length === 0) ? (
             <div className="flex flex-col items-center justify-center py-20 bg-white border border-[#E7E8EB]">
               <MS icon="format_quote" className="text-5xl mb-4" style={{ color: "#CBD5E1" }} />
-              <p className="font-bold text-[15px] mb-1" style={{ color: "#94A3B8" }}>No pending pricing plans</p>
-              <p className="text-[13px] mb-5" style={{ color: "#CBD5E1" }}>Start a new configuration to get pricing from our team</p>
+              <p className="font-bold text-[15px] mb-1" style={{ color: "#94A3B8" }}>No pending quotes</p>
+              <p className="text-[13px] mb-5" style={{ color: "#CBD5E1" }}>Start a new configuration to request a quote</p>
               <Link href="/configure">
                 <button className="btn-fill btn-amber px-6 py-2.5 text-[13px]"><span>Start Configuration →</span></button>
               </Link>
@@ -149,14 +182,17 @@ export default function DashboardQuotes() {
           ) : (
             (quotes as any[]).map((quote: any) => {
               const daysLeft = daysUntilExpiry(quote.created_at);
-              const isQuoted = quote.status === "quoted";
+              const isQuoted = ["quoted", "payment_pending", "payment_processing"].includes(quote.status);
+              const advanceAmount = getAdvanceAmount(quote);
+              const paymentPending = ["payment_pending", "payment_processing"].includes(quote.status);
               const firstItem = Array.isArray(quote.items) ? quote.items[0] : null;
               const itemSummary = Array.isArray(quote.items)
                 ? quote.items.map((i: any) => i.product_name).filter(Boolean).join(", ")
                 : "Custom packaging";
 
               return (
-                <div key={quote.id} className="bg-white border border-[#E7E8EB] p-6">
+                <div id={`quote-${quote.quote_id}`} key={quote.id} className="bg-white border p-6 transition-shadow"
+                  style={{ borderColor: focusedQuoteId === quote.quote_id ? "#E8A838" : "#E7E8EB", boxShadow: focusedQuoteId === quote.quote_id ? "0 0 0 2px rgba(232,168,56,0.18)" : "none" }}>
                   {/* Header row */}
                   <div className="flex items-start justify-between mb-4 flex-wrap gap-2">
                     <div>
@@ -167,10 +203,10 @@ export default function DashboardQuotes() {
                     </div>
                     <span className="text-[11px] font-black px-3 py-1"
                       style={{
-                        background: daysLeft < 2 ? "rgba(186,26,26,0.1)" : "rgba(232,168,56,0.1)",
-                        color: daysLeft < 2 ? "#ba1a1a" : "#D97706",
+                        background: paymentPending ? "rgba(27,108,168,0.1)" : daysLeft < 2 ? "rgba(186,26,26,0.1)" : "rgba(232,168,56,0.1)",
+                        color: paymentPending ? "#1B6CA8" : daysLeft < 2 ? "#ba1a1a" : "#D97706",
                       }}>
-                      {daysLeft < 2 ? `⚠ Expires in ${daysLeft}d` : `Expires in ${daysLeft}d`}
+                      {paymentPending ? "AWAITING ADVANCE" : daysLeft < 2 ? `⚠ Expires in ${daysLeft}d` : `Expires in ${daysLeft}d`}
                     </span>
                   </div>
 
@@ -229,8 +265,16 @@ export default function DashboardQuotes() {
                         </div>
                       </div>
                       <div className="flex gap-3 flex-wrap">
-                        <button className="btn-fill btn-amber px-6 py-3 text-[13px] flex-1" onClick={() => setAcceptingQuote(quote)}>
-                          <span><CheckCircle className="w-4 h-4 inline mr-2" />Confirm Order</span>
+                        <button className="btn-fill btn-amber px-6 py-3 text-[13px] flex-1 disabled:opacity-50 disabled:cursor-not-allowed"
+                          disabled={!quote.payment_link && advanceAmount > 0}
+                          onClick={() => setAcceptingQuote(quote)}>
+                          <span><CheckCircle className="w-4 h-4 inline mr-2" />
+                            {paymentPending
+                              ? (quote.payment_link ? "Open payment" : "Payment verification pending")
+                              : advanceAmount > 0
+                                ? (quote.payment_link ? `Pay ₹${fmt(advanceAmount)} advance` : "Payment link pending")
+                                : "Confirm order"}
+                          </span>
                         </button>
                         <a href={`https://wa.me/${WHATSAPP_NUM}?text=Hi+Packworkz%2C+I+have+a+question+about+pricing+plan+${quote.quote_id}`}
                           target="_blank" rel="noopener noreferrer">
@@ -246,7 +290,7 @@ export default function DashboardQuotes() {
                       <div className="flex-1">
                         <div className="flex items-center gap-3 mb-2">
                           <div className="w-2.5 h-2.5 rounded-full animate-pulse flex-shrink-0" style={{ background: "#E8A838" }} />
-                          <p className="text-[13px] font-bold" style={{ color: "#0D1B2A" }}>Our team is preparing your pricing plan.</p>
+                          <p className="text-[13px] font-bold" style={{ color: "#0D1B2A" }}>Our team is preparing your quote.</p>
                         </div>
                         <p className="text-[12px] ml-[22px]" style={{ color: "#64748B" }}>Expected within 48 hours.</p>
                         <div className="mt-3 ml-[22px]">
@@ -273,7 +317,7 @@ export default function DashboardQuotes() {
         <div className="bg-white border border-[#E7E8EB] overflow-hidden">
           {(!quotes || (quotes as any[]).length === 0) ? (
             <div className="text-center py-16">
-              <p className="font-bold text-[15px] mb-1" style={{ color: "#94A3B8" }}>No pricing history yet</p>
+              <p className="font-bold text-[15px] mb-1" style={{ color: "#94A3B8" }}>No quote history yet</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
@@ -289,6 +333,7 @@ export default function DashboardQuotes() {
                   {(quotes as any[]).map((q: any) => {
                     const statusMap: Record<string, { label: string; color: string; bg: string }> = {
                       accepted: { label: "ACCEPTED", color: "#16A34A", bg: "rgba(22,163,74,0.1)" },
+                      paid:     { label: "ADVANCE PAID", color: "#16A34A", bg: "rgba(22,163,74,0.1)" },
                       rejected: { label: "REJECTED", color: "#ba1a1a", bg: "rgba(186,26,26,0.1)" },
                       expired:  { label: "EXPIRED",  color: "#94A3B8", bg: "rgba(148,163,184,0.1)" },
                     };

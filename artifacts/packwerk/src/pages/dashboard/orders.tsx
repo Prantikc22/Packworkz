@@ -8,7 +8,9 @@ const MS = ({ icon, className = "", style }: { icon: string; className?: string;
 );
 
 const STATUS_CONFIG: Record<string, { label: string; bg: string; color: string }> = {
-  confirmed:    { label: "IN PRODUCTION", bg: "rgba(27,108,168,0.12)",   color: "#1B6CA8" },
+  payment_pending: { label: "ADVANCE DUE", bg: "rgba(232,168,56,0.15)", color: "#B45309" },
+  payment_processing: { label: "VERIFYING PAYMENT", bg: "rgba(232,168,56,0.15)", color: "#B45309" },
+  confirmed:    { label: "ORDER CONFIRMED", bg: "rgba(27,108,168,0.12)", color: "#1B6CA8" },
   in_production:{ label: "IN PRODUCTION", bg: "rgba(27,108,168,0.12)",   color: "#1B6CA8" },
   qc_check:     { label: "QC CHECK",      bg: "rgba(232,168,56,0.15)",   color: "#D97706" },
   dispatched:   { label: "DISPATCHED",    bg: "rgba(139,92,246,0.12)",   color: "#7C3AED" },
@@ -34,19 +36,47 @@ const FILTER_TABS = [
 ];
 
 const PRODUCTION_STEPS = [
-  { key: "confirmed", label: "Confirmed" },
-  { key: "in_production", label: "In Production" },
-  { key: "qc_check", label: "QC Check" },
+  { key: "payment_pending", label: "Advance payment" },
+  { key: "in_production", label: "In production" },
+  { key: "qc_check", label: "Quality check" },
   { key: "dispatched", label: "Dispatched" },
   { key: "delivered", label: "Delivered" },
 ];
 
+const STEP_DETAIL: Record<string, string> = {
+  payment_pending: "Awaiting advance payment verification",
+  in_production: "Manufacturing is underway",
+  qc_check: "Quality checks are in progress",
+  dispatched: "Your shipment is in transit",
+  delivered: "Delivery completed",
+};
+
 const STATUS_ORDER: Record<string, number> = {
-  confirmed: 0, in_production: 1, qc_check: 2, dispatched: 3, delivered: 4,
+  payment_pending: 0, payment_processing: 0, confirmed: 1, in_production: 1, qc_check: 2, qc: 2, dispatched: 3, delivered: 4,
 };
 
 function fmt(n: number) {
   return new Intl.NumberFormat("en-IN", { maximumFractionDigits: 0 }).format(n);
+}
+
+function effectiveStatus(order: any) {
+  return order.advance_amount > 0 && !order.advance_paid ? "payment_pending" : order.status;
+}
+
+function formatDelivery(value?: string | null) {
+  if (!value) return "—";
+  if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+    return new Date(`${value}T00:00:00`).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" });
+  }
+  return value;
+}
+
+function paymentTypeLabel(order: any) {
+  if (String(order.payment_type || "").startsWith("quote_advance_")) {
+    return `${String(order.payment_type).replace("quote_advance_", "")}% advance`;
+  }
+  const labels: Record<string, string> = { standard: "Milestone payments", credit: "Credit terms", upfront: "Paid upfront", razorpay: "Online payment" };
+  return labels[order.payment_type] || String(order.payment_type || "—").replace(/_/g, " ");
 }
 
 type ReorderState = "idle" | "loading" | "done";
@@ -217,7 +247,10 @@ export default function DashboardOrders() {
 
   return (
     <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-      <h1 className="font-black text-[28px] mb-6 leading-tight" style={{ color: "#0D1B2A", letterSpacing: "-0.01em" }}>Orders</h1>
+      <div className="mb-6">
+        <h1 className="font-black text-[28px] leading-tight" style={{ color: "#0D1B2A", letterSpacing: "-0.01em" }}>Orders</h1>
+        <p className="text-[13px] mt-1" style={{ color: "#64748B" }}>See the current milestone, delivery promise, and next action for every order.</p>
+      </div>
 
       {/* Filter + Search row */}
       <div className="flex flex-col sm:flex-row gap-3 mb-6">
@@ -263,7 +296,7 @@ export default function DashboardOrders() {
             <table className="w-full text-[13px]">
               <thead>
                 <tr className="border-b border-[#F1F3F5]">
-                  {["ORDER ID", "PRODUCT", "QTY", "STATUS", "EST. DELIVERY", "VALUE", "ACTIONS"].map((h, i) => (
+                  {["ORDER ID", "PRODUCT", "QTY", "STATUS", "EST. DELIVERY", "VALUE", "NEXT STEP"].map((h, i) => (
                     <th key={h} className="px-5 py-3 text-left text-[11px] font-black uppercase tracking-wider" style={{ color: "#94A3B8", textAlign: i === 6 ? "right" : "left" }}>{h}</th>
                   ))}
                 </tr>
@@ -282,10 +315,10 @@ export default function DashboardOrders() {
                       <td className="px-5 py-4" style={{ color: "#64748B" }}>
                         {firstItem?.quantity ? `${fmt(firstItem.quantity)}` : "—"}
                       </td>
-                      <td className="px-5 py-4"><StatusChip status={order.status} /></td>
+                      <td className="px-5 py-4"><StatusChip status={effectiveStatus(order)} /></td>
                       <td className="px-5 py-4" style={{ color: "#64748B" }}>
                         {order.estimated_delivery
-                          ? new Date(order.estimated_delivery).toLocaleDateString("en-IN", { day: "2-digit", month: "short" })
+                          ? formatDelivery(order.estimated_delivery).replace(/ \d{4}$/, "")
                           : "—"}
                       </td>
                       <td className="px-5 py-4 font-bold" style={{ color: "#0D1B2A" }}>
@@ -293,14 +326,21 @@ export default function DashboardOrders() {
                       </td>
                       <td className="px-5 py-4 text-right">
                         <div className="flex items-center justify-end gap-2">
-                          {order.tracking_url && (
+                          {effectiveStatus(order) === "payment_pending" && order.payment_link ? (
+                            <a href={order.payment_link} target="_blank" rel="noopener noreferrer"
+                              onClick={e => e.stopPropagation()}
+                              className="flex items-center gap-1 text-[11px] font-black uppercase tracking-wider px-3 py-1.5"
+                              style={{ background: "#E8A838", color: "#0D1B2A" }}>
+                              Pay advance <ExternalLink className="w-3 h-3" />
+                            </a>
+                          ) : order.tracking_url ? (
                             <a href={order.tracking_url} target="_blank" rel="noopener noreferrer"
                               onClick={e => e.stopPropagation()}
                               className="flex items-center gap-1 text-[11px] font-black uppercase tracking-wider hover:underline"
                               style={{ color: "#7C3AED" }}>
                               Track <ExternalLink className="w-3 h-3" />
                             </a>
-                          )}
+                          ) : null}
                           <button
                             onClick={e => handleReorder(order, e)}
                             disabled={reorderState === "loading" && reorderingId === order.id}
@@ -340,11 +380,25 @@ export default function DashboardOrders() {
 
             <div className="flex-1 px-6 py-6 space-y-6">
 
+              {effectiveStatus(selectedOrder) === "payment_pending" && (
+                <div className="p-5 border border-amber-300 bg-amber-50">
+                  <p className="text-[11px] font-black uppercase tracking-widest text-amber-700 mb-1">ACTION REQUIRED</p>
+                  <p className="font-black text-[16px] text-[#0D1B2A]">Pay the advance to start production</p>
+                  <p className="text-[12px] text-[#64748B] mt-1">Your order is reserved. Packworkz moves it into production after payment verification.</p>
+                  {selectedOrder.payment_link && (
+                    <a href={selectedOrder.payment_link} target="_blank" rel="noopener noreferrer"
+                      className="mt-4 inline-flex items-center gap-2 px-5 py-2.5 text-[12px] font-black bg-[#E8A838] text-[#0D1B2A]">
+                      Pay {selectedOrder.advance_amount ? `₹${fmt(Number(selectedOrder.advance_amount))}` : "advance"} <ExternalLink className="w-3.5 h-3.5" />
+                    </a>
+                  )}
+                </div>
+              )}
+
               {/* Status + Meta */}
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
                   <span className="text-[13px]" style={{ color: "#64748B" }}>Status</span>
-                  <StatusChip status={selectedOrder.status} />
+                  <StatusChip status={effectiveStatus(selectedOrder)} />
                 </div>
                 <div className="flex justify-between">
                   <span className="text-[13px]" style={{ color: "#64748B" }}>Order value</span>
@@ -358,7 +412,7 @@ export default function DashboardOrders() {
                 )}
                 <div className="flex justify-between">
                   <span className="text-[13px]" style={{ color: "#64748B" }}>Payment type</span>
-                  <span className="font-bold text-[13px] capitalize" style={{ color: "#0D1B2A" }}>{selectedOrder.payment_type}</span>
+                  <span className="font-bold text-[13px]" style={{ color: "#0D1B2A" }}>{paymentTypeLabel(selectedOrder)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-[13px]" style={{ color: "#64748B" }}>Placed on</span>
@@ -366,11 +420,11 @@ export default function DashboardOrders() {
                     {new Date(selectedOrder.created_at).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })}
                   </span>
                 </div>
-                {selectedOrder.estimated_delivery && (
+                {(selectedOrder.delivery_date_label || selectedOrder.estimated_delivery) && (
                   <div className="flex justify-between">
                     <span className="text-[13px]" style={{ color: "#64748B" }}>Est. delivery</span>
                     <span className="font-medium text-[13px]" style={{ color: "#0D1B2A" }}>
-                      {new Date(selectedOrder.estimated_delivery).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })}
+                      {formatDelivery(selectedOrder.delivery_date_label || selectedOrder.estimated_delivery)}
                     </span>
                   </div>
                 )}
@@ -396,7 +450,7 @@ export default function DashboardOrders() {
                 <p className="text-[11px] font-black uppercase tracking-widest mb-4" style={{ color: "#94A3B8" }}>PRODUCTION TIMELINE</p>
                 <div className="space-y-0">
                   {PRODUCTION_STEPS.map((step, i) => {
-                    const currentIdx = STATUS_ORDER[selectedOrder.status] ?? -1;
+                    const currentIdx = STATUS_ORDER[effectiveStatus(selectedOrder)] ?? -1;
                     const stepIdx = STATUS_ORDER[step.key] ?? i;
                     const isDone = stepIdx < currentIdx;
                     const isCurrent = stepIdx === currentIdx;
@@ -423,6 +477,9 @@ export default function DashboardOrders() {
                         </div>
                         <div className="pb-4">
                           <p className="text-[13px] font-bold leading-none" style={{ color: isPending ? "#CBD5E1" : "#0D1B2A" }}>{step.label}</p>
+                          {isCurrent && (
+                            <p className="text-[12px] mt-1" style={{ color: "#64748B" }}>{STEP_DETAIL[step.key]}</p>
+                          )}
                           {isCurrent && selectedOrder.tracking_number && step.key === "dispatched" && (
                             <p className="text-[12px] mt-1" style={{ color: "#64748B" }}>
                               Tracking: <span className="font-mono font-bold">{selectedOrder.tracking_number}</span>
@@ -436,7 +493,7 @@ export default function DashboardOrders() {
               </div>
 
               {/* Tracking */}
-              {selectedOrder.tracking_url && (
+              {selectedOrder.tracking_url && ["dispatched", "delivered"].includes(effectiveStatus(selectedOrder)) && (
                 <a href={selectedOrder.tracking_url} target="_blank" rel="noopener noreferrer"
                   className="flex items-center gap-2 text-[13px] font-bold hover:underline"
                   style={{ color: "#7C3AED" }}>
@@ -448,16 +505,11 @@ export default function DashboardOrders() {
               <div>
                 <p className="text-[11px] font-black uppercase tracking-widest mb-3" style={{ color: "#94A3B8" }}>DOCUMENTS</p>
                 <div className="space-y-2">
-                  <button className="flex items-center gap-3 w-full px-4 py-3 border border-[#E7E8EB] hover:border-[#1B6CA8] text-left transition-all" style={{ color: "#0D1B2A" }}>
+                  <Link href="/dashboard/payments" onClick={() => setSelectedOrder(null)} className="flex items-center gap-3 w-full px-4 py-3 border border-[#E7E8EB] hover:border-[#1B6CA8] text-left transition-all" style={{ color: "#0D1B2A" }}>
                     <Download className="w-4 h-4" style={{ color: "#1B6CA8" }} />
-                    <span className="text-[13px] font-bold">Download Invoice (PDF)</span>
-                  </button>
-                  {(selectedOrder.status === "qc_check" || selectedOrder.status === "dispatched" || selectedOrder.status === "delivered") && (
-                    <button className="flex items-center gap-3 w-full px-4 py-3 border border-[#E7E8EB] hover:border-[#1B6CA8] text-left transition-all" style={{ color: "#0D1B2A" }}>
-                      <Download className="w-4 h-4" style={{ color: "#16A34A" }} />
-                      <span className="text-[13px] font-bold">Download QC Report</span>
-                    </button>
-                  )}
+                    <span className="text-[13px] font-bold">View invoices and payment records</span>
+                    <MS icon="arrow_forward" className="ml-auto text-base" style={{ color: "#94A3B8" }} />
+                  </Link>
                 </div>
               </div>
             </div>

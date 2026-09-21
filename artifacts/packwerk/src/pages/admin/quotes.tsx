@@ -6,13 +6,24 @@ import { useToast } from "@/hooks/use-toast";
 
 const STATUS_OPTIONS = ["submitted", "reviewing", "quoted", "accepted", "rejected"];
 
+function advancePercent(terms: string) {
+  if (/\b(net[- ]?\d+|credit)\b/i.test(terms) && !/advance/i.test(terms)) return 0;
+  const match = terms.match(/(?:advance|upfront)[^\d]{0,12}(\d+(?:\.\d+)?)\s*%/i)
+    || terms.match(/(\d+(?:\.\d+)?)\s*%[^,;.]{0,20}(?:advance|upfront|before production)/i);
+  return match ? Math.min(100, Math.max(0, Number(match[1]))) : 50;
+}
+
 function apiPut(path: string, body: object) {
   const adminKey = localStorage.getItem("packwerk_admin_key") || "";
   return fetch(`/api${path}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json", "x-admin-key": adminKey },
     body: JSON.stringify(body),
-  }).then(r => r.json());
+  }).then(async r => {
+    const payload = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error(payload.error || "Request failed");
+    return payload;
+  });
 }
 
 function QuoteRow({ q, onRefetch }: { q: any; onRefetch: () => void }) {
@@ -57,8 +68,10 @@ function QuoteRow({ q, onRefetch }: { q: any; onRefetch: () => void }) {
   };
 
   const buildWhatsAppHref = () => {
-    const advance = quotedAmount ? `₹${Math.round(Number(quotedAmount) / 2).toLocaleString("en-IN")}` : "50% (to be shared)";
-    const balance = quotedAmount ? `₹${Math.round(Number(quotedAmount) / 2).toLocaleString("en-IN")}` : "50% (to be shared)";
+    const percent = advancePercent(paymentTerms);
+    const advance = quotedAmount ? `₹${Math.round(Number(quotedAmount) * percent / 100).toLocaleString("en-IN")}` : `${percent}% (to be shared)`;
+    const balance = quotedAmount ? `₹${Math.round(Number(quotedAmount) * (100 - percent) / 100).toLocaleString("en-IN")}` : `${100 - percent}% (to be shared)`;
+    const dashboardUrl = `${window.location.origin}/dashboard/quotes?quote=${encodeURIComponent(q.quote_id)}`;
     const msg = [
       `Hi ${q.contact_name || ""},`,
       ``,
@@ -78,10 +91,11 @@ function QuoteRow({ q, onRefetch }: { q: any; onRefetch: () => void }) {
       ...(deliveryDate ? [`📅 *Estimated Delivery:* ${deliveryDate}`] : []),
       ``,
       `💳 *Payment Terms:*`,
-      `• Advance (50%): ${advance} — due to confirm order`,
-      `• Before delivery after QC (50%): ${balance}`,
+      `• Advance (${percent}%): ${advance} — due to confirm order`,
+      `• Before delivery after QC (${100 - percent}%): ${balance}`,
       ``,
-      `To confirm your order, please make the advance payment. We will share the payment link shortly.`,
+      `Review the full quote and pay the advance securely from your dashboard:`,
+      dashboardUrl,
       ``,
       `— Packworkz Team`,
       `📞 +91 82089 90366`,
@@ -90,9 +104,11 @@ function QuoteRow({ q, onRefetch }: { q: any; onRefetch: () => void }) {
   };
 
   const buildEmailHref = () => {
-    const advance = quotedAmount ? `₹${Math.round(Number(quotedAmount) / 2).toLocaleString("en-IN")}` : "50%";
-    const balance = quotedAmount ? `₹${Math.round(Number(quotedAmount) / 2).toLocaleString("en-IN")}` : "50%";
+    const percent = advancePercent(paymentTerms);
+    const advance = quotedAmount ? `₹${Math.round(Number(quotedAmount) * percent / 100).toLocaleString("en-IN")}` : `${percent}%`;
+    const balance = quotedAmount ? `₹${Math.round(Number(quotedAmount) * (100 - percent) / 100).toLocaleString("en-IN")}` : `${100 - percent}%`;
     const subject = `Your Packworkz Quotation — ${q.quote_id}`;
+    const dashboardUrl = `${window.location.origin}/dashboard/quotes?quote=${encodeURIComponent(q.quote_id)}`;
     const body = [
       `Dear ${q.contact_name || ""},`,
       ``,
@@ -112,11 +128,12 @@ function QuoteRow({ q, onRefetch }: { q: any; onRefetch: () => void }) {
       ...(deliveryDate ? [`Estimated Delivery: ${deliveryDate}`] : []),
       ``,
       `Payment Terms:`,
-      `  • Advance (50%): ${advance} — due immediately to confirm your order`,
-      `  • Balance before delivery after QC (50%): ${balance}`,
+      `  • Advance (${percent}%): ${advance} — due immediately to confirm your order`,
+      `  • Balance before delivery after QC (${100 - percent}%): ${balance}`,
       ``,
-      `To confirm your order, please proceed with the advance payment.`,
-      `Our team will share the payment link shortly.`,
+      `Review the full quote and complete the advance payment in your Packworkz dashboard:`,
+      dashboardUrl,
+      `Production begins only after the advance payment is verified.`,
       ``,
       `For any questions, reply to this email or WhatsApp us at +91 82089 90366.`,
       ``,

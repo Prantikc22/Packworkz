@@ -18,6 +18,10 @@ export interface DashboardQuote {
   status: string;
   user_id?: string;
   rejection_reason?: string;
+  quoted_amount?: number | null;
+  payment_link?: string | null;
+  payment_terms?: string | null;
+  delivery_date?: string | null;
   created_at: string;
 }
 
@@ -25,6 +29,9 @@ export interface AcceptQuoteResult {
   order_id: string;
   id: string;
   message: string;
+  payment_status: string;
+  payment_url?: string | null;
+  advance_amount?: number;
 }
 
 export const getDashboardQuotes = async (tab?: string): Promise<DashboardQuote[]> => {

@@ -32,15 +32,23 @@ export default function DashboardPayments() {
   const invoiceList = (invoices as any[]) ?? [];
   const allOrders = (ordersData as any[]) ?? [];
 
-  // Orders that have a payment link set (pending payment from client)
-  const payableOrders = allOrders.filter((o: any) => o.payment_link && o.status !== "delivered" && o.status !== "cancelled");
-
   const paidInvoices = invoiceList.filter((i: any) => i.status === "paid");
   const totalPaid = paidInvoices.reduce((sum: number, i: any) => sum + Number(i.amount), 0);
+  const paidOrderIds = new Set(paidInvoices.map((invoice: any) => invoice.order_id));
+  const payableOrders = allOrders.filter((order: any) =>
+    order.payment_link
+    && order.status !== "delivered"
+    && order.status !== "cancelled"
+    && !paidOrderIds.has(order.id)
+    && !paidOrderIds.has(order.order_id)
+  );
 
   return (
     <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-      <h1 className="font-black text-[28px] mb-6 leading-tight" style={{ color: "#0D1B2A", letterSpacing: "-0.01em" }}>Payments & Invoices</h1>
+      <div className="mb-6">
+        <h1 className="font-black text-[28px] leading-tight" style={{ color: "#0D1B2A", letterSpacing: "-0.01em" }}>Payments & Invoices</h1>
+        <p className="text-[13px] mt-1" style={{ color: "#64748B" }}>See what is due, open the secure payment link, and find every paid invoice.</p>
+      </div>
 
       {/* ── Credit Status Banner ── */}
       {creditEligible ? (
@@ -93,7 +101,9 @@ export default function DashboardPayments() {
               <div key={order.id} className="flex items-center justify-between px-6 py-5" style={{ background: "rgba(232,168,56,0.06)", border: "1px solid rgba(232,168,56,0.3)" }}>
                 <div>
                   <p className="font-black text-[13px]" style={{ color: "#E8A838", fontFamily: "monospace" }}>{order.order_id}</p>
-                  <p className="text-[14px] font-bold mt-0.5" style={{ color: "#0D1B2A" }}>₹{fmt(Number(order.total_price))}</p>
+                  <p className="text-[14px] font-bold mt-0.5" style={{ color: "#0D1B2A" }}>
+                    ₹{fmt(Number(order.advance_amount || order.total_price))} advance due
+                  </p>
                   <p className="text-[12px] mt-0.5" style={{ color: "#64748B" }}>
                     {Array.isArray(order.items) ? order.items.map((i: any) => i.product_name).filter(Boolean).join(", ") : "Packaging order"}
                   </p>
@@ -130,7 +140,7 @@ export default function DashboardPayments() {
           <div className="flex flex-col items-center justify-center py-16">
             <FileText className="w-12 h-12 mb-4" style={{ color: "#CBD5E1" }} />
             <p className="font-bold text-[15px] mb-1" style={{ color: "#94A3B8" }}>No invoices yet</p>
-            <p className="text-[13px]" style={{ color: "#CBD5E1" }}>Invoices appear here after orders are confirmed</p>
+            <p className="text-[13px]" style={{ color: "#CBD5E1" }}>Advance invoices appear when you start payment from an approved quote</p>
           </div>
         ) : (
           <div className="overflow-x-auto">

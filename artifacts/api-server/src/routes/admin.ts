@@ -7,6 +7,15 @@ import { sendWelcomeEmail, sendAdminQuoteNotification } from "../lib/email";
 
 const router: IRouter = Router();
 
+function advancePercent(paymentTerms?: string | null) {
+  const terms = String(paymentTerms || "");
+  if (/\b(net[- ]?\d+|credit)\b/i.test(terms) && !/advance/i.test(terms)) return 0;
+  const match = terms.match(/(?:advance|upfront)[^\d]{0,12}(\d+(?:\.\d+)?)\s*%/i)
+    || terms.match(/(\d+(?:\.\d+)?)\s*%[^,;.]{0,20}(?:advance|upfront|before production)/i);
+  const parsed = match ? Number(match[1]) : 50;
+  return Number.isFinite(parsed) ? Math.min(100, Math.max(0, parsed)) : 50;
+}
+
 router.post("/admin/test-email", requireAdmin, (req, res): void => {
   void (async () => {
     try {
@@ -130,6 +139,15 @@ router.put("/admin/quotes/:id/notes", async (req, res): Promise<void> => {
   const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
   const { admin_notes, payment_link, quoted_amount, delivery_date, payment_terms } = req.body;
 
+  if (payment_link) {
+    try {
+      if (new URL(payment_link).protocol !== "https:") throw new Error("invalid protocol");
+    } catch {
+      res.status(400).json({ error: "Payment link must be a valid HTTPS URL." });
+      return;
+    }
+  }
+
   // Build full update — new columns are added via SQL migration; fall back gracefully if missing
   const fullUpdate: Record<string, any> = {};
   if (admin_notes !== undefined) fullUpdate.admin_notes = admin_notes;
@@ -139,12 +157,9 @@ router.put("/admin/quotes/:id/notes", async (req, res): Promise<void> => {
     fullUpdate.total_estimated_min = String(quoted_amount);
     fullUpdate.total_estimated_max = String(quoted_amount);
   }
-  // Only save delivery_date to DB column if it's a valid ISO date (YYYY-MM-DD)
-  if (delivery_date !== undefined) {
-    const isoDate = delivery_date ? new Date(delivery_date) : null;
-    const isValidDate = isoDate && !isNaN(isoDate.getTime()) && /^\d{4}-\d{2}-\d{2}$/.test(delivery_date);
-    fullUpdate.delivery_date = isValidDate ? delivery_date : null;
-  }
+  // The quote stores the client-facing delivery promise as text. This may be
+  // an exact date ("1 October 2026") or a reviewed lead-time window.
+  if (delivery_date !== undefined) fullUpdate.delivery_date = delivery_date || null;
   if (payment_terms !== undefined) fullUpdate.payment_terms = payment_terms;
 
   let result = await sb.from("quote_requests").update(fullUpdate).eq("id", id).select().maybeSingle();
@@ -327,27 +342,60 @@ router.post("/admin/quotes/:id/accept", async (req, res): Promise<void> => {
 
 router.get("/admin/orders", async (_req, res): Promise<void> => {
   const { data: orders } = await sb.from("orders").select("*").order("created_at", { ascending: false });
+  const orderIds = (orders || []).map(order => order.id);
+  const { data: invoices } = orderIds.length
+    ? await sb.from("invoices").select("order_id,status,amount,invoice_id").in("order_id", orderIds)
+    : { data: [] as any[] };
+  const invoiceByOrder = new Map((invoices || []).map(invoice => [invoice.order_id, invoice]));
   res.json(
     (orders || []).map(o => ({
       ...o,
       total_price: Number(o.total_price),
       discount_applied: Number(o.discount_applied ?? 0),
       delivery_address: o.delivery_address ?? {},
+      advance_invoice: invoiceByOrder.get(o.id) || null,
+      advance_paid: invoiceByOrder.get(o.id)?.status === "paid",
     }))
   );
 });
 
 router.put("/admin/orders/:id/status", async (req, res): Promise<void> => {
   const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
-  const { status, tracking_number, tracking_url, payment_link, estimated_delivery, internal_notes, total_price } = req.body;
+  const { status, tracking_number, tracking_url, payment_link, estimated_delivery, internal_notes, total_price, advance_paid } = req.body;
+
+  if (payment_link) {
+    try {
+      if (new URL(payment_link).protocol !== "https:") throw new Error("invalid protocol");
+    } catch {
+      res.status(400).json({ error: "Payment link must be a valid HTTPS URL." });
+      return;
+    }
+  }
+
+  const { data: existing } = await sb.from("orders").select("*").eq("id", id).maybeSingle();
+  if (!existing) {
+    res.status(404).json({ error: "Order not found" });
+    return;
+  }
+
+  if (["confirmed", "in_production"].includes(status) && existing.status === "payment_pending" && advance_paid !== true) {
+    res.status(409).json({ error: "Verify the advance payment before moving this order into production." });
+    return;
+  }
 
   const updateFields: Record<string, any> = {};
   if (status !== undefined) updateFields.status = status;
   if (tracking_number !== undefined) updateFields.tracking_number = tracking_number;
   if (tracking_url !== undefined) updateFields.tracking_url = tracking_url;
+  if (payment_link !== undefined) updateFields.payment_link = payment_link;
   if (estimated_delivery !== undefined) updateFields.estimated_delivery = estimated_delivery;
   if (internal_notes !== undefined) updateFields.internal_notes = internal_notes;
   if (total_price !== undefined) updateFields.total_price = total_price.toString();
+  if (advance_paid === true && existing.status === "payment_pending") {
+    updateFields.status = status === "payment_pending" || status === undefined ? "confirmed" : status;
+    const verifiedNote = `Advance payment verified ${new Date().toISOString()}`;
+    updateFields.internal_notes = internal_notes ? `${internal_notes}\n${verifiedNote}` : verifiedNote;
+  }
 
   const { data: updated, error } = await sb
     .from("orders")
@@ -361,6 +409,36 @@ router.put("/admin/orders/:id/status", async (req, res): Promise<void> => {
     return;
   }
 
+  if (advance_paid === true) {
+    const { data: currentInvoice } = await sb.from("invoices").select("*").eq("order_id", existing.id).maybeSingle();
+    if (currentInvoice) {
+      await sb.from("invoices").update({
+        status: "paid",
+        payment_method: "admin_verified",
+      }).eq("id", currentInvoice.id);
+    } else if (existing.quote_request_id) {
+      const { data: quote } = await sb.from("quote_requests").select("quoted_amount,total_estimated_max,payment_terms").eq("id", existing.quote_request_id).maybeSingle();
+      const fullAmount = Number(quote?.quoted_amount || quote?.total_estimated_max || existing.total_price || 0);
+      const amount = Math.round(fullAmount * advancePercent(quote?.payment_terms)) / 100;
+      if (amount > 0) {
+        const invoiceId = await generateId("INV", "invoices", "invoice_id");
+        await sb.from("invoices").insert({
+          invoice_id: invoiceId,
+          order_id: existing.id,
+          user_id: existing.user_id,
+          amount: String(amount),
+          discount_line: "0",
+          status: "paid",
+          due_date: new Date().toISOString().slice(0, 10),
+          payment_method: "admin_verified",
+        });
+      }
+    }
+    if (existing.quote_request_id) {
+      await sb.from("quote_requests").update({ status: "paid" }).eq("id", existing.quote_request_id);
+    }
+  }
+
   if (status === "dispatched" && tracking_url && updated.user_id) {
     const { data: user } = await sb.from("users_profile").select("phone").eq("id", updated.user_id).maybeSingle();
     if (user?.phone) {
@@ -368,7 +446,7 @@ router.put("/admin/orders/:id/status", async (req, res): Promise<void> => {
     }
   }
 
-  if (status === "delivered" && updated.user_id) {
+  if (status === "delivered" && existing.status !== "delivered" && updated.user_id) {
     const { data: user } = await sb.from("users_profile").select("*").eq("id", updated.user_id).maybeSingle();
     if (user) {
       const newCount = (user.orders_completed ?? 0) + 1;
