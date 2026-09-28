@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Link } from "wouter";
 import { Package, ShoppingBag, Box, Leaf, Tag, MessageSquare, FlaskConical, CheckCircle, Truck } from "lucide-react";
 import { CATALOG_SKUS } from "@/lib/catalog";
+import { money } from "@/lib/currency";
 
 // ─── Calculator ───────────────────────────────────────────────────────────────
 type VendorBucket = "Just 1" | "2 to 4" | "5+";
@@ -17,8 +18,7 @@ function calcSavings(monthly: number, vendors: VendorBucket, credit: CreditOptio
   return { annual, annualSaving, creditMarkup, upfrontSaving, totalValue: annualSaving + creditMarkup, timeSaved };
 }
 
-const inr = (n: number) =>
-  new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 }).format(n);
+const inr = (n: number) => money(Math.round(n));
 
 // ─── Industries ───────────────────────────────────────────────────────────────
 const INDUSTRIES = [
@@ -58,7 +58,7 @@ const INDUSTRIES = [
     accent: "#3B82F6",
     img: "/industries/ecommerce.jpg",
     headline: "Unboxing that converts one-time buyers to loyalists",
-    desc: "Mailer boxes, poly mailers, tissue paper, thank-you cards, and tamper-evident packs — branded from ₹1 per unit at scalable MOQs.",
+    desc: `Mailer boxes, poly mailers, tissue paper, thank-you cards, and tamper-evident packs — branded from ${money(1)} per unit at scalable MOQs.`,
     skus: ["Custom Mailer Boxes", "Poly Mailer Bags", "Tissue Paper & Inserts", "Tamper-Evident Bags", "Thank-You Cards"],
     brands: ["The Souled Store", "Neeman's", "Urban Nest Home", "QuickShip Commerce"],
   },
@@ -94,7 +94,7 @@ const TESTIMONIALS = [
 // ─── Steps ────────────────────────────────────────────────────────────────────
 const STEPS = [
   { n: "01", Icon: MessageSquare, title: "Brief us in 10 minutes", desc: "Tell us your product, MOQ, timeline, and any design files — via WhatsApp, form, or a quick call." },
-  { n: "02", Icon: FlaskConical,  title: "Explore a packaging sample kit", desc: "Compare 25–50+ real packaging samples at your desk. ₹299 plus ₹100 shipping across India." },
+  { n: "02", Icon: FlaskConical,  title: "Explore a packaging sample kit", desc: `Compare 25–50+ real packaging samples at your desk. ${money(299)} plus ${money(100)} shipping across India.` },
   { n: "03", Icon: CheckCircle,   title: "Approve & pay first 50%", desc: "Pay 50% on order confirmation. We begin production immediately — no waiting." },
   { n: "04", Icon: Truck,         title: "Delivered in 14 days total", desc: "Balance due on sample approval. Your order ships and arrives doorstep — on time, every time." },
 ];
@@ -574,7 +574,7 @@ export default function LpD2c() {
                   Start Configuration →
                 </Link>
                 <Link href="/samples" className="lp-cta-secondary">
-                  Get a Sample Kit · ₹299 + shipping
+                  Get a Sample Kit · {money(299)} + shipping
                 </Link>
               </div>
             </div>
@@ -1153,7 +1153,7 @@ export default function LpD2c() {
               <span className="lp-gradient-text">packaging operations?</span>
             </h2>
             <p style={{ color: "rgba(255,255,255,0.6)", fontSize: 18, lineHeight: 1.7, marginBottom: 44, maxWidth: 520, margin: "0 auto 44px" }}>
-              Get a pricing plan in 48 hours. Explore samples for ₹299 plus ₹100 shipping. No commitment until you approve.
+              Get a pricing plan in 48 hours. Explore samples for {money(299)} plus {money(100)} shipping. No commitment until you approve.
             </p>
 
             <div className="lp-cta-row" style={{ display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap" }}>

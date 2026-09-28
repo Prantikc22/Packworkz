@@ -751,9 +751,12 @@ export const SKU_IMAGES: Record<string, string> = {
   "FP-104": "/skus/spoutpouch.jpg",
   "FP-105": "/skus/sachet.jpg",
   "FP-106": "/catalog/formats/three-side-seal-pouch.webp",
+  "FP-107": "/skus/flatbottompouch.jpg",
+  "FP-108": "/skus/flatbottompouch.jpg",
   "FP-109": "/catalog/formats/coffee-valve-pouch.webp",
   "FP-110": "/shopify-products/FP-110.jpg",
   "FP-114": "/catalog/formats/shaped-pouch.webp",
+  "FP-115": "/catalog/formats/two-side-seal-pouch-v1.webp",
   "FP-112": "/shopify-products/FP-112.jpg",
   // Bottles & Containers
   "BC-201": "/skus/plasticbottles.jpg",

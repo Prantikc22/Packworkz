@@ -20,7 +20,7 @@ export default function BrandAdvantageSection() {
             <h2>Why brands choose Packworkz over multiple vendors.</h2>
             <p>One partner for sourcing, production, quality, compliance and delivery — so you can move faster, with less complexity.</p>
             <div className="pw-advantage-actions">
-              <Link href="/configure" className="pw-advantage-primary">Start Configuration <ArrowRight size={21} /></Link>
+              <Link href="/products" className="pw-advantage-primary">Price my packaging <ArrowRight size={21} /></Link>
               <Link href="/contact" className="pw-advantage-secondary">Talk to our team <ArrowRight size={20} /></Link>
             </div>
           </div>

@@ -4,6 +4,7 @@ import { useCreateDesignRequest } from "@workspace/api-client-react";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 import { DESIGN_PORTFOLIO_IMAGES } from "@/lib/images";
+import { money } from "@/lib/currency";
 
 const MS = ({ icon, className = "", style }: { icon: string; className?: string; style?: React.CSSProperties }) => (
   <span className={`material-symbols-outlined ${className}`} style={style}>{icon}</span>
@@ -22,7 +23,7 @@ const INCLUSIONS = [
   { icon: "storefront", label: "Brand application", desc: "Full translation of your branding & copy into print-ready forms" },
   { icon: "repeat", label: "2 Revisions", desc: "Complete revisions rounds to ensure the final artwork is perfect" },
   { icon: "folder_zip", label: "Source files", desc: "Complete ownership of all editable project assets and layers" },
-  { icon: "credit_card_off", label: "Full credit", desc: "The ₹1,999 fee is fully adjusted against your subsequent print order" },
+  { icon: "credit_card_off", label: "Full credit", desc: `The ${money(1999)} fee is fully adjusted against your subsequent print order` },
 ];
 
 export default function Design() {
@@ -88,7 +89,7 @@ export default function Design() {
                 <span style={{ color: "#E8A838" }}>designed right.</span>
               </h1>
               <p className="text-slate-400 text-lg mb-8">
-                <strong className="text-white" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>₹1,999.</strong>{" "}
+                <strong className="text-white" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>{money(1999)}.</strong>{" "}
                 Print-ready files in 5 days, adjusted against order.
               </p>
               <div className="flex gap-4 flex-wrap">
@@ -116,7 +117,7 @@ export default function Design() {
               <div>
                 <div className="flex items-center gap-4 mb-2 flex-wrap">
                   <span className="text-xs font-bold uppercase tracking-widest px-3 py-1 rounded" style={{ background: "rgba(34,197,94,0.1)", color: "#22C55E" }}>✓ DESIGN INCLUSIONS</span>
-                  <span className="text-xs font-bold uppercase tracking-widest px-3 py-1 rounded" style={{ background: "rgba(27,108,168,0.1)", color: "#1B6CA8" }}>₹1,999 PRICE</span>
+                  <span className="text-xs font-bold uppercase tracking-widest px-3 py-1 rounded" style={{ background: "rgba(27,108,168,0.1)", color: "#1B6CA8" }}>{money(1999)} PRICE</span>
                   <span className="text-xs font-bold uppercase tracking-widest px-3 py-1 rounded bg-amber-50 text-amber-700">VIEW BRIEF</span>
                 </div>
                 <h2 className="clash-display text-3xl mt-4" style={{ color: "#0D1B2A" }}>Professional output, guaranteed.</h2>
@@ -272,17 +273,17 @@ export default function Design() {
                   </div>
                   <div className="flex justify-between">
                     <span style={{ color: "#44474c" }}>Base Fee</span>
-                    <span className="font-bold" style={{ color: "#0D1B2A" }}>₹1,999</span>
+                    <span className="font-bold" style={{ color: "#0D1B2A" }}>{money(1999)}</span>
                   </div>
                   {isRush && (
                     <div className="flex justify-between">
                       <span style={{ color: "#44474c" }}>Rush Delivery (24h)</span>
-                      <span className="font-bold" style={{ color: "#0D1B2A" }}>+₹1,500</span>
+                      <span className="font-bold" style={{ color: "#0D1B2A" }}>+{money(1500)}</span>
                     </div>
                   )}
                   <div className="flex justify-between pt-3 border-t border-slate-200 font-bold text-base">
                     <span>TOTAL DUE</span>
-                    <span style={{ fontFamily: "'Space Grotesk', sans-serif" }}>₹{amount.toLocaleString("en-IN")}</span>
+                    <span style={{ fontFamily: "'Space Grotesk', sans-serif" }}>{money(amount)}</span>
                   </div>
                 </div>
               </div>
@@ -292,7 +293,7 @@ export default function Design() {
                 style={{ border: "1px solid #E7E8EB" }}>
                 <div>
                   <p className="font-bold" style={{ color: "#0D1B2A" }}>Rush Delivery Add-on</p>
-                  <p className="text-xs" style={{ color: "#74777d" }}>First concept within 24 hours instead of 72 hours (+₹1,500)</p>
+                  <p className="text-xs" style={{ color: "#74777d" }}>First concept within 24 hours instead of 72 hours (+{money(1500)})</p>
                 </div>
                 <div className="relative ml-6">
                   <input type="checkbox" className="sr-only" checked={isRush} onChange={e => setIsRush(e.target.checked)} />

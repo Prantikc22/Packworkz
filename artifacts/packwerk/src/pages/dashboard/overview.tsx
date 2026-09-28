@@ -1,53 +1,63 @@
 import { useState } from "react";
 import { useGetDashboardOverview } from "@workspace/api-client-react";
 import { Link } from "wouter";
-import { Check, Link2, Loader2, RefreshCw, Plus, Package, X } from "lucide-react";
+import {
+  ArrowRight, ArrowUpRight, Box, Check, Clock3, CreditCard, ExternalLink, Factory, FileText, Link2, Loader2,
+  Package, PackageCheck, Plus, Recycle, RefreshCw, Truck, X,
+} from "lucide-react";
+import { CATALOG_SKUS, getCatalogImage } from "@/lib/catalog";
+import "./dashboard.css";
 
-const MS = ({ icon, className = "", style }: { icon: string; className?: string; style?: React.CSSProperties }) => (
-  <span className={`material-symbols-outlined ${className}`} style={style}>{icon}</span>
-);
+const STEPS = ["Confirmed", "Production", "QC", "Dispatched", "Delivered"] as const;
 
-const WHATSAPP_NUM = "918208990366";
-
-const STATUS_CONFIG: Record<string, { label: string; bg: string; color: string }> = {
-  payment_pending: { label: "ADVANCE DUE", bg: "rgba(232,168,56,0.15)", color: "#B45309" },
-  payment_processing: { label: "VERIFYING PAYMENT", bg: "rgba(232,168,56,0.15)", color: "#B45309" },
-  confirmed:    { label: "ORDER CONFIRMED", bg: "rgba(27,108,168,0.12)", color: "#1B6CA8" },
-  in_production:{ label: "IN PRODUCTION", bg: "rgba(27,108,168,0.12)",   color: "#1B6CA8" },
-  qc_check:     { label: "QC CHECK",      bg: "rgba(232,168,56,0.15)",   color: "#D97706" },
-  dispatched:   { label: "DISPATCHED",    bg: "rgba(139,92,246,0.12)",   color: "#7C3AED" },
-  delivered:    { label: "DELIVERED",     bg: "rgba(34,197,94,0.12)",    color: "#16A34A" },
-  pending:      { label: "PENDING",       bg: "rgba(100,116,139,0.10)",  color: "#64748B" },
+const STATUS_META: Record<string, { label: string; tone: "amber" | "blue" | "violet" | "green" | "slate"; step: number }> = {
+  payment_pending: { label: "Advance due", tone: "amber", step: 0 },
+  payment_processing: { label: "Verifying payment", tone: "amber", step: 0 },
+  pending: { label: "Pending", tone: "slate", step: 0 },
+  confirmed: { label: "Confirmed", tone: "blue", step: 1 },
+  in_production: { label: "In production", tone: "blue", step: 2 },
+  qc: { label: "Quality check", tone: "amber", step: 3 },
+  qc_check: { label: "Quality check", tone: "amber", step: 3 },
+  dispatched: { label: "Dispatched", tone: "violet", step: 4 },
+  delivered: { label: "Delivered", tone: "green", step: 5 },
 };
 
-function StatusChip({ status }: { status: string }) {
-  const c = STATUS_CONFIG[status] ?? STATUS_CONFIG.pending;
-  return (
-    <span className="px-3 py-1 text-xs font-black uppercase tracking-wider"
-      style={{ background: c.bg, color: c.color, borderRadius: 0 }}>
-      {c.label}
-    </span>
-  );
-}
-
-function fmt(n: number) {
-  return new Intl.NumberFormat("en-IN", { maximumFractionDigits: 0 }).format(n);
-}
-
-function fmtINR(n: number) {
-  return `₹${fmt(n)}`;
-}
+const fmt = (n: number) => new Intl.NumberFormat("en-IN", { maximumFractionDigits: 0 }).format(n);
+const fmtINR = (n: number) => `₹${fmt(n)}`;
 
 function effectiveStatus(order: any) {
   return order.advance_amount > 0 && !order.advance_paid ? "payment_pending" : order.status;
 }
 
 function formatDelivery(value?: string | null) {
-  if (!value) return "—";
+  if (!value) return "Date confirmed after approval";
   if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
-    return new Date(`${value}T00:00:00`).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" });
+    return new Date(`${value}T00:00:00`).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
   }
   return value;
+}
+
+function findSku(item: any) {
+  if (!item) return undefined;
+  return CATALOG_SKUS.find((sku) => sku.code === item.sku_code || sku.id === item.product_id || sku.name === item.product_name);
+}
+
+function StatusChip({ status }: { status: string }) {
+  const meta = STATUS_META[status] ?? STATUS_META.pending;
+  return <span className={`db-chip is-${meta.tone}`}>{meta.label}</span>;
+}
+
+function Progress({ status }: { status: string }) {
+  const current = (STATUS_META[status] ?? STATUS_META.pending).step;
+  return (
+    <ol className="db-progress" aria-label="Order progress">
+      {STEPS.map((step, index) => (
+        <li key={step} className={index + 1 < current ? "is-done" : index + 1 === current ? "is-current" : ""}>
+          <i />{step}
+        </li>
+      ))}
+    </ol>
+  );
 }
 
 export default function DashboardOverview() {
@@ -89,16 +99,12 @@ export default function DashboardOverview() {
     }
   };
 
-  const today = new Date().toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
   const hour = new Date().getHours();
   const greeting = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
+  const today = new Date().toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long" });
 
   if (isLoading) {
-    return (
-      <div className="flex justify-center items-center py-40">
-        <Loader2 className="w-8 h-8 animate-spin" style={{ color: "#1B6CA8" }} />
-      </div>
-    );
+    return <div className="db-loading"><Loader2 className="animate-spin" size={28} /></div>;
   }
 
   const overview = data as any;
@@ -111,297 +117,202 @@ export default function DashboardOverview() {
   const ordersCompleted = overview?.orders_completed ?? 0;
   const creditEligible = overview?.credit_eligible ?? false;
   const creditLimit = overview?.credit_limit ?? 500000;
-  const companyName = overview?.company_name || storedUser.company_name || "your team";
+  const companyName = overview?.company_name || storedUser.company_name || storedUser.contact_name || "your team";
   const pendingQuotesList: any[] = (overview?.pending_quotes_list as any[]) ?? [];
-
-  const activeOrderList = recentOrders.filter((o: any) => o.status !== "delivered" && o.status !== "cancelled");
+  const activeOrderList = recentOrders.filter((order: any) => order.status !== "delivered" && order.status !== "cancelled");
+  const advanceDue = activeOrderList.find((order: any) => effectiveStatus(order) === "payment_pending");
+  const reorderItems = recentOrders
+    .map((order: any) => ({ order, item: Array.isArray(order.items) ? order.items[0] : null }))
+    .filter(({ item }) => item)
+    .slice(0, 3);
 
   return (
-    <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-
-      {/* ── Greeting ── */}
-      <div className="mb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+    <div className="db">
+      {/* ── Header ── */}
+      <header className="db-head">
         <div>
-          <h1 className="font-black text-[28px] leading-tight" style={{ color: "#0D1B2A", letterSpacing: "-0.01em" }}>
-            {greeting}, {companyName}
-          </h1>
-          <p className="text-[13px] mt-1" style={{ color: "#94A3B8" }}>{today}</p>
+          <p className="db-kicker">{today}</p>
+          <h1>{greeting}, {companyName}</h1>
         </div>
-        <button onClick={() => setClaimOpen((open) => !open)} className="min-h-10 px-4 border border-[#bdcbd8] bg-white inline-flex items-center justify-center gap-2 text-xs font-black text-[#1b6ca8] hover:border-[#1b6ca8]">
-          <Link2 size={15} /> Link past order or brief
-        </button>
-      </div>
+        <div className="db-head-actions">
+          <button type="button" className="db-btn is-line" onClick={() => setClaimOpen((open) => !open)}><Link2 size={15} /> Link past order</button>
+          <Link href="/products" className="db-btn is-amber"><Plus size={16} /> New order</Link>
+        </div>
+      </header>
 
       {claimOpen && (
-        <div className="mb-8 grid lg:grid-cols-[0.68fr_1.32fr] border border-[#c9d6e1] bg-white">
-          <div className="p-6 bg-[#0d1b2a] text-white">
-            <div className="flex items-start justify-between gap-4">
-              <div><p className="text-[10px] font-black tracking-[0.18em] text-[#75b5e4] mb-2">SECURE RECORD LINK</p><h2 className="text-xl font-black">Bring an earlier guest order into this workspace.</h2></div>
-              <button aria-label="Close" onClick={() => setClaimOpen(false)} className="w-8 h-8 grid place-items-center border border-[#38536a] text-[#9eb0bf]"><X size={16} /></button>
+        <section className="db-claim">
+          <div className="db-claim-intro">
+            <div>
+              <p className="db-kicker is-light">Secure record link</p>
+              <h2>Bring an earlier guest order into this workspace.</h2>
+              <p>Use the reference from your confirmation and the same checkout email or mobile. Records are never linked by email alone.</p>
             </div>
-            <p className="mt-4 text-xs leading-relaxed text-[#9eb0bf]">Use the private reference from the confirmation and the same checkout email or mobile. We never link records by email alone.</p>
+            <button aria-label="Close" onClick={() => setClaimOpen(false)}><X size={16} /></button>
           </div>
-          <form onSubmit={claimHistory} className="p-6 grid sm:grid-cols-[1fr_1fr_auto] gap-4 items-end">
-            <label><span className="account-label">ORDER OR PLAN REFERENCE</span><input required className="account-input" placeholder="PO-2026-10001" value={claimReference} onChange={(event) => setClaimReference(event.target.value.toUpperCase())} /></label>
-            <label><span className="account-label">CHECKOUT EMAIL OR MOBILE</span><input required className="account-input" placeholder="you@company.com" value={claimContact} onChange={(event) => setClaimContact(event.target.value)} /></label>
-            <button disabled={claiming} className="h-[54px] px-6 bg-[#e8a838] text-[#071522] font-black inline-flex items-center justify-center gap-2 disabled:opacity-60">{claiming ? <Loader2 size={17} className="animate-spin" /> : <Link2 size={17} />} Link record</button>
-            {claimError && <p className="sm:col-span-3 text-sm text-[#a52b2b]">{claimError}</p>}
-            {claimSuccess && <p className="sm:col-span-3 flex items-center gap-2 text-sm font-bold text-[#168458]"><Check size={17} /> {claimSuccess}</p>}
+          <form onSubmit={claimHistory}>
+            <label><span>Order or plan reference</span><input required placeholder="PO-2026-10001" value={claimReference} onChange={(event) => setClaimReference(event.target.value.toUpperCase())} /></label>
+            <label><span>Checkout email or mobile</span><input required placeholder="you@company.com" value={claimContact} onChange={(event) => setClaimContact(event.target.value)} /></label>
+            <button disabled={claiming} className="db-btn is-amber">{claiming ? <Loader2 size={16} className="animate-spin" /> : <Link2 size={16} />} Link record</button>
+            {claimError && <p className="db-error">{claimError}</p>}
+            {claimSuccess && <p className="db-success"><Check size={16} /> {claimSuccess}</p>}
           </form>
-        </div>
+        </section>
       )}
 
-      {/* ── 4 Metric Cards ── */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-8">
+      {/* ── Next action ── */}
+      {advanceDue ? (
+        <section className="db-next is-amber">
+          <span className="db-next-icon"><CreditCard size={20} /></span>
+          <div><b>Advance due on {advanceDue.order_id}</b><small>Production starts as soon as the advance is received.</small></div>
+          {advanceDue.payment_link
+            ? <a className="db-btn is-navy" href={advanceDue.payment_link} target="_blank" rel="noopener noreferrer">Pay advance <ExternalLink size={14} /></a>
+            : <Link className="db-btn is-navy" href="/dashboard/payments">Open payments <ArrowRight size={15} /></Link>}
+        </section>
+      ) : pendingQuotesList.length > 0 ? (
+        <section className="db-next">
+          <span className="db-next-icon"><FileText size={20} /></span>
+          <div><b>{pendingQuotesList.length} quote{pendingQuotesList.length > 1 ? "s" : ""} ready for your review</b><small>Approve to lock pricing and production slots.</small></div>
+          <Link className="db-btn is-navy" href="/dashboard/quotes">Review quotes <ArrowRight size={15} /></Link>
+        </section>
+      ) : activeOrderList.length === 0 ? (
+        <section className="db-next">
+          <span className="db-next-icon"><Package size={20} /></span>
+          <div><b>Start your next pack</b><small>{CATALOG_SKUS.length} formats with instant or 4-hour pricing — or feel samples first.</small></div>
+          <Link className="db-btn is-navy" href="/products">Browse packaging <ArrowRight size={15} /></Link>
+        </section>
+      ) : null}
 
-        {/* Card 1: Active Orders */}
-        <div className="bg-white border border-[#E7E8EB] p-6">
-          <p className="text-[11px] font-black uppercase tracking-[0.18em] mb-4" style={{ color: "#94A3B8" }}>ACTIVE ORDERS</p>
-          <p className="text-[36px] font-black leading-none mb-1" style={{ color: "#E8A838" }}>{activeOrders}</p>
-          <p className="text-[13px] mb-4" style={{ color: "#94A3B8" }}>orders in progress</p>
-          <div className="space-y-1 border-t border-[#F1F3F5] pt-3">
-            <div className="flex justify-between text-[12px]">
-              <span style={{ color: "#64748B" }}>In production</span>
-              <span className="font-bold" style={{ color: "#1B6CA8" }}>{inProd}</span>
-            </div>
-            <div className="flex justify-between text-[12px]">
-              <span style={{ color: "#64748B" }}>Dispatched</span>
-              <span className="font-bold" style={{ color: "#7C3AED" }}>{dispatched}</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Card 2: Pending Quotes */}
-        <div className="bg-white border border-[#E7E8EB] p-6">
-          <div className="flex items-center justify-between mb-4">
-            <p className="text-[11px] font-black uppercase tracking-[0.18em]" style={{ color: "#94A3B8" }}>PENDING QUOTES</p>
-            {pendingQuotes > 0 && (
-              <span className="w-2.5 h-2.5 rounded-full animate-pulse" style={{ background: "#E8A838", display: "inline-block" }} />
-            )}
-          </div>
-          <p className="text-[36px] font-black leading-none mb-1" style={{ color: pendingQuotes > 0 ? "#E8A838" : "#0D1B2A" }}>{pendingQuotes}</p>
-          <p className="text-[13px]" style={{ color: "#94A3B8" }}>quotes awaiting review</p>
-          {pendingQuotes > 0 && (
-            <Link href="/dashboard/quotes">
-              <button className="mt-4 text-[12px] font-black uppercase tracking-wider flex items-center gap-1" style={{ color: "#E8A838" }}>
-                Review now <MS icon="arrow_forward" className="text-sm" />
-              </button>
-            </Link>
-          )}
-        </div>
-
-        {/* Card 3: Total Saved */}
-        <div className="bg-white border border-[#E7E8EB] p-6">
-          <p className="text-[11px] font-black uppercase tracking-[0.18em] mb-4" style={{ color: "#94A3B8" }}>TOTAL SAVED</p>
-          <p className="text-[36px] font-black leading-none mb-1" style={{ color: "#16A34A" }}>
-            {fmtINR(totalSaved)}
-          </p>
-          <p className="text-[13px]" style={{ color: "#94A3B8" }}>saved to date on all orders</p>
-        </div>
-
-        {/* Card 4: Credit Status */}
-        <div className="bg-white border border-[#E7E8EB] p-6">
-          <p className="text-[11px] font-black uppercase tracking-[0.18em] mb-4" style={{ color: "#94A3B8" }}>CREDIT STATUS</p>
+      {/* ── Metrics ── */}
+      <section className="db-metrics">
+        <article>
+          <span className="db-metric-icon"><Truck size={18} /></span>
+          <small>Active orders</small>
+          <b>{activeOrders}</b>
+          <p><span>{inProd} in production</span><span>{dispatched} dispatched</span></p>
+        </article>
+        <article>
+          <span className="db-metric-icon"><FileText size={18} /></span>
+          <small>Quotes to review</small>
+          <b className={pendingQuotes > 0 ? "is-amber" : ""}>{pendingQuotes}</b>
+          <p>{pendingQuotes > 0 ? <Link href="/dashboard/quotes">Review now <ArrowRight size={13} /></Link> : <span>All caught up</span>}</p>
+        </article>
+        <article>
+          <span className="db-metric-icon"><PackageCheck size={18} /></span>
+          <small>Total saved</small>
+          <b className="is-green">{fmtINR(totalSaved)}</b>
+          <p><span>Across completed orders</span></p>
+        </article>
+        <article>
+          <span className="db-metric-icon"><CreditCard size={18} /></span>
+          <small>Credit</small>
           {creditEligible ? (
-            <>
-              <div className="inline-flex items-center gap-2 px-3 py-1 mb-3" style={{ background: "rgba(22,163,74,0.1)" }}>
-                <span className="w-2 h-2 rounded-full" style={{ background: "#16A34A" }} />
-                <span className="text-[12px] font-black uppercase tracking-wider" style={{ color: "#16A34A" }}>Net-30 Credit Active</span>
-              </div>
-              <p className="text-[13px] font-bold" style={{ color: "#0D1B2A" }}>Limit: {fmtINR(creditLimit)}</p>
-            </>
+            <><b className="is-green">Net-30</b><p><span>Limit {fmtINR(creditLimit)}</span></p></>
           ) : (
             <>
-              <p className="text-[13px] mb-3" style={{ color: "#64748B" }}>
-                <span className="font-bold" style={{ color: "#0D1B2A" }}>{ordersCompleted}</span> of 3 orders to unlock credit
-              </p>
-              <div className="w-full h-2 bg-[#F1F3F5]">
-                <div className="h-2 transition-all" style={{ width: `${Math.min((ordersCompleted / 3) * 100, 100)}%`, background: "#1B6CA8" }} />
-              </div>
-              <p className="text-[11px] mt-2" style={{ color: "#94A3B8" }}>Net-30 credit after 3 completed orders</p>
+              <b>{Math.min(ordersCompleted, 3)}<em>/3</em></b>
+              <div className="db-meter"><i style={{ width: `${Math.min((ordersCompleted / 3) * 100, 100)}%` }} /></div>
+              <p><span>Completed orders towards credit</span></p>
             </>
           )}
-        </div>
-      </div>
+        </article>
+      </section>
 
-      {/* ── Active Orders Table ── */}
-      <div className="bg-white border border-[#E7E8EB] mb-6">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-[#F1F3F5]">
-          <h2 className="font-black text-[15px] uppercase tracking-wider" style={{ color: "#0D1B2A" }}>Active Orders</h2>
-          <Link href="/dashboard/orders">
-            <button className="flex items-center gap-1 text-[12px] font-black uppercase tracking-wider hover:underline" style={{ color: "#1B6CA8" }}>
-              View all <MS icon="arrow_forward" className="text-sm" />
-            </button>
-          </Link>
-        </div>
-
-        {activeOrderList.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-16 px-8 text-center">
-            <svg width="64" height="64" viewBox="0 0 64 64" fill="none" className="mb-4">
-              <rect x="8" y="16" width="48" height="36" rx="0" stroke="#CBD5E1" strokeWidth="2"/>
-              <path d="M8 24h48" stroke="#CBD5E1" strokeWidth="2"/>
-              <rect x="20" y="32" width="24" height="12" rx="0" stroke="#CBD5E1" strokeWidth="1.5"/>
-            </svg>
-            <p className="text-[15px] font-bold mb-1" style={{ color: "#94A3B8" }}>No active orders yet</p>
-            <p className="text-[13px] mb-4" style={{ color: "#CBD5E1" }}>Ready to place your first order?</p>
-            <Link href="/products">
-              <button className="btn-fill btn-amber px-6 py-2.5 text-[13px]"><span>Browse products →</span></button>
-            </Link>
+      <div className="db-columns">
+        {/* ── Active orders ── */}
+        <section className="db-panel">
+          <div className="db-panel-head">
+            <h2>Active orders</h2>
+            <Link href="/dashboard/orders">View all <ArrowRight size={14} /></Link>
           </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-[13px]">
-              <thead>
-                <tr className="border-b border-[#F1F3F5]">
-                  {["ORDER ID", "PRODUCT", "QTY", "STATUS", "EST. DELIVERY", "NEXT STEP"].map((h, i) => (
-                    <th key={h} className="px-6 py-3 text-left font-black text-[11px] uppercase tracking-wider" style={{ color: "#94A3B8", textAlign: i === 5 ? "right" : "left" }}>{h}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {activeOrderList.map((order: any) => {
-                  const firstItem = Array.isArray(order.items) ? order.items[0] : null;
-                  return (
-                    <tr key={order.id} className="border-b border-[#F8F9FC] hover:bg-[#FAFBFC] transition-colors">
-                      <td className="px-6 py-4 font-black" style={{ color: "#E8A838", fontFamily: "monospace" }}>{order.order_id}</td>
-                      <td className="px-6 py-4 font-medium" style={{ color: "#0D1B2A" }}>
-                        {firstItem?.product_name ?? "Packaging Order"}
-                      </td>
-                      <td className="px-6 py-4" style={{ color: "#64748B" }}>
-                        {firstItem?.quantity ? `${fmt(firstItem.quantity)} units` : "—"}
-                      </td>
-                      <td className="px-6 py-4"><StatusChip status={effectiveStatus(order)} /></td>
-                      <td className="px-6 py-4" style={{ color: "#64748B" }}>
-                        {formatDelivery(order.delivery_date_label || order.estimated_delivery)}
-                      </td>
-                      <td className="px-6 py-4 text-right">
-                        {effectiveStatus(order) === "payment_pending" && order.payment_link ? (
-                          <a href={order.payment_link} target="_blank" rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1 px-3 py-1.5 font-black text-[11px] uppercase" style={{ background: "#E8A838", color: "#0D1B2A" }}>
-                            Pay advance <MS icon="open_in_new" className="text-sm" />
-                          </a>
-                        ) : order.tracking_url ? (
-                          <a href={order.tracking_url} target="_blank" rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1 font-black text-[12px] hover:underline" style={{ color: "#1B6CA8" }}>
-                            Track <MS icon="open_in_new" className="text-sm" />
-                          </a>
-                        ) : (
-                          <Link href="/dashboard/orders"><span className="font-black text-[11px] uppercase" style={{ color: "#1B6CA8" }}>View progress →</span></Link>
-                        )}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
-
-      {/* ── Pending Quotes ── */}
-      {pendingQuotesList.length > 0 && (
-        <div className="mb-6">
-          <div className="flex items-center justify-between mb-3">
-            <h2 className="font-black text-[15px] uppercase tracking-wider" style={{ color: "#0D1B2A" }}>Pending Quotes</h2>
-            <Link href="/dashboard/quotes">
-              <button className="flex items-center gap-1 text-[12px] font-black uppercase tracking-wider hover:underline" style={{ color: "#1B6CA8" }}>
-                View all <MS icon="arrow_forward" className="text-sm" />
-              </button>
-            </Link>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-            {pendingQuotesList.map((q: any) => {
-              const daysLeft = Math.max(0, Math.round((new Date(q.created_at).getTime() + 7 * 86400000 - Date.now()) / 86400000));
-              const paymentPending = q.status === "payment_pending" || q.status === "payment_processing";
-              return (
-                <div key={q.id} className="bg-white border border-[#E7E8EB] p-5">
-                  <div className="flex items-start justify-between mb-3">
-                    <span className="font-black text-[15px]" style={{ color: "#E8A838", fontFamily: "monospace" }}>{q.quote_id}</span>
-                    <span className="text-[11px] font-bold px-2 py-0.5" style={{ background: paymentPending ? "rgba(27,108,168,0.1)" : daysLeft < 2 ? "rgba(186,26,26,0.1)" : "rgba(232,168,56,0.1)", color: paymentPending ? "#1B6CA8" : daysLeft < 2 ? "#ba1a1a" : "#D97706" }}>
-                      {paymentPending ? "Advance due" : daysLeft < 2 ? `⚠ ${daysLeft}d left` : `${daysLeft}d left`}
-                    </span>
-                  </div>
-                  <p className="text-[13px] mb-1" style={{ color: "#0D1B2A" }}>
-                    {Array.isArray(q.items) ? q.items.map((i: any) => i.product_name).join(", ") : "Custom packaging"}
-                  </p>
-                  {q.total_estimated_min && (
-                    <p className="text-[13px] font-bold mb-3" style={{ color: "#64748B" }}>
-                      Est. {fmtINR(q.total_estimated_min)} – {fmtINR(q.total_estimated_max ?? q.total_estimated_min)}
-                    </p>
-                  )}
-                  <Link href="/dashboard/quotes">
-                    <button className="btn-fill btn-amber px-4 py-2 text-[12px] w-full"><span>{paymentPending ? "Open payment →" : "Review quote →"}</span></button>
-                  </Link>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
-
-      {/* ── Quick Actions ── */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-
-        {/* Reorder */}
-        <div className="bg-white border border-[#E7E8EB] p-6">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 flex items-center justify-center" style={{ background: "rgba(27,108,168,0.08)" }}>
-              <RefreshCw className="w-5 h-5" style={{ color: "#1B6CA8" }} />
+          {activeOrderList.length === 0 ? (
+            <div className="db-empty">
+              <Box size={34} />
+              <b>No active orders</b>
+              <p>Your production, QC and dispatch updates will appear here.</p>
+              <Link href="/products" className="db-btn is-amber">Browse packaging</Link>
             </div>
-            <div>
-              <p className="font-black text-[13px]" style={{ color: "#0D1B2A" }}>Reorder</p>
-              <p className="text-[12px]" style={{ color: "#94A3B8" }}>Reorder a past item</p>
-            </div>
-          </div>
-          {recentOrders.length > 0 ? (
-            <div className="flex flex-wrap gap-2">
-              {recentOrders.slice(0, 3).map((o: any) => {
-                const name = Array.isArray(o.items) && o.items[0]?.product_name ? o.items[0].product_name : o.order_id;
+          ) : (
+            <ul className="db-orders">
+              {activeOrderList.map((order: any) => {
+                const status = effectiveStatus(order);
+                const item = Array.isArray(order.items) ? order.items[0] : null;
+                const sku = findSku(item);
                 return (
-                  <Link key={o.id} href={`/configure?reorder=${o.id}`}>
-                    <button className="px-3 py-1.5 text-[11px] font-bold border border-[#E7E8EB] hover:border-[#E8A838] hover:text-[#E8A838] transition-all" style={{ color: "#64748B" }}>
-                      {name.length > 18 ? name.slice(0, 18) + "…" : name}
-                    </button>
-                  </Link>
+                  <li key={order.id}>
+                    <div className="db-order-top">
+                      {sku ? <img src={getCatalogImage(sku)} alt="" /> : <span className="db-order-ph"><Package size={20} /></span>}
+                      <div className="db-order-main">
+                        <span className="db-order-id">{order.order_id}</span>
+                        <b>{item?.product_name ?? "Packaging order"}{Array.isArray(order.items) && order.items.length > 1 ? ` +${order.items.length - 1} more` : ""}</b>
+                        <small>{item?.quantity ? `${fmt(item.quantity)} ${item.quantity_unit || "units"}` : ""} · <Clock3 size={12} /> {formatDelivery(order.delivery_date_label || order.estimated_delivery)}</small>
+                      </div>
+                      <div className="db-order-side">
+                        <StatusChip status={status} />
+                        {status === "payment_pending" && order.payment_link ? (
+                          <a href={order.payment_link} target="_blank" rel="noopener noreferrer" className="db-link is-strong">Pay advance <ExternalLink size={13} /></a>
+                        ) : order.tracking_url ? (
+                          <a href={order.tracking_url} target="_blank" rel="noopener noreferrer" className="db-link">Track shipment <ExternalLink size={13} /></a>
+                        ) : (
+                          <Link href="/dashboard/orders" className="db-link">Details <ArrowRight size={13} /></Link>
+                        )}
+                      </div>
+                    </div>
+                    <Progress status={status} />
+                  </li>
                 );
               })}
-            </div>
-          ) : (
-            <p className="text-[12px]" style={{ color: "#CBD5E1" }}>No past orders yet</p>
+            </ul>
           )}
-        </div>
+        </section>
 
-        {/* New Configuration */}
-        <div className="bg-white border border-[#E7E8EB] p-6 flex flex-col">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 flex items-center justify-center" style={{ background: "rgba(232,168,56,0.1)" }}>
-              <Plus className="w-5 h-5" style={{ color: "#E8A838" }} />
-            </div>
-            <div>
-              <p className="font-black text-[13px]" style={{ color: "#0D1B2A" }}>New Configuration</p>
-              <p className="text-[12px]" style={{ color: "#94A3B8" }}>Start a new packaging plan</p>
-            </div>
-          </div>
-          <Link href="/configure" className="mt-auto">
-            <button className="btn-fill btn-amber w-full py-2.5 text-[13px]"><span>Start Configuration →</span></button>
-          </Link>
-        </div>
+        {/* ── Side column ── */}
+        <aside className="db-side">
+          {pendingQuotesList.length > 0 && (
+            <section className="db-panel">
+              <div className="db-panel-head"><h2>Quotes</h2><Link href="/dashboard/quotes">All <ArrowRight size={14} /></Link></div>
+              <ul className="db-quotes">
+                {pendingQuotesList.slice(0, 3).map((quote: any) => {
+                  const daysLeft = Math.max(0, Math.round((new Date(quote.created_at).getTime() + 7 * 86400000 - Date.now()) / 86400000));
+                  const paymentPending = quote.status === "payment_pending" || quote.status === "payment_processing";
+                  return (
+                    <li key={quote.id}>
+                      <div><span className="db-order-id">{quote.quote_id}</span><span className={`db-chip ${paymentPending ? "is-blue" : daysLeft < 2 ? "is-red" : "is-amber"}`}>{paymentPending ? "Advance due" : `${daysLeft}d left`}</span></div>
+                      <b>{Array.isArray(quote.items) ? quote.items.map((item: any) => item.product_name).filter(Boolean).join(", ") || "Custom packaging" : "Custom packaging"}</b>
+                      {quote.total_estimated_min ? <small>Est. {fmtINR(quote.total_estimated_min)} – {fmtINR(quote.total_estimated_max ?? quote.total_estimated_min)}</small> : null}
+                      <Link href="/dashboard/quotes" className="db-link is-strong">{paymentPending ? "Open payment" : "Review quote"} <ArrowRight size={13} /></Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            </section>
+          )}
 
-        {/* Get a Sample */}
-        <div className="bg-white border border-[#E7E8EB] p-6 flex flex-col">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 flex items-center justify-center" style={{ background: "rgba(13,27,42,0.06)" }}>
-              <Package className="w-5 h-5" style={{ color: "#0D1B2A" }} />
-            </div>
-            <div>
-              <p className="font-black text-[13px]" style={{ color: "#0D1B2A" }}>Get a Sample</p>
-              <p className="text-[12px]" style={{ color: "#94A3B8" }}>Order a product sample</p>
-            </div>
-          </div>
-          <Link href="/products" className="mt-auto">
-            <button className="btn-fill btn-navy w-full py-2.5 text-[13px]"><span>Browse Products →</span></button>
-          </Link>
-        </div>
+          <section className="db-panel">
+            <div className="db-panel-head"><h2><RefreshCw size={15} /> Reorder</h2></div>
+            {reorderItems.length ? (
+              <ul className="db-reorder">
+                {reorderItems.map(({ order, item }) => {
+                  const sku = findSku(item);
+                  return (
+                    <li key={order.id}>
+                      {sku ? <img src={getCatalogImage(sku)} alt="" /> : <span className="db-order-ph"><Package size={16} /></span>}
+                      <span><b>{item.product_name}</b><small>{item.quantity ? `${fmt(item.quantity)} ${item.quantity_unit || "units"} · ` : ""}{order.order_id}</small></span>
+                      <Link href={sku ? `/products/${sku.slug}` : "/products"} className="db-btn is-line is-sm">Reorder</Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            ) : <p className="db-muted">Past orders appear here for one-click reordering.</p>}
+          </section>
+
+          <section className="db-shortcuts">
+            <Link href="/samples"><Box size={18} /><span><b>Sample kit · ₹299</b><small>25–50+ real samples</small></span><ArrowUpRight size={15} /></Link>
+            <Link href="/mockup-studio"><Package size={18} /><span><b>3D Studio</b><small>Preview your next pack</small></span><ArrowUpRight size={15} /></Link>
+            <Link href="/machinery"><Factory size={18} /><span><b>Machinery</b><small>Sealers, fillers, coders</small></span><ArrowUpRight size={15} /></Link>
+            <Link href="/circular"><Recycle size={18} /><span><b>Sell scrap</b><small>Quotes from recyclers</small></span><ArrowUpRight size={15} /></Link>
+          </section>
+        </aside>
       </div>
     </div>
   );

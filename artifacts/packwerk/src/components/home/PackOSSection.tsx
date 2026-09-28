@@ -1,4 +1,5 @@
 import { Search, Activity, ShieldCheck, Package, MapPin } from "lucide-react";
+import { money } from "@/lib/currency";
 
 const NODES = [
   { icon: Search, name: "SmartMatch", desc: "AI picks the right factory for your SKU" },
@@ -11,7 +12,7 @@ const NODES = [
 const STATS = [
   { val: "48 hrs", cap: "SmartStock SKU delivery" },
   { val: "100%", cap: "QC inspected before dispatch" },
-  { val: "₹0", cap: "Hidden charges. Ever." },
+  { val: money(0), cap: "Hidden charges. Ever." },
 ];
 
 export default function PackOSSection() {

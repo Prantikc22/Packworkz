@@ -6,6 +6,9 @@ import ComparisonSection from "@/components/home/ComparisonSection";
 import { SmartStockDemo } from "@/pages/smartstock";
 import { PackagingProcessSection, SustainabilityProofSection } from "@/components/home/CommerceExperienceSections";
 import TestimonialsSection from "@/components/home/TestimonialsSection";
+import { BeyondPackagingSection } from "@/components/home/BeyondPackagingSection";
+import { formatUnitRate, getFromUnitPrice } from "@/lib/indicative-pricing";
+import "./home-conversion.css";
 import { CATALOG_SKUS, getCatalogImage, isCatalogSkuInCategory } from "@/lib/catalog";
 import {
   Search, GitBranch, ShieldCheck, Truck,
@@ -14,6 +17,7 @@ import {
   CalendarDays, Factory, Users, Globe2, Handshake,
   Settings2, MapPin,
 } from "lucide-react";
+import { money } from "@/lib/currency";
 
 const WHATSAPP_NUM = "918208990366";
 
@@ -672,8 +676,7 @@ export default function Home() {
 
   const calc = calcNewSavings(monthlySpend, vendorBucket, useCredit);
 
-  const inr = (n: number) =>
-    new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 }).format(n);
+  const inr = (n: number) => money(Math.round(n));
 
   // ── Count-up for hero saving number ────────────────────────────
   const [displayedSaving, setDisplayedSaving] = useState(calc.annualSaving);
@@ -710,9 +713,9 @@ export default function Home() {
       <section className="pw-editorial-hero">
         <div className="pw-editorial-hero-shell">
           <div className={`pw-editorial-hero-copy ${heroLoaded ? "is-ready" : ""}`}>
-            <div className="pw-editorial-eyebrow"><i /> Packaging for a brighter tomorrow</div>
+            <div className="pw-editorial-eyebrow"><i /> AI-enabled Managed Packaging Platform</div>
             <h1>
-              Your Packaging.<br />
+              Your packaging.<br />
               Sorted. <em>Forever.</em>
             </h1>
             <p className="pw-editorial-lead">
@@ -720,15 +723,15 @@ export default function Home() {
               One partner from first prototype to scaled production.
             </p>
             <p className="pw-editorial-brand-proof">
-              Packaging operations for <strong>Plum, Haldirams and Amul</strong> — and growing teams across India.
+              Packaging operations for <strong>Plum, Haldirams and Amul</strong> — and growing teams around the world.
             </p>
 
             <div className="pw-editorial-actions">
               <div>
                 <Link href="/products" className="pw-editorial-primary">
-                  <span>Shop Packaging</span><ArrowRight size={20} />
+                  <span>Price my packaging</span><ArrowRight size={20} />
                 </Link>
-                <small>For startups &amp; growing brands</small>
+                <small>{CATALOG_SKUS.length} formats · instant or 4-hour pricing</small>
               </div>
               <div>
                 <Link href="/enterprise" className="pw-editorial-secondary">
@@ -786,10 +789,11 @@ export default function Home() {
                   <img src={getCatalogImage(sku)} alt={`${sku.name} custom printed packaging`} loading="eager" />
                 </div>
                 <div className="pw-starter-copy">
-                  <small>{sku.publicBuyingPath === "quote" ? "Request a quote" : "Buy instantly"}</small>
+                  <small>{sku.publicBuyingPath === "quote" ? "Price confirmed in 4 hrs" : `Ships in ${sku.delivery_days_india} days`}</small>
                   <h3>{sku.name}</h3>
                   <p>{sku.use_case}</p>
-                  <div><strong>MOQ {sku.moq.toLocaleString()} {sku.moq_unit}</strong><ArrowRight size={17} /></div>
+                  <span className="pw-starter-price"><em>From</em><b>{formatUnitRate(getFromUnitPrice(sku))}</b><em>/ {sku.moq_unit.replace(/s$/, "")}</em>{sku.publicBuyingPath === "quote" && <i>est.</i>}</span>
+                  <div><strong>MOQ {sku.moq.toLocaleString("en-IN")} {sku.moq_unit}</strong><ArrowRight size={17} /></div>
                 </div>
               </Link>
             ))}
@@ -1133,6 +1137,8 @@ export default function Home() {
       {/* ══════════════════════════════════════════════════════════ */}
       <BrandAdvantageSection />
 
+      <BeyondPackagingSection />
+
       {/* ══════════════════════════════════════════════════════════ */}
       {/*  SECTION 10 — SUSTAINABLE PACKAGING BAND                  */}
       {/* ══════════════════════════════════════════════════════════ */}
@@ -1256,7 +1262,7 @@ export default function Home() {
               { feature: "Pricing transparency",  good: "Visible quantity pricing, delivery and first-order launch saving.", bad: "Extra tooling and freight often appear late." },
               { feature: "Product coverage",      good: "A focused buying catalogue, with specialist formats handled through one production brief.", bad: "Specialised in one category. Source the rest yourself." },
               { feature: "Compliance & certs",    good: "Applicable documents matched to the final format and factory.", bad: "Certification varies by vendor. Risk sits with you." },
-              { feature: "Design service",        good: "Print-ready artwork from ₹1,999. Files yours forever.",         bad: "Mostly unavailable. Third-party dependency." },
+              { feature: "Design service",        good: `Print-ready artwork from ${money(1999)}. Files yours forever.`,         bad: "Mostly unavailable. Third-party dependency." },
               { feature: "Order visibility",      good: "Real-time dashboard — status, dispatch, ETA in one place.",     bad: "WhatsApp updates. No audit trail." },
               { feature: "Problem resolution",    good: "One support record across quote, production and delivery.",     bad: "Call them. Hope they answer." },
             ] as { feature: string; good: string; bad: string }[]).map((row, i) => (
@@ -1395,7 +1401,7 @@ export default function Home() {
             </p>
             <div style={{ display: "flex", gap: 12, flexWrap: "wrap" as const, justifyContent: "center" }}>
               <span className="animated-border animated-border-white">
-                <Link href="/configure">
+                <Link href="/products">
                   <button className="btn-fill btn-amber px-8 py-3 text-sm">
                     Get a managed quote →
                   </button>
@@ -1486,7 +1492,7 @@ export default function Home() {
                 <p style={{ color: "#60a5fa", fontSize: 10, fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", marginBottom: 12 }}>YOUR BRAND</p>
                 <p style={{ color: "white", fontSize: 15, fontWeight: 700, marginBottom: 8, lineHeight: 1.3 }}>Could your story be next?</p>
                 <p style={{ color: "rgba(255,255,255,0.45)", fontSize: 12, lineHeight: 1.55, marginBottom: 18 }}>Turn the next packaging brief into a managed order record.</p>
-                <Link href="/configure">
+                <Link href="/products">
                   <button style={{ background: "#1B6CA8", color: "white", padding: "10px 20px", fontSize: 13, fontWeight: 700, border: "none", cursor: "pointer" }}>
                     Get a pricing plan →
                   </button>
@@ -1534,7 +1540,7 @@ export default function Home() {
                 <div><span>Operational time returned</span><strong>{calc.timeSaved} hrs / month</strong></div>
                 <div><span>Total scenario value</span><strong>{inr(calc.totalValue)}</strong></div>
               </div>
-              <Link href="/configure"><button className="btn-fill btn-amber"><span>Build my packaging plan</span><MS icon="arrow_forward" /></button></Link>
+              <Link href="/products"><button className="btn-fill btn-amber"><span>Build my packaging plan</span><MS icon="arrow_forward" /></button></Link>
             </div>
           </div>
         </div>
@@ -1563,6 +1569,10 @@ export default function Home() {
         </div>
       </section>
 
+      <div className="pw-home-mobile-bar">
+        <Link href="/products">Price my packaging <ArrowRight size={17} /></Link>
+        <Link href="/samples">Samples {money(299)}</Link>
+      </div>
     </div>
   );
 }

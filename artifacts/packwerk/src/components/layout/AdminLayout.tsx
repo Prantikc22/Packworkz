@@ -1,16 +1,17 @@
 import { useEffect } from "react";
 import { Link, useLocation } from "wouter";
-import { Button } from "@/components/ui/button";
-import { LayoutDashboard, Package, PaintBucket, FileText, LogOut, Menu, Users } from "lucide-react";
+import { FileText, Inbox, LayoutDashboard, LogOut, Menu, Package, PaintBucket, ShieldCheck, Users } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { setExtraHeader } from "@workspace/api-client-react";
+import "@/pages/dashboard/dashboard.css";
 
 const NAV_ITEMS = [
-  { href: "/admin/quotes", label: "Quotes", icon: LayoutDashboard },
-  { href: "/admin/orders", label: "Orders", icon: Package },
-  { href: "/admin/designs", label: "Designs", icon: PaintBucket },
-  { href: "/admin/samples", label: "Samples", icon: FileText },
-  { href: "/admin/users", label: "Clients", icon: Users },
+  { href: "/admin/quotes", label: "Quotes", Icon: LayoutDashboard },
+  { href: "/admin/leads", label: "Leads & uploads", Icon: Inbox },
+  { href: "/admin/orders", label: "Orders", Icon: Package },
+  { href: "/admin/designs", label: "Designs", Icon: PaintBucket },
+  { href: "/admin/samples", label: "Samples", Icon: FileText },
+  { href: "/admin/users", label: "Clients", Icon: Users },
 ];
 
 export function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -31,87 +32,46 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
 
   const NavLinks = ({ onClick }: { onClick?: () => void }) => (
     <>
-      {NAV_ITEMS.map((item) => {
-        const isActive = location === item.href;
+      {NAV_ITEMS.map(({ href, label, Icon }) => {
+        const isActive = location.startsWith(href);
         return (
-          <Link
-            key={item.href}
-            href={item.href}
-            onClick={onClick}
-            className={`flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-colors ${
-              isActive
-                ? "bg-[#0D1B2A] text-white"
-                : "text-[#64748B] hover:bg-[#F8F9FC] hover:text-[#0D1B2A]"
-            }`}
-          >
-            <item.icon className="w-5 h-5" />
-            {item.label}
+          <Link key={href} href={href} onClick={onClick} className={`dbl-nav-link${isActive ? " is-active" : ""}`} aria-current={isActive ? "page" : undefined}>
+            <Icon size={18} /> {label}
           </Link>
         );
       })}
     </>
   );
 
+  const Brand = () => (
+    <Link href="/" className="dbl-brand" aria-label="Packworkz home"><span className="dbl-mark" aria-hidden="true"><i /><b /></span>Packworkz</Link>
+  );
+
   return (
-    <div className="min-h-screen bg-[#F8F9FC] flex">
-      <aside className="hidden md:flex flex-col w-64 bg-white border-r border-[#E2EAF4] fixed inset-y-0 z-10">
-        <div className="p-6">
-          <Link href="/" className="text-2xl font-bold text-[#0D1B2A] tracking-tight">
-            Packwerk Admin
-          </Link>
-        </div>
-        <nav className="flex-1 px-4 space-y-1 mt-4">
-          <NavLinks />
-        </nav>
-        <div className="p-4 border-t border-[#E2EAF4]">
-          <Button
-            variant="ghost"
-            className="w-full justify-start text-[#64748B] hover:text-red-600 hover:bg-red-50"
-            onClick={handleLogout}
-          >
-            <LogOut className="w-5 h-5 mr-3" />
-            Admin Logout
-          </Button>
-        </div>
+    <div className="dbl">
+      <aside className="dbl-sidebar">
+        <div className="dbl-sidebar-top"><Brand /><span className="adm-badge"><ShieldCheck size={12} /> Admin</span></div>
+        <nav className="dbl-nav" aria-label="Admin"><NavLinks /></nav>
+        <button type="button" className="dbl-signout" onClick={handleLogout}><LogOut size={17} /> Admin sign out</button>
       </aside>
-
-      <div className="flex-1 md:pl-64 flex flex-col min-h-screen">
-        <header className="bg-white border-b border-[#E2EAF4] h-16 flex items-center px-4 justify-between md:justify-end sticky top-0 z-20">
-          <div className="flex items-center md:hidden">
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button variant="ghost" size="icon">
-                  <Menu className="w-6 h-6" />
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="left" className="w-64 p-0">
-                <div className="p-6">
-                  <Link href="/" className="text-2xl font-bold text-[#0D1B2A] tracking-tight">
-                    Packwerk Admin
-                  </Link>
-                </div>
-                <nav className="px-4 space-y-1 mt-4">
-                  <NavLinks />
-                </nav>
-                <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-[#E2EAF4]">
-                  <Button
-                    variant="ghost"
-                    className="w-full justify-start text-[#64748B] hover:text-red-600 hover:bg-red-50"
-                    onClick={handleLogout}
-                  >
-                    <LogOut className="w-5 h-5 mr-3" />
-                    Admin Logout
-                  </Button>
-                </div>
-              </SheetContent>
-            </Sheet>
-            <span className="ml-4 font-bold text-[#0D1B2A]">Packwerk Admin</span>
-          </div>
+      <div className="dbl-main">
+        <header className="dbl-topbar">
+          <Sheet>
+            <SheetTrigger asChild>
+              <button className="dbl-menu" aria-label="Open menu"><Menu size={20} /></button>
+            </SheetTrigger>
+            <SheetContent side="left" className="w-72 p-0 bg-white">
+              <div className="dbl-sheet">
+                <div className="dbl-sidebar-top"><Brand /></div>
+                <nav className="dbl-nav"><NavLinks /></nav>
+                <button type="button" className="dbl-signout" onClick={handleLogout}><LogOut size={17} /> Admin sign out</button>
+              </div>
+            </SheetContent>
+          </Sheet>
+          <div className="dbl-topbar-brand"><Brand /></div>
+          <span className="adm-badge adm-topbar-badge"><ShieldCheck size={12} /> Admin console</span>
         </header>
-
-        <main className="flex-1 p-4 md:p-8">
-          {children}
-        </main>
+        <main className="dbl-content">{children}</main>
       </div>
     </div>
   );

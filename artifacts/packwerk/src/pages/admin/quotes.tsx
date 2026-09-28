@@ -253,6 +253,18 @@ function QuoteRow({ q, onRefetch }: { q: any; onRefetch: () => void }) {
                           </div>
                         </div>
                       )}
+                      {(item.artwork_file_url || item.artwork_status) && (
+                        <div className="mt-1.5 pt-1.5 border-t border-[#F1F5F9] flex items-center justify-between gap-2 text-xs">
+                          <span className="text-[#94A3B8] font-semibold uppercase tracking-wide">Artwork</span>
+                          {item.artwork_file_url && !String(item.artwork_file_url).startsWith("local:") ? (
+                            <a href={item.artwork_file_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 font-semibold text-[#1B6CA8] hover:underline">
+                              <ExternalLink className="w-3 h-3" /> Open uploaded file
+                            </a>
+                          ) : (
+                            <span className="font-medium text-[#0D1B2A]">{item.artwork_status === "design" ? "Design service" : item.custom_specs?.artwork ? "To be sent by customer" : "No file uploaded"}</span>
+                          )}
+                        </div>
+                      )}
                       {(item.sample_requested || item.design_paid || item.sample_paid) && (
                         <div className="mt-1.5 pt-1.5 border-t border-[#F1F5F9] flex flex-wrap gap-1.5">
                           {item.sample_requested && (
@@ -465,7 +477,7 @@ export default function AdminQuotes() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-[#0D1B2A]">Quote Requests</h1>
-          <p className="text-sm text-[#64748B] mt-1">Click any row to expand full details, update status, and add notes.</p>
+          <p className="text-sm text-[#64748B] mt-1">Click any row to expand full details, update status, and add notes. Contact, machinery and scrap enquiries live in <a href="/admin/leads" className="font-semibold text-[#1B6CA8] hover:underline">Leads &amp; uploads</a>.</p>
         </div>
         <div className="flex gap-2 flex-wrap">
           {["all", ...STATUS_OPTIONS].map((s) => (
@@ -503,7 +515,7 @@ export default function AdminQuotes() {
               </tr>
             </thead>
             <tbody>
-              {(quotes as any[]).map((q: any) => (
+              {(quotes as any[]).filter((q: any) => q.status !== "lead").map((q: any) => (
                 <QuoteRow key={q.id} q={q} onRefetch={refetch} />
               ))}
             </tbody>

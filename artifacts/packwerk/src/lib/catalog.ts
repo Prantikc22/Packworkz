@@ -149,7 +149,7 @@ export const ALL_CATALOG_SKUS: Sku[] = [...SKUS, ...EXPANDED_SKUS];
 const STOREFRONT_EXCLUSIONS = new Set([
   // Flexible variants consolidated into the four self-serve pouch families
   // and two enterprise flexible-film briefs below.
-  "FP-102", "FP-107", "FP-108", "FP-111", "FP-113",
+  "FP-111", "FP-113",
   // Container shapes that are options within plastic/glass families, plus
   // specialist metal and industrial formats handled as managed requests.
   "BC-203", "BC-207", "BC-208", "BC-210", "BC-211", "BC-212",
@@ -185,6 +185,16 @@ const STOREFRONT_OVERRIDES: Record<string, Partial<Sku>> = {
       { key: "hang", label: "Hang hole", options: ["None", "Round hang hole", "Euro slot"] },
       { key: "window", label: "Window", options: ["No window", "Clear window"] },
       { key: "branding", label: "Branding route", options: ["Premium applied label", "Direct digital print"] },
+    ],
+  },
+  "FP-102": {
+    name: "Centre-seal Pillow Pouch",
+    description: "A premade flat pillow pouch with a centre back seal for snacks, confectionery, soap and compact retail packs. Choose the laminate around barrier, sealing and filling needs.",
+    use_case: "Snacks, biscuits, confectionery, soap, seeds and small retail packs",
+    variants: [
+      { key: "material", label: "Material", options: ["BOPP/CPP", "BOPP/MetBOPP/CPP", "PET/PE"] },
+      { key: "finish", label: "Finish", options: ["Matte", "Gloss"] },
+      { key: "accessory", label: "Accessory", options: ["None", "Tear notch", "Euro slot"] },
     ],
   },
   "FP-103": {
@@ -235,8 +245,8 @@ const STOREFRONT_OVERRIDES: Record<string, Partial<Sku>> = {
     ],
   },
   "FP-112": {
-    name: "Flow-wrap & Pillow Pack",
-    description: "Enterprise roll-fed packaging for biscuits, snacks, bars and soap, specified around the filling machine and barrier requirement.",
+    name: "Flow-wrap & Centre-seal Rollstock",
+    description: "Enterprise roll-fed film for biscuits, snacks, bars and soap, specified around the forming shoulder, filling machine, repeat length and barrier requirement.",
   },
   "BC-201": {
     name: "Plastic Bottles & Jars",

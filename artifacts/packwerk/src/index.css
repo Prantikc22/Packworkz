@@ -227,7 +227,7 @@
 .pw-editorial-actions { margin-top: 24px; display: flex; align-items: flex-start; gap: 9px; }
 .pw-editorial-actions > div { min-width: 0; width: 226px; }
 .pw-editorial-actions > div:nth-child(2) { width: 248px; }
-.pw-editorial-actions a {
+.pw-editorial-actions > div > a {
   min-height: 54px;
   padding: 0 20px;
   display: flex;
@@ -241,11 +241,14 @@
   text-decoration: none;
   transition: transform .22s ease, box-shadow .22s ease, background .22s ease, color .22s ease;
 }
-.pw-editorial-actions a:hover { transform: translateY(-2px); box-shadow: 0 14px 28px rgba(13,27,42,.12); }
+.pw-editorial-actions > div > a:hover { transform: translateY(-2px); box-shadow: 0 14px 28px rgba(13,27,42,.12); }
 .pw-editorial-actions .pw-editorial-primary { border-color: #e1a329; background: #f2b134; }
 .pw-editorial-actions .pw-editorial-primary:hover { background: #fac34f; }
 .pw-editorial-actions .pw-editorial-secondary:hover { background: #0d1b2a; color: #fff; }
 .pw-editorial-actions small { margin-top: 6px; display: block; color: #65778a; font-size: 9px; line-height: 1.4; text-align: center; }
+.pw-editorial-enterprise { margin: 14px 0 0; color: #5d6f81; font-size: 12px; font-weight: 700; }
+.pw-editorial-enterprise a { display: inline-flex; align-items: center; gap: 5px; margin-left: 4px; color: #183c5b; font-weight: 900; text-decoration: none; border-bottom: 1px solid rgba(24,60,91,.4); }
+.pw-editorial-enterprise a:hover { color: #0d1b2a; border-color: #0d1b2a; }
 .pw-editorial-heritage {
   max-width: 620px;
   margin-top: 34px;
@@ -426,7 +429,7 @@
   .pw-editorial-brand-proof { font-size: 11px; }
   .pw-editorial-actions { flex-direction: column; gap: 14px; }
   .pw-editorial-actions > div,.pw-editorial-actions > div:nth-child(2) { width: 100%; }
-  .pw-editorial-actions a { min-height: 54px; }
+  .pw-editorial-actions > div > a { min-height: 54px; }
   .pw-editorial-actions small { text-align: left; }
   .pw-editorial-heritage { margin-top: 26px; font-size: 12px; }
   .pw-editorial-visual { margin: 22px -12px 0; }
@@ -4271,9 +4274,9 @@ body, html {
 .pw-home .pw-editorial-hero-shell {
   width: 100%;
   max-width: none;
-  min-height: 690px;
+  min-height: 730px;
   grid-template-columns: minmax(0, 1fr);
-  padding: 108px clamp(54px, 4.5vw, 88px) 48px;
+  padding: 148px clamp(54px, 4.5vw, 88px) 48px;
   isolation: isolate;
 }
 .pw-home .pw-editorial-hero-copy {

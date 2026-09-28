@@ -1,41 +1,42 @@
 import { Link } from "wouter";
+import { money } from "@/lib/currency";
 
 const ECO_SKUS = [
   {
     name: "Kraft Stand-Up Pouch",
     body: "FSC certified kraft outer with food-safe inner liner. Leak-proof seal — carries spices, dry food, snacks, and Indian grocery products without any seepage. Available with resealable zipper.",
     badges: ["Food Safe", "Leak Proof", "Recyclable", "Customisable"],
-    price: "From ₹6.50/unit",
+    price: `From ${money(6.50, 2)}/unit`,
   },
   {
     name: "Compostable Courier Bag",
     body: "TUV Austria certified compostable. Water-resistant outer surface. Tamper-evident adhesive seal. For D2C brands whose packaging needs to match their sustainability story.",
     badges: ["Water Resistant", "Tamper Evident", "Compostable"],
-    price: "From ₹12/unit",
+    price: `From ${money(12, 0)}/unit`,
   },
   {
     name: "Bagasse Food Tray",
     body: "100% sugarcane waste. Microwave safe up to 5 minutes. Oil and water resistant — no leaking, no sogging, even with gravies and curries. Ideal for QSR and cloud kitchens.",
     badges: ["Microwave Safe", "Oil Resistant", "Leak Proof"],
-    price: "From ₹5/unit",
+    price: `From ${money(5, 0)}/unit`,
   },
   {
     name: "Recycled Corrugated Box",
     body: "80-100% recycled board content. FSC certified. Full exterior print surface for brand experience. Same structural strength as virgin board. For e-commerce and export shipping.",
     badges: ["FSC Certified", "Full Printable", "Export Grade"],
-    price: "From ₹22/unit",
+    price: `From ${money(22, 0)}/unit`,
   },
   {
     name: "Mono-material PE Pouch",
     body: "Single-material construction — fully recyclable in standard plastic recycling streams. EPR compliant. Available as flat pouch, stand-up, or courier bag format. Printable with your brand design.",
     badges: ["EPR Compliant", "Fully Recyclable", "Customisable"],
-    price: "From ₹4/unit",
+    price: `From ${money(4, 0)}/unit`,
   },
   {
     name: "Paper Bubble Mailer",
     body: "Honeycomb kraft paper cushioning replaces plastic bubble wrap entirely. Water-resistant outer coating. 100% kerbside recyclable. Printable exterior for unboxing brand experience.",
     badges: ["Water Resistant", "No Plastic", "Fully Printable"],
-    price: "From ₹18/unit",
+    price: `From ${money(18, 0)}/unit`,
   },
 ];
 

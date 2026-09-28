@@ -33,7 +33,7 @@ export default function FactoryNetworkSection() {
           {/* Left: Stats */}
           <div className="lg:w-2/5 space-y-10">
             {[
-              { num: "500+", label: "Verified factory partners" },
+              { num: "50+", label: "Verified factory partners" },
               { num: "1", label: "Owned manufacturing facility", sub: "Flexo + Rotogravure · Indore, India" },
               { num: "40+", label: "Countries we deliver to" },
             ].map((s) => (

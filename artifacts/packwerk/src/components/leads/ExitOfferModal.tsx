@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { ArrowRight, CheckCircle2, Layers, Loader2, PackageOpen, Truck, X } from "lucide-react";
 import { Link } from "wouter";
+import { money } from "@/lib/currency";
 
 const SESSION_KEY = "packworkz_exit_offer_seen_v2";
 const CAPTURED_KEY = "packworkz_exit_offer_captured_v2";
@@ -128,12 +129,12 @@ export function ExitOfferModal({ location }: { location: string }) {
             <span className="absolute left-5 top-5 bg-[#F2B134] px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.16em] text-slate-950">Sample kit</span>
             <div className="px-7 pb-8 pt-6 sm:px-9">
               <h2 id="exit-offer-title" className="text-[2rem] font-black leading-[1.02] tracking-tight sm:text-4xl" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
-                Get 25–50+ samples for just <span className="text-[#F2B134]">₹{SAMPLE_KIT_PRICE}.</span>
+                Get 25–50+ samples for just <span className="text-[#F2B134]">{money(SAMPLE_KIT_PRICE)}.</span>
               </h2>
               <ul className="mt-5 grid gap-2.5 text-sm text-blue-100/85">
                 <li className="flex items-center gap-2.5"><PackageOpen size={16} className="shrink-0 text-[#F2B134]" /> Real pouches, boxes, labels and mailers</li>
                 <li className="flex items-center gap-2.5"><Layers size={16} className="shrink-0 text-[#F2B134]" /> Material & finish swatches to compare</li>
-                <li className="flex items-center gap-2.5"><Truck size={16} className="shrink-0 text-[#F2B134]" /> Flat ₹{SAMPLE_KIT_SHIPPING} shipping, dispatched in 2–3 days</li>
+                <li className="flex items-center gap-2.5"><Truck size={16} className="shrink-0 text-[#F2B134]" /> Flat {money(SAMPLE_KIT_SHIPPING)} shipping, dispatched in 2–3 days</li>
               </ul>
             </div>
           </div>
@@ -143,7 +144,7 @@ export function ExitOfferModal({ location }: { location: string }) {
               <div className="flex h-full min-h-64 flex-col justify-center">
                 <CheckCircle2 size={42} className="text-emerald-600" />
                 <h3 className="mt-5 text-2xl font-black text-slate-950">Your kit is reserved.</h3>
-                <p className="mt-3 text-sm leading-6 text-slate-600">We’ve saved your details. Finish the ₹{SAMPLE_KIT_PRICE + SAMPLE_KIT_SHIPPING} checkout now, or our team will reach out to help you choose.</p>
+                <p className="mt-3 text-sm leading-6 text-slate-600">We’ve saved your details. Finish the {money(SAMPLE_KIT_PRICE + SAMPLE_KIT_SHIPPING)} checkout now, or our team will reach out to help you choose.</p>
                 <Link href="/samples#sample-kit-order" onClick={() => setOpen(false)} className="mt-7 flex h-[52px] items-center justify-center gap-2 rounded-lg bg-[#F2B134] px-5 text-sm font-black text-slate-950 transition hover:bg-[#ffca59]">
                   Complete my kit order <ArrowRight size={17} />
                 </Link>
@@ -182,11 +183,11 @@ export function ExitOfferModal({ location }: { location: string }) {
                   disabled={state === "sending"}
                   className="mt-6 flex h-[52px] w-full items-center justify-center gap-2 rounded-lg bg-[#F2B134] px-5 text-sm font-black text-slate-950 transition hover:bg-[#ffca59] disabled:cursor-wait disabled:opacity-70"
                 >
-                  {state === "sending" ? <><Loader2 size={17} className="animate-spin" /> Saving…</> : <>Claim my ₹{SAMPLE_KIT_PRICE} sample kit <ArrowRight size={17} /></>}
+                  {state === "sending" ? <><Loader2 size={17} className="animate-spin" /> Saving…</> : <>Claim my {money(SAMPLE_KIT_PRICE)} sample kit <ArrowRight size={17} /></>}
                 </button>
                 <Link href="/samples" onClick={() => setOpen(false)} className="mt-3 block text-center text-xs font-bold text-slate-500 underline-offset-4 hover:text-slate-900 hover:underline">See what’s inside the kit</Link>
                 <p className="mt-4 text-[10px] leading-4 text-slate-500">
-                  ₹{SAMPLE_KIT_PRICE} + ₹{SAMPLE_KIT_SHIPPING} shipping across India. By submitting, you agree that Packworkz may contact you about packaging and this offer by email, phone or WhatsApp. You can opt out anytime.
+                  {money(SAMPLE_KIT_PRICE)} + {money(SAMPLE_KIT_SHIPPING)} shipping across India. By submitting, you agree that Packworkz may contact you about packaging and this offer by email, phone or WhatsApp. You can opt out anytime.
                 </p>
               </form>
             )}

@@ -116,7 +116,7 @@ export default function Network() {
             <div className="pw-p-hero-fade" style={{ ["--d" as string]: "300ms" }}><NetworkGraph /></div>
           </div>
           <div className="pw-p-hero-foot pw-p-hero-fade" style={{ ["--d" as string]: "900ms", marginTop: 40 }}>
-            <div><b><CountUp value="500+" /></b><small>Verified partners</small></div>
+            <div><b><CountUp value="50+" /></b><small>Verified partners</small></div>
             <div><b><CountUp value="20+" /></b><small>States covered</small></div>
             <div><b><CountUp value="3×" /></b><small>Backup vendors / order</small></div>
             <div><b><CountUp value="100%" /></b><small>QC pre-dispatch</small></div>

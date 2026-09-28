@@ -37,6 +37,8 @@ import SmartStock from "@/pages/smartstock";
 import SmartStockDemoPage from "@/pages/smartstock-demo";
 import PackAIPlanner from "@/pages/pack-ai";
 import Network from "@/pages/network";
+import Machinery from "@/pages/machinery";
+import Circular from "@/pages/circular";
 import Privacy from "@/pages/privacy";
 import Terms from "@/pages/terms";
 import Refund from "@/pages/refund";
@@ -60,6 +62,7 @@ import AdminOrders from "@/pages/admin/orders";
 import AdminDesigns from "@/pages/admin/designs";
 import AdminSamples from "@/pages/admin/samples";
 import AdminUsers from "@/pages/admin/users";
+import AdminLeads from "@/pages/admin/leads";
 
 setAuthTokenGetter(() => localStorage.getItem("packwerk_access_token"));
 
@@ -140,6 +143,8 @@ function Router() {
       <PublicRoute path="/smartstock" component={SmartStock} layout={PublicLayout} />
       <Route path="/pack-ai" component={PackAIPlanner} />
       <PublicRoute path="/network" component={Network} layout={PublicLayout} />
+      <PublicRoute path="/machinery" component={Machinery} layout={PublicLayout} />
+      <PublicRoute path="/circular" component={Circular} layout={PublicLayout} />
       <PublicRoute path="/privacy" component={Privacy} layout={PublicLayout} />
       <PublicRoute path="/terms" component={Terms} layout={PublicLayout} />
       <PublicRoute path="/refund" component={Refund} layout={PublicLayout} />
@@ -162,6 +167,7 @@ function Router() {
       <Route path="/admin/login" component={AdminLogin} />
       <AdminRoute path="/admin" component={() => <Redirect to="/admin/quotes" />} />
       <AdminRoute path="/admin/quotes" component={AdminQuotes} layout={AdminLayout} />
+      <AdminRoute path="/admin/leads" component={AdminLeads} layout={AdminLayout} />
       <AdminRoute path="/admin/orders" component={AdminOrders} layout={AdminLayout} />
       <AdminRoute path="/admin/designs" component={AdminDesigns} layout={AdminLayout} />
       <AdminRoute path="/admin/samples" component={AdminSamples} layout={AdminLayout} />

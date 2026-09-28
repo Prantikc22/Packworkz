@@ -1,5 +1,6 @@
 import { calculateOrderEstimate } from "@/lib/pricing";
 import { getUnitPriceForQuantity, requiresQuote, type CatalogSku } from "@/lib/catalog";
+import { money } from "@/lib/currency";
 
 export type IndicativePrice = {
   /** True when the price is a market-based estimate confirmed by a specialist. */
@@ -52,10 +53,9 @@ export function getFromUnitPrice(sku: CatalogSku): number {
 }
 
 export function formatRupeeRange(low: number, high: number, fractionDigits = 0) {
-  const format = (value: number) => `₹${value.toLocaleString("en-IN", { minimumFractionDigits: fractionDigits, maximumFractionDigits: fractionDigits })}`;
-  return `${format(low)} – ${format(high)}`;
+  return `${money(low, fractionDigits)} – ${money(high, fractionDigits)}`;
 }
 
 export function formatUnitRate(value: number) {
-  return `₹${value.toLocaleString("en-IN", { minimumFractionDigits: value < 100 ? 2 : 0, maximumFractionDigits: value < 100 ? 2 : 0 })}`;
+  return money(value, value < 100 ? 2 : 0);
 }

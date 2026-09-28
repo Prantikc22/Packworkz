@@ -8,6 +8,7 @@ import {
 import { formatUnitRate, getFromUnitPrice } from "@/lib/indicative-pricing";
 import { MOCKUP_FORMAT_BY_SKU } from "@/lib/studio-handoff";
 import "./catalog.css";
+import { money } from "@/lib/currency";
 
 type Mode = "all" | "instant" | "quote";
 type Sort = "recommended" | "price" | "moq" | "fastest" | "name";
@@ -73,7 +74,7 @@ function SampleKitCard() {
       <img src="/images/sample-kit-hero-v1.webp" alt="Packworkz sample kit" loading="lazy" />
       <div>
         <small>Not sure yet?</small>
-        <h3>Feel 25–50+ real samples for ₹299.</h3>
+        <h3>Feel 25–50+ real samples for {money(299)}.</h3>
         <p>Pouches, boxes, labels and finishes — delivered to your desk.</p>
         <span className="pc-card-cta">Get the sample kit <ArrowRight size={15} /></span>
       </div>
@@ -201,7 +202,7 @@ export default function Products() {
           <PackageOpen size={40} />
           <h2>No format matches yet.</h2>
           <p>Try a broader search, or tell us what you’re packing and we’ll recommend the right format.</p>
-          <div><Link href="/contact" className="pc-btn is-dark">Ask a packaging expert</Link><Link href="/samples" className="pc-btn">Order the ₹299 sample kit</Link></div>
+          <div><Link href="/contact" className="pc-btn is-dark">Ask a packaging expert</Link><Link href="/samples" className="pc-btn">Order the {money(299)} sample kit</Link></div>
         </div>
       ) : (
         <div className="pc-grid">

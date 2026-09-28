@@ -372,27 +372,48 @@ function addArtworkPanel(format: MockupFormat, root: THREE.Group, material: THRE
   root.add(panel);
 }
 
+const PRINT_ON_BODY = new Set<MockupFormat>(["pouch", "coffee", "tube"]);
+
+/** Front-facing planar UVs in model space, so the artwork maps across the pack face. */
+function projectFrontUvs(geometry: THREE.BufferGeometry, matrix: THREE.Matrix4) {
+  const position = geometry.attributes.position;
+  const point = new THREE.Vector3();
+  let minX = Infinity; let maxX = -Infinity; let minY = Infinity; let maxY = -Infinity;
+  const projected: number[] = [];
+  for (let index = 0; index < position.count; index += 1) {
+    point.fromBufferAttribute(position, index).applyMatrix4(matrix);
+    projected.push(point.x, point.y);
+    minX = Math.min(minX, point.x); maxX = Math.max(maxX, point.x);
+    minY = Math.min(minY, point.y); maxY = Math.max(maxY, point.y);
+  }
+  const width = Math.max(0.001, maxX - minX);
+  const height = Math.max(0.001, maxY - minY);
+  const uv = new Float32Array(position.count * 2);
+  for (let index = 0; index < position.count; index += 1) {
+    uv[index * 2] = (projected[index * 2] - minX) / width;
+    uv[index * 2 + 1] = (projected[index * 2 + 1] - minY) / height;
+  }
+  geometry.setAttribute("uv", new THREE.BufferAttribute(uv, 2));
+  return geometry;
+}
+
 function prepareLoadedProduct(
   format: MockupFormat,
   root: THREE.Group,
   bodyMaterial: THREE.MeshPhysicalMaterial,
   artworkMaterial: THREE.MeshPhysicalMaterial,
 ) {
-  let artworkApplied = false;
+  const bodies: THREE.Mesh[] = [];
   root.traverse((object) => {
     if (!(object instanceof THREE.Mesh)) return;
     object.castShadow = true;
     object.receiveShadow = true;
-    if (object.userData.packworkz_role === "artwork") {
-      disposeMaterial(object.material);
-      object.material = bodyMaterial;
-      artworkApplied = true;
-    }
+    if (object.userData.packworkz_role === "artwork") bodies.push(object);
   });
 
-  // Older exports may omit custom properties. Keep the preview useful by applying
-  // artwork to the largest mesh instead of silently showing a blank model.
-  if (!artworkApplied) {
+  // Older exports may omit custom properties. Keep the preview useful by treating
+  // the largest mesh as the printable body instead of showing a blank model.
+  if (!bodies.length) {
     let largest: THREE.Mesh | undefined;
     let largestVolume = 0;
     root.traverse((object) => {
@@ -405,13 +426,21 @@ function prepareLoadedProduct(
         largestVolume = volume;
       }
     });
-    if (largest) {
-      disposeMaterial(largest.material);
-      largest.material = bodyMaterial;
-    }
+    if (largest) bodies.push(largest);
   }
 
-  addArtworkPanel(format, root, artworkMaterial);
+  if (PRINT_ON_BODY.has(format)) {
+    // Print straight onto the pack surface. A separate flat artwork plane floats
+    // off thin pouch and tube models and reads as a "slice" once they rotate.
+    root.updateMatrixWorld(true);
+    bodies.forEach((body) => {
+      body.geometry = projectFrontUvs(body.geometry.clone(), body.matrixWorld);
+      body.material = artworkMaterial;
+    });
+  } else {
+    bodies.forEach((body) => { body.material = bodyMaterial; });
+    addArtworkPanel(format, root, artworkMaterial);
+  }
   root.rotation.y = ["tube", "pouch", "coffee", "jar"].includes(format) ? 0.34 : -0.38;
   root.updateMatrixWorld(true);
   const initialBox = new THREE.Box3().setFromObject(root);
@@ -444,7 +473,7 @@ const BACKDROPS: Record<StudioBackdrop, { sky: string; floor: string; hemi: stri
 };
 
 const CAMERA_VIEWS: Record<CameraView, [number, number, number]> = {
-  hero: [7.1, 4.9, 8.4],
+  hero: [7.9, 5.3, 9.4],
   front: [0, 1.2, 10.4],
   side: [10.2, 1.6, 1.4],
   top: [0.4, 10.8, 3.2],
@@ -480,7 +509,7 @@ export function PackagingMockupCanvas({
     controls: OrbitControls;
     hemi: THREE.HemisphereLight;
     rim: THREE.DirectionalLight;
-    floor: THREE.Mesh<THREE.CircleGeometry, THREE.MeshStandardMaterial>;
+    floor: THREE.Mesh<THREE.PlaneGeometry, THREE.ShadowMaterial>;
     cameraTarget?: THREE.Vector3;
   }>(undefined);
   const autoRotateRef = useRef(autoRotate);
@@ -505,7 +534,7 @@ export function PackagingMockupCanvas({
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.08;
     renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.shadowMap.type = THREE.PCFShadowMap;
     mount.appendChild(renderer.domElement);
 
     const controls = new OrbitControls(camera, renderer.domElement);
@@ -522,11 +551,16 @@ export function PackagingMockupCanvas({
     key.position.set(5, 8, 6);
     key.castShadow = true;
     key.shadow.mapSize.set(2048, 2048);
+    key.shadow.camera.left = -8; key.shadow.camera.right = 8; key.shadow.camera.top = 8; key.shadow.camera.bottom = -8;
+    key.shadow.radius = 6;
     scene.add(key);
     const rim = new THREE.DirectionalLight("#75B8EC", 2.1);
     rim.position.set(-5, 4, -4);
     scene.add(rim);
-    const floor = mesh(new THREE.CircleGeometry(8, 96), new THREE.MeshStandardMaterial({ color: "#D5DEE7", roughness: 0.92 })) as THREE.Mesh<THREE.CircleGeometry, THREE.MeshStandardMaterial>;
+    // Shadow-only ground: the product sits on the backdrop with a soft contact
+    // shadow, and there is no visible floor edge to read as a slab.
+    const floor = new THREE.Mesh(new THREE.PlaneGeometry(80, 80), new THREE.ShadowMaterial({ opacity: 0.16 }));
+    floor.receiveShadow = true;
     floor.rotation.x = -Math.PI / 2;
     floor.position.y = -2.55;
     scene.add(floor);
@@ -591,7 +625,7 @@ export function PackagingMockupCanvas({
     const palette = BACKDROPS[backdrop];
     ctx.scene.background = new THREE.Color(palette.sky);
     ctx.scene.fog = new THREE.Fog(palette.sky, 12, 22);
-    ctx.floor.material.color.set(palette.floor);
+    ctx.floor.material.opacity = backdrop === "night" ? 0.4 : 0.16;
     ctx.hemi.color.set(palette.hemi);
     ctx.hemi.groundColor.set(palette.ground);
     ctx.rim.color.set(palette.rim);

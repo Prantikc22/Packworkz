@@ -9,6 +9,7 @@ import { trackMarketingEvent } from "@/lib/analytics";
 import { Marquee } from "@/components/marketing/motion";
 import "./marketing-redesign.css";
 import "./premium-pages.css";
+import { money } from "@/lib/currency";
 
 const INDUSTRIES = [
   { name: "Food & Beverage", href: "/industries/food", image: "/industries/food.webp", event: "food-beverage" },
@@ -76,7 +77,7 @@ export default function GrowingBrands() {
       </section>
 
       <div className="pw-p-ticker">
-        <Marquee speed={44}>{["MOQs from 25 units", "Premium finishes", "Design support", "3D preview", "₹299 sample kit", "Pan-India delivery", "Reorder in one click"].map((item) => <span className="pw-p-ticker-item" key={item}>{item}</span>)}</Marquee>
+        <Marquee speed={44}>{["MOQs from 25 units", "Premium finishes", "Design support", "3D preview", `${money(299)} sample kit`, "Pan-India delivery", "Reorder in one click"].map((item) => <span className="pw-p-ticker-item" key={item}>{item}</span>)}</Marquee>
       </div>
 
       <section className="pw-marketing-section pw-grow-industries">

@@ -5,6 +5,7 @@ import { useSubmitQuote } from "@workspace/api-client-react";
 import { LAUNCH_PROMOTION_CODE, RAZORPAY_PAYMENT_LIMIT_RUPEES } from "@workspace/commerce";
 import { CATALOG_SKUS } from "@/lib/catalog";
 import { formatINR } from "@/lib/format";
+import { billedInInrNote, isUsd } from "@/lib/currency";
 import { formatCartPrice, getCartCheckoutDecision, getCartConfigurationDetails, getCartLinePrice, sumCartLinePrices, useCart } from "@/lib/cart";
 import { openOrderPayment, prepareOrderPayment } from "@/lib/razorpay";
 import { useToast } from "@/hooks/use-toast";
@@ -215,6 +216,7 @@ export default function CartCheckout() {
             })}
           </div>
           <div className="flex items-end justify-between py-6"><span className="font-bold">{total.estimated ? "Estimated total" : "Payable now"}</span><strong className="text-right text-2xl">{formatCartPrice(total)}</strong></div>
+          {isUsd() && !total.estimated && <p className="-mt-4 pb-4 text-right text-xs text-white/55">{billedInInrNote(total.high)}</p>}
           <p className="-mt-3 mb-5 text-xs leading-5 text-white/55">{total.estimated ? "Market-based estimate, ex-GST. Nothing is charged today — you approve the confirmed price first." : "Includes GST and estimated delivery. Final freight may be adjusted if the packed weight, volume or destination serviceability differs."}</p>
           <button disabled={launchingPayment || submitQuote.isPending || unresolvedItems.length > 0} className="flex h-14 w-full items-center justify-center gap-3 bg-amber px-5 text-lg font-black text-navy hover:bg-[#d99a29] disabled:cursor-wait disabled:opacity-60">
             <LockKeyhole className="h-5 w-5" /> {unresolvedItems.length ? "Review cart first" : launchingPayment || submitQuote.isPending ? (quoteRequired ? "Sending quote request..." : "Opening secure payment...") : quoteRequired ? "Confirm my price" : "Pay securely"}

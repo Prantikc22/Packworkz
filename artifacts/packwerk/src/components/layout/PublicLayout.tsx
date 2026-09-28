@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "wouter";
 import {
   Package, Box, ShoppingBag, Layers, RotateCcw, Tag, Leaf, Gift,
-  Zap, Factory, Pill, Sparkles, Cpu, UtensilsCrossed, Gem, Globe,
+  Zap, Factory, Pill, Sparkles, Cpu, UtensilsCrossed, Gem, Globe, Recycle,
   ChevronDown, BookOpen, Info, Network,
   Users, Mail, Calculator, FileText, Lightbulb, Bot, Palette,
   ClipboardCheck, Truck, ShieldCheck, MapPinned, MessageSquare,
@@ -13,6 +13,7 @@ import { CartDrawer } from "@/components/cart/CartDrawer";
 import { ExitOfferModal } from "@/components/leads/ExitOfferModal";
 import { useCart } from "@/lib/cart";
 import { ARTICLES } from "@/lib/resources-data";
+import { getDisplayCurrency, money, setDisplayCurrency } from "@/lib/currency";
 
 function BrandLogo({ footer = false }: { footer?: boolean }) {
   return (
@@ -119,6 +120,16 @@ const PAGE_SEO: Record<string, { title: string; description: string; keywords: s
     title: "Packworkz Account Login | Orders & Quotes",
     description: "Sign in to your Packworkz account to view orders, quotes, production status and repeat-order specifications.",
     keywords: "Packworkz login, packaging order dashboard login, packaging quotes account",
+  },
+  "/machinery": {
+    title: "Packaging Machines for D2C & Food Brands India | Sealers, Fillers, Coders | Packworkz",
+    description: "Impulse, band, induction and vacuum sealers, tube, powder and liquid fillers, batch coders, labellers and automatic VFFS lines — matched to your product and output, with packaging that runs on them.",
+    keywords: "packaging machine India, band sealer price, pouch sealing machine, batch coding machine, powder filling machine, VFFS machine India",
+  },
+  "/circular": {
+    title: "Sell Packaging & Plastic Scrap | Recycling Pickup India | Packworkz Circular",
+    description: "Turn film trim, laminate offcuts, corrugated and plastic rejects into revenue. Get per-kg quotes from registered recyclers, with pickup, weighbridge slips and documentation.",
+    keywords: "sell plastic scrap India, packaging scrap buyer, film scrap recycling, corrugated scrap pickup, EPR recycling partner",
   },
   "/network": {
     title: "Packworkz Packaging Manufacturer Network India",
@@ -242,6 +253,8 @@ const ABOUT_ITEMS = [
   { icon: Info,     label: "Our Story",       href: "/about" },
   { icon: BookOpen, label: "How It Works",    href: "/how-it-works" },
   { icon: Network,  label: "Factory Network", href: "/network" },
+  { icon: Factory,  label: "Packaging Machinery", href: "/machinery" },
+  { icon: Recycle,  label: "Packworkz Circular", href: "/circular" },
   { icon: Users,    label: "Careers",         href: "/careers" },
   { icon: Mail,     label: "Contact Us",      href: "/contact" },
 ];
@@ -433,6 +446,21 @@ const GLOBAL_STYLES = `
   .pw-nav-home-light .po-nav-link.active { color:#b87500; }
   .pw-nav-home-light .po-cta-btn { padding:10px 24px; border-radius:999px; background:#0d1b2a; color:#fff; }
   .pw-nav-home-light .po-cta-btn::before { background:#18344a; }
+
+  .pw-site-header {
+    top: 18px;
+    width: min(calc(100% - 64px), 1680px);
+    border-radius: 999px;
+    backdrop-filter: blur(30px) saturate(150%) brightness(.62);
+    -webkit-backdrop-filter: blur(30px) saturate(150%) brightness(.62);
+  }
+  .pw-site-header .po-cta-btn { border-radius: 999px; }
+  .pw-currency-switch { display:inline-flex; padding:3px; border:1px solid rgba(255,255,255,.14); border-radius:999px; }
+  .pw-currency-switch button { padding:4px 10px; border:0; border-radius:999px; background:transparent; color:#94A3B8; font-size:12px; font-weight:700; cursor:pointer; }
+  .pw-currency-switch button[aria-pressed="true"] { background:rgba(255,255,255,.12); color:#fff; }
+  @media (max-width: 1023px) {
+    .pw-site-header { top: 0; width: 100%; border-radius: 0; backdrop-filter: none; -webkit-backdrop-filter: none; }
+  }
 
   /* Amber CTA button fill animation */
   .po-cta-btn {
@@ -694,6 +722,8 @@ function AboutMenu() {
             { icon: Network, label: "Factory Network", desc: "Production routes matched to your spec", href: "/network" },
             { icon: ShieldCheck, label: "Quality Workflow", desc: "Documented checkpoints before dispatch", href: "/how-it-works" },
             { icon: Zap, label: "SmartStock", desc: "Plan repeat orders before stock becomes urgent", href: "/smartstock" },
+            { icon: Factory, label: "Packaging Machinery", desc: "Sealers, fillers and coders for your line", href: "/machinery" },
+            { icon: Recycle, label: "Packworkz Circular", desc: "Sell production scrap to verified recyclers", href: "/circular" },
           ].map(item => (
             <Link key={item.label} href={item.href} className="po-mega-link">
               <IconBox Icon={item.icon} />
@@ -1193,11 +1223,8 @@ function PackAIWidget() {
 function SampleSupportWidget({ location }: { location: string }) {
   const [open, setOpen] = useState(false);
 
-  useEffect(() => {
-    if (location !== "/" || !window.matchMedia("(min-width: 900px)").matches) return;
-    const timer = window.setTimeout(() => setOpen(true), 1800);
-    return () => window.clearTimeout(timer);
-  }, [location]);
+  // The home hero now carries the sample-kit link and a price widget, so the
+  // prompt no longer auto-opens over it; it stays one click away.
 
   if (location.startsWith("/samples")) return null;
 
@@ -1208,13 +1235,13 @@ function SampleSupportWidget({ location }: { location: string }) {
           <button type="button" className="pw-sample-widget-close" onClick={() => setOpen(false)} aria-label="Close sample prompt"><X size={17} /></button>
           <span className="pw-sample-widget-kicker">FEEL IT BEFORE YOU ORDER IT</span>
           <strong>Get 25–50+ packaging samples.</strong>
-          <p>A curated material and format kit delivered to your doorstep for <b>₹299 + ₹100 shipping</b>.</p>
+          <p>A curated material and format kit delivered to your doorstep for <b>{money(299)} + {money(100)} shipping</b>.</p>
           <Link href="/samples" className="pw-sample-widget-link">Get a sample kit <ArrowRight size={17} /></Link>
         </div>
       )}
       <button type="button" className="pw-sample-widget-trigger" onClick={() => setOpen(value => !value)} aria-expanded={open}>
         <Package size={22} />
-        <span>Get samples<small>₹299 + ₹100 shipping</small></span>
+        <span>Get samples<small>{money(299)} + {money(100)} shipping</small></span>
       </button>
     </aside>
   );
@@ -1232,10 +1259,28 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
   const [isLoggedIn, setIsLoggedIn] = useState(() => !!localStorage.getItem("packwerk_access_token"));
   const { count: cartCount, openCart } = useCart();
 
+  // Desktop uses the floating pill in every state; mobile keeps the original
+  // light-over-home-hero / solid-navy / blue-on-scroll treatment.
+  const [isMobileNav, setIsMobileNav] = useState(false);
+  useEffect(() => {
+    const query = window.matchMedia("(max-width: 1023px)");
+    const sync = () => setIsMobileNav(query.matches);
+    sync();
+    query.addEventListener("change", sync);
+    return () => query.removeEventListener("change", sync);
+  }, []);
+
   const isHome = location === "/";
   const navFloating = scrolled;
-  const navSolid = scrolled || !isHome;
-  const navHomeLight = isHome && !scrolled;
+  const navSolid = !isMobileNav || scrolled || !isHome;
+  const navHomeLight = isMobileNav && isHome && !scrolled;
+  const navBackground = navFloating ? "#0B3FA0" : !isMobileNav ? "linear-gradient(180deg, rgba(20, 42, 70, 0.72), rgba(9, 24, 44, 0.66))" : navSolid ? "#0D1B2A" : "transparent";
+  const navBorder = navFloating
+    ? (isMobileNav ? "0 solid transparent" : "1px solid rgba(255,255,255,.08)")
+    : !isMobileNav ? "1px solid rgba(255,255,255,.18)" : navSolid ? "1px solid #20364B" : "1px solid transparent";
+  const navShadow = navFloating
+    ? (isMobileNav ? "0 10px 30px rgba(3, 31, 86, 0.22)" : "0 14px 36px rgba(3, 31, 86, 0.28)")
+    : isMobileNav ? "none" : "inset 0 1px 0 rgba(255,255,255,.14), 0 18px 44px rgba(3, 15, 26, 0.22)";
 
   useEffect(() => {
     document.documentElement.classList.remove("dark");
@@ -1337,17 +1382,14 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
 
       {/* ── NAV ── */}
       <header
-        className={`fixed flex items-center justify-between px-6 md:px-10 h-[68px] ${navHomeLight ? "pw-nav-home-light" : navSolid ? "pw-nav-floating" : "pw-nav-top"}`}
+        className={`pw-site-header fixed flex items-center justify-between px-6 md:px-10 h-[68px] ${navHomeLight ? "pw-nav-home-light" : navSolid ? "pw-nav-floating" : "pw-nav-top"}`}
         style={{
           zIndex: 1000,
-          top: 0,
           left: "50%",
-          width: "100%",
           transform: "translateX(-50%)",
-          borderRadius: 0,
-          background: navFloating ? "#0B3FA0" : navSolid ? "#0D1B2A" : "transparent",
-          border: navFloating ? "0 solid transparent" : navSolid ? "1px solid #20364B" : "1px solid transparent",
-          boxShadow: navFloating ? "0 10px 30px rgba(3, 31, 86, 0.22)" : "none",
+          background: navBackground,
+          border: navBorder,
+          boxShadow: navShadow,
           transition: "top 0.24s ease, width 0.24s ease, border-radius 0.24s ease, background-color 0.24s ease, border-color 0.24s ease, box-shadow 0.24s ease",
           willChange: "top, width, background-color, box-shadow",
         }}
@@ -1648,6 +1690,8 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
             {[
               { label: "About Us", href: "/about" },
               { label: "How It Works", href: "/how-it-works" },
+              { label: "Packaging Machinery", href: "/machinery" },
+              { label: "Packworkz Circular", href: "/circular" },
               { label: "Sustainability", href: "/sustainable" },
               { label: "Resources", href: "/resources" },
               { label: "Careers", href: "/careers" },
@@ -1718,7 +1762,14 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
         {/* Bottom bar */}
         <div className="po-footer-bottom" style={{ borderTop: "1px solid rgba(255,255,255,0.08)", padding: "18px 64px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
           <p style={{ color: "#94A3B8", fontSize: 13, margin: 0 }}>© {new Date().getFullYear()} Packworkz India. All rights reserved.</p>
-          <div style={{ display: "flex", gap: 20 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 20, flexWrap: "wrap" }}>
+            <div className="pw-currency-switch" role="group" aria-label="Display currency">
+              {(["INR", "USD"] as const).map((code) => (
+                <button key={code} type="button" aria-pressed={getDisplayCurrency() === code} onClick={() => getDisplayCurrency() !== code && setDisplayCurrency(code)}>
+                  {code === "INR" ? "₹ INR" : "$ USD"}
+                </button>
+              ))}
+            </div>
             {[{ label: "Privacy Policy", href: "/privacy" }, { label: "Terms of Service", href: "/terms" }, { label: "Refund Policy", href: "/refund" }].map(l => (
               <Link key={l.label} href={l.href}
                 style={{ color: "#94A3B8", fontSize: 13, textDecoration: "none", transition: "color 0.15s" }}

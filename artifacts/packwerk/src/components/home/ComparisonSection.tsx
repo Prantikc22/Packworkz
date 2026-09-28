@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "wouter";
+import { money } from "@/lib/currency";
 
 export default function ComparisonSection() {
   const [showAllComparisons, setShowAllComparisons] = useState(false);
@@ -57,7 +58,7 @@ export default function ComparisonSection() {
             { feature: "Pricing transparency", good: "Itemised estimates, approved changes, and one order record.",        bad: "Changes are scattered across calls and messages." },
             { feature: "Product coverage",     good: "A focused buying catalogue, plus a managed route for specialist production.", bad: "Specialised in one category. Source the rest yourself." },
             { feature: "Compliance & certs",   good: "Documents are matched to the selected material, format, and factory.", bad: "Certification varies by vendor. Risk sits with you." },
-            { feature: "Design service",       good: "Print-ready artwork from ₹1,999. Files yours forever.",         bad: "Mostly unavailable. Third-party dependency." },
+            { feature: "Design service",       good: `Print-ready artwork from ${money(1999)}. Files yours forever.`,         bad: "Mostly unavailable. Third-party dependency." },
             { feature: "Order visibility",     good: "Real-time dashboard — status, dispatch, ETA in one place.",     bad: "WhatsApp updates. No audit trail." },
             { feature: "Problem resolution",   good: "One shared issue record with a clear owner and next action.",       bad: "Call them. Hope they answer." },
           ] as { feature: string; good: string; bad: string }[]).map((row, i) => (
@@ -134,8 +135,8 @@ export default function ComparisonSection() {
           </p>
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "center" }}>
             <span className="animated-border animated-border-white">
-              <Link href="/configure">
-                <button className="btn-fill btn-amber px-8 py-3 text-sm">Start Configuration →</button>
+              <Link href="/products">
+                <button className="btn-fill btn-amber px-8 py-3 text-sm">Price my packaging →</button>
               </Link>
             </span>
             <a href="https://wa.me/918208990366?text=Hi%20Packworkz%2C%20I%27d%20like%20to%20talk%20to%20an%20expert." target="_blank" rel="noopener noreferrer">

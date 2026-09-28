@@ -1,9 +1,8 @@
+import { money } from "@/lib/currency";
+
+/** Formats an INR amount in the visitor's display currency (INR in India, USD elsewhere). */
 export function formatINR(amount: number): string {
-  return new Intl.NumberFormat("en-IN", {
-    style: "currency",
-    currency: "INR",
-    maximumFractionDigits: 0,
-  }).format(amount);
+  return money(Math.round(amount));
 }
 
 export function getStatusColor(status: string): string {

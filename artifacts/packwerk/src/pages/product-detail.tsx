@@ -22,6 +22,7 @@ import {
   getMinimumQuantityForConfiguration,
 } from "@workspace/commerce";
 import "./product-builder.css";
+import { money } from "@/lib/currency";
 
 const MockupCanvas = lazy(() => import("@/components/mockup/PackagingMockupCanvas").then((module) => ({ default: module.PackagingMockupCanvas })));
 
@@ -256,7 +257,7 @@ function ProductBuilder({ product }: { product: CatalogSku }) {
           <ul className="pb-assurance">
             <li><ShieldCheck size={17} /> Prepress checks every file before print</li>
             <li><BadgeCheck size={17} /> Free digital proof before production</li>
-            <li><Box size={17} /> <Link href="/samples">Feel the materials first · ₹299 kit</Link></li>
+            <li><Box size={17} /> <Link href="/samples">Feel the materials first · {money(299)} kit</Link></li>
           </ul>
         </section>
 

@@ -8,7 +8,7 @@ const TIMELINE = [
   { year: "1993", title: "Kalyani Packaging is founded", desc: "A flexographic printing and lamination plant opens in West Bengal, serving regional FMCG brands. Built on precision, not promises." },
   { year: "2008", title: "Expansion & modernisation", desc: "Kalyani Rotopack Pvt Ltd is incorporated. Rotogravure lines, barrier laminates and food-grade film processing follow, serving national brands across India." },
   { year: "2018", title: "A global supply network", desc: "A decade of supplier relationships becomes a curated network, with raw materials from Japan, South Korea, Germany and domestic mills for cost and quality leverage." },
-  { year: "2024", title: "Packworkz is born", desc: "Three decades of manufacturing know-how and 500+ vetted factories become India's first managed packaging platform — the supply chain we always wished we had." },
+  { year: "2024", title: "Packworkz is born", desc: "Three decades of manufacturing know-how and 50+ vetted supplier partners become India's first managed packaging platform — the supply chain we always wished we had." },
   { year: "2025", title: "The platform scales nationally", desc: "The catalogue expands across D2C and enterprise packaging, supported by real-time order records and inventory intelligence." },
 ];
 
@@ -78,7 +78,7 @@ export default function About() {
           <div className="pw-p-hero-foot pw-p-hero-fade" style={{ ["--d" as string]: "1000ms" }}>
             <div><b><CountUp value="33+" /></b><small>Years manufacturing</small></div>
             <div><b><CountUp value={String(CATALOG_SKUS.length)} /></b><small>Product families</small></div>
-            <div><b><CountUp value="500+" /></b><small>Factory partners</small></div>
+            <div><b><CountUp value="50+" /></b><small>Supplier partners</small></div>
             <div><b><CountUp value="220+" /></b><small>Brands served</small></div>
           </div>
         </div>

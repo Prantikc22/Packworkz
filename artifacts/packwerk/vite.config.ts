@@ -52,8 +52,10 @@ export default defineConfig({
     allowedHosts: true,
     proxy: {
       "/api": {
-        target: "http://localhost:8080",
+        // Set API_PROXY_TARGET=https://packworkz.com to preview against live data.
+        target: process.env.API_PROXY_TARGET || "http://localhost:8080",
         changeOrigin: true,
+        secure: true,
       },
     },
     fs: {

@@ -26,6 +26,8 @@ import Design from "@/pages/design";
 import MockupStudio from "@/pages/mockup-studio";
 import SmartStock from "@/pages/smartstock";
 import Network from "@/pages/network";
+import Machinery from "@/pages/machinery";
+import Circular from "@/pages/circular";
 import Privacy from "@/pages/privacy";
 import Terms from "@/pages/terms";
 import Refund from "@/pages/refund";
@@ -162,6 +164,12 @@ function SSRApp({ url }: { url: string }) {
             </Route>
             <Route path="/network">
               <PublicLayout><Network /></PublicLayout>
+            </Route>
+            <Route path="/machinery">
+              <PublicLayout><Machinery /></PublicLayout>
+            </Route>
+            <Route path="/circular">
+              <PublicLayout><Circular /></PublicLayout>
             </Route>
             <Route path="/privacy">
               <PublicLayout><Privacy /></PublicLayout>

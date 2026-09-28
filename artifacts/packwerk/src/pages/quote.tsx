@@ -20,6 +20,7 @@ import {
   Upload, Palette, X, Truck, Zap, Warehouse, ArrowRight, Shield, Search, CircleX, AlertTriangle,
 } from "lucide-react";
 import { ARTWORK_ACCEPT, uploadArtwork } from "@/lib/artwork-upload";
+import { money } from "@/lib/currency";
 
 // ── Types ──────────────────────────────────────────────────────────────────
 type ArtworkOption = "upload" | "design" | "none";
@@ -119,9 +120,8 @@ function fromDisplay(display: string, fieldUnit: string | undefined, du: "mm"|"c
   return display;
 }
 
-function fmt(n: number) {
-  return new Intl.NumberFormat("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
-}
+const moneyExact = (n: number) => money(n, 2);
+
 
 const MS = ({ icon, className = "", style }: { icon: string; className?: string; style?: React.CSSProperties }) => (
   <span className={`material-symbols-outlined ${className}`} style={style}>{icon}</span>
@@ -161,31 +161,31 @@ function OrderSummary({
           <div className="space-y-2 pt-2 border-t" style={{ borderColor: "rgba(255,255,255,0.08)" }}>
             <div className="flex justify-between text-sm">
               <span className="text-slate-400">Material Cost</span>
-              <span className="text-white font-medium" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>₹{fmt(mat)}</span>
+              <span className="text-white font-medium" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>{moneyExact(mat)}</span>
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-slate-400">Print Setup</span>
-              <span className="text-white font-medium" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>₹{fmt(setup)}</span>
+              <span className="text-white font-medium" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>{moneyExact(setup)}</span>
             </div>
             {artAdd > 0 && (
               <div className="flex justify-between text-sm">
                 <span className="text-slate-400">Design Service</span>
-                <span className="text-white font-medium" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>₹{fmt(artAdd)}</span>
+                <span className="text-white font-medium" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>{moneyExact(artAdd)}</span>
               </div>
             )}
             {discount > 0 && (
               <div className="flex justify-between text-sm" style={{ color: "#62D39B" }}>
                 <span>Launch saving · {promotionCode}</span>
-                <span className="font-bold">−₹{fmt(discount)}</span>
+                <span className="font-bold">−{moneyExact(discount)}</span>
               </div>
             )}
             <div className="flex justify-between text-sm">
               <span className="text-slate-400">Estimated delivery</span>
-              <span className="text-white font-medium" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>₹{fmt(logistics)}</span>
+              <span className="text-white font-medium" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>{moneyExact(logistics)}</span>
             </div>
             <div className="flex justify-between text-sm pt-2 border-t" style={{ borderColor: "rgba(255,255,255,0.08)" }}>
               <span className="text-slate-400">GST (18%)</span>
-              <span className="text-white font-medium">₹{fmt(gst ?? 0)}</span>
+              <span className="text-white font-medium">{moneyExact(gst ?? 0)}</span>
             </div>
           </div>
         )}
@@ -210,12 +210,12 @@ function OrderSummary({
           {sku ? (
             <>
               <div className="font-black text-white leading-none" style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: "clamp(1.2rem,2.2vw,1.6rem)" }}>
-                {buyingMode === "self" ? `₹${fmt(total ?? low)}` : "Within 4 business hours"}
+                {buyingMode === "self" ? moneyExact(total ?? low) : "Within 4 business hours"}
               </div>
               <div className="mt-3 flex items-center gap-1.5 border-t px-0 pt-2" style={{ borderColor: "rgba(255,255,255,0.16)" }}>
                 <span className="text-xs font-bold" style={{ color: "#60a5fa" }}>
                   {buyingMode === "self"
-                    ? `₹${fmt(perPiece)} packaging rate per piece, before GST and delivery`
+                    ? `${moneyExact(perPiece)} packaging rate per piece, before GST and delivery`
                     : "Handled during India working hours"}
                 </span>
               </div>
@@ -1378,7 +1378,7 @@ const maxSelfServeQuantity = selectedSku ? getMaxSelfServeQuantity(selectedSku) 
                         <div className="mt-5 pt-4 border-t border-slate-200 text-xs font-bold text-slate-600">
                           {selectedSkuBuyingMode === "assisted"
                             ? `MOQ ${selectedSku.moq.toLocaleString()} ${selectedSku.moq_unit} · detailed quote in 4 business hours`
-                            : `MOQ ${selectedSku.moq.toLocaleString()} ${selectedSku.moq_unit} · ₹${selectedSku.price_min.toFixed(2)}-₹${selectedSku.price_max.toFixed(2)}/unit`}
+                            : `MOQ ${selectedSku.moq.toLocaleString()} ${selectedSku.moq_unit} · ${moneyExact(selectedSku.price_min)}-${moneyExact(selectedSku.price_max)}/unit`}
                         </div>
                       </div>
                     </div>
@@ -1424,7 +1424,7 @@ const maxSelfServeQuantity = selectedSku ? getMaxSelfServeQuantity(selectedSku) 
                             <div className="text-xs font-bold mt-2" style={{ color: "#64748B" }}>
                               {isAssistedSku(sku)
                                 ? `MOQ ${sku.moq.toLocaleString()} ${sku.moq_unit} · detailed quote in 4 business hours`
-                                : `MOQ ${sku.moq.toLocaleString()} ${sku.moq_unit} · ₹${sku.price_min.toFixed(2)}-₹${sku.price_max.toFixed(2)}/unit`}
+                                : `MOQ ${sku.moq.toLocaleString()} ${sku.moq_unit} · ${moneyExact(sku.price_min)}-${moneyExact(sku.price_max)}/unit`}
                             </div>
                           </div>
                         </button>
@@ -1675,7 +1675,7 @@ const maxSelfServeQuantity = selectedSku ? getMaxSelfServeQuantity(selectedSku) 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
                     {([
                       { id: "upload" as ArtworkOption, icon: <Upload className="w-8 h-8" />, label: "Upload My File", sub: "PDF, AI, CDR, SVG — artwork or dieline", badge: null },
-                      { id: "design" as ArtworkOption, icon: <Palette className="w-8 h-8" />, label: "Design It For Me", sub: "Expert design + dieline", badge: "+₹1,999" },
+                      { id: "design" as ArtworkOption, icon: <Palette className="w-8 h-8" />, label: "Design It For Me", sub: "Expert design + dieline", badge: `+${money(1999)}` },
                       { id: "none" as ArtworkOption, icon: <X className="w-8 h-8" />, label: "Plain / Unprinted", sub: "No artwork needed", badge: null },
                     ]).map(opt => (
                       <button key={opt.id} onClick={() => setArtworkOption(opt.id)}
@@ -1757,7 +1757,7 @@ const maxSelfServeQuantity = selectedSku ? getMaxSelfServeQuantity(selectedSku) 
                         <div>
                           <div className="flex items-start justify-between mb-3">
                             <div>
-                              <p className="text-sm font-bold" style={{ color: "#1B6CA8" }}>Design Service — ₹1,999</p>
+                              <p className="text-sm font-bold" style={{ color: "#1B6CA8" }}>Design Service — {money(1999)}</p>
                               <p className="text-xs text-slate-500 mt-0.5">Print-ready dieline + artwork in 5 business days. Fee adjusted against production order.</p>
                             </div>
                           </div>
@@ -1794,8 +1794,8 @@ const maxSelfServeQuantity = selectedSku ? getMaxSelfServeQuantity(selectedSku) 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-5">
                     {([
                       { id: "standard" as DeliveryOption, icon: <Truck className="w-7 h-7" />, label: "Standard Pro", time: `${selectedSku?.delivery_days_india || 12}–${(selectedSku?.delivery_days_india || 12) + 2} Days`, price: "Estimated", recommended: true },
-                      { id: "blitz" as DeliveryOption, icon: <Zap className="w-7 h-7" />, label: "Blitz Logistics", time: "5–7 Days", price: "Est. +₹1,200" },
-                      { id: "warehouse" as DeliveryOption, icon: <Warehouse className="w-7 h-7" />, label: "Warehouse Hold", time: "Up to 30 days", price: "+₹300 handling" },
+                      { id: "blitz" as DeliveryOption, icon: <Zap className="w-7 h-7" />, label: "Blitz Logistics", time: "5–7 Days", price: `Est. +${money(1200)}` },
+                      { id: "warehouse" as DeliveryOption, icon: <Warehouse className="w-7 h-7" />, label: "Warehouse Hold", time: "Up to 30 days", price: `+${money(300)} handling` },
                     ]).map(opt => (
                       <button key={opt.id} onClick={() => setDeliveryOption(opt.id)}
                         className="relative flex flex-col items-start gap-2 border-2 bg-white p-4 text-left transition-all"
@@ -1857,8 +1857,8 @@ const maxSelfServeQuantity = selectedSku ? getMaxSelfServeQuantity(selectedSku) 
                         }),
                         ["Artwork", artworkOption === "upload"
                           ? (artworkUploading ? "⏳ Uploading…" : artworkFileUrl ? `✓ ${artworkFileUrl.split("/").pop()?.substring(0, 28) || "File uploaded"}` : artworkFile ? `⚠ ${artworkFile.name} (upload failed)` : "Artwork to follow after ordering")
-                          : artworkOption === "design" ? `Design Service — ₹1,999 ${designPaid ? "✓ Paid" : "(pending payment)"}` : "Plain / unprinted"],
-                        ["Delivery", deliveryOption === "standard" ? "Standard Pro (Free)" : deliveryOption === "blitz" ? "Blitz Logistics (+₹1,200)" : "Warehouse Hold (+₹300 handling)"],
+                          : artworkOption === "design" ? `Design Service — ${money(1999)} ${designPaid ? "✓ Paid" : "(pending payment)"}` : "Plain / unprinted"],
+                        ["Delivery", deliveryOption === "standard" ? "Standard Pro (Free)" : deliveryOption === "blitz" ? `Blitz Logistics (+${money(1200)})` : `Warehouse Hold (+${money(300)} handling)`],
                         ["Delivery address", selectedSkuBuyingMode === "self" ? "Collected at checkout" : "Confirmed after quote approval"],
                       ].map(([k, v]) => (
                         <div key={String(k)} className="flex justify-between text-sm">
@@ -1884,7 +1884,7 @@ const maxSelfServeQuantity = selectedSku ? getMaxSelfServeQuantity(selectedSku) 
                       <div className="mt-4 grid sm:grid-cols-2 gap-2">
                         <button type="button" onClick={() => { setArtworkOption("design"); setDesignPaid(false); }} className="min-h-20 border border-slate-300 bg-white p-3 text-left hover:border-blue-500">
                           <strong className="block text-sm text-slate-900">Artwork support</strong>
-                          <span className="mt-1 block text-xs leading-relaxed text-slate-500">₹1,999, added once at checkout</span>
+                          <span className="mt-1 block text-xs leading-relaxed text-slate-500">{money(1999)}, added once at checkout</span>
                         </button>
                         <a href="/configure?sku=LC-816" target="_blank" rel="noopener noreferrer" className="min-h-20 border border-slate-300 bg-white p-3 text-left hover:border-blue-500">
                           <strong className="block text-sm text-slate-900">Matching labels</strong>
@@ -1931,7 +1931,7 @@ const maxSelfServeQuantity = selectedSku ? getMaxSelfServeQuantity(selectedSku) 
                 </div>
                 <div className="shrink-0 text-right">
                   <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Current total</p>
-                  <p className="text-base font-black text-slate-900">₹{fmt(calculateOrderEstimate(selectedSku, qty, deliveryOption, artworkOption, selectedSizeCode, variantSelections).total || 0)}</p>
+                  <p className="text-base font-black text-slate-900">{moneyExact(calculateOrderEstimate(selectedSku, qty, deliveryOption, artworkOption, selectedSizeCode, variantSelections).total || 0)}</p>
                 </div>
               </div>
             )}

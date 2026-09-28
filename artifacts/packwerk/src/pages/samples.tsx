@@ -15,6 +15,7 @@ import {
 import { openRazorpay } from "@/lib/razorpay";
 import { CountUp, Marquee } from "@/components/marketing/motion";
 import "./premium-pages.css";
+import { billedInInrNote, isUsd, money } from "@/lib/currency";
 
 const KIT_PRICE = 299;
 const SHIPPING_PRICE = 100;
@@ -27,7 +28,7 @@ const KIT_CONTENTS = [
   { Icon: PackageOpen, title: "25–50+ physical samples", text: "A wide range of structures, materials and finishes." },
   { Icon: SwatchBook, title: "Material & finish swatches", text: "Feel the difference in paper, boards, films and surface finishes." },
   { Icon: FileText, title: "Practical selection guide", text: "Tips and use-cases to help you choose the right packaging." },
-  { Icon: Truck, title: "Delivered across India", text: "Flat ₹100 shipping. Straight to your doorstep." },
+  { Icon: Truck, title: "Delivered across India", text: `Flat ${money(100)} shipping. Straight to your doorstep.` },
 ];
 
 const FORMAT_CARDS = [
@@ -41,7 +42,7 @@ const KIT_TICKER = ["Stand-up pouches", "Mailer boxes", "Folding cartons", "Rigi
 const FAQS = [
   ["Are these printed with my branding?", "The kit contains representative production samples and material swatches. Once you shortlist a format, we can scope a custom branded prototype separately."],
   ["How many samples will I receive?", "Every kit contains at least 25 pieces. Most contain 35–50+ samples depending on current format and material availability."],
-  ["How much is shipping?", "Shipping is a flat ₹100 across India. The kit is ₹299, so your checkout total is ₹399."],
+  ["How much is shipping?", `Shipping is a flat ${money(100)} across India. The kit is ${money(299)}, so your checkout total is ${money(399)}.`],
   ["Can I request a specific category?", "Yes. Add your preference in the order note and we will use it while curating the kit, subject to sample availability."],
 ];
 
@@ -141,14 +142,14 @@ export default function Samples() {
           <p className="pw-sample-eyebrow">PACKAGING SAMPLE KIT</p>
           <h1>Feel 25–50+ packaging samples before choosing one.</h1>
           <p className="pw-sample-lead">Compare structures, materials, finishes and print quality at your desk. A curated Packworkz sample kit, delivered to your doorstep so you can make the right choice with confidence.</p>
-          <div className="pw-sample-price"><strong>₹299</strong><span>+ ₹100 shipping<br /><small>₹399 total across India</small></span></div>
+          <div className="pw-sample-price"><strong>{money(299)}</strong><span>+ {money(100)} shipping<br /><small>{money(399)} total across India</small></span></div>
           <div className="pw-sample-actions">
             <a href="#sample-kit-order">Get the sample kit <ArrowRight size={18} /></a>
             <Link href="/products">Browse packaging</Link>
           </div>
           <div className="pw-sample-mini-proof" aria-label="Sample kit assurances">
             <span><ShieldCheck size={20} /><b>Secure checkout</b><small>Powered by Razorpay</small></span>
-            <span><Truck size={20} /><b>Pan-India delivery</b><small>Flat ₹100 shipping</small></span>
+            <span><Truck size={20} /><b>Pan-India delivery</b><small>Flat {money(100)} shipping</small></span>
             <span><Box size={20} /><b>Curated by experts</b><small>Real packaging, not swatches alone</small></span>
           </div>
         </div>
@@ -177,7 +178,7 @@ export default function Samples() {
         </div>
         <div className="pw-sample-kit-count">
           <div><b>25–<CountUp value="50+" /></b><small>Real samples per kit, depending on availability</small></div>
-          <div><b><CountUp value="₹299" /></b><small>Kit price, plus flat ₹100 shipping</small></div>
+          <div><b><CountUp value={money(299)} /></b><small>Kit price, plus flat {money(100)} shipping</small></div>
           <div><b>2–<CountUp value="3" /> days</b><small>To dispatch, delivered across India</small></div>
         </div>
       </section>
@@ -216,7 +217,7 @@ export default function Samples() {
           <p>GET YOUR SAMPLE KIT</p>
           <h2>Start with samples.<br />Order with confidence.</h2>
           <span>Real materials. Real quality. A small investment that helps you make a big decision.</span>
-          <div className="pw-sample-order-price"><strong>₹299</strong><small>+ ₹100 shipping<br />₹399 total across India</small></div>
+          <div className="pw-sample-order-price"><strong>{money(299)}</strong><small>+ {money(100)} shipping<br />{money(399)} total across India</small></div>
           <div className="pw-sample-order-trust">
             <span><Box size={22} /><b>Dispatched in 2–3 days</b><small>Across India</small></span>
             <span><FileText size={22} /><b>GST invoice available</b><small>For businesses</small></span>
@@ -246,9 +247,10 @@ export default function Samples() {
             </div>
             <aside className="pw-sample-summary" aria-label="Order summary">
               <h3>Order summary</h3>
-              <div className="pw-sample-summary-product"><img src="/images/sample-kit-hero-v1.webp" alt="Packworkz sample kit" /><span><b>Packworkz Sample Kit</b><small>25–50+ packaging samples</small></span><strong>₹299</strong></div>
-              <div className="pw-sample-summary-line"><span>Shipping</span><strong>₹100</strong></div>
-              <div className="pw-sample-summary-total"><span>Total</span><strong>₹399</strong></div>
+              <div className="pw-sample-summary-product"><img src="/images/sample-kit-hero-v1.webp" alt="Packworkz sample kit" /><span><b>Packworkz Sample Kit</b><small>25–50+ packaging samples</small></span><strong>{money(299)}</strong></div>
+              <div className="pw-sample-summary-line"><span>Shipping</span><strong>{money(100)}</strong></div>
+              <div className="pw-sample-summary-total"><span>Total</span><strong>{money(399)}</strong></div>
+              {isUsd() && <small>{billedInInrNote(399)}</small>}
               <button type="submit" disabled={paymentState === "opening" || paymentState === "saving" || paymentState === "pending"}>
                 {paymentState === "opening" || paymentState === "saving" ? <Loader2 className="pw-spin" size={18} /> : <ShieldCheck size={18} />}
                 {paymentState === "opening" ? "Opening Razorpay" : paymentState === "saving" ? "Confirming order" : paymentState === "pending" ? "Payment processing" : "Pay ₹399 securely"}
@@ -266,7 +268,7 @@ export default function Samples() {
         <div>{FAQS.map(([question, answer]) => <details className="pw-reveal" key={question}><summary>{question}</summary><p>{answer}</p></details>)}</div>
       </section>
 
-      {showMobileCta && paymentState !== "paid" && <a className="pw-sample-mobile-cta" href="#sample-kit-order">Sample Kit · ₹399 total <ArrowRight size={18} /></a>}
+      {showMobileCta && paymentState !== "paid" && <a className="pw-sample-mobile-cta" href="#sample-kit-order">Sample Kit · {money(399)} total <ArrowRight size={18} /></a>}
     </main>
   );
 }

@@ -276,6 +276,18 @@ const ROUTES = [
     keywords: "enterprise packaging India, packaging procurement India, packaging sourcing company India, FMCG packaging supplier, packaging vendor management",
   },
   {
+    path: "/machinery",
+    title: "Packaging Machines for D2C & Food Brands India | Sealers, Fillers, Coders | Packworkz",
+    description: "Impulse, band, induction and vacuum sealers, tube, powder and liquid fillers, batch coders, labellers and automatic VFFS lines — matched to your product and output, with packaging that runs on them.",
+    keywords: "packaging machine India, band sealer price, pouch sealing machine, batch coding machine, powder filling machine, VFFS machine India",
+  },
+  {
+    path: "/circular",
+    title: "Sell Packaging & Plastic Scrap | Recycling Pickup India | Packworkz Circular",
+    description: "Turn film trim, laminate offcuts, corrugated and plastic rejects into revenue. Get per-kg quotes from registered recyclers, with pickup, weighbridge slips and documentation.",
+    keywords: "sell plastic scrap India, packaging scrap buyer, film scrap recycling, corrugated scrap pickup, EPR recycling partner",
+  },
+  {
     path: "/network",
     title: "Packworkz Packaging Manufacturer Network India",
     description: "See how Packworkz matches packaging specifications to eligible production routes, quality checkpoints and applicable supplier documentation across India.",

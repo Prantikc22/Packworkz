@@ -13,6 +13,7 @@ import { CATALOG_SKUS, getCatalogImage } from "@/lib/catalog";
 import { formatUnitRate, getFromUnitPrice } from "@/lib/indicative-pricing";
 import { saveStudioDesign } from "@/lib/studio-handoff";
 import "./studio.css";
+import { money } from "@/lib/currency";
 
 type FormatOption = { id: MockupFormat; label: string; sku: string; dimensions: { width: number; height: number; depth: number } };
 
@@ -289,7 +290,7 @@ export default function MockupStudio() {
               </div>
             )}
             <button type="button" className="pw-st-cta" onClick={orderDesign} disabled={!selectedSku}>Order this design <ArrowRight size={17} /></button>
-            <Link href="/samples" className="pw-st-secondary">Feel the materials first · ₹299 sample kit</Link>
+            <Link href="/samples" className="pw-st-secondary">Feel the materials first · {money(299)} sample kit</Link>
           </div>
         </aside>
       </section>
