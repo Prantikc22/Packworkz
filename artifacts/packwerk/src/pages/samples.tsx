@@ -13,6 +13,8 @@ import {
   Truck,
 } from "lucide-react";
 import { openRazorpay } from "@/lib/razorpay";
+import { CountUp, Marquee } from "@/components/marketing/motion";
+import "./premium-pages.css";
 
 const KIT_PRICE = 299;
 const SHIPPING_PRICE = 100;
@@ -34,6 +36,8 @@ const FORMAT_CARDS = [
   { title: "Labels & materials", text: "Labels, tapes, papers, boards and specialty materials.", image: "/images/sustainability-material-layers-v1.webp" },
 ];
 
+const KIT_TICKER = ["Stand-up pouches", "Mailer boxes", "Folding cartons", "Rigid boxes", "Paper labels", "Kraft & barrier films", "Soft-touch & foil finishes", "Tissue & wrapping", "Courier mailers"];
+
 const FAQS = [
   ["Are these printed with my branding?", "The kit contains representative production samples and material swatches. Once you shortlist a format, we can scope a custom branded prototype separately."],
   ["How many samples will I receive?", "Every kit contains at least 25 pieces. Most contain 35–50+ samples depending on current format and material availability."],
@@ -48,6 +52,12 @@ export default function Samples() {
   const [message, setMessage] = useState("");
   const [sampleId, setSampleId] = useState("");
   const [showMobileCta, setShowMobileCta] = useState(true);
+
+  useEffect(() => {
+    if (window.location.hash !== "#sample-kit-order") return;
+    const timer = window.setTimeout(() => document.getElementById("sample-kit-order")?.scrollIntoView({ behavior: "smooth", block: "start" }), 120);
+    return () => window.clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     const order = document.getElementById("sample-kit-order");
@@ -148,6 +158,10 @@ export default function Samples() {
         </div>
       </section>
 
+      <div className="pw-p-ticker">
+        <Marquee speed={42}>{KIT_TICKER.map((item) => <span className="pw-p-ticker-item" key={item}>{item}</span>)}</Marquee>
+      </div>
+
       <section className="pw-sample-included pw-reveal">
         <div className="pw-sample-section-split">
           <div className="pw-sample-section-head">
@@ -160,6 +174,11 @@ export default function Samples() {
           {KIT_CONTENTS.map(({ Icon, title, text }, index) => (
             <article className={`pw-reveal pw-d${index + 1}`} key={title}><Icon size={30} strokeWidth={1.55} /><h3>{title}</h3><p>{text}</p></article>
           ))}
+        </div>
+        <div className="pw-sample-kit-count">
+          <div><b>25–<CountUp value="50+" /></b><small>Real samples per kit, depending on availability</small></div>
+          <div><b><CountUp value="₹299" /></b><small>Kit price, plus flat ₹100 shipping</small></div>
+          <div><b>2–<CountUp value="3" /> days</b><small>To dispatch, delivered across India</small></div>
         </div>
       </section>
 

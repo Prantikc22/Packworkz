@@ -3,6 +3,8 @@ import type { CatalogSku } from "@/lib/catalog";
 import { COMMERCE_PRODUCTS, LAUNCH_PROMOTION_CODE, calculateCommerceCartEstimate } from "@workspace/commerce";
 import { calculateOrderEstimate } from "@/lib/pricing";
 import { getCatalogImage, requiresQuote } from "@/lib/catalog";
+import { formatRupeeRange, getIndicativePrice } from "@/lib/indicative-pricing";
+import { formatINR } from "@/lib/format";
 
 export type CartItem = {
   id: string;
@@ -140,6 +142,38 @@ export function getCartEstimate(item: CartItem, sku: CatalogSku) {
     ...item.variantSelections,
     promotion_code: LAUNCH_PROMOTION_CODE,
   });
+}
+
+export type CartLinePrice = { estimated: boolean; low: number; high: number };
+
+const DESIGN_SERVICE_FEE = 1999;
+
+/**
+ * Price shown for a cart line. Online-priced lines use the exact checkout
+ * total (incl. GST); quote-reviewed lines show the same ex-GST market range
+ * the product page showed, so the cart never contradicts the builder.
+ */
+export function getCartLinePrice(item: CartItem, sku: CatalogSku): CartLinePrice {
+  const managed = sku.publicBuyingPath !== "instant" || requiresQuote(sku, item.quantity);
+  if (!managed) {
+    const estimate = getCartEstimate(item, sku);
+    if (typeof estimate.total === "number") return { estimated: false, low: estimate.total, high: estimate.total };
+  }
+  const indicative = getIndicativePrice(sku, item.quantity, item.variantSelections);
+  const fee = item.artworkOption === "design" ? DESIGN_SERVICE_FEE : 0;
+  return { estimated: true, low: indicative.totalLow + fee, high: indicative.totalHigh + fee };
+}
+
+export function sumCartLinePrices(prices: CartLinePrice[]): CartLinePrice {
+  return prices.reduce((sum, price) => ({
+    estimated: sum.estimated || price.estimated,
+    low: sum.low + price.low,
+    high: sum.high + price.high,
+  }), { estimated: false, low: 0, high: 0 });
+}
+
+export function formatCartPrice(price: CartLinePrice) {
+  return price.estimated ? formatRupeeRange(price.low, price.high) : formatINR(price.high);
 }
 
 function formatConfigurationLabel(key: string) {

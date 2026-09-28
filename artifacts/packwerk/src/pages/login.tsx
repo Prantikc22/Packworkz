@@ -1,23 +1,20 @@
 import { useState } from "react";
 import { useLogin } from "@workspace/api-client-react";
 import { Link, useLocation } from "wouter";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { useToast } from "@/hooks/use-toast";
-import { Loader2 } from "lucide-react";
+import { ArrowRight, Eye, EyeOff, Loader2, LockKeyhole, MessageCircle, PackageSearch } from "lucide-react";
+import { AuthShell } from "@/components/auth/AuthShell";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState("");
   const [, setLocation] = useLocation();
-  const { toast } = useToast();
-
   const loginMutation = useLogin();
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    setError("");
     loginMutation.mutate({ data: { email, password } }, {
       onSuccess: (data: any) => {
         localStorage.setItem("packwerk_access_token", data.access_token);
@@ -26,75 +23,44 @@ export default function Login() {
           ...data.user,
           must_change_password: !!data.must_change_password,
         }));
-        if (data.must_change_password) {
-          setLocation("/change-password");
-        } else {
-          setLocation("/dashboard");
-        }
+        setLocation(data.must_change_password ? "/change-password" : "/dashboard");
       },
-      onError: () => {
-        toast({
-          variant: "destructive",
-          title: "Login Failed",
-          description: "Wrong email or password. Need help? WhatsApp us.",
-        });
-      }
+      onError: () => setError("That email and password don’t match an account. Check them, or reset access via WhatsApp."),
     });
   };
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center bg-surface px-4 py-12">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-navy tracking-tight mb-2">Welcome Back</h1>
-          <p className="text-muted">Sign in to manage your packaging orders</p>
-        </div>
+    <AuthShell>
+      <p className="pa-kicker">Customer workspace</p>
+      <h1 className="pa-title">Welcome back.</h1>
+      <p className="pa-sub">Don’t have an account? <Link href="/signup">Create one in a minute</Link></p>
 
-        <Card className="border-border shadow-md">
-          <CardHeader>
-            <CardTitle className="text-2xl">Sign In</CardTitle>
-            <CardDescription>Enter your email and password to access your account.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input 
-                  id="email" 
-                  type="email" 
-                  required 
-                  value={email} 
-                  onChange={(e) => setEmail(e.target.value)} 
-                  className="h-12 bg-surface"
-                />
-              </div>
-              <div className="space-y-2">
-                <div className="flex justify-between items-center">
-                  <Label htmlFor="password">Password</Label>
-                  <Link href="/contact" className="text-sm font-medium text-blue hover:underline">Need help?</Link>
-                </div>
-                <Input 
-                  id="password" 
-                  type="password" 
-                  required 
-                  value={password} 
-                  onChange={(e) => setPassword(e.target.value)} 
-                  className="h-12 bg-surface"
-                />
-              </div>
-              
-              <Button type="submit" className="w-full h-12 bg-navy text-white hover:bg-blue font-bold text-lg" disabled={loginMutation.isPending}>
-                {loginMutation.isPending ? <Loader2 className="w-5 h-5 animate-spin mr-2" /> : null}
-                Sign In
-              </Button>
-            </form>
-            
-            <div className="mt-6 text-center text-sm text-muted">
-              New to Packworkz? <Link href="/signup" className="font-black text-blue hover:underline">Create your account</Link>
-            </div>
-          </CardContent>
-        </Card>
+      <form onSubmit={handleSubmit} className="pa-form">
+        <label className="pa-field">
+          <input id="email" type="email" required autoComplete="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder=" " />
+          <span>Work email</span>
+        </label>
+        <label className="pa-field has-toggle">
+          <input id="password" type={showPassword ? "text" : "password"} required autoComplete="current-password" value={password} onChange={(event) => setPassword(event.target.value)} placeholder=" " />
+          <span>Password</span>
+          <button type="button" className="pa-eye" onClick={() => setShowPassword((value) => !value)} aria-label={showPassword ? "Hide password" : "Show password"}>{showPassword ? <EyeOff size={18} /> : <Eye size={18} />}</button>
+        </label>
+        <div className="pa-meta">
+          <span />
+          <a className="pa-link" href="https://wa.me/918208990366?text=Hi%20Packworkz%2C%20I%20need%20help%20signing%20in." target="_blank" rel="noreferrer">Forgot password?</a>
+        </div>
+        {error && <p className="pa-error" role="alert">{error}</p>}
+        <button type="submit" className="pa-submit" disabled={loginMutation.isPending}>
+          {loginMutation.isPending ? <><Loader2 size={18} className="animate-spin" /> Signing in</> : <>Sign in <ArrowRight size={18} /></>}
+        </button>
+      </form>
+
+      <div className="pa-divider">or</div>
+      <div className="pa-alt">
+        <Link href="/track-order"><PackageSearch size={18} /> Track an order without an account</Link>
+        <a className="is-wa" href="https://wa.me/918208990366" target="_blank" rel="noreferrer"><MessageCircle size={18} /> Get help on WhatsApp</a>
       </div>
-    </div>
+      <p className="pa-fine"><LockKeyhole size={14} /> Guest orders can be linked to your account later with their order reference.</p>
+    </AuthShell>
   );
 }

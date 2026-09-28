@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { RoundedBoxGeometry } from "three/examples/jsm/geometries/RoundedBoxGeometry.js";
@@ -16,6 +16,12 @@ type Props = {
   artworkDataUrl?: string;
   artworkFit?: ArtworkFit;
   autoRotate?: boolean;
+  stock?: PaperStock;
+  backdrop?: StudioBackdrop;
+  cameraView?: CameraView;
+  /** Pack size in mm. Scales box formats so proportions match the real pack. */
+  dimensions?: MockupDimensions;
+  className?: string;
   onReady?: (renderer: THREE.WebGLRenderer) => void;
 };
 
@@ -56,16 +62,48 @@ function loadImage(dataUrl?: string): Promise<HTMLImageElement | undefined> {
   });
 }
 
-async function makeArtworkTexture(color: string, brandName: string, logoDataUrl?: string, artworkDataUrl?: string, artworkFit: ArtworkFit = "cover") {
+export type PaperStock = "color" | "white" | "kraft";
+export type StudioBackdrop = "studio" | "warm" | "night";
+export type CameraView = "hero" | "front" | "side" | "top";
+export type MockupDimensions = { width: number; height: number; depth: number };
+
+const KRAFT = "#C49A6C";
+
+function paintKraft(context: CanvasRenderingContext2D) {
+  context.fillStyle = KRAFT;
+  context.fillRect(0, 0, 1024, 1024);
+  // Fibre speckle so kraft reads as paper, not flat tan.
+  for (let index = 0; index < 5200; index += 1) {
+    const shade = Math.random() > 0.5 ? "rgba(92,62,32," : "rgba(236,208,168,";
+    context.fillStyle = `${shade}${(Math.random() * 0.22).toFixed(3)})`;
+    context.fillRect(Math.random() * 1024, Math.random() * 1024, Math.random() * 3 + 0.6, Math.random() * 1.4 + 0.4);
+  }
+}
+
+async function makeArtworkTexture(
+  color: string,
+  brandName: string,
+  logoDataUrl?: string,
+  artworkDataUrl?: string,
+  artworkFit: ArtworkFit = "cover",
+  stock: PaperStock = "color",
+) {
   const canvas = document.createElement("canvas");
   canvas.width = 1024;
   canvas.height = 1024;
   const context = canvas.getContext("2d");
   if (!context) return undefined;
   const [logo, artwork] = await Promise.all([loadImage(logoDataUrl), loadImage(artworkDataUrl)]);
+  // On colour stock the brand colour floods the pack and print is white.
+  // On white or kraft stock the brand colour becomes the ink.
+  const ink = stock === "color" ? "#ffffff" : color;
 
-  context.fillStyle = color;
-  context.fillRect(0, 0, 1024, 1024);
+  if (stock === "kraft") paintKraft(context);
+  else {
+    context.fillStyle = stock === "white" ? "#F7F6F2" : color;
+    context.fillRect(0, 0, 1024, 1024);
+  }
+
   if (artwork) {
     drawImageFit(context, artwork, artworkFit);
     if (artworkFit === "contain") {
@@ -73,8 +111,8 @@ async function makeArtworkTexture(color: string, brandName: string, logoDataUrl?
       context.strokeRect(86, 86, 852, 852);
     }
   } else {
-    context.globalAlpha = 0.16;
-    context.strokeStyle = "#ffffff";
+    context.globalAlpha = stock === "color" ? 0.16 : 0.1;
+    context.strokeStyle = ink;
     context.lineWidth = 2;
     for (let i = -512; i < 1536; i += 96) {
       context.beginPath();
@@ -87,18 +125,21 @@ async function makeArtworkTexture(color: string, brandName: string, logoDataUrl?
       const scale = Math.min(260 / logo.width, 180 / logo.height);
       context.drawImage(logo, (1024 - logo.width * scale) / 2, 185, logo.width * scale, logo.height * scale);
     } else {
-      context.fillStyle = "rgba(255,255,255,.94)";
+      context.fillStyle = ink;
+      context.globalAlpha = 0.94;
       context.beginPath();
       context.arc(512, 250, 66, 0, Math.PI * 2);
       context.fill();
-      context.fillStyle = color;
+      context.globalAlpha = 1;
+      context.fillStyle = stock === "color" ? color : stock === "kraft" ? KRAFT : "#F7F6F2";
       context.font = "800 72px Arial";
       context.textAlign = "center";
       context.textBaseline = "middle";
       context.fillText(brandName.trim().slice(0, 1).toUpperCase() || "P", 512, 255);
     }
-    context.fillStyle = "#ffffff";
+    context.fillStyle = ink;
     context.textAlign = "center";
+    context.textBaseline = "alphabetic";
     context.font = "800 82px Arial";
     context.fillText(brandName.trim().slice(0, 18) || "Your Brand", 512, 472);
     context.font = "600 27px Arial";
@@ -185,6 +226,7 @@ function mesh(geometry: THREE.BufferGeometry, material: THREE.Material, y = 0) {
 }
 
 function buildProduct(format: MockupFormat, material: THREE.MeshPhysicalMaterial, color: string) {
+  // "color" here is the base colour of unprinted surfaces (sides, lids).
   const group = new THREE.Group();
   const dark = new THREE.MeshStandardMaterial({ color: "#0D1B2A", roughness: 0.32 });
   const side = new THREE.MeshPhysicalMaterial({ color, roughness: material.roughness, clearcoat: material.clearcoat });
@@ -254,11 +296,6 @@ function buildProduct(format: MockupFormat, material: THREE.MeshPhysicalMaterial
       group.add(sideSeal);
     });
   } else if (format === "bottle") {
-    if (material.map) {
-      material.map.wrapS = THREE.RepeatWrapping;
-      material.map.offset.x = 0.39;
-      material.map.needsUpdate = true;
-    }
     group.add(mesh(bottleGeometry(), material));
     const collar = mesh(new THREE.CylinderGeometry(0.54, 0.54, 0.16, 64), side, 2.08);
     group.add(collar);
@@ -392,18 +429,76 @@ function prepareLoadedProduct(
   return root;
 }
 
-export function PackagingMockupCanvas({ format, color, brandName, finish, logoDataUrl, artworkDataUrl, artworkFit = "cover", autoRotate = true, onReady }: Props) {
-  const mountRef = useRef<HTMLDivElement>(null);
+const BOX_FORMATS = new Set<MockupFormat>(["mailer", "shipping", "carton", "rigid"]);
+const DEFAULT_DIMENSIONS: Partial<Record<MockupFormat, MockupDimensions>> = {
+  mailer: { width: 230, height: 80, depth: 160 },
+  shipping: { width: 300, height: 220, depth: 220 },
+  carton: { width: 75, height: 140, depth: 45 },
+  rigid: { width: 240, height: 75, depth: 190 },
+};
 
+const BACKDROPS: Record<StudioBackdrop, { sky: string; floor: string; hemi: string; ground: string; rim: string }> = {
+  studio: { sky: "#E8EEF3", floor: "#D5DEE7", hemi: "#ffffff", ground: "#7B8FA3", rim: "#75B8EC" },
+  warm: { sky: "#F3ECE1", floor: "#E4D8C6", hemi: "#fff6ea", ground: "#9C8A73", rim: "#F2B134" },
+  night: { sky: "#0E1A27", floor: "#172636", hemi: "#c9d8ea", ground: "#0b1520", rim: "#F2B134" },
+};
+
+const CAMERA_VIEWS: Record<CameraView, [number, number, number]> = {
+  hero: [7.1, 4.9, 8.4],
+  front: [0, 1.2, 10.4],
+  side: [10.2, 1.6, 1.4],
+  top: [0.4, 10.8, 3.2],
+};
+
+const gltfCache = new Map<string, Promise<THREE.Group>>();
+function loadModel(asset: string) {
+  if (!gltfCache.has(asset)) {
+    const loader = new GLTFLoader();
+    gltfCache.set(asset, loader.loadAsync(`${import.meta.env.BASE_URL}models/packaging/${asset}`).then((gltf) => gltf.scene));
+  }
+  return gltfCache.get(asset)!.then((scene) => scene.clone(true));
+}
+
+function disposeObject(root: THREE.Object3D, keepMaterials: Set<THREE.Material>) {
+  root.traverse((object) => {
+    if (!(object instanceof THREE.Mesh)) return;
+    object.geometry.dispose();
+    (Array.isArray(object.material) ? object.material : [object.material]).forEach((item: THREE.Material) => {
+      if (!keepMaterials.has(item)) item.dispose();
+    });
+  });
+}
+
+export function PackagingMockupCanvas({
+  format, color, brandName, finish, logoDataUrl, artworkDataUrl, artworkFit = "cover", autoRotate = true,
+  stock = "color", backdrop = "studio", cameraView = "hero", dimensions, className = "", onReady,
+}: Props) {
+  const mountRef = useRef<HTMLDivElement>(null);
+  const sceneRef = useRef<{
+    scene: THREE.Scene;
+    camera: THREE.PerspectiveCamera;
+    controls: OrbitControls;
+    hemi: THREE.HemisphereLight;
+    rim: THREE.DirectionalLight;
+    floor: THREE.Mesh<THREE.CircleGeometry, THREE.MeshStandardMaterial>;
+    cameraTarget?: THREE.Vector3;
+  }>(undefined);
+  const autoRotateRef = useRef(autoRotate);
+  autoRotateRef.current = autoRotate;
+  // One printed material and one body material live for the life of the
+  // canvas. Design edits only swap textures/colours, never the renderer.
+  const printMaterialRef = useRef<THREE.MeshPhysicalMaterial>(undefined);
+  const bodyMaterialRef = useRef<THREE.MeshPhysicalMaterial>(undefined);
+  const productRef = useRef<THREE.Group>(undefined);
+  const [sceneReady, setSceneReady] = useState(false);
+
+  // ── Scene, renderer and loop: created once ──────────────────────────────
   useEffect(() => {
     const mount = mountRef.current;
     if (!mount) return;
-    let disposed = false;
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color("#E8EEF3");
-    scene.fog = new THREE.Fog("#E8EEF3", 12, 22);
     const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 100);
-    camera.position.set(7.1, 4.9, 8.4);
+    camera.position.set(...CAMERA_VIEWS.hero);
     const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -418,11 +513,11 @@ export function PackagingMockupCanvas({ format, color, brandName, finish, logoDa
     controls.enablePan = false;
     controls.minDistance = 5.4;
     controls.maxDistance = 15;
-    controls.autoRotate = autoRotate;
     controls.autoRotateSpeed = 0.9;
     controls.target.set(0, 0.1, 0);
 
-    scene.add(new THREE.HemisphereLight("#ffffff", "#7B8FA3", 2.35));
+    const hemi = new THREE.HemisphereLight("#ffffff", "#7B8FA3", 2.35);
+    scene.add(hemi);
     const key = new THREE.DirectionalLight("#ffffff", 4.8);
     key.position.set(5, 8, 6);
     key.castShadow = true;
@@ -431,65 +526,14 @@ export function PackagingMockupCanvas({ format, color, brandName, finish, logoDa
     const rim = new THREE.DirectionalLight("#75B8EC", 2.1);
     rim.position.set(-5, 4, -4);
     scene.add(rim);
-
-    const floor = mesh(new THREE.CircleGeometry(8, 96), new THREE.MeshStandardMaterial({ color: "#D5DEE7", roughness: 0.92 }));
+    const floor = mesh(new THREE.CircleGeometry(8, 96), new THREE.MeshStandardMaterial({ color: "#D5DEE7", roughness: 0.92 })) as THREE.Mesh<THREE.CircleGeometry, THREE.MeshStandardMaterial>;
     floor.rotation.x = -Math.PI / 2;
     floor.position.y = -2.55;
     scene.add(floor);
 
-    let product: THREE.Group | undefined;
-    let texture: THREE.CanvasTexture | undefined;
-    void makeArtworkTexture(color, brandName, logoDataUrl, artworkDataUrl, artworkFit).then(async (artwork) => {
-      if (!artwork || disposed) return;
-      texture = artwork;
-      texture.flipY = true;
-      texture.needsUpdate = true;
-      const material = new THREE.MeshPhysicalMaterial({
-        map: artwork,
-        roughness: finish === "matte" ? 0.72 : 0.2,
-        metalness: 0.01,
-        clearcoat: finish === "gloss" ? 0.82 : 0.06,
-        clearcoatRoughness: finish === "gloss" ? 0.1 : 0.8,
-        side: THREE.DoubleSide,
-        polygonOffset: true,
-        polygonOffsetFactor: -2,
-      });
-      const modelAsset = MODEL_ASSETS[format];
-      if (modelAsset) {
-        const bodyMaterial = new THREE.MeshPhysicalMaterial({
-          color,
-          roughness: finish === "matte" ? 0.7 : 0.2,
-          metalness: 0.01,
-          clearcoat: finish === "gloss" ? 0.75 : 0.05,
-          clearcoatRoughness: finish === "gloss" ? 0.12 : 0.8,
-        });
-        try {
-          const loader = new GLTFLoader();
-          const gltf = await loader.loadAsync(`${import.meta.env.BASE_URL}models/packaging/${modelAsset}`);
-          if (disposed) {
-            gltf.scene.traverse((object) => {
-              if (!(object instanceof THREE.Mesh)) return;
-              object.geometry.dispose();
-              disposeMaterial(object.material);
-            });
-            bodyMaterial.dispose();
-            material.dispose();
-            return;
-          }
-          product = prepareLoadedProduct(format, gltf.scene, bodyMaterial, material);
-        } catch (error) {
-          console.error(`[mockup] Could not load ${modelAsset}`, error);
-          bodyMaterial.dispose();
-          product = buildProduct(format, material, color);
-          product.rotation.y = ["tube", "pouch", "coffee", "bottle"].includes(format) ? 0.48 : -0.42;
-        }
-      } else {
-        product = buildProduct(format, material, color);
-        product.rotation.y = ["tube", "pouch", "coffee", "bottle"].includes(format) ? 0.48 : -0.42;
-      }
-      if (disposed || !product) return;
-      scene.add(product);
-    });
+    printMaterialRef.current = new THREE.MeshPhysicalMaterial({ metalness: 0.01, side: THREE.DoubleSide, polygonOffset: true, polygonOffsetFactor: -2 });
+    bodyMaterialRef.current = new THREE.MeshPhysicalMaterial({ metalness: 0.01 });
+    sceneRef.current = { scene, camera, controls, hemi, rim, floor };
 
     const resize = () => {
       const width = Math.max(1, mount.clientWidth);
@@ -502,31 +546,155 @@ export function PackagingMockupCanvas({ format, color, brandName, finish, logoDa
     observer.observe(mount);
     resize();
     onReady?.(renderer);
+
+    const stopTween = () => { if (sceneRef.current) sceneRef.current.cameraTarget = undefined; };
+    controls.addEventListener("start", stopTween);
     let frame = 0;
     const animate = () => {
       frame = requestAnimationFrame(animate);
-      controls.autoRotate = autoRotate;
+      const target = sceneRef.current?.cameraTarget;
+      if (target) {
+        camera.position.lerp(target, 0.09);
+        if (camera.position.distanceTo(target) < 0.02) stopTween();
+      }
+      controls.autoRotate = autoRotateRef.current && !target;
       controls.update();
       renderer.render(scene, camera);
     };
     animate();
+    setSceneReady(true);
 
     return () => {
-      disposed = true;
       cancelAnimationFrame(frame);
       observer.disconnect();
+      controls.removeEventListener("start", stopTween);
       controls.dispose();
-      texture?.dispose();
       scene.traverse((object) => {
         if (!(object instanceof THREE.Mesh)) return;
         object.geometry.dispose();
-        const materials = Array.isArray(object.material) ? object.material : [object.material];
-        materials.forEach((item) => item.dispose());
+        (Array.isArray(object.material) ? object.material : [object.material]).forEach((item: THREE.Material) => item.dispose());
       });
+      printMaterialRef.current?.map?.dispose();
+      printMaterialRef.current?.dispose();
+      bodyMaterialRef.current?.dispose();
+      productRef.current = undefined;
+      sceneRef.current = undefined;
       renderer.dispose();
       if (renderer.domElement.parentElement === mount) mount.removeChild(renderer.domElement);
     };
-  }, [artworkDataUrl, artworkFit, autoRotate, brandName, color, finish, format, logoDataUrl, onReady]);
+  }, [onReady]);
 
-  return <div ref={mountRef} className="pw-mockup-canvas" aria-label="Interactive 3D packaging mockup" />;
+  // ── Backdrop ─────────────────────────────────────────────────────────────
+  useEffect(() => {
+    const ctx = sceneRef.current;
+    if (!ctx) return;
+    const palette = BACKDROPS[backdrop];
+    ctx.scene.background = new THREE.Color(palette.sky);
+    ctx.scene.fog = new THREE.Fog(palette.sky, 12, 22);
+    ctx.floor.material.color.set(palette.floor);
+    ctx.hemi.color.set(palette.hemi);
+    ctx.hemi.groundColor.set(palette.ground);
+    ctx.rim.color.set(palette.rim);
+  }, [backdrop, sceneReady]);
+
+  // ── Camera presets (tweened in the render loop) ──────────────────────────
+  useEffect(() => {
+    const ctx = sceneRef.current;
+    if (!ctx) return;
+    ctx.cameraTarget = new THREE.Vector3(...CAMERA_VIEWS[cameraView]);
+  }, [cameraView, sceneReady]);
+
+  // ── Surface finish and base colour ───────────────────────────────────────
+  const baseColor = stock === "kraft" ? KRAFT : stock === "white" ? "#F7F6F2" : color;
+  useEffect(() => {
+    const print = printMaterialRef.current;
+    const body = bodyMaterialRef.current;
+    if (!print || !body) return;
+    [print, body].forEach((item) => {
+      item.roughness = finish === "matte" || stock === "kraft" ? 0.72 : 0.2;
+      item.clearcoat = finish === "gloss" && stock !== "kraft" ? 0.8 : 0.05;
+      item.clearcoatRoughness = finish === "gloss" ? 0.1 : 0.8;
+      item.needsUpdate = true;
+    });
+    body.color.set(baseColor);
+  }, [baseColor, finish, stock, sceneReady]);
+
+  // ── Geometry: rebuilt only when the format, size or base colour changes ──
+  const dimensionKey = dimensions ? `${dimensions.width}x${dimensions.height}x${dimensions.depth}` : "";
+  useEffect(() => {
+    const ctx = sceneRef.current;
+    const print = printMaterialRef.current;
+    const body = bodyMaterialRef.current;
+    if (!ctx || !print || !body) return;
+    let cancelled = false;
+    const keep = new Set<THREE.Material>([print, body]);
+
+    const place = (product: THREE.Group) => {
+      if (cancelled) { disposeObject(product, keep); return; }
+      const defaults = DEFAULT_DIMENSIONS[format];
+      if (dimensions && defaults && BOX_FORMATS.has(format)) {
+        const sx = dimensions.width / defaults.width;
+        const sy = dimensions.height / defaults.height;
+        const sz = dimensions.depth / defaults.depth;
+        // Keep proportions exact; only shrink when a side grows past 1.5× the default.
+        const largest = Math.max(sx, sy, sz);
+        const fit = largest > 1.5 ? 1.5 / largest : 1;
+        product.scale.set(sx * fit, sy * fit, sz * fit);
+        product.updateMatrixWorld(true);
+        const box = new THREE.Box3().setFromObject(product);
+        product.position.y += -2.43 - box.min.y;
+      }
+      if (productRef.current) {
+        ctx.scene.remove(productRef.current);
+        disposeObject(productRef.current, keep);
+      }
+      productRef.current = product;
+      ctx.scene.add(product);
+    };
+
+    const asset = MODEL_ASSETS[format];
+    if (asset) {
+      loadModel(asset)
+        .then((model) => place(prepareLoadedProduct(format, model, body, print)))
+        .catch((error) => {
+          console.error(`[mockup] Could not load ${asset}`, error);
+          const fallback = buildProduct(format, print, baseColor);
+          fallback.rotation.y = 0.48;
+          place(fallback);
+        });
+    } else {
+      const product = buildProduct(format, print, baseColor);
+      product.rotation.y = ["tube", "pouch", "coffee", "bottle"].includes(format) ? 0.48 : -0.42;
+      place(product);
+    }
+    return () => { cancelled = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [format, dimensionKey, baseColor, sceneReady]);
+
+  // ── Artwork texture: debounced so typing a brand name stays smooth ───────
+  useEffect(() => {
+    const print = printMaterialRef.current;
+    if (!print) return;
+    let cancelled = false;
+    const timer = window.setTimeout(() => {
+      void makeArtworkTexture(color, brandName, logoDataUrl, artworkDataUrl, artworkFit, stock).then((texture) => {
+        if (!texture) return;
+        if (cancelled) { texture.dispose(); return; }
+        const previous = print.map;
+        texture.flipY = true;
+        texture.needsUpdate = true;
+        if (format === "bottle") {
+          texture.wrapS = THREE.RepeatWrapping;
+          texture.offset.x = 0.39;
+        }
+        print.map = texture;
+        print.color.set("#ffffff");
+        print.needsUpdate = true;
+        previous?.dispose();
+      });
+    }, 120);
+    return () => { cancelled = true; window.clearTimeout(timer); };
+  }, [artworkDataUrl, artworkFit, brandName, color, format, logoDataUrl, stock, sceneReady]);
+
+  return <div ref={mountRef} className={`pw-mockup-canvas ${className}`} aria-label="Interactive 3D packaging mockup" />;
 }

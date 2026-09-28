@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from "react";
-import { ArrowRight, BadgePercent, CheckCircle2, Loader2, X } from "lucide-react";
-import { LAUNCH_PROMOTION_RATE } from "@workspace/commerce";
+import { ArrowRight, CheckCircle2, Layers, Loader2, PackageOpen, Truck, X } from "lucide-react";
+import { Link } from "wouter";
 
-const SESSION_KEY = "packworkz_exit_offer_seen_v1";
-const CAPTURED_KEY = "packworkz_exit_offer_captured_v1";
-const SUPPRESSED_PATHS = ["/cart", "/configure", "/procurement-plan", "/dashboard", "/login", "/signup", "/track-order"];
+const SESSION_KEY = "packworkz_exit_offer_seen_v2";
+const CAPTURED_KEY = "packworkz_exit_offer_captured_v2";
+const SAMPLE_KIT_PRICE = 299;
+const SAMPLE_KIT_SHIPPING = 100;
+const SUPPRESSED_PATHS = ["/samples", "/cart", "/configure", "/procurement-plan", "/dashboard", "/login", "/signup", "/track-order"];
 
 type SubmitState = "idle" | "sending" | "sent" | "error";
 
@@ -84,9 +86,9 @@ export function ExitOfferModal({ location }: { location: string }) {
           source: "exit_offer",
           email: cleanEmail,
           phone: cleanPhone,
-          subject: "Exit offer lead — first online order",
-          message: "Visitor requested the first-order launch offer before leaving the website.",
-          metadata: { page: location, promotion: "PACK7" },
+          subject: "Exit offer lead — ₹299 sample kit",
+          message: "Visitor requested the ₹299 packaging sample kit (25–50+ samples) before leaving the website.",
+          metadata: { page: location, promotion: "SAMPLEKIT299" },
         }),
       });
       const payload = await response.json() as { error?: string };
@@ -108,44 +110,49 @@ export function ExitOfferModal({ location }: { location: string }) {
       aria-modal="true"
       aria-labelledby="exit-offer-title"
       onMouseDown={(event) => { if (event.target === event.currentTarget) setOpen(false); }}
+      style={{ animation: "pwFadeIn .3s ease both" }}
     >
-      <div className="relative w-full max-w-2xl overflow-hidden bg-white shadow-2xl sm:rounded-2xl">
+      <div className="relative w-full max-w-3xl overflow-hidden bg-white shadow-2xl sm:rounded-2xl" style={{ animation: "pwFadeUp .55s cubic-bezier(.22,1,.36,1) both" }}>
         <button
           type="button"
           onClick={() => setOpen(false)}
-          className="absolute right-4 top-4 z-10 grid h-10 w-10 place-items-center rounded-full border border-white/20 bg-slate-950/30 text-white transition hover:bg-slate-950/60"
+          className="absolute right-4 top-4 z-10 grid h-10 w-10 place-items-center rounded-full border border-slate-200 bg-white/90 text-slate-700 shadow-sm transition hover:rotate-90 hover:bg-white"
           aria-label="Close offer"
         >
           <X size={19} />
         </button>
 
-        <div className="grid md:grid-cols-[0.9fr_1.1fr]">
-          <div className="relative overflow-hidden bg-[#0B3FA0] px-7 py-8 text-white sm:px-9 sm:py-10">
-            <div className="absolute -right-14 -top-16 h-48 w-48 rounded-full border-[28px] border-white/5" />
-            <BadgePercent size={32} className="mb-8 text-[#F7C95C]" />
-            <p className="text-[11px] font-black uppercase tracking-[0.18em] text-blue-200">First online order</p>
-            <h2 id="exit-offer-title" className="mt-3 text-4xl font-black leading-none">
-              Save {Math.round(LAUNCH_PROMOTION_RATE * 100)}% on your launch run.
-            </h2>
-            <p className="mt-5 text-sm leading-6 text-blue-100/80">
-              Share your details and we’ll save the launch offer with your enquiry, plus help shortlist the right format and MOQ.
-            </p>
-            <p className="mt-7 border-l-2 border-[#F7C95C] pl-4 text-xs leading-5 text-blue-100/70">
-              Eligible first online orders only. Applied at checkout while the monthly launch allocation is available.
-            </p>
+        <div className="grid md:grid-cols-[1fr_1fr]">
+          <div className="relative overflow-hidden bg-[#0d1b2a] text-white">
+            <img src="/images/sample-kit-hero-v1.webp" alt="Open Packworkz sample kit with pouches, cartons, labels and material swatches" className="h-44 w-full object-cover opacity-90 sm:h-52 md:h-60" />
+            <span className="absolute left-5 top-5 bg-[#F2B134] px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.16em] text-slate-950">Sample kit</span>
+            <div className="px-7 pb-8 pt-6 sm:px-9">
+              <h2 id="exit-offer-title" className="text-[2rem] font-black leading-[1.02] tracking-tight sm:text-4xl" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+                Get 25–50+ samples for just <span className="text-[#F2B134]">₹{SAMPLE_KIT_PRICE}.</span>
+              </h2>
+              <ul className="mt-5 grid gap-2.5 text-sm text-blue-100/85">
+                <li className="flex items-center gap-2.5"><PackageOpen size={16} className="shrink-0 text-[#F2B134]" /> Real pouches, boxes, labels and mailers</li>
+                <li className="flex items-center gap-2.5"><Layers size={16} className="shrink-0 text-[#F2B134]" /> Material & finish swatches to compare</li>
+                <li className="flex items-center gap-2.5"><Truck size={16} className="shrink-0 text-[#F2B134]" /> Flat ₹{SAMPLE_KIT_SHIPPING} shipping, dispatched in 2–3 days</li>
+              </ul>
+            </div>
           </div>
 
-          <div className="px-7 py-8 sm:px-9 sm:py-10">
+          <div className="flex flex-col justify-center px-7 py-8 sm:px-9 sm:py-10">
             {state === "sent" ? (
               <div className="flex h-full min-h-64 flex-col justify-center">
                 <CheckCircle2 size={42} className="text-emerald-600" />
-                <h3 className="mt-5 text-2xl font-black text-slate-950">You’re on the list.</h3>
-                <p className="mt-3 text-sm leading-6 text-slate-600">Your details are saved. Browse normally—the launch saving is already applied automatically on eligible checkout orders.</p>
-                <button type="button" onClick={() => setOpen(false)} className="mt-7 h-12 bg-slate-950 px-5 text-sm font-black text-white">Continue browsing</button>
+                <h3 className="mt-5 text-2xl font-black text-slate-950">Your kit is reserved.</h3>
+                <p className="mt-3 text-sm leading-6 text-slate-600">We’ve saved your details. Finish the ₹{SAMPLE_KIT_PRICE + SAMPLE_KIT_SHIPPING} checkout now, or our team will reach out to help you choose.</p>
+                <Link href="/samples#sample-kit-order" onClick={() => setOpen(false)} className="mt-7 flex h-[52px] items-center justify-center gap-2 rounded-lg bg-[#F2B134] px-5 text-sm font-black text-slate-950 transition hover:bg-[#ffca59]">
+                  Complete my kit order <ArrowRight size={17} />
+                </Link>
+                <button type="button" onClick={() => setOpen(false)} className="mt-3 h-11 text-sm font-bold text-slate-500 hover:text-slate-900">Keep browsing</button>
               </div>
             ) : (
               <form onSubmit={submit} noValidate>
-                <p className="text-[11px] font-black uppercase tracking-[0.16em] text-slate-500">Send me the offer</p>
+                <p className="text-[11px] font-black uppercase tracking-[0.16em] text-slate-500">Before you go</p>
+                <p className="mt-2 text-sm leading-6 text-slate-600">Feel the materials before you order. Share your details and we’ll hold a kit for you.</p>
                 <label className="mt-6 block text-xs font-black text-slate-800" htmlFor="exit-email">Business email</label>
                 <input
                   ref={emailRef}
@@ -173,12 +180,13 @@ export function ExitOfferModal({ location }: { location: string }) {
                 <button
                   type="submit"
                   disabled={state === "sending"}
-                  className="mt-6 flex h-[52px] w-full items-center justify-center gap-2 rounded-lg bg-[#E8A838] px-5 text-sm font-black text-slate-950 transition hover:bg-[#F7C95C] disabled:cursor-wait disabled:opacity-70"
+                  className="mt-6 flex h-[52px] w-full items-center justify-center gap-2 rounded-lg bg-[#F2B134] px-5 text-sm font-black text-slate-950 transition hover:bg-[#ffca59] disabled:cursor-wait disabled:opacity-70"
                 >
-                  {state === "sending" ? <><Loader2 size={17} className="animate-spin" /> Saving…</> : <>Save my launch offer <ArrowRight size={17} /></>}
+                  {state === "sending" ? <><Loader2 size={17} className="animate-spin" /> Saving…</> : <>Claim my ₹{SAMPLE_KIT_PRICE} sample kit <ArrowRight size={17} /></>}
                 </button>
+                <Link href="/samples" onClick={() => setOpen(false)} className="mt-3 block text-center text-xs font-bold text-slate-500 underline-offset-4 hover:text-slate-900 hover:underline">See what’s inside the kit</Link>
                 <p className="mt-4 text-[10px] leading-4 text-slate-500">
-                  By submitting, you agree that Packworkz may contact you about packaging and this offer by email, phone or WhatsApp. You can opt out anytime.
+                  ₹{SAMPLE_KIT_PRICE} + ₹{SAMPLE_KIT_SHIPPING} shipping across India. By submitting, you agree that Packworkz may contact you about packaging and this offer by email, phone or WhatsApp. You can opt out anytime.
                 </p>
               </form>
             )}

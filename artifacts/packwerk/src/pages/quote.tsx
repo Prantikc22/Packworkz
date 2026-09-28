@@ -17,8 +17,9 @@ import {
 } from "@workspace/commerce";
 import {
   Loader2, CheckCircle2, ChevronDown, ChevronUp,
-  Upload, Palette, X, Truck, Zap, Warehouse, ArrowRight, Shield, Search, CircleX,
+  Upload, Palette, X, Truck, Zap, Warehouse, ArrowRight, Shield, Search, CircleX, AlertTriangle,
 } from "lucide-react";
+import { ARTWORK_ACCEPT, uploadArtwork } from "@/lib/artwork-upload";
 
 // ── Types ──────────────────────────────────────────────────────────────────
 type ArtworkOption = "upload" | "design" | "none";
@@ -736,34 +737,40 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
   const [designPaying, setDesignPaying] = useState(false);
   const [artworkFile, setArtworkFile] = useState<File | null>(null);
   const [artworkUploading, setArtworkUploading] = useState(false);
-  const [artworkFileUrl, setArtworkFileUrl] = useState<string>(() => loadDraft().artworkFileUrl || "");
+  const [artworkFileUrl, setArtworkFileUrl] = useState<string>(() => {
+    const saved = loadDraft().artworkFileUrl || "";
+    return saved.startsWith("local:") ? "" : saved;
+  });
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const [artworkUploadError, setArtworkUploadError] = useState("");
 
   const handleArtworkFile = useCallback(async (file: File) => {
     setArtworkFile(file);
+    setArtworkFileUrl("");
+    setArtworkUploadError("");
     setArtworkUploading(true);
     try {
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("company", company);
-      formData.append("originalName", file.name);
-      const res = await fetch("/api/upload/artwork", { method: "POST", body: formData });
-      if (res.ok) {
-        const { url } = await res.json();
-        setArtworkFileUrl(url);
-        saveDraft({ ...loadDraft(), artworkFileUrl: url });
-      } else {
-        // fallback: store filename only
-        setArtworkFileUrl(`local:${file.name}`);
-        saveDraft({ ...loadDraft(), artworkFileUrl: `local:${file.name}` });
-      }
-    } catch {
-      setArtworkFileUrl(`local:${file.name}`);
-      saveDraft({ ...loadDraft(), artworkFileUrl: `local:${file.name}` });
+      const url = await uploadArtwork(file, company);
+      setArtworkFileUrl(url);
+      saveDraft({ ...loadDraft(), artworkFileUrl: url });
+    } catch (error) {
+      // Never keep a placeholder: a failed upload must stay visible so the
+      // order cannot reach prepress without the customer knowing.
+      setArtworkUploadError(error instanceof Error ? error.message : "Upload failed. Please retry.");
+      saveDraft({ ...loadDraft(), artworkFileUrl: "" });
     } finally {
       setArtworkUploading(false);
     }
   }, [company]);
+
+  const sendArtworkLater = () => {
+    setArtworkFile(null);
+    setArtworkFileUrl("");
+    setArtworkUploadError("");
+    saveDraft({ ...loadDraft(), artworkFileUrl: "" });
+  };
+  const artworkUploadFailed = artworkOption === "upload" && Boolean(artworkFile) && !artworkFileUrl && !artworkUploading;
 
   // ── Delivery ─────────────────────────────────────────────────────────────
   const [deliveryOption, setDeliveryOption] = useState<DeliveryOption>(() => loadDraft().deliveryOption || "standard");
@@ -1701,7 +1708,7 @@ const maxSelfServeQuantity = selectedSku ? getMaxSelfServeQuantity(selectedSku) 
                       <input
                         ref={fileInputRef}
                         type="file"
-                        accept=".pdf,.ai,.svg,.eps,.png,.jpg,.jpeg,.zip"
+                        accept={ARTWORK_ACCEPT}
                         className="hidden"
                         onChange={e => {
                           const file = e.target.files?.[0];
@@ -1710,17 +1717,27 @@ const maxSelfServeQuantity = selectedSku ? getMaxSelfServeQuantity(selectedSku) 
                       />
                       {artworkUploading ? (
                         <><Loader2 className="w-10 h-10 text-blue-400 mx-auto mb-3 animate-spin" /><div className="text-sm font-bold text-blue-500">Uploading…</div></>
+                      ) : artworkFile && artworkUploadError ? (
+                        <>
+                          <AlertTriangle className="w-10 h-10 mx-auto mb-3 text-red-600" />
+                          <div className="text-sm font-bold text-red-700">{artworkFile.name} was not uploaded</div>
+                          <div className="text-xs text-red-600 mt-1">{artworkUploadError}</div>
+                          <div className="mt-4 flex flex-wrap justify-center gap-2">
+                            <button type="button" onClick={(event) => { event.stopPropagation(); handleArtworkFile(artworkFile); }} className="bg-slate-900 px-4 py-2 text-xs font-black text-white">Retry upload</button>
+                            <button type="button" onClick={(event) => { event.stopPropagation(); sendArtworkLater(); }} className="border border-slate-300 bg-white px-4 py-2 text-xs font-black text-slate-800">I'll send artwork later</button>
+                          </div>
+                        </>
                       ) : artworkFile ? (
                         <>
                           <CheckCircle2 className="w-10 h-10 mx-auto mb-3" style={{ color: "#1B6CA8" }} />
                           <div className="text-sm font-bold" style={{ color: "#1B6CA8" }}>{artworkFile.name}</div>
-                          <div className="text-xs text-slate-400 mt-1">File attached — click to change</div>
+                          <div className="text-xs text-slate-400 mt-1">Uploaded securely — click to change</div>
                         </>
                       ) : (
                         <>
                           <Upload className="w-10 h-10 text-slate-300 mx-auto mb-3" />
                           <div className="text-sm font-bold text-slate-500">Drop your file here or click to browse</div>
-                          <div className="text-xs text-slate-400 mt-1">PDF, AI, SVG, EPS, PNG — max 50 MB</div>
+                          <div className="text-xs text-slate-400 mt-1">PDF, AI, SVG, EPS, PNG — max 10 MB per file</div>
                         </>
                       )}
                     </div>
@@ -1839,7 +1856,7 @@ const maxSelfServeQuantity = selectedSku ? getMaxSelfServeQuantity(selectedSku) 
                           return [(field?.label || k), displayUnit ? `${displayValue} ${displayUnit}` : displayValue];
                         }),
                         ["Artwork", artworkOption === "upload"
-                          ? (artworkUploading ? "⏳ Uploading…" : artworkFileUrl && !artworkFileUrl.startsWith("local:") ? `✓ ${artworkFileUrl.split("/").pop()?.substring(0, 28) || "File uploaded"}` : artworkFile ? `⚠ ${artworkFile.name} (not uploaded)` : "Upload ready-to-print file")
+                          ? (artworkUploading ? "⏳ Uploading…" : artworkFileUrl ? `✓ ${artworkFileUrl.split("/").pop()?.substring(0, 28) || "File uploaded"}` : artworkFile ? `⚠ ${artworkFile.name} (upload failed)` : "Artwork to follow after ordering")
                           : artworkOption === "design" ? `Design Service — ₹1,999 ${designPaid ? "✓ Paid" : "(pending payment)"}` : "Plain / unprinted"],
                         ["Delivery", deliveryOption === "standard" ? "Standard Pro (Free)" : deliveryOption === "blitz" ? "Blitz Logistics (+₹1,200)" : "Warehouse Hold (+₹300 handling)"],
                         ["Delivery address", selectedSkuBuyingMode === "self" ? "Collected at checkout" : "Confirmed after quote approval"],
@@ -1929,7 +1946,7 @@ const maxSelfServeQuantity = selectedSku ? getMaxSelfServeQuantity(selectedSku) 
                   Choose a product above
                 </button>
               ) : isSelfServeConfigurationFinalStep ? (
-                <button onClick={handleSubmit} disabled={artworkUploading}
+                <button onClick={handleSubmit} disabled={artworkUploading || artworkUploadFailed}
                   className="flex-1 sm:flex-none px-4 sm:px-8 py-3 text-sm font-black text-white transition-all hover:opacity-90 disabled:opacity-60 min-w-0"
                   style={{ background: "#0D1B2A" }}>
                   {artworkUploading ? "Uploading artwork…" : purchaseIntent === "cart" ? "Add configured item to cart" : "Continue to cart checkout"} →
@@ -1939,7 +1956,7 @@ const maxSelfServeQuantity = selectedSku ? getMaxSelfServeQuantity(selectedSku) 
                   {stepNum === 1 ? "Continue to brand & delivery" : stepNum === 2 ? "Continue to your details" : "Review order"} →
                 </button>
               ) : (
-                <button onClick={handleSubmit} disabled={submitMutation.isPending || artworkUploading || checkoutLaunching}
+                <button onClick={handleSubmit} disabled={submitMutation.isPending || artworkUploading || artworkUploadFailed || checkoutLaunching}
                   className="px-5 sm:px-8 py-2.5 rounded-lg text-sm font-black uppercase tracking-wider transition-all hover:opacity-90 flex items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed min-w-0"
                   style={{ background: "#E8A838", color: "#0F1C2C" }}>
                   {artworkUploading ? <><Loader2 className="w-4 h-4 animate-spin" /> Uploading artwork…</> : submitMutation.isPending ? <><Loader2 className="w-4 h-4 animate-spin" /> Saving order…</> : checkoutLaunching ? <><Loader2 className="w-4 h-4 animate-spin" /> Opening secure checkout…</> : <>{selectedSkuBuyingMode === "assisted" ? "Request managed quote" : purchaseIntent === "cart" ? "Add configured item to cart" : "Continue to checkout"} <ArrowRight className="w-4 h-4" /></>}

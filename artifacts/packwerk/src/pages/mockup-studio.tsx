@@ -1,23 +1,51 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import { Download, FileImage, ImagePlus, Pause, Play, Rotate3D, Ruler, ShoppingBag, Sparkles, Trash2 } from "lucide-react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  ArrowRight, Box, Camera, Download, Eye, FileImage, ImagePlus, Layers, Moon, Package, Pause, Play,
+  Rotate3D, Ruler, Sparkles, Sun, SunMedium, Trash2, Wand2,
+} from "lucide-react";
 import type * as THREE from "three";
-import { Link, useSearch } from "wouter";
+import { Link, useLocation, useSearch } from "wouter";
 import { PackagingDieline } from "@/components/mockup/PackagingDieline";
-import { PackagingMockupCanvas, type ArtworkFit, type MockupFormat } from "@/components/mockup/PackagingMockupCanvas";
+import {
+  PackagingMockupCanvas, type ArtworkFit, type CameraView, type MockupFormat, type PaperStock, type StudioBackdrop,
+} from "@/components/mockup/PackagingMockupCanvas";
+import { CATALOG_SKUS, getCatalogImage } from "@/lib/catalog";
+import { formatUnitRate, getFromUnitPrice } from "@/lib/indicative-pricing";
+import { saveStudioDesign } from "@/lib/studio-handoff";
+import "./studio.css";
 
-const FORMATS: Array<{ id: MockupFormat; label: string; sku: string; dimensions: { width: number; height: number; depth: number } }> = [
+type FormatOption = { id: MockupFormat; label: string; sku: string; dimensions: { width: number; height: number; depth: number } };
+
+const FORMATS: FormatOption[] = [
   { id: "mailer", label: "Mailer box", sku: "EC-501", dimensions: { width: 230, height: 80, depth: 160 } },
   { id: "shipping", label: "Shipping box", sku: "EC-502", dimensions: { width: 300, height: 220, depth: 220 } },
   { id: "carton", label: "Retail carton", sku: "BX-401", dimensions: { width: 75, height: 140, depth: 45 } },
-  { id: "rigid", label: "Rigid box", sku: "BX-402", dimensions: { width: 240, height: 75, depth: 190 } },
+  { id: "rigid", label: "Rigid gift box", sku: "BX-402", dimensions: { width: 240, height: 75, depth: 190 } },
   { id: "pouch", label: "Stand-up pouch", sku: "FP-101", dimensions: { width: 160, height: 230, depth: 80 } },
-  { id: "coffee", label: "Coffee valve bag", sku: "FP-103", dimensions: { width: 135, height: 320, depth: 80 } },
+  { id: "coffee", label: "Coffee bag", sku: "FP-109", dimensions: { width: 135, height: 320, depth: 80 } },
   { id: "bottle", label: "Bottle", sku: "BC-201", dimensions: { width: 70, height: 190, depth: 70 } },
-  { id: "jar", label: "Jar", sku: "BC-207", dimensions: { width: 85, height: 95, depth: 85 } },
+  { id: "jar", label: "Cosmetic jar", sku: "BC-204", dimensions: { width: 85, height: 95, depth: 85 } },
   { id: "tube", label: "Cosmetic tube", sku: "TS-301", dimensions: { width: 55, height: 155, depth: 35 } },
 ];
 
-const COLORS = ["#0F4C5C", "#1F5A46", "#C7432B", "#D6A136", "#5A3C82", "#172A46", "#D6D0C4", "#171717"];
+const BOX_FORMATS = new Set<MockupFormat>(["mailer", "shipping", "carton", "rigid"]);
+const COLORS = ["#0F4C5C", "#1F5A46", "#C7432B", "#D6A136", "#5A3C82", "#172A46", "#E8B7B0", "#171717"];
+const STOCKS: Array<{ id: PaperStock; label: string; swatch: string }> = [
+  { id: "color", label: "Full colour", swatch: "linear-gradient(135deg,#0F4C5C 50%,#D6A136 50%)" },
+  { id: "white", label: "White board", swatch: "#F7F6F2" },
+  { id: "kraft", label: "Natural kraft", swatch: "#C49A6C" },
+];
+const BACKDROPS: Array<{ id: StudioBackdrop; label: string; Icon: typeof Sun }> = [
+  { id: "studio", label: "Studio", Icon: SunMedium },
+  { id: "warm", label: "Warm", Icon: Sun },
+  { id: "night", label: "Night", Icon: Moon },
+];
+const VIEWS: Array<{ id: CameraView; label: string }> = [
+  { id: "hero", label: "3/4" },
+  { id: "front", label: "Front" },
+  { id: "side", label: "Side" },
+  { id: "top", label: "Top" },
+];
 
 function slug(value: string) {
   return value.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-") || "packworkz";
@@ -25,15 +53,20 @@ function slug(value: string) {
 
 export default function MockupStudio() {
   const search = useSearch();
+  const [, navigate] = useLocation();
   const requestedFormat = new URLSearchParams(search).get("format") as MockupFormat | null;
   const initialFormat = FORMATS.some((item) => item.id === requestedFormat) ? requestedFormat! : "mailer";
   const [format, setFormat] = useState<MockupFormat>(initialFormat);
   const [view, setView] = useState<"preview" | "dieline">("preview");
+  const [panel, setPanel] = useState<"design" | "size">("design");
   const [color, setColor] = useState("#0F4C5C");
   const [brandName, setBrandName] = useState("Northstar");
+  const [stock, setStock] = useState<PaperStock>("color");
   const [finish, setFinish] = useState<"matte" | "gloss">("matte");
   const [artworkFit, setArtworkFit] = useState<ArtworkFit>("cover");
   const [autoRotate, setAutoRotate] = useState(true);
+  const [backdrop, setBackdrop] = useState<StudioBackdrop>("studio");
+  const [cameraView, setCameraView] = useState<CameraView>("hero");
   const [logoDataUrl, setLogoDataUrl] = useState<string>();
   const [artworkDataUrl, setArtworkDataUrl] = useState<string>();
   const [uploadError, setUploadError] = useState("");
@@ -41,6 +74,7 @@ export default function MockupStudio() {
   const rendererRef = useRef<THREE.WebGLRenderer | undefined>(undefined);
   const setRenderer = useCallback((renderer: THREE.WebGLRenderer) => { rendererRef.current = renderer; }, []);
   const selected = FORMATS.find((item) => item.id === format) || FORMATS[0];
+  const selectedSku = useMemo(() => CATALOG_SKUS.find((sku) => sku.code === selected.sku), [selected.sku]);
 
   useEffect(() => {
     if (!requestedFormat || !FORMATS.some((item) => item.id === requestedFormat)) return;
@@ -52,13 +86,14 @@ export default function MockupStudio() {
     const next = FORMATS.find((item) => item.id === nextFormat) || FORMATS[0];
     setFormat(nextFormat);
     setDimensions(next.dimensions);
+    setCameraView("hero");
   };
 
   const readImage = (file: File | undefined, setter: (value: string) => void) => {
     setUploadError("");
     if (!file) return;
     if (!file.type.startsWith("image/")) {
-      setUploadError("Upload a PNG, JPG or WebP preview. Print PDFs are attached during checkout.");
+      setUploadError("Upload a PNG, JPG or WebP preview. Print-ready PDFs are attached when you order.");
       return;
     }
     if (file.size > 15 * 1024 * 1024) {
@@ -93,78 +128,170 @@ export default function MockupStudio() {
     URL.revokeObjectURL(anchor.href);
   };
 
+  const orderDesign = () => {
+    if (!selectedSku) return;
+    saveStudioDesign({ format, skuCode: selectedSku.code, color, brandName, stock, finish, artworkFit, dimensions, artworkDataUrl, logoDataUrl });
+    navigate(`/products/${selectedSku.slug}?studio=1`);
+  };
+
   return (
-    <main className="pw-mockup-page">
-      <header className="pw-studio-head">
+    <main className="pw-st">
+      <header className="pw-st-head">
         <div>
-          <p><Sparkles size={15} /> Packworkz 3D Studio</p>
-          <h1>Build the preview. Check the dieline.</h1>
+          <p><Sparkles size={14} /> Packworkz 3D Studio</p>
+          <h1>Design it. Spin it. <em>Order it.</em></h1>
         </div>
-        <div className="pw-studio-view-toggle" role="tablist" aria-label="Studio view">
-          <button type="button" className={view === "preview" ? "active" : ""} onClick={() => setView("preview")}><Rotate3D size={17} /> 3D preview</button>
-          <button type="button" className={view === "dieline" ? "active" : ""} onClick={() => setView("dieline")}><Ruler size={17} /> Dieline</button>
+        <div className="pw-st-toggle" role="tablist" aria-label="Studio view">
+          <button type="button" role="tab" aria-selected={view === "preview"} className={view === "preview" ? "is-active" : ""} onClick={() => setView("preview")}><Rotate3D size={16} /> 3D preview</button>
+          <button type="button" role="tab" aria-selected={view === "dieline"} className={view === "dieline" ? "is-active" : ""} onClick={() => setView("dieline")}><Ruler size={16} /> Dieline</button>
         </div>
       </header>
 
-      <section className="pw-mockup-stage">
-        <aside className="pw-mockup-controls">
-          <div className="pw-mockup-control-group">
-            <span>1. Choose format</span>
-            <div className="pw-mockup-format-grid" role="tablist" aria-label="Packaging format">
-              {FORMATS.map((item) => <button key={item.id} type="button" className={format === item.id ? "active" : ""} onClick={() => chooseFormat(item.id)}>{item.label}</button>)}
+      <section className="pw-st-shell">
+        {/* ── Format rail ── */}
+        <nav className="pw-st-rail" aria-label="Packaging format">
+          <span className="pw-st-label">Format</span>
+          {FORMATS.map((item) => {
+            const sku = CATALOG_SKUS.find((entry) => entry.code === item.sku);
+            return (
+              <button key={item.id} type="button" className={format === item.id ? "is-active" : ""} onClick={() => chooseFormat(item.id)} aria-pressed={format === item.id}>
+                {sku ? <img src={getCatalogImage(sku)} alt="" loading="lazy" /> : <Box size={20} />}
+                <span>{item.label}</span>
+              </button>
+            );
+          })}
+        </nav>
+
+        {/* ── Viewport ── */}
+        <div className="pw-st-stage">
+          <div className="pw-st-viewport">
+            {view === "preview" ? (
+              <PackagingMockupCanvas
+                format={format} color={color} brandName={brandName} finish={finish} stock={stock}
+                logoDataUrl={logoDataUrl} artworkDataUrl={artworkDataUrl} artworkFit={artworkFit}
+                autoRotate={autoRotate} backdrop={backdrop} cameraView={cameraView}
+                dimensions={BOX_FORMATS.has(format) ? dimensions : undefined} onReady={setRenderer}
+              />
+            ) : (
+              <PackagingDieline format={format} width={dimensions.width} height={dimensions.height} depth={dimensions.depth} artworkDataUrl={artworkDataUrl} />
+            )}
+            <div className="pw-st-chip-top">
+              <b>{selected.label}</b>
+              <span>{dimensions.width} × {dimensions.height} × {dimensions.depth} mm</span>
             </div>
+            {view === "preview" && (
+              <div className="pw-st-toolbar" role="toolbar" aria-label="Viewport controls">
+                <div className="pw-st-seg" aria-label="Camera angle">
+                  <Camera size={15} />
+                  {VIEWS.map((item) => <button key={item.id} type="button" className={cameraView === item.id ? "is-active" : ""} onClick={() => { setAutoRotate(false); setCameraView(item.id); }}>{item.label}</button>)}
+                </div>
+                <div className="pw-st-seg" aria-label="Backdrop">
+                  {BACKDROPS.map(({ id, label, Icon }) => <button key={id} type="button" title={`${label} backdrop`} aria-label={`${label} backdrop`} className={backdrop === id ? "is-active" : ""} onClick={() => setBackdrop(id)}><Icon size={15} /></button>)}
+                </div>
+                <button type="button" className="pw-st-tool" onClick={() => setAutoRotate((value) => !value)} aria-pressed={autoRotate}>{autoRotate ? <Pause size={15} /> : <Play size={15} />}{autoRotate ? "Pause" : "Spin"}</button>
+                <button type="button" className="pw-st-tool" onClick={downloadMockup}><Download size={15} /> PNG</button>
+              </div>
+            )}
+            {view === "dieline" && (
+              <div className="pw-st-toolbar">
+                <span className="pw-st-hint"><Eye size={15} /> Solid lines cut · dashed lines fold</span>
+                <button type="button" className="pw-st-tool" onClick={downloadDieline}><Download size={15} /> SVG</button>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* ── Design panel ── */}
+        <aside className="pw-st-panel">
+          <div className="pw-st-tabs" role="tablist">
+            <button type="button" role="tab" aria-selected={panel === "design"} className={panel === "design" ? "is-active" : ""} onClick={() => setPanel("design")}><Wand2 size={15} /> Design</button>
+            <button type="button" role="tab" aria-selected={panel === "size"} className={panel === "size" ? "is-active" : ""} onClick={() => setPanel("size")}><Ruler size={15} /> Size & finish</button>
           </div>
 
-          <div className="pw-mockup-control-group">
-            <span>2. Pack dimensions</span>
-            <div className="pw-dimension-inputs">
-              {(["width", "height", "depth"] as const).map((key) => (
-                <label key={key}><small>{key[0].toUpperCase()}</small><input type="number" min="20" max="2000" value={dimensions[key]} onChange={(event) => setDimensions((current) => ({ ...current, [key]: Math.max(20, Number(event.target.value) || 20) }))} /><em>mm</em></label>
-              ))}
+          {panel === "design" ? (
+            <div className="pw-st-panel-body">
+              <div className="pw-st-group">
+                <span className="pw-st-label">Artwork</span>
+                <label className="pw-st-drop">
+                  <FileImage size={20} />
+                  <b>{artworkDataUrl ? "Replace full artwork" : "Upload full artwork"}</b>
+                  <small>PNG, JPG or WebP · wraps the front panel</small>
+                  <input type="file" accept="image/png,image/jpeg,image/webp" onChange={(event) => readImage(event.target.files?.[0], setArtworkDataUrl)} />
+                </label>
+                <div className="pw-st-row">
+                  <label className="pw-st-mini"><ImagePlus size={15} /> {logoDataUrl ? "Replace logo" : "Logo only"}<input type="file" accept="image/png,image/jpeg,image/webp" onChange={(event) => readImage(event.target.files?.[0], setLogoDataUrl)} /></label>
+                  {(artworkDataUrl || logoDataUrl) && <button type="button" className="pw-st-mini" onClick={() => { setArtworkDataUrl(undefined); setLogoDataUrl(undefined); }}><Trash2 size={15} /> Clear</button>}
+                </div>
+                {uploadError && <p className="pw-st-error" role="alert">{uploadError}</p>}
+                {artworkDataUrl && (
+                  <div className="pw-st-seg is-full" aria-label="Artwork fit">
+                    {(["cover", "contain", "repeat"] as ArtworkFit[]).map((fit) => <button key={fit} type="button" className={artworkFit === fit ? "is-active" : ""} onClick={() => setArtworkFit(fit)}>{fit}</button>)}
+                  </div>
+                )}
+              </div>
+
+              {!artworkDataUrl && (
+                <label className="pw-st-group">
+                  <span className="pw-st-label">Brand name</span>
+                  <input className="pw-st-input" value={brandName} maxLength={18} onChange={(event) => setBrandName(event.target.value)} />
+                </label>
+              )}
+
+              <div className="pw-st-group">
+                <span className="pw-st-label">Board / stock</span>
+                <div className="pw-st-stocks">
+                  {STOCKS.map((item) => (
+                    <button key={item.id} type="button" className={stock === item.id ? "is-active" : ""} onClick={() => setStock(item.id)}>
+                      <i style={{ background: item.swatch }} />{item.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="pw-st-group">
+                <span className="pw-st-label">{stock === "color" ? "Pack colour" : "Ink colour"}</span>
+                <div className="pw-st-swatches">
+                  {COLORS.map((swatch) => <button key={swatch} type="button" aria-label={`Use colour ${swatch}`} className={color === swatch ? "is-active" : ""} style={{ background: swatch }} onClick={() => setColor(swatch)} />)}
+                  <label className="pw-st-custom" title="Custom colour"><input type="color" value={color} onChange={(event) => setColor(event.target.value)} aria-label="Custom colour" /></label>
+                </div>
+              </div>
             </div>
-          </div>
-
-          <div className="pw-mockup-control-group">
-            <span>3. Add your design</span>
-            <div className="pw-artwork-actions">
-              <label className="pw-mockup-upload primary"><FileImage size={18} /><b>{artworkDataUrl ? "Replace artwork" : "Upload full artwork"}</b><small>PNG, JPG or WebP</small><input type="file" accept="image/png,image/jpeg,image/webp" onChange={(event) => readImage(event.target.files?.[0], setArtworkDataUrl)} /></label>
-              <label className="pw-mockup-upload"><ImagePlus size={18} /> {logoDataUrl ? "Replace logo" : "Add logo only"}<input type="file" accept="image/png,image/jpeg,image/webp" onChange={(event) => readImage(event.target.files?.[0], setLogoDataUrl)} /></label>
-              {(artworkDataUrl || logoDataUrl) && <button type="button" className="pw-clear-artwork" title="Clear uploaded artwork" onClick={() => { setArtworkDataUrl(undefined); setLogoDataUrl(undefined); }}><Trash2 size={17} /> Clear</button>}
+          ) : (
+            <div className="pw-st-panel-body">
+              <div className="pw-st-group">
+                <span className="pw-st-label">Pack dimensions (mm)</span>
+                <div className="pw-st-dims">
+                  {(["width", "height", "depth"] as const).map((key) => (
+                    <label key={key}><small>{key[0].toUpperCase()}</small><input type="number" min="20" max="2000" value={dimensions[key]} onChange={(event) => setDimensions((current) => ({ ...current, [key]: Math.max(20, Number(event.target.value) || 20) }))} /></label>
+                  ))}
+                </div>
+                <p className="pw-st-note">{BOX_FORMATS.has(format) ? "The 3D box resizes to these proportions live." : "Size changes update the dieline; this 3D model keeps a standard shape."}</p>
+              </div>
+              <div className="pw-st-group">
+                <span className="pw-st-label">Finish</span>
+                <div className="pw-st-seg is-full">
+                  <button type="button" className={finish === "matte" ? "is-active" : ""} onClick={() => setFinish("matte")}>Matte</button>
+                  <button type="button" className={finish === "gloss" ? "is-active" : ""} onClick={() => setFinish("gloss")}>Gloss</button>
+                </div>
+              </div>
+              <div className="pw-st-group pw-st-facts">
+                <span><Layers size={15} /> Prepress checks every file before production</span>
+                <span><Package size={15} /> Physical sample available before bulk</span>
+              </div>
             </div>
-            {uploadError && <p className="pw-upload-error" role="alert">{uploadError}</p>}
-          </div>
+          )}
 
-          <label className="pw-mockup-control-group">
-            <span>Brand name</span>
-            <input value={brandName} maxLength={18} onChange={(event) => setBrandName(event.target.value)} aria-label="Brand name" />
-          </label>
-
-          <div className="pw-mockup-control-row">
-            <div className="pw-mockup-control-group"><span>Brand color</span><div className="pw-mockup-swatches">{COLORS.map((swatch) => <button key={swatch} type="button" aria-label={`Use color ${swatch}`} className={color === swatch ? "active" : ""} style={{ background: swatch }} onClick={() => setColor(swatch)} />)}<input type="color" value={color} onChange={(event) => setColor(event.target.value)} aria-label="Choose custom brand color" /></div></div>
-            <div className="pw-mockup-control-group"><span>Finish</span><div className="pw-mockup-segments compact"><button type="button" className={finish === "matte" ? "active" : ""} onClick={() => setFinish("matte")}>Matte</button><button type="button" className={finish === "gloss" ? "active" : ""} onClick={() => setFinish("gloss")}>Gloss</button></div></div>
-          </div>
-
-          {artworkDataUrl && <div className="pw-mockup-control-group"><span>Artwork fit</span><div className="pw-mockup-segments three">{(["cover", "contain", "repeat"] as ArtworkFit[]).map((fit) => <button key={fit} type="button" className={artworkFit === fit ? "active" : ""} onClick={() => setArtworkFit(fit)}>{fit}</button>)}</div></div>}
-
-          <div className="pw-mockup-footer">
-            <p><Rotate3D size={17} /> {view === "preview" ? "Drag to rotate. Scroll to zoom." : "Solid lines cut. Dashed lines fold."}</p>
-            <Link className="btn-fill btn-amber" href={`/configure?sku=${selected.sku}`}><ShoppingBag size={17} /> Buy {selected.label}</Link>
+          <div className="pw-st-order">
+            {selectedSku && (
+              <div className="pw-st-order-meta">
+                <img src={getCatalogImage(selectedSku)} alt="" />
+                <span><b>{selectedSku.name}</b><small>From {formatUnitRate(getFromUnitPrice(selectedSku))} / unit · MOQ {selectedSku.moq.toLocaleString("en-IN")}</small></span>
+              </div>
+            )}
+            <button type="button" className="pw-st-cta" onClick={orderDesign} disabled={!selectedSku}>Order this design <ArrowRight size={17} /></button>
+            <Link href="/samples" className="pw-st-secondary">Feel the materials first · ₹299 sample kit</Link>
           </div>
         </aside>
-
-        <div className="pw-studio-workspace">
-          <div className="pw-studio-workspace-bar">
-            <div><span>{selected.label}</span><small>{dimensions.width} x {dimensions.height} x {dimensions.depth} mm</small></div>
-            <div className="pw-mockup-actions">
-              {view === "preview" && <button type="button" onClick={() => setAutoRotate((value) => !value)} title={autoRotate ? "Pause rotation" : "Start rotation"}>{autoRotate ? <Pause size={17} /> : <Play size={17} />}{autoRotate ? "Pause" : "Rotate"}</button>}
-              <button type="button" onClick={view === "preview" ? downloadMockup : downloadDieline}><Download size={17} /> Export {view === "preview" ? "PNG" : "SVG"}</button>
-            </div>
-          </div>
-          <div className="pw-studio-viewport">
-            {view === "preview" ? <PackagingMockupCanvas format={format} color={color} brandName={brandName} finish={finish} logoDataUrl={logoDataUrl} artworkDataUrl={artworkDataUrl} artworkFit={artworkFit} autoRotate={autoRotate} onReady={setRenderer} /> : <PackagingDieline format={format} width={dimensions.width} height={dimensions.height} depth={dimensions.depth} artworkDataUrl={artworkDataUrl} />}
-          </div>
-          <div className="pw-studio-status"><span><b>Preview quality</b> 3D review render</span><span><b>Artwork</b> {artworkDataUrl ? "Uploaded" : logoDataUrl ? "Logo applied" : "Editable starter"}</span><span><b>Prepress</b> Human check before production</span></div>
-        </div>
       </section>
     </main>
   );

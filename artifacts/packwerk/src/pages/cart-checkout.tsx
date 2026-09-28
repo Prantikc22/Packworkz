@@ -5,7 +5,7 @@ import { useSubmitQuote } from "@workspace/api-client-react";
 import { LAUNCH_PROMOTION_CODE, RAZORPAY_PAYMENT_LIMIT_RUPEES } from "@workspace/commerce";
 import { CATALOG_SKUS } from "@/lib/catalog";
 import { formatINR } from "@/lib/format";
-import { getCartCheckoutDecision, getCartConfigurationDetails, getCartEstimate, useCart } from "@/lib/cart";
+import { formatCartPrice, getCartCheckoutDecision, getCartConfigurationDetails, getCartLinePrice, sumCartLinePrices, useCart } from "@/lib/cart";
 import { openOrderPayment, prepareOrderPayment } from "@/lib/razorpay";
 import { useToast } from "@/hooks/use-toast";
 
@@ -43,11 +43,11 @@ export default function CartCheckout() {
   const submissionLock = useRef(false);
   const rows = useMemo(() => items.flatMap((item) => {
     const sku = CATALOG_SKUS.find((entry) => entry.code === item.skuCode);
-    return sku ? [{ item, sku, estimate: getCartEstimate(item, sku) }] : [];
+    return sku ? [{ item, sku, price: getCartLinePrice(item, sku) }] : [];
   }), [items]);
   const unresolvedItems = useMemo(() => items.filter((item) => !CATALOG_SKUS.some((sku) => sku.code === item.skuCode)), [items]);
   const checkoutDecision = useMemo(() => getCartCheckoutDecision(rows), [rows]);
-  const total = rows.reduce((sum, row) => sum + row.estimate.high, 0);
+  const total = sumCartLinePrices(rows.map((row) => row.price));
   const quoteRequired = checkoutDecision.requiresQuote;
   const quoteReason = checkoutDecision.hasManagedItem
     ? "This cart contains at least one managed-quote item. We will review the complete cart together; no item will be charged separately."
@@ -93,8 +93,8 @@ export default function CartCheckout() {
           `Delivery pincode: ${form.pincode.trim()}`,
           "Multi-item online cart",
         ].filter(Boolean).join("\n"),
-        total_estimated_min: total,
-        total_estimated_max: total,
+        total_estimated_min: total.low,
+        total_estimated_max: total.high,
         items: rows.map(({ item, sku }) => ({
           product_id: sku.id,
           sku_code: sku.code,
@@ -209,15 +209,15 @@ export default function CartCheckout() {
         <aside className="h-fit border border-navy bg-navy p-6 text-white lg:sticky lg:top-32">
           <h2 className="text-2xl font-black">Order summary</h2>
           <div className="mt-5 divide-y divide-white/15 border-y border-white/15">
-            {rows.map(({ item, estimate }) => {
+            {rows.map(({ item, price }) => {
               const configuration = getCartConfigurationDetails(item);
-              return <div key={item.id} className="flex gap-3 py-4"><img src={item.image} alt="" className="h-16 w-16 object-cover" /><div className="min-w-0 flex-1"><p className="font-bold">{item.productName}</p><p className="text-sm text-white/55">{item.quantity.toLocaleString("en-IN")} {item.quantityUnit} · {item.sizeLabel}</p><p className="mt-1 line-clamp-2 text-xs leading-5 text-white/45">{configuration.map(({ value }) => value).join(" · ")}</p></div><strong>{formatINR(estimate.high)}</strong></div>;
+              return <div key={item.id} className="flex gap-3 py-4"><img src={item.image} alt="" className="h-16 w-16 object-cover" /><div className="min-w-0 flex-1"><p className="font-bold">{item.productName}</p><p className="text-sm text-white/55">{item.quantity.toLocaleString("en-IN")} {item.quantityUnit} · {item.sizeLabel}</p><p className="mt-1 line-clamp-2 text-xs leading-5 text-white/45">{configuration.map(({ value }) => value).join(" · ")}</p></div><strong className="text-right">{formatCartPrice(price)}</strong></div>;
             })}
           </div>
-          <div className="flex items-end justify-between py-6"><span className="font-bold">Payable estimate</span><strong className="text-3xl">{formatINR(total)}</strong></div>
-          <p className="-mt-3 mb-5 text-xs leading-5 text-white/55">Includes estimated delivery. Final freight may be adjusted if the packed weight, volume or destination serviceability differs.</p>
+          <div className="flex items-end justify-between py-6"><span className="font-bold">{total.estimated ? "Estimated total" : "Payable now"}</span><strong className="text-right text-2xl">{formatCartPrice(total)}</strong></div>
+          <p className="-mt-3 mb-5 text-xs leading-5 text-white/55">{total.estimated ? "Market-based estimate, ex-GST. Nothing is charged today — you approve the confirmed price first." : "Includes GST and estimated delivery. Final freight may be adjusted if the packed weight, volume or destination serviceability differs."}</p>
           <button disabled={launchingPayment || submitQuote.isPending || unresolvedItems.length > 0} className="flex h-14 w-full items-center justify-center gap-3 bg-amber px-5 text-lg font-black text-navy hover:bg-[#d99a29] disabled:cursor-wait disabled:opacity-60">
-            <LockKeyhole className="h-5 w-5" /> {unresolvedItems.length ? "Review cart first" : launchingPayment || submitQuote.isPending ? (quoteRequired ? "Sending quote request..." : "Opening secure payment...") : quoteRequired ? "Request one quote" : "Pay securely"}
+            <LockKeyhole className="h-5 w-5" /> {unresolvedItems.length ? "Review cart first" : launchingPayment || submitQuote.isPending ? (quoteRequired ? "Sending quote request..." : "Opening secure payment...") : quoteRequired ? "Confirm my price" : "Pay securely"}
           </button>
           <p className="mt-4 text-sm leading-6 text-white/55">{unresolvedItems.length ? "A saved product is no longer available. Return to the cart and remove it so nothing is omitted from your request." : quoteRequired ? quoteReason : "Razorpay opens directly after your delivery details are saved. The server rechecks every line and the combined total before creating a payment."}</p>
         </aside>

@@ -1,19 +1,18 @@
 import { Link } from "wouter";
 import { AlertTriangle, ArrowRight, PackageOpen, ShoppingBag, Trash2 } from "lucide-react";
 import { CATALOG_SKUS, requiresQuote } from "@/lib/catalog";
-import { formatINR } from "@/lib/format";
-import { getCartCheckoutDecision, getCartConfigurationDetails, getCartEstimate, useCart } from "@/lib/cart";
+import { formatCartPrice, getCartCheckoutDecision, getCartConfigurationDetails, getCartLinePrice, sumCartLinePrices, useCart } from "@/lib/cart";
 
 export default function Cart() {
   const { items, updateQuantity, removeItem } = useCart();
   const rows = items.flatMap((item) => {
     const sku = CATALOG_SKUS.find((entry) => entry.code === item.skuCode);
     if (!sku) return [];
-    return [{ item, sku, estimate: getCartEstimate(item, sku) }];
+    return [{ item, sku, price: getCartLinePrice(item, sku) }];
   });
   const unresolvedItems = items.filter((item) => !CATALOG_SKUS.some((sku) => sku.code === item.skuCode));
   const checkoutDecision = getCartCheckoutDecision(rows);
-  const total = rows.reduce((sum, row) => sum + row.estimate.high, 0);
+  const total = sumCartLinePrices(rows.map((row) => row.price));
 
   if (!items.length) {
     return (
@@ -52,10 +51,10 @@ export default function Cart() {
                 <button onClick={() => removeItem(item.id)} className="p-2 text-red-600" aria-label={`Remove ${item.productName}`}><Trash2 className="h-5 w-5" /></button>
               </article>
             ))}
-            {rows.map(({ item, sku, estimate }) => {
+            {rows.map(({ item, sku, price }) => {
               const configuration = getCartConfigurationDetails(item);
               const quantities = Array.from(new Set([
-                ...(sku.price_tiers || []).filter((tier) => !requiresQuote(sku, tier.min_qty)).map((tier) => tier.min_qty),
+                ...(sku.price_tiers || []).filter((tier) => price.estimated || !requiresQuote(sku, tier.min_qty)).map((tier) => Math.max(tier.min_qty, sku.moq)),
                 item.quantity,
               ])).sort((a, b) => a - b);
               return (
@@ -92,8 +91,8 @@ export default function Cart() {
                         </select>
                       </label>
                       <div className="text-right">
-                        <p className="text-xs font-bold uppercase tracking-[0.12em] text-muted">Estimated total, incl. GST</p>
-                        <p className="mt-1 text-2xl font-black text-navy">{formatINR(estimate.high)}</p>
+                        <p className="text-xs font-bold uppercase tracking-[0.12em] text-muted">{price.estimated ? "Estimate · ex-GST" : "Total, incl. GST"}</p>
+                        <p className="mt-1 text-2xl font-black text-navy">{formatCartPrice(price)}</p>
                       </div>
                     </div>
                   </div>
@@ -112,15 +111,15 @@ export default function Cart() {
               <span>Estimated delivery calculated at checkout</span>
             </div>
             <div className="flex items-end justify-between py-6">
-              <span className="font-bold">Estimated total</span>
-              <strong className="text-3xl">{formatINR(total)}</strong>
+              <span className="font-bold">{total.estimated ? "Estimated total" : "Total"}</span>
+              <strong className="text-right text-2xl">{formatCartPrice(total)}</strong>
             </div>
-            <p className="mb-5 text-sm leading-6 text-white/60">{unresolvedItems.length ? "Remove unavailable items before continuing." : checkoutDecision.requiresQuote ? "This cart will be submitted as one managed quote. Instant-buy lines will not be charged separately." : "Includes the launch discount, GST and estimated delivery. Final freight can change if packed weight, volume or serviceability differs. Your address is entered once on the next step."}</p>
+            <p className="mb-5 text-sm leading-6 text-white/60">{unresolvedItems.length ? "Remove unavailable items before continuing." : checkoutDecision.requiresQuote ? "No payment now. A specialist confirms the final price, lead time and payment schedule for your whole cart within 4 business hours, and you approve before anything is produced." : "Includes the launch discount, GST and estimated delivery. Final freight can change if packed weight, volume or serviceability differs. Your address is entered once on the next step."}</p>
             {unresolvedItems.length ? (
               <div className="flex h-14 w-full items-center justify-center bg-white/10 px-5 text-center text-sm font-bold text-white/60">Review unavailable items</div>
             ) : (
               <Link href="/cart/checkout" className="flex h-14 w-full items-center justify-center gap-3 bg-amber px-5 text-lg font-black text-navy hover:bg-[#d99a29]">
-                {checkoutDecision.requiresQuote ? "Continue to quote checkout" : "Proceed to checkout"} <ArrowRight className="h-5 w-5" />
+                {checkoutDecision.requiresQuote ? "Checkout · confirm my price" : "Proceed to checkout"} <ArrowRight className="h-5 w-5" />
               </Link>
             )}
           </aside>

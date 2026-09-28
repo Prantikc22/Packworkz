@@ -781,7 +781,7 @@ export default function Home() {
           </div>
           <div className="pw-starter-grid">
             {STARTER_SKUS.map((sku) => (
-              <Link key={sku.code} href={`/configure?sku=${sku.code}`} className="pw-starter-card">
+              <Link key={sku.code} href={`/products/${sku.slug}`} className="pw-starter-card">
                 <div className="pw-starter-image">
                   <img src={getCatalogImage(sku)} alt={`${sku.name} custom printed packaging`} loading="eager" />
                 </div>

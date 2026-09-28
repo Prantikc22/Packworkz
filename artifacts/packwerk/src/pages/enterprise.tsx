@@ -6,7 +6,9 @@ import {
   Timer, Truck,
 } from "lucide-react";
 import { trackMarketingEvent } from "@/lib/analytics";
+import { Marquee } from "@/components/marketing/motion";
 import "./marketing-redesign.css";
+import "./premium-pages.css";
 
 const INDUSTRIES = [
   { name: "Food & Beverage", href: "/industries/food", image: "/industries/food.webp" },
@@ -147,6 +149,10 @@ export default function Enterprise() {
           ].map(([Icon, title, text]) => { const Symbol = Icon as typeof CalendarDays; return <div key={String(title)}><Symbol size={22} /><span><b>{String(title)}</b><small>{String(text)}</small></span></div>; })}
         </div>
       </section>
+
+      <div className="pw-p-ticker">
+        <Marquee speed={44}>{["Flexible packaging", "Folding & rigid cartons", "Labels & sleeves", "Bottles & containers", "Secondary packaging", "Pre-dispatch QC", "Backup sourcing", "One order record"].map((item) => <span className="pw-p-ticker-item" key={item}>{item}</span>)}</Marquee>
+      </div>
 
       <section className="pw-marketing-section pw-ent-spec" id="how-enterprise-works">
         <div className="pw-marketing-container pw-ent-spec-grid">

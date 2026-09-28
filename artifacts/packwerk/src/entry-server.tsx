@@ -42,7 +42,7 @@ export function getDynamicSeoRoutes() {
       title: `${sku.name.replace(/^Custom Printed /, "")} India | Packworkz`,
       description: sku.publicBuyingPath === "instant"
         ? `Buy custom ${sku.name.toLowerCase()} in India from ${sku.moq.toLocaleString("en-IN")} ${sku.moq_unit}. Compare sizes, materials, artwork and quantity pricing online with Packworkz.`
-        : `Source custom ${sku.name.toLowerCase()} in India from ${sku.moq.toLocaleString("en-IN")} ${sku.moq_unit}. Review materials, artwork and specifications, then request a managed Packworkz quote.`,
+        : `Source custom ${sku.name.toLowerCase()} in India from ${sku.moq.toLocaleString("en-IN")} ${sku.moq_unit}. See estimated pricing, customise online and confirm your final price within 4 business hours.`,
       keywords: `${sku.name.toLowerCase()} India, custom ${sku.name.toLowerCase()}, ${sku.code}, packaging supplier India`,
       kind: "product" as const,
       name: sku.name,

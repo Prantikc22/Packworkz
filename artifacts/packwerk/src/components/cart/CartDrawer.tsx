@@ -2,8 +2,7 @@ import { Link } from "wouter";
 import { ShoppingCart, Trash2, X } from "lucide-react";
 import { createPortal } from "react-dom";
 import { CATALOG_SKUS } from "@/lib/catalog";
-import { formatINR } from "@/lib/format";
-import { getCartCheckoutDecision, getCartConfigurationDetails, getCartEstimate, useCart } from "@/lib/cart";
+import { formatCartPrice, getCartCheckoutDecision, getCartConfigurationDetails, getCartLinePrice, sumCartLinePrices, useCart } from "@/lib/cart";
 
 export function CartDrawer() {
   const { items, isOpen, closeCart, removeItem } = useCart();
@@ -13,10 +12,8 @@ export function CartDrawer() {
   });
   const checkoutDecision = getCartCheckoutDecision(rows);
   const hasUnavailableItems = rows.length !== items.length;
-  const total = items.reduce((sum, item) => {
-    const sku = CATALOG_SKUS.find((entry) => entry.code === item.skuCode);
-    return sum + (sku ? getCartEstimate(item, sku).high : 0);
-  }, 0);
+  const linePrices = new Map(rows.map(({ item, sku }) => [item.id, getCartLinePrice(item, sku)]));
+  const total = sumCartLinePrices([...linePrices.values()]);
 
   if (!isOpen || typeof document === "undefined") return null;
   return createPortal(
@@ -40,15 +37,16 @@ export function CartDrawer() {
                 <p className="mt-1 text-xs text-muted">{item.sizeLabel} · Custom printed</p>
                 <p className="mt-2 text-sm font-semibold text-navy">{item.quantity.toLocaleString("en-IN")} {item.quantityUnit}</p>
                 <p className="mt-1 line-clamp-2 text-xs leading-5 text-muted">{configuration.slice(0, 3).map(({ value }) => value).join(" · ")}</p>
+                {linePrices.get(item.id) && <p className="mt-2 text-sm font-black text-navy">{formatCartPrice(linePrices.get(item.id)!)}{linePrices.get(item.id)!.estimated && <span className="ml-1 text-xs font-bold text-blue">est.</span>}</p>}
               </div>
               <button type="button" onClick={() => removeItem(item.id)} className="self-start p-1 text-slate-400 hover:text-red-600" aria-label={`Remove ${item.productName}`}><Trash2 className="h-4 w-4" /></button>
             </div>
           )})}
         </div>
         {items.length > 0 && <div className="border-t border-slate-200 p-6">
-          <div className="mb-4 flex justify-between"><span className="text-sm text-muted">Estimated total, including GST</span><strong className="text-xl text-navy">{formatINR(total)}</strong></div>
-          <p className="mb-4 text-xs leading-5 text-muted">{hasUnavailableItems ? "Review unavailable saved items before continuing." : checkoutDecision.requiresQuote ? "The complete cart will be reviewed as one quote; no line is charged separately." : "Your address is entered once for the complete cart."}</p>
-          <Link href={hasUnavailableItems ? "/cart" : "/cart/checkout"} onClick={closeCart} className="flex min-h-14 items-center justify-center bg-amber px-5 text-base font-black text-navy hover:bg-[#d99a2a]">{hasUnavailableItems ? "Review cart" : checkoutDecision.requiresQuote ? "Continue to quote checkout" : "Proceed to checkout"}</Link>
+          <div className="mb-4 flex justify-between"><span className="text-sm text-muted">{total.estimated ? "Estimated total" : "Total, including GST"}</span><strong className="text-right text-xl text-navy">{formatCartPrice(total)}</strong></div>
+          <p className="mb-4 text-xs leading-5 text-muted">{hasUnavailableItems ? "Review unavailable saved items before continuing." : checkoutDecision.requiresQuote ? "No payment now. We confirm the final price for your whole cart within 4 business hours." : "Your address is entered once for the complete cart."}</p>
+          <Link href={hasUnavailableItems ? "/cart" : "/cart/checkout"} onClick={closeCart} className="flex min-h-14 items-center justify-center bg-amber px-5 text-base font-black text-navy hover:bg-[#d99a2a]">{hasUnavailableItems ? "Review cart" : checkoutDecision.requiresQuote ? "Checkout · confirm my price" : "Proceed to checkout"}</Link>
           <Link href="/cart" onClick={closeCart} className="mt-3 flex min-h-12 items-center justify-center border border-navy px-5 text-sm font-bold text-navy hover:bg-slate-50">View and edit cart</Link>
         </div>}
       </aside>

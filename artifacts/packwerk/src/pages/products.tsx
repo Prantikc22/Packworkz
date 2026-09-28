@@ -1,339 +1,242 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link, useSearch } from "wouter";
-import { formatINR } from "@/lib/format";
+import { Link, useLocation, useSearch } from "wouter";
+import { ArrowRight, ArrowUpDown, Clock3, Leaf, PackageOpen, Rotate3D, Search, SlidersHorizontal, Truck, X } from "lucide-react";
 import { CATEGORIES } from "@/lib/skus";
 import {
-  CATALOG_SKUS,
-  getCatalogImage,
-  getCategoryLabel,
-  getConfigureHref,
-  isCatalogSkuInCategory,
+  CATALOG_SKUS, INDUSTRY_CATALOGS, getCatalogImage, getCategoryLabel, isCatalogSkuInCategory, type CatalogSku,
 } from "@/lib/catalog";
-type PublicPath = "instant" | "quote";
+import { formatUnitRate, getFromUnitPrice } from "@/lib/indicative-pricing";
+import { MOCKUP_FORMAT_BY_SKU } from "@/lib/studio-handoff";
+import "./catalog.css";
 
-const MS = ({ icon, className = "", style }: { icon: string; className?: string; style?: React.CSSProperties }) => (
-  <span className={`material-symbols-outlined ${className}`} style={style}>{icon}</span>
-);
+type Mode = "all" | "instant" | "quote";
+type Sort = "recommended" | "price" | "moq" | "fastest" | "name";
 
-const FILTERS: Array<{ key: PublicPath | "all"; label: string; hint: string; icon: string }> = [
-  { key: "all", label: "All packaging", hint: "Full D2C + enterprise range", icon: "inventory_2" },
-  { key: "instant", label: "Instant buy", hint: "Tier price shown", icon: "shopping_cart" },
-  { key: "quote", label: "Request quote", hint: "Detailed plan in 4 business hours", icon: "precision_manufacturing" },
+const SORTS: Array<{ id: Sort; label: string }> = [
+  { id: "recommended", label: "Recommended" },
+  { id: "price", label: "Lowest unit price" },
+  { id: "moq", label: "Lowest minimum order" },
+  { id: "fastest", label: "Fastest to ship" },
+  { id: "name", label: "Name A–Z" },
 ];
-
-const MOCKUP_FORMAT_BY_SKU: Record<string, string> = {
-  "EC-501": "mailer",
-  "EC-502": "shipping",
-  "BX-401": "carton",
-  "BX-402": "rigid",
-  "FP-101": "pouch",
-  "BC-201": "bottle",
-  "BC-207": "jar",
-  "TS-301": "tube",
-};
+const MODES: Array<{ id: Mode; label: string }> = [
+  { id: "all", label: "All" },
+  { id: "instant", label: "Buy online" },
+  { id: "quote", label: "Price in 4 hrs" },
+];
+const PAGE_SIZE = 24;
 
 const CATEGORY_TILES = CATEGORIES.map((cat) => {
   const sample = CATALOG_SKUS.find((sku) => isCatalogSkuInCategory(sku, cat.slug));
-  return sample ? { ...cat, image: getCatalogImage(sample) } : null;
-}).filter(Boolean) as Array<(typeof CATEGORIES)[number] & { image: string }>;
+  return sample ? { ...cat, image: getCatalogImage(sample), count: CATALOG_SKUS.filter((sku) => isCatalogSkuInCategory(sku, cat.slug)).length } : null;
+}).filter(Boolean) as Array<(typeof CATEGORIES)[number] & { image: string; count: number }>;
+
+function sortSkus(skus: CatalogSku[], sort: Sort) {
+  const list = [...skus];
+  if (sort === "price") return list.sort((a, b) => getFromUnitPrice(a) - getFromUnitPrice(b));
+  if (sort === "moq") return list.sort((a, b) => a.moq - b.moq);
+  if (sort === "fastest") return list.sort((a, b) => Number(b.publicBuyingPath === "instant") - Number(a.publicBuyingPath === "instant") || a.delivery_days_india - b.delivery_days_india);
+  if (sort === "name") return list.sort((a, b) => a.name.localeCompare(b.name));
+  return list;
+}
+
+function ProductCard({ sku, index }: { sku: CatalogSku; index: number }) {
+  const instant = sku.publicBuyingPath === "instant";
+  const unit = sku.moq_unit.replace(/s$/, "");
+  return (
+    <Link href={`/products/${sku.slug}`} className="pc-card" style={{ animationDelay: `${Math.min(index % PAGE_SIZE, 8) * 45}ms` }}>
+      <div className="pc-card-media">
+        <img src={getCatalogImage(sku)} alt={sku.name} loading={index < 8 ? "eager" : "lazy"} />
+        <span className={`pc-card-badge ${instant ? "is-instant" : "is-quote"}`}>
+          {instant ? <><Truck size={12} /> Ships in {sku.delivery_days_india} days</> : <><Clock3 size={12} /> Price in 4 hrs</>}
+        </span>
+        {sku.is_eco && <span className="pc-card-eco"><Leaf size={12} /> Eco</span>}
+        {MOCKUP_FORMAT_BY_SKU[sku.code] && <span className="pc-card-3d" title="3D preview available"><Rotate3D size={14} /></span>}
+      </div>
+      <div className="pc-card-body">
+        <small>{getCategoryLabel(sku.category)}</small>
+        <h3>{sku.name}</h3>
+        <p>{sku.use_case}</p>
+        <div className="pc-card-foot">
+          <span><em>From</em> <b>{formatUnitRate(getFromUnitPrice(sku))}</b> / {unit}{!instant && <i> est.</i>}</span>
+          <span>MOQ {sku.moq.toLocaleString("en-IN")}</span>
+        </div>
+        <span className="pc-card-cta">Customise & price <ArrowRight size={15} /></span>
+      </div>
+    </Link>
+  );
+}
+
+function SampleKitCard() {
+  return (
+    <Link href="/samples" className="pc-card pc-kit">
+      <img src="/images/sample-kit-hero-v1.webp" alt="Packworkz sample kit" loading="lazy" />
+      <div>
+        <small>Not sure yet?</small>
+        <h3>Feel 25–50+ real samples for ₹299.</h3>
+        <p>Pouches, boxes, labels and finishes — delivered to your desk.</p>
+        <span className="pc-card-cta">Get the sample kit <ArrowRight size={15} /></span>
+      </div>
+    </Link>
+  );
+}
 
 export default function Products() {
-  const searchStr = useSearch();
-  const params = new URLSearchParams(searchStr);
-  const initialCat = params.get("category") || undefined;
-  const initialIndustry = params.get("industry") || undefined;
+  const searchString = useSearch();
+  const [location, navigate] = useLocation();
+  const params = useMemo(() => new URLSearchParams(searchString), [searchString]);
+  const category = params.get("category") || "";
+  const industry = params.get("industry") || "";
+  const query = params.get("q") || "";
+  const mode = (params.get("mode") as Mode) || "all";
+  const eco = params.get("eco") === "1";
+  const sort = (params.get("sort") as Sort) || "recommended";
+  const [searchDraft, setSearchDraft] = useState(query);
+  const [visible, setVisible] = useState(PAGE_SIZE);
+  const [filtersOpen, setFiltersOpen] = useState(false);
 
-  const [search, setSearch] = useState("");
-  const [category, setCategory] = useState<string | undefined>(initialCat);
-  const [industry, setIndustry] = useState<string | undefined>(initialIndustry);
-  const [mode, setMode] = useState<PublicPath | "all">("all");
-  const [ecoOnly, setEcoOnly] = useState(false);
-  const [visibleCount, setVisibleCount] = useState(24);
+  const setParams = (updates: Record<string, string | null>) => {
+    const next = new URLSearchParams(searchString);
+    Object.entries(updates).forEach(([key, value]) => {
+      if (!value || (key === "mode" && value === "all") || (key === "sort" && value === "recommended")) next.delete(key);
+      else next.set(key, value);
+    });
+    const qs = next.toString();
+    navigate(`${location}${qs ? `?${qs}` : ""}`, { replace: true });
+  };
 
+  useEffect(() => setSearchDraft(query), [query]);
   useEffect(() => {
-    setCategory(initialCat);
-    setIndustry(initialIndustry);
-  }, [initialCat, initialIndustry]);
+    if (searchDraft === query) return;
+    const timer = window.setTimeout(() => setParams({ q: searchDraft.trim() || null }), 280);
+    return () => window.clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchDraft]);
+  useEffect(() => setVisible(PAGE_SIZE), [searchString]);
 
-  const filteredSkus = useMemo(() => {
-    const term = search.trim().toLowerCase();
-
-    return CATALOG_SKUS.filter((sku) => {
+  const filtered = useMemo(() => {
+    const term = query.trim().toLowerCase();
+    const matches = CATALOG_SKUS.filter((sku) => {
       if (category && !isCatalogSkuInCategory(sku, category)) return false;
       if (industry && !sku.industrySlugs.includes(industry)) return false;
       if (mode !== "all" && sku.publicBuyingPath !== mode) return false;
-      if (ecoOnly && !sku.is_eco && sku.category !== "sustainable") return false;
+      if (eco && !sku.is_eco && sku.category !== "sustainable") return false;
       if (!term) return true;
-
-      return [sku.name, sku.use_case, sku.description, sku.code, sku.category]
-        .some((value) => value.toLowerCase().includes(term));
+      return [sku.name, sku.use_case, sku.description, sku.code, sku.category, ...(sku.materials || [])].some((value) => value.toLowerCase().includes(term));
     });
-  }, [category, ecoOnly, industry, mode, search]);
+    return sortSkus(matches, sort);
+  }, [category, eco, industry, mode, query, sort]);
 
-  useEffect(() => setVisibleCount(24), [category, ecoOnly, industry, mode, search]);
-
-  const visibleSkus = filteredSkus.slice(0, visibleCount);
-
-  const totalInstant = CATALOG_SKUS.filter((sku) => sku.publicBuyingPath === "instant").length;
-  const totalQuote = CATALOG_SKUS.filter((sku) => sku.publicBuyingPath === "quote").length;
-  const spotlightSku = CATALOG_SKUS.find((sku) => category ? isCatalogSkuInCategory(sku, category) : sku.code === "RL-701") || CATALOG_SKUS[0];
+  const industryLabel = INDUSTRY_CATALOGS.find((item) => item.slug === industry)?.label || industry;
+  const activeChips = [
+    category && { key: "category", label: getCategoryLabel(category) },
+    industry && { key: "industry", label: industryLabel },
+    query && { key: "q", label: `“${query}”` },
+    mode !== "all" && { key: "mode", label: MODES.find((item) => item.id === mode)?.label || mode },
+    eco && { key: "eco", label: "Sustainable" },
+  ].filter(Boolean) as Array<{ key: string; label: string }>;
+  const shown = filtered.slice(0, visible);
+  const instantCount = CATALOG_SKUS.filter((sku) => sku.publicBuyingPath === "instant").length;
 
   return (
-    <div className="products-page min-h-screen" style={{ background: "#F8F9FC", fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-      <section className="pw-products-intro bg-white border-b border-slate-200 px-4 sm:px-6 lg:px-8 2xl:px-10 pt-[124px] pb-7">
-        <div className="mx-auto flex max-w-[1450px] flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
-          <div>
-            <p className="text-[11px] font-black uppercase tracking-[0.2em]" style={{ color: "#1B6CA8" }}>Packaging catalog</p>
-            <h1 className="mt-1 text-3xl md:text-4xl font-black leading-tight" style={{ color: "#0D1B2A" }}>Find the right format. Get the right buying path.</h1>
-            <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-600">
-              Buy selected labels and D2C staples online. Every other format gets a specialist-reviewed quote with pricing, delivery and payment schedules.
-            </p>
-          </div>
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="px-3 py-2 bg-slate-100 text-xs font-bold text-slate-700">{CATALOG_SKUS.length} product families</span>
-            <span className="px-3 py-2 bg-blue-50 text-xs font-bold text-blue-800">{totalInstant} instant-buy</span>
-            <span className="px-3 py-2 bg-slate-900 text-xs font-bold text-white">{totalQuote} request-quote</span>
-            <Link href="/mockup-studio" className="pw-catalog-studio-cta !min-h-9 !px-3">
-              <MS icon="view_in_ar" className="text-lg" /> Design in 3D
-            </Link>
-            <Link href="/enterprise" className="px-3 py-2 text-xs font-black text-blue-800">High volumes or multiple SKUs? Enterprise →</Link>
-          </div>
+    <main className="pc">
+      <header className="pc-head">
+        <div className="pc-head-copy">
+          <p className="pc-eyebrow">Packaging catalogue · {CATALOG_SKUS.length} formats</p>
+          <h1>{category ? getCategoryLabel(category) : <>Custom packaging, <em>priced upfront.</em></>}</h1>
+          <p className="pc-head-sub">{instantCount} formats check out instantly. Every other format shows a market-based price and is confirmed within 4 business hours — add anything to your cart.</p>
         </div>
-        <div className="pw-products-showcase mx-auto mt-6 max-w-[1450px]">
-          <div className="pw-products-showcase-copy">
-            <span>{category ? getCategoryLabel(category) : "PACKAGING FOR GROWING & ENTERPRISE BRANDS"}</span>
-            <h2>{category ? `Explore ${getCategoryLabel(category).toLowerCase()}.` : "Packaging selected around how you actually buy."}</h2>
-            <p>{category ? spotlightSku.use_case : "Checkout selected repeatable formats immediately. For everything else, brief us once and receive a production-ready commercial within four business hours."}</p>
-            <div>
-              <Link href={getConfigureHref(spotlightSku)}>{spotlightSku.publicBuyingPath === "instant" ? "Configure this format" : "Start a managed quote"} <MS icon="arrow_forward" /></Link>
-              <Link href="/pack-ai" className="is-text">Help me choose</Link>
-            </div>
-          </div>
-          <div className="pw-products-showcase-media">
-            <img src={getCatalogImage(spotlightSku)} alt={spotlightSku.name} loading="eager" />
-            <span>{spotlightSku.name}<small>{spotlightSku.publicBuyingPath === "instant" ? "Instant buy available" : "Detailed quote · 4 business hours"}</small></span>
-          </div>
+        <label className="pc-search">
+          <Search size={19} />
+          <input value={searchDraft} onChange={(event) => setSearchDraft(event.target.value)} placeholder="Search pouches, mailer boxes, labels, kraft…" aria-label="Search packaging" />
+          {searchDraft && <button type="button" onClick={() => setSearchDraft("")} aria-label="Clear search"><X size={16} /></button>}
+        </label>
+      </header>
+
+      <nav className="pc-rail" aria-label="Categories">
+        <button type="button" className={!category ? "is-active" : ""} onClick={() => setParams({ category: null })}>
+          <span className="pc-rail-all">All</span><b>All packaging</b><small>{CATALOG_SKUS.length}</small>
+        </button>
+        {CATEGORY_TILES.map((cat) => (
+          <button key={cat.slug} type="button" className={category === cat.slug ? "is-active" : ""} onClick={() => setParams({ category: category === cat.slug ? null : cat.slug })} aria-pressed={category === cat.slug}>
+            <img src={cat.image} alt="" loading="lazy" /><b>{cat.label}</b><small>{cat.count}</small>
+          </button>
+        ))}
+      </nav>
+
+      <div className="pc-toolbar">
+        <div className="pc-seg" role="radiogroup" aria-label="How you buy">
+          {MODES.map((item) => <button key={item.id} type="button" role="radio" aria-checked={mode === item.id} className={mode === item.id ? "is-active" : ""} onClick={() => setParams({ mode: item.id })}>{item.label}</button>)}
         </div>
-        <div className="pw-products-family-rail mx-auto mt-7 max-w-[1450px]" aria-label="Browse packaging categories">
-          {CATEGORY_TILES.map((cat) => (
-            <button key={cat.slug} type="button" onClick={() => setCategory(cat.slug)} className={category === cat.slug ? "is-active" : ""}>
-              <span><img src={cat.image} alt="" loading="eager" /></span>
-              <strong>{cat.label}</strong>
-            </button>
-          ))}
-        </div>
-      </section>
-
-      <section className="bg-white border-b border-slate-200 sticky top-[68px] z-30 pt-4 shadow-[0_8px_18px_rgba(13,27,42,0.06)]">
-        <div className="w-full px-4 sm:px-6 lg:px-8 2xl:px-10 py-3 flex flex-col lg:flex-row gap-3 lg:items-center">
-          <div className="relative flex-1">
-            <MS icon="search" className="absolute left-3 top-1/2 -translate-y-1/2 text-xl" style={{ color: "#74777d" }} />
-            <input
-              placeholder="Search rigid boxes, cartons, pouches, bottles, labels..."
-              value={search}
-              onChange={(event) => setSearch(event.target.value)}
-              className="w-full h-11 pl-10 pr-4 rounded border border-slate-200 bg-white text-sm focus:outline-none focus:border-blue-400"
-              style={{ color: "#0D1B2A" }}
-            />
-          </div>
-          <div className="flex gap-2 overflow-x-auto">
-            <label className="relative shrink-0 lg:hidden">
-              <span className="sr-only">Product category</span>
-              <select
-                aria-label="Product category"
-                value={category || ""}
-                onChange={(event) => setCategory(event.target.value || undefined)}
-                className="h-full min-h-[52px] w-44 appearance-none border border-slate-200 bg-white pl-3 pr-8 text-xs font-black text-slate-900 outline-none focus:border-blue-500"
-              >
-                <option value="">All categories</option>
-                {CATEGORIES.map((cat) => <option key={cat.slug} value={cat.slug}>{cat.label}</option>)}
-              </select>
-              <MS icon="expand_more" className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-lg text-slate-500" />
-            </label>
-            {FILTERS.map((filter) => (
-              <button
-                key={filter.key}
-                onClick={() => setMode(filter.key)}
-                className="px-4 py-2 rounded border text-left whitespace-nowrap transition-all"
-                style={{
-                  borderColor: mode === filter.key ? "#1B6CA8" : "#E2E8F0",
-                  background: mode === filter.key ? "rgba(27,108,168,0.08)" : "white",
-                  color: "#0D1B2A",
-                }}
-              >
-                <span className="flex items-center gap-2 text-xs font-black"><MS icon={filter.icon} className="text-base" />{filter.label}</span>
-                <span className="block text-[11px] text-slate-500 mt-0.5">{filter.hint}</span>
-              </button>
-            ))}
-            <button
-              onClick={() => setEcoOnly((value) => !value)}
-              className="px-4 py-2 rounded border text-left whitespace-nowrap transition-all"
-              style={{
-                borderColor: ecoOnly ? "#16A34A" : "#E2E8F0",
-                background: ecoOnly ? "rgba(22,163,74,0.08)" : "white",
-                color: "#0D1B2A",
-              }}
-            >
-              <span className="flex items-center gap-2 text-xs font-black"><MS icon="eco" className="text-base" />Sustainable</span>
-              <span className="block text-[11px] text-slate-500 mt-0.5">Certified & recyclable</span>
-            </button>
-          </div>
-        </div>
-      </section>
-
-      <div className="w-full px-4 sm:px-6 lg:px-8 2xl:px-10 py-8 flex flex-col lg:flex-row gap-8">
-        <aside className="hidden w-full lg:block lg:w-60 shrink-0">
-          <div className="bg-white rounded-lg border border-slate-200 p-4 sticky top-[184px]">
-            <p className="text-xs font-black uppercase tracking-widest mb-3" style={{ color: "#74777d" }}>Categories</p>
-            <button
-              onClick={() => setCategory(undefined)}
-              className="w-full flex justify-between items-center text-sm py-2 px-3 rounded transition-all text-left"
-              style={!category ? { background: "#0D1B2A", color: "white" } : { color: "#44474c" }}
-            >
-              <span className="font-bold">All products</span>
-              <span className="text-xs opacity-60">{CATALOG_SKUS.length}</span>
-            </button>
-            <div className="mt-1 space-y-0.5">
-              {CATEGORIES.map((cat) => (
-                <button
-                  key={cat.slug}
-                  onClick={() => setCategory(cat.slug)}
-                  className="w-full flex justify-between items-center text-sm py-2 px-3 rounded transition-all text-left gap-2"
-                  style={category === cat.slug ? { background: "#0D1B2A", color: "white" } : { color: "#44474c" }}
-                >
-                  <span className="font-medium truncate text-xs">{cat.label}</span>
-                  <span className="text-xs opacity-60 shrink-0">{CATALOG_SKUS.filter((sku) => isCatalogSkuInCategory(sku, cat.slug)).length}</span>
-                </button>
-              ))}
-            </div>
-            <div className="mt-5 pt-4 border-t border-slate-200">
-              <p className="text-xs font-black uppercase tracking-widest mb-3" style={{ color: "#74777d" }}>Shortcut catalogs</p>
-              <div className="grid gap-2">
-                <Link href="/sustainable">
-                  <button className="w-full flex items-center justify-between border border-slate-300 border-l-2 border-l-green-600 bg-white px-3 py-2 text-xs font-bold text-slate-900 transition hover:border-slate-900">
-                    Sustainable catalog <MS icon="arrow_forward" className="text-sm" />
-                  </button>
-                </Link>
-                <Link href="/industries">
-                  <button className="w-full flex items-center justify-between border border-slate-300 border-l-2 border-l-blue-600 bg-white px-3 py-2 text-xs font-bold text-slate-900 transition hover:border-slate-900">
-                    Industry catalog <MS icon="arrow_forward" className="text-sm" />
-                  </button>
-                </Link>
-                <Link href="/mockup-studio">
-                  <button className="w-full flex items-center justify-between border border-slate-300 border-l-2 border-l-amber-500 bg-white px-3 py-2 text-xs font-bold text-slate-900 transition hover:border-slate-900">
-                    3D mockup studio <MS icon="view_in_ar" className="text-sm" />
-                  </button>
-                </Link>
-              </div>
-            </div>
-          </div>
-        </aside>
-
-        <main className="flex-1">
-          <div className="flex items-center justify-between gap-4 mb-5">
-            <div>
-              <h2 className="text-lg font-black" style={{ fontFamily: "'Space Grotesk', sans-serif", color: "#0D1B2A" }}>
-                {category ? getCategoryLabel(category) : "All packaging SKUs"}
-              </h2>
-              <p className="text-xs text-slate-500 mt-1">{filteredSkus.length} matching SKUs. Recommended path is pre-selected.</p>
-            </div>
-            {(category || search || mode !== "all" || ecoOnly || industry) && (
-              <button
-                onClick={() => { setSearch(""); setCategory(undefined); setIndustry(undefined); setMode("all"); setEcoOnly(false); }}
-                className="text-xs font-black text-slate-500 hover:text-slate-900"
-              >
-                Clear filters
-              </button>
-            )}
-          </div>
-
-          {filteredSkus.length === 0 ? (
-            <div className="text-center py-24 bg-white rounded-lg border border-slate-200">
-              <MS icon="search_off" className="text-5xl mb-3" style={{ color: "#C4C6CC" }} />
-              <p className="font-bold mb-2" style={{ color: "#44474c" }}>No matching packaging found.</p>
-              <p className="text-sm text-slate-500">Try clearing filters or browse by industry.</p>
-            </div>
-          ) : (
-            <div className="pw-catalog-card-grid">
-              {visibleSkus.map((sku, index) => {
-                const mockupFormat = MOCKUP_FORMAT_BY_SKU[sku.code];
-                return (
-                  <article key={sku.id} className="pw-catalog-card pw-reveal" style={{ animationDelay: `${Math.min(index, 8) * 40}ms` }}>
-                    <Link href={`/products/${sku.slug}`} className="pw-catalog-card-media" aria-label={`View ${sku.name}`}>
-                      <img src={getCatalogImage(sku)} alt={sku.name} loading="lazy" />
-                      <span className="pw-catalog-card-index">{String(index + 1).padStart(2, "0")}</span>
-                      <div className="pw-catalog-card-badges">
-                        <span className={sku.publicBuyingPath === "instant" ? "instant" : "quote"}>{sku.publicBuyingPath === "instant" ? "Instant buy" : "Managed quote"}</span>
-                        <span className="custom">Custom printed</span>
-                        {sku.is_eco && <span className="eco">Eco option</span>}
-                      </div>
-                    </Link>
-
-                    <div className="pw-catalog-card-body">
-                      <div className="pw-catalog-card-heading">
-                        <div><span>{getCategoryLabel(sku.category)}</span><small>{sku.code}</small></div>
-                        <Link href={`/products/${sku.slug}`} aria-label={`View ${sku.name}`}><MS icon="north_east" /></Link>
-                      </div>
-                      <h3>{sku.name}</h3>
-                      <p>{sku.use_case}</p>
-
-                      <div className="pw-catalog-card-facts">
-                        <span><small>Minimum</small><b>{sku.moq.toLocaleString("en-IN")} {sku.moq_unit}</b></span>
-                        <span><small>Production</small><b>{sku.speedLabel}</b></span>
-                      </div>
-
-                      <div className="pw-catalog-card-commerce">
-                        <div>
-                          <small>{sku.publicBuyingPath === "quote" ? "Specialist-reviewed commercial" : "Starting unit price"}</small>
-                          <strong>{sku.publicBuyingPath === "quote" ? "Detailed quote in 4 business hours" : `${formatINR(sku.price_tiers?.[0]?.unit_price ?? sku.price_max)} / ${sku.moq_unit.replace(/s$/, "")}`}</strong>
-                        </div>
-                        {sku.publicBuyingPath === "instant" ? (
-                          <div className="pw-catalog-card-actions">
-                            <Link href={`${getConfigureHref(sku)}&intent=cart`} className="pw-catalog-card-secondary">
-                              <MS icon="add_shopping_cart" /> Add to cart
-                            </Link>
-                            <Link href={`${getConfigureHref(sku)}&intent=buy`} className="pw-catalog-card-primary">
-                              Buy now <MS icon="arrow_forward" />
-                            </Link>
-                          </div>
-                        ) : (
-                          <Link href={getConfigureHref(sku)} className="pw-catalog-card-primary is-quote">
-                            Build my quote <MS icon="arrow_forward" />
-                          </Link>
-                        )}
-                      </div>
-
-                      {mockupFormat && (
-                        <Link href={`/mockup-studio?format=${mockupFormat}&sku=${sku.code}`} className="pw-catalog-card-mockup">
-                          <MS icon="view_in_ar" /> Preview this format in 3D
-                        </Link>
-                      )}
-                    </div>
-                  </article>
-                );
-              })}
-            </div>
-          )}
-          {visibleCount < filteredSkus.length && (
-            <div className="mt-8 flex items-center justify-between border-t border-slate-200 pt-6">
-              <p className="text-sm text-slate-500">Showing {visibleCount} of {filteredSkus.length} matching families</p>
-              <button type="button" onClick={() => setVisibleCount((count) => Math.min(count + 24, filteredSkus.length))} className="btn-fill btn-navy px-6 py-3 text-sm">
-                Show 24 more
-              </button>
-            </div>
-          )}
-        </main>
+        <button type="button" className={`pc-toggle${eco ? " is-active" : ""}`} onClick={() => setParams({ eco: eco ? null : "1" })} aria-pressed={eco}><Leaf size={15} /> Sustainable</button>
+        <button type="button" className="pc-toggle pc-filter-btn" onClick={() => setFiltersOpen((value) => !value)}><SlidersHorizontal size={15} /> Industry</button>
+        <label className="pc-sort">
+          <ArrowUpDown size={15} />
+          <select value={sort} onChange={(event) => setParams({ sort: event.target.value })} aria-label="Sort products">
+            {SORTS.map((item) => <option key={item.id} value={item.id}>{item.label}</option>)}
+          </select>
+        </label>
+        <span className="pc-count">{filtered.length} {filtered.length === 1 ? "format" : "formats"}</span>
       </div>
 
-      <section className="pw-products-expert-cta">
-        <div>
-          <span>ONE BRIEF. A COMPLETE COMMERCIAL.</span>
-          <h2>Get a production-ready quote in 4 business hours.</h2>
-          <p>Share the product, quantity and destination. We return confirmed specifications, pricing, delivery milestones and payment schedule during India working hours.</p>
-          <Link href="/procurement-plan">Start my detailed quote <MS icon="arrow_forward" /></Link>
+      {filtersOpen && (
+        <div className="pc-industries">
+          {INDUSTRY_CATALOGS.map((item) => (
+            <button key={item.slug} type="button" className={industry === item.slug ? "is-active" : ""} onClick={() => setParams({ industry: industry === item.slug ? null : item.slug })}>{item.label}</button>
+          ))}
         </div>
-        <img src={getCatalogImage(spotlightSku)} alt={`${spotlightSku.name} packaging production example`} loading="lazy" />
+      )}
+
+      {activeChips.length > 0 && (
+        <div className="pc-chips" aria-label="Active filters">
+          {activeChips.map((chip) => (
+            <button key={chip.key} type="button" onClick={() => { if (chip.key === "q") setSearchDraft(""); setParams({ [chip.key]: null }); }}>{chip.label} <X size={13} /></button>
+          ))}
+          <button type="button" className="is-clear" onClick={() => { setSearchDraft(""); navigate(location, { replace: true }); }}>Clear all</button>
+        </div>
+      )}
+
+      {filtered.length === 0 ? (
+        <div className="pc-empty">
+          <PackageOpen size={40} />
+          <h2>No format matches yet.</h2>
+          <p>Try a broader search, or tell us what you’re packing and we’ll recommend the right format.</p>
+          <div><Link href="/contact" className="pc-btn is-dark">Ask a packaging expert</Link><Link href="/samples" className="pc-btn">Order the ₹299 sample kit</Link></div>
+        </div>
+      ) : (
+        <div className="pc-grid">
+          {shown.map((sku, index) => (
+            <FragmentWithKit key={sku.code} index={index} total={shown.length}>
+              <ProductCard sku={sku} index={index} />
+            </FragmentWithKit>
+          ))}
+        </div>
+      )}
+
+      {visible < filtered.length && (
+        <div className="pc-more">
+          <span>Showing {visible} of {filtered.length}</span>
+          <button type="button" className="pc-btn is-dark" onClick={() => setVisible((count) => count + PAGE_SIZE)}>Show more formats</button>
+        </div>
+      )}
+
+      <section className="pc-expert">
+        <div>
+          <p className="pc-eyebrow">Multiple SKUs or high volumes?</p>
+          <h2>One brief. A complete commercial in 4 business hours.</h2>
+          <p>Share the product, quantity and destination. We return specs, pricing, delivery milestones and payment schedule.</p>
+        </div>
+        <div className="pc-expert-actions">
+          <Link href="/procurement-plan" className="pc-btn is-amber">Start a managed quote <ArrowRight size={16} /></Link>
+          <Link href="/enterprise" className="pc-btn is-ghost">Enterprise procurement</Link>
+        </div>
       </section>
-    </div>
+    </main>
   );
+}
+
+function FragmentWithKit({ index, total, children }: { index: number; total: number; children: React.ReactNode }) {
+  // The sample kit sits after the first row-and-a-bit, where undecided buyers stall.
+  const kitIndex = Math.min(6, total - 1);
+  return <>{children}{index === kitIndex && <SampleKitCard />}</>;
 }

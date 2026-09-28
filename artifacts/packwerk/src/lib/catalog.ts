@@ -149,18 +149,19 @@ export const ALL_CATALOG_SKUS: Sku[] = [...SKUS, ...EXPANDED_SKUS];
 const STOREFRONT_EXCLUSIONS = new Set([
   // Flexible variants consolidated into the four self-serve pouch families
   // and two enterprise flexible-film briefs below.
-  "FP-102", "FP-106", "FP-107", "FP-108", "FP-109", "FP-111", "FP-113",
+  "FP-102", "FP-107", "FP-108", "FP-111", "FP-113",
   // Container shapes that are options within plastic/glass families, plus
   // specialist metal and industrial formats handled as managed requests.
-  "BC-203", "BC-207", "BC-208", "BC-209", "BC-210", "BC-211", "BC-212",
+  "BC-203", "BC-207", "BC-208", "BC-210", "BC-211", "BC-212",
   // Keep the core cosmetic tube public; specialist tube formats enter through
   // the general production brief when needed.
-  "TS-302", "TS-303", "TS-304", "TS-305",
+  "TS-302", "TS-303", "TS-305",
   // Keep the clearest D2C box families public. Additional presentation-box
   // constructions remain configuration options or managed requests.
-  "BX-404", "BX-405", "BX-406", "BX-407", "BX-408", "BX-409", "BX-410", "BX-411", "BX-412",
+  // Auto-bottom and reverse-tuck stay as structures inside BX-401.
+  "BX-404", "BX-409", "BX-410", "BX-411", "BX-412",
   // Mailer material and return-strip choices are merged into two mailer pages.
-  "EC-506", "EC-507", "EC-508", "EC-511", "EC-512", "EC-513",
+  "EC-506", "EC-507", "EC-508", "EC-512", "EC-513",
   // Protective consumables become options within two clear jobs; specialist
   // tooling-led formats are handled as managed requests.
   "PR-603", "PR-604", "PR-605", "PR-606", "PR-607", "PR-608", "PR-609", "PR-610", "PR-611",
@@ -181,6 +182,8 @@ const STOREFRONT_OVERRIDES: Record<string, Partial<Sku>> = {
       { key: "closure", label: "Closure", options: ["Open top", "Resealable zipper", "Zipper + coffee valve"] },
       { key: "material", label: "Material", options: ["Clear barrier film", "Metallised barrier film", "Kraft laminate", "Mono-material PE"] },
       { key: "finish", label: "Finish", options: ["Matte", "Gloss", "Soft touch"] },
+      { key: "hang", label: "Hang hole", options: ["None", "Round hang hole", "Euro slot"] },
+      { key: "window", label: "Window", options: ["No window", "Clear window"] },
       { key: "branding", label: "Branding route", options: ["Premium applied label", "Direct digital print"] },
     ],
   },
@@ -202,6 +205,33 @@ const STOREFRONT_OVERRIDES: Record<string, Partial<Sku>> = {
       { key: "spout", label: "Spout position", options: ["Corner spout", "Centre spout"] },
       { key: "material", label: "Material", options: ["PET/PE barrier laminate", "Mono-material PE"] },
       { key: "finish", label: "Finish", options: ["Matte", "Gloss"] },
+    ],
+  },
+  "FP-106": {
+    description: "Flat pouches sealed on three sides with a tear notch — the most economical printed format for single-serve spices, samples, masks and refills.",
+    variants: [
+      { key: "closure", label: "Closure", options: ["Heat seal only", "Resealable zipper"] },
+      { key: "material", label: "Material", options: ["PET/PE", "MetPET/PE", "Kraft laminate", "Mono-material PE"] },
+      { key: "finish", label: "Finish", options: ["Matte", "Gloss", "Soft touch"] },
+      { key: "hang", label: "Hang hole", options: ["None", "Round hang hole", "Euro slot"] },
+      { key: "window", label: "Window", options: ["No window", "Clear window"] },
+    ],
+  },
+  "FP-109": {
+    description: "Stand-up and flat-bottom coffee bags with a one-way degassing valve and reseal zipper, built for freshly roasted beans and ground coffee.",
+    variants: [
+      { key: "structure", label: "Structure", options: ["Stand-up", "Flat bottom", "Side gusset"] },
+      { key: "material", label: "Material", options: ["MetPET/PE barrier", "Kraft + foil barrier", "Mono-material PE"] },
+      { key: "finish", label: "Finish", options: ["Matte", "Soft touch", "Gloss"] },
+      { key: "closure", label: "Closure", options: ["Zipper + valve", "Tin-tie + valve"] },
+    ],
+  },
+  "BX-405": {
+    description: "A two-part drawer box: a printed sleeve with a sliding tray inside. A premium, repeatable unboxing moment for skincare sets, candles, confectionery and gifting.",
+    variants: [
+      { key: "construction", label: "Construction", options: ["Folding board", "Rigid wrapped"] },
+      { key: "tray", label: "Tray", options: ["Plain tray", "Printed tray", "Tray + insert"] },
+      { key: "finish", label: "Finish", options: ["Matte lamination", "Soft touch", "Foil accent"] },
     ],
   },
   "FP-112": {
