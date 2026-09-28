@@ -44,7 +44,7 @@ export function AuthShell({ children, aside, wide = false, title }: { children: 
             {aside}
             <div className="pa-trust">
               <small>Packaging partner to brands like</small>
-              <div>{LOGOS.map((logo) => <img key={logo.name} src={logo.src} alt={logo.name} loading="lazy" />)}</div>
+              <div>{LOGOS.map((logo) => <img key={logo.name} src={logo.src} alt={logo.name} />)}</div>
             </div>
           </div>
         </section>
