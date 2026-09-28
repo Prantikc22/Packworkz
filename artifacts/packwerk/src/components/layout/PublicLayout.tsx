@@ -451,8 +451,8 @@ const GLOBAL_STYLES = `
     top: 18px;
     width: min(calc(100% - 64px), 1680px);
     border-radius: 999px;
-    backdrop-filter: blur(30px) saturate(150%) brightness(.62);
-    -webkit-backdrop-filter: blur(30px) saturate(150%) brightness(.62);
+    backdrop-filter: blur(32px) saturate(180%) brightness(.55);
+    -webkit-backdrop-filter: blur(32px) saturate(180%) brightness(.55);
   }
   .pw-site-header .po-cta-btn { border-radius: 999px; }
   .pw-currency-switch { display:inline-flex; padding:3px; border:1px solid rgba(255,255,255,.14); border-radius:999px; }
@@ -1274,13 +1274,13 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
   const navFloating = scrolled;
   const navSolid = !isMobileNav || scrolled || !isHome;
   const navHomeLight = isMobileNav && isHome && !scrolled;
-  const navBackground = navFloating ? "#0B3FA0" : !isMobileNav ? "linear-gradient(180deg, rgba(20, 42, 70, 0.72), rgba(9, 24, 44, 0.66))" : navSolid ? "#0D1B2A" : "transparent";
+  const navBackground = navFloating ? "#0B3FA0" : !isMobileNav ? "linear-gradient(180deg, rgba(16, 38, 78, 0.86) 0%, rgba(7, 22, 48, 0.80) 100%)" : navSolid ? "#0D1B2A" : "transparent";
   const navBorder = navFloating
     ? (isMobileNav ? "0 solid transparent" : "1px solid rgba(255,255,255,.08)")
     : !isMobileNav ? "1px solid rgba(255,255,255,.18)" : navSolid ? "1px solid #20364B" : "1px solid transparent";
   const navShadow = navFloating
     ? (isMobileNav ? "0 10px 30px rgba(3, 31, 86, 0.22)" : "0 14px 36px rgba(3, 31, 86, 0.28)")
-    : isMobileNav ? "none" : "inset 0 1px 0 rgba(255,255,255,.14), 0 18px 44px rgba(3, 15, 26, 0.22)";
+    : isMobileNav ? "none" : "inset 0 1px 0 rgba(255,255,255,.18), inset 0 -1px 0 rgba(0,0,0,.25), 0 18px 44px rgba(3, 15, 40, 0.3)";
 
   useEffect(() => {
     document.documentElement.classList.remove("dark");
