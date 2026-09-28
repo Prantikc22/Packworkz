@@ -119,8 +119,8 @@ function Router() {
       <PublicRoute path="/design" component={Design} layout={PublicLayout} />
       <PublicRoute path="/mockup-studio" component={MockupStudio} layout={PublicLayout} />
       <PublicRoute path="/samples" component={Samples} layout={PublicLayout} />
-      <PublicRoute path="/login" component={Login} layout={PublicLayout} />
-      <PublicRoute path="/signup" component={Signup} layout={PublicLayout} />
+      <PublicRoute path="/login" component={Login} />
+      <PublicRoute path="/signup" component={Signup} />
       <ProtectedRoute path="/change-password" component={ChangePassword} layout={PublicLayout} />
       <PublicRoute path="/industries" component={Industries} layout={PublicLayout} />
       <PublicRoute path="/industries/:slug" component={IndustryDetail} layout={PublicLayout} />

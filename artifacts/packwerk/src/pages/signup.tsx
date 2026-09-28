@@ -74,9 +74,8 @@ export default function Signup() {
   );
 
   return (
-    <AuthShell wide aside={claimReference ? <div className="pa-claim"><small>RECORD TO LINK</small><strong>{claimReference}</strong></div> : undefined}>
-        <p className="pa-kicker">Create account</p>
-        <h1 className="pa-title">Your packaging, in one workspace.</h1>
+    <AuthShell wide title="Create your account | Packworkz" aside={claimReference ? <div className="pa-claim"><small>RECORD TO LINK</small><strong>{claimReference}</strong></div> : undefined}>
+                <h1 className="pa-title">Create your Packworkz account</h1>
         <p className="pa-sub">Already have an account? <Link href="/login">Sign in</Link></p>
 
         <form onSubmit={submit} className="pa-form">
