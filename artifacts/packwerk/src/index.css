@@ -4532,6 +4532,63 @@ body, html {
   backdrop-filter: blur(14px);
 }
 
+/* ── Glow surfaces ─────────────────────────────────────────────────────────
+   Deep navy lit by one soft blue light source instead of flat navy.
+   The light position varies per section so neighbouring dark areas never
+   repeat: -b (from below), -t (from above), -tl / -br (corners), -r (side). */
+.pw-glow-b, .pw-glow-t, .pw-glow-tl, .pw-glow-br, .pw-glow-r,
+.pw-p-final, .pw-p-ticker.is-dark, .pw-catalog-tape, .pw-site-footer, .pw-proof-section,
+.pw-p-deep, .pc-expert, .pw-ai-entry, .pw-p-dark, .pw-ent-smartstock {
+  background-color: #050d1a !important;
+  background-repeat: no-repeat !important;
+}
+.pw-glow-b,
+.pw-p-final,
+.pw-p-ticker.is-dark,
+.pw-catalog-tape {
+  background-image:
+    radial-gradient(60% 55% at 50% 112%, rgba(59,130,246,.55) 0%, rgba(29,78,216,.22) 42%, rgba(5,13,26,0) 72%),
+    linear-gradient(180deg, #050d1a 0%, #071733 100%) !important;
+}
+.pw-glow-t,
+.pw-site-footer {
+  background-image:
+    radial-gradient(65% 55% at 50% -14%, rgba(59,130,246,.45) 0%, rgba(29,78,216,.16) 45%, rgba(5,13,26,0) 72%),
+    linear-gradient(0deg, #050d1a 0%, #07152d 100%) !important;
+}
+.pw-glow-tl,
+.pw-proof-section,
+.pw-p-deep {
+  background-image:
+    radial-gradient(55% 70% at -6% -10%, rgba(59,130,246,.46) 0%, rgba(29,78,216,.16) 45%, rgba(5,13,26,0) 72%),
+    linear-gradient(135deg, #07152d 0%, #050d1a 70%) !important;
+}
+.pw-glow-br,
+.pc-expert,
+.pw-ai-entry {
+  background-image:
+    radial-gradient(55% 70% at 106% 110%, rgba(59,130,246,.46) 0%, rgba(29,78,216,.16) 45%, rgba(5,13,26,0) 72%),
+    linear-gradient(315deg, #07152d 0%, #050d1a 70%) !important;
+}
+.pw-glow-r,
+.pw-p-dark,
+.pw-ent-smartstock {
+  background-image:
+    radial-gradient(45% 80% at 108% 50%, rgba(59,130,246,.42) 0%, rgba(29,78,216,.14) 45%, rgba(5,13,26,0) 72%),
+    linear-gradient(270deg, #07152d 0%, #050d1a 65%) !important;
+}
+
+/* Cards sitting on a glow surface turn to glass so the light reads through. */
+.pw-p-dark .pw-p-card, .pw-p-deep .pw-p-card, .pw-proof-stories article {
+  background: rgba(255,255,255,.035) !important;
+  backdrop-filter: blur(6px);
+}
+.pw-p-dark .pw-p-card:hover, .pw-p-deep .pw-p-card:hover { background: rgba(255,255,255,.065) !important; }
+.pw-p-dark .pw-p-card-grid, .pw-p-deep .pw-p-card-grid { background: rgba(255,255,255,.07) !important; }
+.pw-proof-stories { background: transparent !important; border-color: rgba(255,255,255,.1) !important; gap: 0 !important; }
+.pw-proof-stories article + article { box-shadow: inset 1px 0 0 rgba(255,255,255,.1); }
+@media (max-width: 980px) { .pw-proof-stories article + article { box-shadow: inset 0 1px 0 rgba(255,255,255,.1); } }
+
 /* Hero support copy: readable over the photographic canvas. */
 .pw-home .pw-editorial-brand-proof {
   color: #40566b;

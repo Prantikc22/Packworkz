@@ -1619,7 +1619,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
       </main>
 
       {/* ── FOOTER ── */}
-      <footer style={{ background: "#020617", fontFamily: "'Space Grotesk', sans-serif" }}>
+      <footer className="pw-site-footer" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
 
         {/* Top bar: logo + socials + CTA */}
         <div className="po-footer-topbar" style={{ borderBottom: "1px solid rgba(255,255,255,0.08)", padding: "28px 64px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 16 }}>
