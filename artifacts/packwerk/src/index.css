@@ -480,7 +480,7 @@
   height: 100%;
   overflow: hidden;
   border: 1px solid #dfe7ef;
-  border-radius: 0;
+  border-radius: 8px;
   background: #ffffff;
   box-shadow: 0 10px 28px rgba(13,27,42,0.06);
   cursor: pointer;
@@ -508,7 +508,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 0;
+  border-radius: 6px;
   background: #ffffff;
   color: #0d1b2a;
   font-size: 11px;
@@ -539,7 +539,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 0;
+  border-radius: 6px;
   background: #edf5fb;
   transition: background 0.2s ease, color 0.2s ease;
 }
@@ -555,7 +555,7 @@
   align-items: center;
   margin-top: 28px;
   padding: 20px 22px;
-  border-radius: 0;
+  border-radius: 8px;
   background: #0d1b2a;
   color: #ffffff;
 }
@@ -569,13 +569,14 @@
   background: linear-gradient(145deg, #f4c662 0%, #e39a18 100%);
   color: #0d1b2a;
   box-shadow: inset 0 1px 0 rgba(255,255,255,.5), 0 8px 22px rgba(0,0,0,.2);
+  border-radius: 6px;
 }
-.pw-ai-entry-icon-search { position: absolute; right: 5px; bottom: 5px; padding: 1px; border-radius: 50%; background: #0d1b2a; color: #ffffff; box-shadow: 0 0 0 2px #e39a18; }
+.pw-ai-entry-icon > span { position: absolute; right: 3px; bottom: 3px; min-width: 19px; height: 15px; display: grid; place-items: center; box-sizing: border-box; padding: 0 3px; border: 1px solid rgba(242,177,52,.9); border-radius: 4px; background: #0d1b2a; color: #fff; font-size: 7px; font-weight: 950; line-height: 1; letter-spacing: .06em; }
 .pw-ai-entry strong { display: block; font-size: 16px; margin-bottom: 3px; }
 .pw-ai-entry > div > span { display: block; color: #a8b3c4; font-size: 13px; }
 
 .pw-sku-card {
-  border-radius: 0;
+  border-radius: 8px;
   box-shadow: 0 8px 24px rgba(13,27,42,0.05);
   transition: transform 0.28s ease, border-color 0.28s ease, box-shadow 0.28s ease;
 }
@@ -1173,15 +1174,15 @@
 .pw-catalog-studio-cta:hover { background: #f2bc53; color: #0d1b2a; }
 .pw-catalog-brief-cta:hover { background: #0d1b2a; color: #fff; }
 .pw-catalog-card-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
-.pw-catalog-card { min-width: 0; display: flex; flex-direction: column; overflow: hidden; border: 1px solid #d9e1e8; border-radius: 0; background: #fff; transition: transform .3s ease, box-shadow .3s ease, border-color .3s ease; }
+.pw-catalog-card { min-width: 0; display: flex; flex-direction: column; overflow: hidden; border: 1px solid #d9e1e8; border-radius: 8px; background: #fff; transition: transform .3s ease, box-shadow .3s ease, border-color .3s ease; }
 .pw-catalog-card:hover { transform: translateY(-4px); border-color: #b8c6d3; box-shadow: 0 22px 54px rgba(13,27,42,.11); }
 .pw-catalog-card-media { position: relative; aspect-ratio: 1.34; overflow: hidden; display: block; background: #eef2f5; }
 .pw-catalog-card-media::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 62%, rgba(13,27,42,.18)); pointer-events: none; }
 .pw-catalog-card-media img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .65s cubic-bezier(.2,.7,.2,1); }
 .pw-catalog-card:hover .pw-catalog-card-media img { transform: scale(1.035); }
-.pw-catalog-card-index { position: absolute; z-index: 1; top: 14px; right: 14px; min-width: 34px; height: 30px; padding: 0 8px; display: grid; place-items: center; background: rgba(255,255,255,.94); color: #0d1b2a; font-family: 'Space Grotesk', sans-serif; font-size: 11px; font-weight: 900; }
+.pw-catalog-card-index { position: absolute; z-index: 1; top: 14px; right: 14px; min-width: 34px; height: 30px; padding: 0 8px; display: grid; place-items: center; border-radius: 6px; background: rgba(255,255,255,.94); color: #0d1b2a; font-family: 'Space Grotesk', sans-serif; font-size: 11px; font-weight: 900; }
 .pw-catalog-card-badges { position: absolute; z-index: 1; left: 14px; bottom: 14px; display: flex; flex-wrap: wrap; gap: 6px; }
-.pw-catalog-card-badges span { min-height: 27px; padding: 0 9px; display: inline-flex; align-items: center; background: #0d1b2a; color: #fff; font-size: 9px; font-weight: 900; letter-spacing: .7px; text-transform: uppercase; }
+.pw-catalog-card-badges span { min-height: 27px; padding: 0 9px; display: inline-flex; align-items: center; border-radius: 6px; background: #0d1b2a; color: #fff; font-size: 9px; font-weight: 900; letter-spacing: .7px; text-transform: uppercase; }
 .pw-catalog-card-badges .instant { background: #e8a838; color: #0d1b2a; }
 .pw-catalog-card-badges .custom { background: #fff; color: #0d1b2a; border: 1px solid rgba(13,27,42,.18); }
 .pw-catalog-card-badges .eco { background: #17835a; }
@@ -1190,7 +1191,7 @@
 .pw-catalog-card-heading > div { display: flex; align-items: center; gap: 9px; }
 .pw-catalog-card-heading span { color: #1b6ca8; font-size: 9px; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; }
 .pw-catalog-card-heading small { padding-left: 9px; border-left: 1px solid #dbe3eb; color: #8291a1; font-family: 'Space Grotesk', sans-serif; font-size: 10px; font-weight: 800; }
-.pw-catalog-card-heading a { width: 32px; height: 32px; display: grid; place-items: center; border: 1px solid #dbe3eb; color: #0d1b2a; text-decoration: none; }
+.pw-catalog-card-heading a { width: 32px; height: 32px; display: grid; place-items: center; border: 1px solid #dbe3eb; border-radius: 6px; color: #0d1b2a; text-decoration: none; }
 .pw-catalog-card-heading a:hover { background: #0d1b2a; color: #fff; }
 .pw-catalog-card h3 { margin: 13px 0 7px; color: #0d1b2a; font-family: 'Space Grotesk', sans-serif; font-size: 21px; line-height: 1.18; }
 .pw-catalog-card-body > p { min-height: 42px; color: #64748b; font-size: 12px; line-height: 1.65; }
@@ -1203,13 +1204,13 @@
 .pw-catalog-card-commerce { margin-top: auto; display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; }
 .pw-catalog-card-commerce strong { margin-top: 5px; display: block; color: #0d1b2a; font-family: 'Space Grotesk', sans-serif; font-size: 15px; }
 .pw-catalog-card-actions { display: flex; align-items: stretch; gap: 8px; }
-.pw-catalog-card-secondary { min-height: 48px; padding: 0 14px; display: inline-flex; align-items: center; justify-content: center; gap: 7px; border: 1px solid #0d1b2a; background: #fff; color: #0d1b2a; font: inherit; font-size: 12px; font-weight: 900; white-space: nowrap; cursor: pointer; }
+.pw-catalog-card-secondary { min-height: 48px; padding: 0 14px; display: inline-flex; align-items: center; justify-content: center; gap: 7px; border: 1px solid #0d1b2a; border-radius: 6px; background: #fff; color: #0d1b2a; font: inherit; font-size: 12px; font-weight: 900; white-space: nowrap; cursor: pointer; }
 .pw-catalog-card-secondary:hover { background: #f3f6f8; }
-.pw-catalog-card-primary { min-height: 48px; padding: 0 18px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: #e8a838; color: #0d1b2a; font-size: 13px; font-weight: 900; text-decoration: none; white-space: nowrap; }
+.pw-catalog-card-primary { min-height: 48px; padding: 0 18px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; border-radius: 6px; background: #e8a838; color: #0d1b2a; font-size: 13px; font-weight: 900; text-decoration: none; white-space: nowrap; }
 .pw-catalog-card-primary:hover { background: #d99a2a; color: #0d1b2a; }
 .pw-catalog-card-primary.is-quote { background: #0d1b2a; color: #fff; }
 .pw-catalog-card-primary.is-quote:hover { background: #17324a; color: #fff; }
-.pw-catalog-card-mockup { margin-top: 14px; min-height: 38px; padding: 0 12px; display: inline-flex; align-items: center; justify-content: center; gap: 7px; border: 1px solid #d7e0e8; background: #f8fafc; color: #1b6ca8; font-size: 10px; font-weight: 850; text-decoration: none; }
+.pw-catalog-card-mockup { margin-top: 14px; min-height: 38px; padding: 0 12px; display: inline-flex; align-items: center; justify-content: center; gap: 7px; border: 1px solid #d7e0e8; border-radius: 6px; background: #f8fafc; color: #1b6ca8; font-size: 10px; font-weight: 850; text-decoration: none; }
 .pw-catalog-card-mockup:hover { border-color: #1b6ca8; background: #edf5fb; color: #155781; }
 @media (min-width: 1680px) { .pw-catalog-card-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 @media (max-width: 1120px) { .pw-catalog-card-grid { grid-template-columns: 1fr; } }
@@ -4165,7 +4166,7 @@ body, html {
 }
 .pw-advantage-visual::before { display: none; }
 
-/* Square visual language across homepage cards and controls */
+/* Restrained corner system across homepage cards and controls. */
 .pw-home :is(
   article,
   button,
@@ -4185,8 +4186,10 @@ body, html {
   .pw-sector-card-actions a,
   .pw-advantage-primary,
   .pw-sustainability-footer-cta a
-) { border-radius: 0 !important; }
-.pw-nav-home-light .po-cta-btn { border-radius: 0 !important; }
+) { border-radius: 6px !important; }
+.pw-home .pw-family-directory,
+.pw-home .pw-starter-grid { overflow: hidden; border-radius: 8px !important; }
+.pw-nav-home-light .po-cta-btn { border-radius: 6px !important; }
 
 /* Closing call to action */
 .pw-final-cta { position: relative; min-height: 700px; overflow: hidden; padding: 80px 0 55px; background: #0d1b2a url('/images/cta-film-ribbons-v1.webp') center center / cover no-repeat; color: #fff; }
@@ -5513,4 +5516,48 @@ body, html {
 
 @media (prefers-reduced-motion: reduce) {
   .pw-spin { animation: none; }
+}
+
+/* Homepage corner audit: soften every contained UI surface while preserving
+   full-width section bands and intentionally circular controls. */
+.pw-home :is(
+  .pw-heritage-showcase,
+  .pw-editorial-metrics,
+  .pw-proof-metrics,
+  .pw-proof-stories,
+  .pw-calculator-shell,
+  .pw-stock-command,
+  .pw-sustainability-grid,
+  .pw-sector-card,
+  .pw-family-directory,
+  .pw-starter-grid
+) {
+  overflow: hidden;
+  border-radius: 8px !important;
+}
+
+.pw-home .pw-proof-stories > article {
+  border-radius: 0 !important;
+}
+
+.pw-home :is(
+  .pw-heritage-cta,
+  .pw-flow-cta,
+  .pw-ai-entry > a,
+  .pw-stock-command-action button,
+  .btn-fill,
+  .animated-border,
+  .animated-border > *
+) {
+  border-radius: 6px !important;
+}
+
+.pw-sample-widget-card {
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.pw-sample-widget-trigger,
+.pw-sample-widget-link {
+  border-radius: 6px;
 }

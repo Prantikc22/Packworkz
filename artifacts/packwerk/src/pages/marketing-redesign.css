@@ -16,7 +16,7 @@
 .pw-marketing h2 { max-width: 930px; margin-bottom: 0; font-size: clamp(2.35rem, 3.6vw, 4rem); font-weight: 800; letter-spacing: -.055em; line-height: 1.04; }
 .pw-marketing-body { max-width: 670px; margin-top: 23px; margin-bottom: 0; color: #5c6d7e; font-size: 16px; line-height: 1.7; }
 .pw-marketing-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 32px; }
-.pw-marketing-button { min-height: 54px; display: inline-flex; align-items: center; justify-content: center; gap: 16px; padding: 0 26px; border: 1px solid transparent; border-radius: 0; font-size: 14px; font-weight: 850; line-height: 1.2; text-decoration: none; white-space: nowrap; cursor: pointer; transition: transform .2s ease, background-color .2s ease, border-color .2s ease; }
+.pw-marketing-button { min-height: 54px; display: inline-flex; align-items: center; justify-content: center; gap: 16px; padding: 0 26px; border: 1px solid transparent; border-radius: 6px; font-size: 14px; font-weight: 850; line-height: 1.2; text-decoration: none; white-space: nowrap; cursor: pointer; transition: transform .2s ease, background-color .2s ease, border-color .2s ease; }
 .pw-marketing-button:hover { transform: translateY(-2px); }
 .pw-marketing-button.is-amber { background: var(--pw-amber); color: var(--pw-navy); }
 .pw-marketing-button.is-amber:hover { background: #ffca59; }
@@ -28,7 +28,7 @@
 .pw-marketing-heading-row { display: flex; justify-content: space-between; align-items: end; gap: 35px; margin-bottom: 34px; }
 .pw-marketing-heading-row h2 { max-width: 760px; }
 .pw-marketing-image-grid { display: grid; grid-template-columns: repeat(6,minmax(0,1fr)); gap: 13px; }
-.pw-marketing-image-grid a { min-width: 0; display: block; overflow: hidden; border: 1px solid var(--pw-line); color: var(--pw-ink); background: #fff; text-decoration: none; }
+.pw-marketing-image-grid a { min-width: 0; display: block; overflow: hidden; border: 1px solid var(--pw-line); border-radius: 8px; color: var(--pw-ink); background: #fff; text-decoration: none; }
 .pw-marketing-image-grid img { display: block; width: 100%; height: 204px; object-fit: cover; transition: transform .35s ease; }
 .pw-marketing-image-grid a:hover img { transform: scale(1.045); }
 .pw-marketing-image-grid a > span { min-height: 58px; display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 13px 14px; font-size: 13px; font-weight: 850; }
@@ -85,11 +85,11 @@
 .pw-ent-benefits span { display: inline-flex; align-items: center; gap: 7px; }
 .pw-ent-benefits svg { color: #c98812; }
 .pw-ent-benchmark-copy > img { display: block; width: min(100%,570px); height: 238px; margin-top: 38px; object-fit: cover; object-position: center 65%; }
-.pw-ent-form,.pw-ent-benchmark-success { padding: clamp(25px,3vw,44px); border: 1px solid #d8d7d2; background: #fff; box-shadow: 0 14px 42px rgba(16,34,53,.09); }
+.pw-ent-form,.pw-ent-benchmark-success { padding: clamp(25px,3vw,44px); border: 1px solid #d8d7d2; border-radius: 8px; background: #fff; box-shadow: 0 14px 42px rgba(16,34,53,.09); }
 .pw-ent-form h3 { margin-bottom: 23px; font-size: 20px; font-weight: 800; }
 .pw-ent-form-fields { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 15px; }
 .pw-ent-form label { min-width: 0; display: grid; gap: 7px; font-size: 11px; font-weight: 800; }
-.pw-ent-form input,.pw-ent-form select,.pw-ent-form textarea { width: 100%; min-height: 44px; padding: 10px 12px; border: 1px solid #cdd6df; border-radius: 0; background: #fff; color: #142b3f; font: inherit; font-size: 13px; font-weight: 500; }
+.pw-ent-form input,.pw-ent-form select,.pw-ent-form textarea { width: 100%; min-height: 44px; padding: 10px 12px; border: 1px solid #cdd6df; border-radius: 6px; background: #fff; color: #142b3f; font: inherit; font-size: 13px; font-weight: 500; }
 .pw-ent-form textarea { min-height: 92px; resize: vertical; }
 .pw-ent-form input::placeholder,.pw-ent-form textarea::placeholder { color: #8594a3; }
 .pw-ent-form-wide { grid-column: 1/-1; }

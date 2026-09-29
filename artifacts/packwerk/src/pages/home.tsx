@@ -15,7 +15,7 @@ import {
   Leaf, Droplets, FileCheck, ArrowRight, ArrowLeft,
   Package, ShoppingBag, Box, Tag, Gift,
   CalendarDays, Factory, Users, Globe2, Handshake,
-  Settings2, MapPin,
+  Settings2, MapPin, Sparkles,
 } from "lucide-react";
 import { money } from "@/lib/currency";
 
@@ -822,8 +822,8 @@ export default function Home() {
 
           <div className="pw-ai-entry">
             <div className="pw-ai-entry-icon" aria-hidden="true">
-              <Package size={25} strokeWidth={1.8} />
-              <Search className="pw-ai-entry-icon-search" size={13} strokeWidth={2.4} />
+              <Sparkles size={24} strokeWidth={1.9} />
+              <span>AI</span>
             </div>
             <div>
               <strong>Not sure what packaging fits?</strong>

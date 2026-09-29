@@ -325,7 +325,9 @@ const GLOBAL_STYLES = `
     display: grid;
     grid-template-columns: auto minmax(0, 1fr) minmax(0, 1fr);
     gap: 0;
+    overflow: hidden;
     border: 1px solid rgba(255,255,255,.1);
+    border-radius: 8px;
     background: rgba(15,23,42,.62);
   }
   .po-footer-locations-title,
@@ -453,6 +455,10 @@ const GLOBAL_STYLES = `
     border-radius: 999px;
     backdrop-filter: blur(32px) saturate(180%) brightness(.55);
     -webkit-backdrop-filter: blur(32px) saturate(180%) brightness(.55);
+  }
+  /* Join an open mega menu cleanly to the pill without changing the closed nav. */
+  .pw-site-header:has(.po-mega-panel) {
+    border-radius: 8px 8px 0 0;
   }
   .pw-site-header .po-cta-btn { border-radius: 999px; }
   .pw-currency-switch { display:inline-flex; padding:3px; border:1px solid rgba(255,255,255,.14); border-radius:999px; }
@@ -806,7 +812,7 @@ function NewsletterSignup() {
         style={{
           background: "transparent", border: `1px solid ${status === "error" ? "#FCA5A5" : "rgba(255,255,255,0.2)"}`,
           color: "white", padding: "10px 14px", fontSize: 13,
-          outline: "none", width: "100%",
+          outline: "none", width: "100%", borderRadius: 6,
         }}
       />
       {status === "error" && <p role="alert" style={{ color: "#FCA5A5", fontSize: 11 }}>Enter a valid email and try again.</p>}
@@ -814,7 +820,7 @@ function NewsletterSignup() {
         background: "white", color: "#020617",
         fontWeight: 700, fontSize: 13, padding: "10px 14px",
         border: "none", cursor: status === "sending" ? "wait" : "pointer", width: "100%",
-        transition: "background 0.15s", opacity: status === "sending" ? 0.7 : 1,
+        transition: "background 0.15s", opacity: status === "sending" ? 0.7 : 1, borderRadius: 6,
       }}>
         {status === "sending" ? "Subscribing…" : "Subscribe"}
       </button>
