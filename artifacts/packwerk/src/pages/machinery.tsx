@@ -15,7 +15,7 @@ const BUDGET_OPTIONS = isUsd()
 
 const skuByCode = (code: string) => CATALOG_SKUS.find((sku) => sku.code === code);
 
-const FAQS = [
+export const FAQS = [
   ["Who builds and services the machines?", "Every machine comes from a vetted Indian manufacturing partner who handles installation, operator training, warranty and after-sales service. We help you shortlist, compare and buy the right model — and set up the packaging it runs."],
   ["Are the prices final?", "No — the ranges are typical market prices for guidance. Your quote depends on speed, fill range, material contact parts, add-ons like nitrogen flushing or coding, freight and installation."],
   ["Can I see the machine working before buying?", "Yes. We arrange a video demo with your product and pack wherever possible, and a factory visit for larger lines."],

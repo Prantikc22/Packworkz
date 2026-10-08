@@ -1,7 +1,7 @@
 type SlackField = { label: string; value?: string | number | boolean | null };
 
 export type SlackLeadEvent = {
-  source: "Configurator" | "Contact" | "Support" | "Packworkz AI" | "Exit offer" | "Newsletter" | "Enterprise benchmark" | "Design" | "Sample" | "Razorpay";
+  source: "Configurator" | "Contact" | "Support" | "Packworkz AI" | "Exit offer" | "Newsletter" | "Enterprise benchmark" | "Design" | "Sample" | "Razorpay" | "Manufacturing requirement" | "Factory listing" | "Launch Desk payment" | "Factory verification payment";
   title: string;
   referenceId?: string;
   summary: string;

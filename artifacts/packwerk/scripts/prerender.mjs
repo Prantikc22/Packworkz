@@ -6,7 +6,8 @@
  * Usage: node scripts/prerender.mjs
  */
 
-import { readFileSync, writeFileSync, mkdirSync } from "fs";
+import { readFileSync, writeFileSync, mkdirSync, existsSync } from "fs";
+import { createHash } from "crypto";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 
@@ -24,7 +25,7 @@ function isoMonth(value) {
   return Number.isNaN(parsed.getTime()) ? undefined : parsed.toISOString().slice(0, 10);
 }
 
-function buildJsonLd(route, productCount) {
+function buildBaseJsonLd(route, productCount) {
   const canonicalUrl = `https://packworkz.com${route.path === "/" ? "" : route.path}`;
   const baseOrg = {
     "@context": "https://schema.org",
@@ -131,6 +132,65 @@ function buildJsonLd(route, productCount) {
     url: canonicalUrl,
     publisher: baseOrg,
   };
+}
+
+
+const SITE = "https://packworkz.com";
+
+function breadcrumb(items) {
+  return {
+    "@type": "BreadcrumbList",
+    itemListElement: items.map(([name, path], i) => ({ "@type": "ListItem", position: i + 1, name, item: `${SITE}${path}` })),
+  };
+}
+
+/** Page JSON-LD plus breadcrumbs, FAQs and manufacturing entities, as one @graph. */
+function buildJsonLd(route, productCount, faqs) {
+  const canonicalUrl = `${SITE}${route.path === "/" ? "" : route.path}`;
+  const base = buildBaseJsonLd(route, productCount);
+  const graph = base["@graph"] ? [...base["@graph"]] : [{ ...base, "@context": undefined }];
+
+  if (route.kind === "product") {
+    graph.push(breadcrumb([["Products", "/products"], [route.name, route.path]]));
+  }
+  if (route.kind === "mfg-category") {
+    graph[0] = {
+      "@type": "CollectionPage",
+      name: route.title,
+      description: route.description,
+      url: canonicalUrl,
+      mainEntity: {
+        "@type": "ItemList",
+        name: `${route.label} manufacturers in India`,
+        numberOfItems: route.members.length,
+        itemListElement: route.members.map((m, i) => ({ "@type": "ListItem", position: i + 1, name: m.name, url: `${SITE}/manufacturers/${m.slug}` })),
+      },
+    };
+    graph.push(breadcrumb([["Packworkz Make", "/manufacturing"], [route.label, route.path]]));
+  }
+  if (route.kind === "manufacturer") {
+    graph[0] = {
+      "@type": "ProfilePage",
+      name: route.title,
+      description: route.description,
+      url: canonicalUrl,
+      mainEntity: {
+        "@type": "Organization",
+        name: route.name,
+        ...(route.website ? { sameAs: [route.website] } : {}),
+        ...(route.city || route.state ? { address: { "@type": "PostalAddress", ...(route.city ? { addressLocality: route.city } : {}), ...(route.state ? { addressRegion: route.state } : {}), addressCountry: "IN" } } : {}),
+        knowsAbout: route.products,
+      },
+    };
+    graph.push(breadcrumb([["Packworkz Make", "/manufacturing"], ["Directory", "/manufacturers"], ...(route.category ? [[route.category, `/manufacturing/${route.categoryId}`]] : []), [route.name, route.path]]));
+  }
+  if (faqs?.length) {
+    graph.push({
+      "@type": "FAQPage",
+      mainEntity: faqs.map(([question, answer]) => ({ "@type": "Question", name: question, acceptedAnswer: { "@type": "Answer", text: answer } })),
+    });
+  }
+  return { "@context": "https://schema.org", "@graph": graph.map((node) => { const { "@context": _, ...rest } = node; return rest; }) };
 }
 
 const PRODUCT_ROUTE_DATA = [
@@ -282,6 +342,30 @@ const ROUTES = [
     keywords: "packaging machine India, band sealer price, pouch sealing machine, batch coding machine, powder filling machine, VFFS machine India",
   },
   {
+    path: "/manufacturing",
+    title: "Find CPG Contract & Private Label Manufacturers India | Packworkz Make",
+    description: "Describe what you want to make and get matched with private-label and contract manufacturers for food, beverages, supplements, skincare, home care and pet products. Free introductions, no lead credits.",
+    keywords: "private label manufacturer India, contract manufacturer India, third party manufacturing India, FMCG contract manufacturing, find manufacturer for my product",
+  },
+  {
+    path: "/manufacturers",
+    title: "Contract & Private Label Manufacturer Directory India | Packworkz Make",
+    description: "Search contract and private-label manufacturers in India by product, city, standard and service — snacks, bars, beverages, supplements, Ayurveda, skincare, haircare, home care and more.",
+    keywords: "contract manufacturer directory India, private label manufacturers list India, third party manufacturer search, FMCG manufacturer directory",
+  },
+  {
+    path: "/manufacturing/launch",
+    title: "Post a Manufacturing Requirement | Packworkz Launch Desk",
+    description: "Tell Packworkz what you want to make. We match vetted CPG manufacturers for free, or run quotes, samples and timelines for you with Launch Desk.",
+    keywords: "post manufacturing requirement, find contract manufacturer, product launch manufacturing India",
+  },
+  {
+    path: "/manufacturing/list-your-factory",
+    title: "List Your Factory Free | CPG Manufacturers | Packworkz Make",
+    description: "List your contract or private-label manufacturing unit for free. No lead credits — get matched with brands whose products fit your line.",
+    keywords: "list manufacturing company, contract manufacturer leads India, private label manufacturer listing",
+  },
+  {
     path: "/circular",
     title: "Sell Packaging & Plastic Scrap | Recycling Pickup India | Packworkz Circular",
     description: "Turn film trim, laminate offcuts, corrugated and plastic rejects into revenue. Get per-kg quotes from registered recyclers, with pickup, weighbridge slips and documentation.",
@@ -309,9 +393,9 @@ const ROUTES = [
   },
   {
     path: "/samples",
-    title: "Order Packaging Samples India | From ₹2,999 | 3–5 Day Delivery | Packworkz",
-    description: "Order physical packaging samples before bulk production. 500+ combinations from ₹2,999. 3–5 day delivery pan-India. Custom printed samples for all SKUs.",
-    keywords: "packaging samples India, order packaging samples, custom packaging sample, packaging manufacturer sample India",
+    title: "Packaging Sample Kit India | 25–50+ Samples for ₹299 | Packworkz",
+    description: "Buy a curated kit of 25–50+ packaging samples, material swatches and finishes for ₹299 plus ₹100 shipping across India. Pay securely with Razorpay.",
+    keywords: "packaging sample kit India, packaging samples India, buy packaging samples, pouch box label samples, packaging material swatches",
   },
   {
     path: "/design",
@@ -418,26 +502,159 @@ const ROUTES = [
   },
 ];
 
-function buildSitemap(routes) {
-  const lastmod = new Date().toISOString().slice(0, 10);
-  const entries = routes.map(({ path }) => {
-    const url = `https://packworkz.com${path === "/" ? "/" : path}`;
-    const isProduct = path.startsWith("/products/");
-    const priority = path === "/" ? "1.0" : path === "/products" || path === "/configure" ? "0.9" : isProduct ? "0.8" : "0.7";
-    const changefreq = path === "/" || path === "/products" ? "weekly" : "monthly";
-    return `  <url>\n    <loc>${url}</loc>\n    <lastmod>${lastmod}</lastmod>\n    <changefreq>${changefreq}</changefreq>\n    <priority>${priority}</priority>\n  </url>`;
-  });
+const LASTMOD_FILE = join(__dirname, "seo-lastmod.json");
+const xmlEscape = (value) => String(value).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
-  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${entries.join("\n")}\n</urlset>\n`;
+/**
+ * lastmod only moves when a page's rendered content changes. Hashes live in
+ * scripts/seo-lastmod.json (committed), so rebuilding never fakes freshness.
+ */
+function loadLastmods() {
+  try { return existsSync(LASTMOD_FILE) ? JSON.parse(readFileSync(LASTMOD_FILE, "utf-8")) : {}; } catch { return {}; }
+}
+
+function sitemapGroup(route) {
+  if (route.kind === "product" || route.path === "/products") return "products";
+  if (route.kind === "article" || route.path === "/resources") return "resources";
+  if (route.kind === "manufacturer" || route.kind === "mfg-category" || route.path.startsWith("/manufactur")) return "manufacturing";
+  return "pages";
+}
+
+function buildSitemaps(routes, lastmods) {
+  const groups = {};
+  for (const route of routes) {
+    const group = sitemapGroup(route);
+    const loc = `${SITE}${route.path === "/" ? "/" : route.path}`;
+    const lastmod = lastmods[route.path]?.date;
+    const image = route.image ? `\n    <image:image>\n      <image:loc>${xmlEscape(absoluteUrl(route.image))}</image:loc>\n    </image:image>` : "";
+    (groups[group] ||= []).push({ lastmod, xml: `  <url>\n    <loc>${xmlEscape(loc)}</loc>${lastmod ? `\n    <lastmod>${lastmod}</lastmod>` : ""}${image}\n  </url>` });
+  }
+  const files = {};
+  const index = [];
+  for (const [group, entries] of Object.entries(groups)) {
+    files[`sitemaps/${group}.xml`] = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">\n${entries.map((e) => e.xml).join("\n")}\n</urlset>\n`;
+    const newest = entries.map((e) => e.lastmod).filter(Boolean).sort().pop();
+    index.push(`  <sitemap>\n    <loc>${SITE}/sitemaps/${group}.xml</loc>${newest ? `\n    <lastmod>${newest}</lastmod>` : ""}\n  </sitemap>`);
+  }
+  files["sitemap.xml"] = `<?xml version="1.0" encoding="UTF-8"?>\n<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${index.join("\n")}\n</sitemapindex>\n`;
+  return files;
+}
+
+const inr = (value) => `₹${Number(value).toLocaleString("en-IN", { maximumFractionDigits: 2 })}`;
+
+/** llmstxt.org index: what Packworkz is and where the canonical pages are. */
+function buildLlms(routes, data) {
+  const byPath = Object.fromEntries(routes.map((route) => [route.path, route]));
+  const link = (path, label) => {
+    const route = byPath[path];
+    return route ? `- [${label || route.title.replace(/\s*\|.*$/, "")}](${SITE}${path === "/" ? "" : path}): ${route.description}` : null;
+  };
+  const lines = [
+    "# Packworkz",
+    "",
+    "> Packworkz is an AI-enabled managed packaging platform in India. Brands design, price, order, quality-check and ship custom packaging — pouches, rollstock, bottles, jars, tubes, cartons, rigid boxes, mailers and labels — through one team, with instant online pricing for standard formats and a confirmed price within 4 business hours for custom work. Packworkz also matches brands with contract and private-label manufacturers (Packworkz Make), packaging machinery (Packworkz Machinery) and recyclers for production scrap (Packworkz Circular). Prices are charged in INR.",
+    "",
+    "Key facts:",
+    `- ${data.skus.length} packaging product families with minimum order quantities shown on each product page.`,
+    "- Sample kit: ₹299 + ₹100 shipping, 25+ pieces, delivered across India.",
+    `- Packworkz Make lists ${data.manufacturers.length} contract and private-label manufacturers across ${data.categories.length} consumer categories. Introductions are free with 0% commission; Launch Desk (₹14,999 one-time) runs the shortlist, quotes and samples for a brand.`,
+    "- Backed by Kalyani Rotopack's 33-year manufacturing heritage. Contact: +91 82089 90366.",
+    "- Full detail for language models: " + `${SITE}/llms-full.txt`,
+    "",
+    "## Start here",
+    ...["/", "/products", "/samples", "/how-it-works", "/enterprise", "/contact"].map((p) => link(p)).filter(Boolean),
+    "",
+    "## Packaging products",
+    ...data.skus.map((sku) => link(`/products/${sku.slug}`, sku.name)).filter(Boolean),
+    "",
+    "## Packworkz Make (contract manufacturing)",
+    ...["/manufacturing", "/manufacturers", "/manufacturing/launch", "/manufacturing/list-your-factory"].map((p) => link(p)).filter(Boolean),
+    ...data.categories.map((c) => link(`/manufacturing/${c.id}`, `${c.label} manufacturers`)).filter(Boolean),
+    "",
+    "## Machinery and recycling",
+    ...["/machinery", "/circular"].map((p) => link(p)).filter(Boolean),
+    "",
+    "## Industries and solutions",
+    ...routes.filter((r) => r.path.startsWith("/industries") || r.path.startsWith("/solutions")).map((r) => link(r.path)).filter(Boolean),
+    "",
+    "## Guides",
+    ...data.articles.map((a) => link(`/resources/${a.slug}`, a.title)).filter(Boolean),
+    "",
+    "## Optional",
+    ...["/about", "/sustainable", "/careers", "/privacy", "/terms", "/refund"].map((p) => link(p)).filter(Boolean),
+    "",
+  ];
+  return lines.join("\n");
+}
+
+/** Everything a model needs to answer questions about Packworkz without browsing. */
+function buildLlmsFull(data) {
+  const out = [
+    "# Packworkz — full reference",
+    "",
+    "> Managed packaging platform in India: custom packaging, contract-manufacturer matching (Packworkz Make), packaging machinery and scrap recycling. All prices are in Indian rupees (INR) and exclude GST unless stated. Website: https://packworkz.com",
+    "",
+    "## Packaging products",
+    "",
+  ];
+  for (const sku of data.skus) {
+    out.push(`### ${sku.name} (${sku.code})`);
+    out.push(`URL: ${SITE}/products/${sku.slug}`);
+    out.push(`Category: ${sku.category}`);
+    if (sku.description) out.push(sku.description);
+    if (sku.useCase) out.push(`Used for: ${sku.useCase}`);
+    out.push(`Minimum order: ${Number(sku.moq).toLocaleString("en-IN")} ${sku.moqUnit}`);
+    if (sku.priceMin > 0 && sku.priceMax > 0) out.push(`Indicative unit price: ${inr(sku.priceMin)}–${inr(sku.priceMax)}`);
+    out.push(`How to buy: ${sku.buyingPath === "instant" ? "priced and ordered instantly online" : "customise online; final price confirmed within 4 business hours"}`);
+    if (sku.materials?.length) out.push(`Materials: ${sku.materials.join(", ")}`);
+    if (sku.deliveryDays) out.push(`Typical delivery in India: ${sku.deliveryDays} days`);
+    out.push("");
+  }
+  out.push("## Packworkz Make — contract and private-label manufacturers", "");
+  out.push("Brands describe what they want to make; Packworkz ranks manufacturers by capability fit and introduces them directly. Direct Connect is free with 0% commission from either side. Launch Desk costs ₹14,999 one-time: three shortlisted factories, comparable quotes, samples and packaging planning. Manufacturers list free; the Verified badge (₹4,999 one-time) adds a video factory walkthrough and capacity review. Profiles marked Unclaimed are compiled from each manufacturer's own website and are not audited by Packworkz.", "");
+  out.push("### Categories", "");
+  for (const c of data.categories) out.push(`- ${c.label} (${c.group}): ${c.examples}. ${c.count} manufacturers. ${SITE}/manufacturing/${c.id}`);
+  out.push("", "### Manufacturers", "");
+  for (const m of data.manufacturers) {
+    const place = [m.city, m.state].filter((v, i, a) => v && a.indexOf(v) === i).join(", ") || "India";
+    const facts = [
+      `Location: ${place}`,
+      `Categories: ${m.categories.join(", ")}`,
+      `Products: ${m.products.join(", ")}`,
+      `Services: ${m.services.join(", ")}`,
+      m.certifications.length ? `Standards stated: ${m.certifications.join(", ")}` : "",
+      m.moq ? `Minimum order: ${m.moq}` : "",
+      m.capacity ? `Capacity: ${m.capacity}` : "",
+      m.since ? `Established: ${m.since}` : "",
+    ].filter(Boolean);
+    out.push(`- **${m.name}** — ${SITE}/manufacturers/${m.slug}${m.about ? `. ${m.about}` : ""} ${facts.join(". ")}.`);
+  }
+  out.push("", "## Packworkz Machinery", "");
+  for (const machine of data.machines) {
+    out.push(`- **${machine.name}** — ${SITE}/machinery. ${machine.summary} Output: ${machine.output}. Best for: ${machine.bestFor}. Typical price ${inr(machine.priceFrom)}–${inr(machine.priceTo)} (guidance; final quote varies).`);
+  }
+  out.push("", "## Frequently asked questions", "");
+  for (const [page, faqs] of Object.entries(data.faqs)) {
+    out.push(`### ${SITE}${page}`, "");
+    for (const [q, a] of faqs) out.push(`**${q}**`, a, "");
+  }
+  out.push("## Guides", "");
+  for (const a of data.articles) out.push(`- [${a.title}](${SITE}/resources/${a.slug}) (${a.category}, ${a.published}): ${a.description}`);
+  out.push("");
+  return out.join("\n");
 }
 
 async function prerender() {
   let render;
   let dynamicSeo;
+  let pageFaqs = {};
+  let llmsData;
   try {
     const mod = await import(SERVER_BUNDLE);
     render = mod.render;
     dynamicSeo = mod.getDynamicSeoRoutes();
+    pageFaqs = mod.getPageFaqs();
+    llmsData = mod.getLlmsData();
   } catch (err) {
     console.error("❌  Failed to load SSR bundle:", err.message);
     console.error("   Run `pnpm --filter @workspace/packwerk run build:ssr` first.");
@@ -452,11 +669,22 @@ async function prerender() {
     ),
     ...dynamicSeo.products,
     ...dynamicSeo.resources,
+    ...(dynamicSeo.manufacturing || []),
   ];
-  const template = readFileSync(join(DIST, "index.html"), "utf-8")
+  // dist/public/index.html becomes the prerendered homepage, so keep a pristine
+  // copy of the Vite template for re-runs without a fresh client build.
+  const TEMPLATE_CACHE = join(ROOT, "dist/server/template.html");
+  const built = readFileSync(join(DIST, "index.html"), "utf-8");
+  const pristine = /<div id="root"><\/div>/.test(built);
+  if (pristine) writeFileSync(TEMPLATE_CACHE, built);
+  const template = (pristine ? built : readFileSync(TEMPLATE_CACHE, "utf-8"))
     .replaceAll("__PRODUCT_FAMILY_COUNT__", String(dynamicSeo.productCount));
+  // FAQ and Service markup describe the homepage only.
+  const innerTemplate = template.replace(/\s*<!-- Structured Data — [^>]*-->\s*<script type="application\/ld\+json" data-home-only>[\s\S]*?<\/script>/g, "");
   let successCount = 0;
   let fallbackCount = 0;
+  const lastmods = loadLastmods();
+  const today = new Date().toISOString().slice(0, 10);
 
   for (const route of routes) {
     const { path: routePath, title, description, keywords } = route;
@@ -480,8 +708,15 @@ async function prerender() {
       return "";
     });
 
+    const visibleText = cleanedHtml.replace(/<script[\s\S]*?<\/script>/gi, "").replace(/<[^>]+>/g, " ").replace(/\b[A-Z]{2,}-\d{3,}[-A-Z0-9]*/g, "ID").replace(/\s+/g, " ");
+    const contentHash = createHash("sha1").update(`${title}\n${description}\n${visibleText}`).digest("hex").slice(0, 16);
+    const known = lastmods[routePath];
+    if (route.lastmod) lastmods[routePath] = { hash: contentHash, date: route.lastmod };
+    else if (route.kind === "article" && isoMonth(route.publishedDate) && !known) lastmods[routePath] = { hash: contentHash, date: isoMonth(route.publishedDate) };
+    else if (!known || known.hash !== contentHash) lastmods[routePath] = { hash: contentHash, date: today };
+
     // Inject cleaned rendered HTML into root div
-    let html = template.replace(
+    let html = (routePath === "/" ? template : innerTemplate).replace(
       /<div id="root"><\/div>/,
       `<div id="root">${cleanedHtml}</div>`,
     );
@@ -544,7 +779,7 @@ async function prerender() {
       html = html.replace("</head>", `${canonicalTag}\n</head>`);
     }
 
-    const jsonLd = JSON.stringify(buildJsonLd(route, dynamicSeo.productCount)).replace(/</g, "\\u003c");
+    const jsonLd = JSON.stringify(buildJsonLd(route, dynamicSeo.productCount, pageFaqs[routePath])).replace(/</g, "\\u003c");
     const jsonLdTag = `<script type="application/ld+json">${jsonLd}</script>`;
     html = html.replace("</head>", `${jsonLdTag}\n</head>`);
 
@@ -563,9 +798,22 @@ async function prerender() {
     process.stdout.write(`${status}  ${outPath}\n`);
   }
 
-  const sitemap = buildSitemap(routes);
-  writeFileSync(join(ROOT, "public/sitemap.xml"), sitemap);
-  writeFileSync(join(DIST, "sitemap.xml"), sitemap);
+  // Drop pages that no longer exist, then persist content-based lastmod dates.
+  const livePaths = new Set(routes.map((route) => route.path));
+  for (const path of Object.keys(lastmods)) if (!livePaths.has(path)) delete lastmods[path];
+  writeFileSync(LASTMOD_FILE, `${JSON.stringify(Object.fromEntries(Object.entries(lastmods).sort()), null, 2)}\n`);
+
+  const generated = { ...buildSitemaps(routes, lastmods) };
+  if (llmsData) {
+    generated["llms.txt"] = buildLlms(routes, llmsData);
+    generated["llms-full.txt"] = buildLlmsFull(llmsData);
+  }
+  for (const [file, body] of Object.entries(generated)) {
+    for (const base of [join(ROOT, "public"), DIST]) {
+      mkdirSync(dirname(join(base, file)), { recursive: true });
+      writeFileSync(join(base, file), body);
+    }
+  }
 
   console.log(`\nPrerender complete: ${successCount} SSR, ${fallbackCount} meta-only fallback\n`);
 }

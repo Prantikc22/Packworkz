@@ -2,11 +2,13 @@ import { useEffect, useMemo, useState } from "react";
 import { Copy, Download, ExternalLink, FileText, Image as ImageIcon, Inbox, Loader2, Mail, MessageCircle, Phone, RefreshCw, Search } from "lucide-react";
 import "../dashboard/dashboard.css";
 
-type LeadKind = "machinery" | "circular" | "contact" | "exit_offer" | "enterprise_benchmark" | "pack_ai_handoff" | "newsletter" | "support";
+type LeadKind = "machinery" | "circular" | "manufacturing_requirement" | "manufacturer_application" | "contact" | "exit_offer" | "enterprise_benchmark" | "pack_ai_handoff" | "newsletter" | "support";
 
 const KIND_META: Record<string, { label: string; tone: string }> = {
   machinery: { label: "Machinery", tone: "is-blue" },
   circular: { label: "Circular", tone: "is-green" },
+  manufacturing_requirement: { label: "Manufacturing brief", tone: "is-amber" },
+  manufacturer_application: { label: "Factory listing", tone: "is-violet" },
   contact: { label: "Contact", tone: "is-slate" },
   exit_offer: { label: "Sample-kit offer", tone: "is-amber" },
   enterprise_benchmark: { label: "Enterprise", tone: "is-violet" },
@@ -15,7 +17,7 @@ const KIND_META: Record<string, { label: string; tone: string }> = {
   support: { label: "Support", tone: "is-red" },
 };
 
-const HIDDEN_META = new Set(["kind", "page", "photos"]);
+const HIDDEN_META = new Set(["kind", "page", "photos", "profile", "documents", "approved", "verification_level", "reviewed_at"]);
 const IMAGE_EXT = /\.(png|jpe?g|webp|gif)(\?|$)/i;
 
 function adminFetch(path: string) {
@@ -25,6 +27,45 @@ function adminFetch(path: string) {
     if (!response.ok) throw new Error((body as { error?: string }).error || `Request failed (${response.status})`);
     return body;
   });
+}
+
+function FactoryReview({ quoteId, meta }: { quoteId: string; meta: Record<string, any> }) {
+  const [state, setState] = useState({ approved: Boolean(meta.approved), level: String(meta.verification_level || "none") });
+  const [busy, setBusy] = useState(false);
+  const [note, setNote] = useState("");
+  const save = async (approved: boolean, level: string) => {
+    setBusy(true);
+    setNote("");
+    try {
+      const response = await fetch(`/api/admin/manufacturers/${quoteId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json", "x-admin-key": localStorage.getItem("packwerk_admin_key") || "" },
+        body: JSON.stringify({ approved, verification_level: level }),
+      });
+      if (!response.ok) throw new Error((await response.json().catch(() => ({}))).error || "Update failed");
+      setState({ approved, level });
+      setNote(approved ? "Published on /manufacturing" : "Unpublished");
+    } catch (error) {
+      setNote(error instanceof Error ? error.message : "Update failed");
+    } finally {
+      setBusy(false);
+    }
+  };
+  const docs: Record<string, string[]> = meta.documents || {};
+  return (
+    <div className="adm-lead-meta" style={{ display: "grid", gap: 10, padding: 14, border: "1px solid #e1e7ee", borderRadius: 6 }}>
+      <div><dt>Status</dt><dd>{state.approved ? `Published · ${state.level === "verified" ? "Verified" : state.level === "basic" ? "Documents checked" : "Unchecked"}` : "Awaiting review"}{meta.paid_service ? ` · PAID ${meta.paid_service}` : ""}</dd></div>
+      {Object.entries(docs).map(([key, urls]) => urls.length > 0 && (
+        <div key={key}><dt>{key}</dt><dd>{urls.map((url, i) => <a key={url} href={url} target="_blank" rel="noopener noreferrer" style={{ marginRight: 10 }}>File {i + 1} <ExternalLink size={11} /></a>)}</dd></div>
+      ))}
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+        <button type="button" className="db-btn is-sm" disabled={busy} onClick={() => save(true, "basic")}>Publish (docs checked)</button>
+        <button type="button" className="db-btn is-sm" disabled={busy} onClick={() => save(true, "verified")}>Mark Verified</button>
+        {state.approved && <button type="button" className="db-btn is-line is-sm" disabled={busy} onClick={() => save(false, state.level)}>Unpublish</button>}
+        {note && <small style={{ alignSelf: "center" }}>{note}</small>}
+      </div>
+    </div>
+  );
 }
 
 function leadKind(record: any): LeadKind {
@@ -146,7 +187,7 @@ export default function AdminLeads() {
                       <span className="db-order-id">{lead.quote_id}</span>
                       <time>{formatDate(lead.created_at)}</time>
                     </div>
-                    <h3>{String(item.subject || "Website enquiry").replace(/^\[(Machinery|Circular)\]\s*/, "")}</h3>
+                    <h3>{String(item.subject || "Website enquiry").replace(/^\[(Machinery|Circular|Manufacturing|Factory listing)\]\s*/, "")}</h3>
                     <p className="adm-lead-who"><b>{lead.contact_name}</b>{lead.company_name && lead.company_name !== "Not provided" ? ` · ${lead.company_name}` : ""}</p>
                     {item.message && <p className="adm-lead-msg">{item.message}</p>}
                     {extra.length > 0 && (
@@ -154,6 +195,7 @@ export default function AdminLeads() {
                         {extra.map(([key, value]) => <div key={key}><dt>{key.replace(/_/g, " ")}</dt><dd>{Array.isArray(value) ? value.join(", ") : typeof value === "object" ? JSON.stringify(value) : String(value)}</dd></div>)}
                       </dl>
                     )}
+                    {k === "manufacturer_application" && <FactoryReview quoteId={lead.quote_id} meta={item.metadata || {}} />}
                     {photos.length > 0 && (
                       <div className="adm-photos">{photos.map((url) => <a key={url} href={url} target="_blank" rel="noopener noreferrer"><img src={url} alt="Uploaded" loading="lazy" /></a>)}</div>
                     )}

@@ -594,6 +594,33 @@ function StatCount({ target, suffix = "", color = "#60a5fa" }: { target: number;
   );
 }
 
+const AI_DEMOS = [
+  { ask: "Masala chai premix, 250 g, D2C", answer: ["Stand-up pouch + zipper", "MOQ 250", "Sample kit first"] },
+  { ask: "Vitamin C serum, 30 ml", answer: ["Dropper bottle", "MOQ 200", "Carton + label"] },
+  { ask: "Cold brew coffee bags", answer: ["Valve coffee pouch", "MOQ 500", "Matte finish"] },
+];
+
+function AiPromptDemo() {
+  const [index, setIndex] = useState(0);
+  const [typed, setTyped] = useState(0);
+  const demo = AI_DEMOS[index];
+  useEffect(() => {
+    if (typed < demo.ask.length) {
+      const timer = window.setTimeout(() => setTyped((value) => value + 1), 45);
+      return () => window.clearTimeout(timer);
+    }
+    const timer = window.setTimeout(() => { setIndex((value) => (value + 1) % AI_DEMOS.length); setTyped(0); }, 2600);
+    return () => window.clearTimeout(timer);
+  }, [typed, demo.ask.length]);
+  const done = typed >= demo.ask.length;
+  return (
+    <div className="pw-duo-prompt" aria-hidden="true">
+      <div className="pw-duo-input">{demo.ask.slice(0, typed)}<i /></div>
+      <div className={`pw-duo-answer${done ? " is-on" : ""}`}>→ {demo.answer.join(" · ")}</div>
+    </div>
+  );
+}
+
 export default function Home() {
   const [monthlySpend, setMonthlySpend] = useState(500000);
   const [vendorBucket, setVendorBucket] = useState<VendorBucket>("2 to 4");
@@ -820,19 +847,25 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="pw-ai-entry">
-            <div className="pw-ai-entry-icon" aria-hidden="true">
-              <Sparkles size={24} strokeWidth={1.9} />
-              <span>AI</span>
-            </div>
-            <div>
-              <strong>Not sure what packaging fits?</strong>
-              <span>Describe what you sell. Get a practical format, MOQ and sampling plan.</span>
-            </div>
-            <Link href="/pack-ai">
-              <button className="btn-fill btn-amber px-6 py-3 text-sm pw-btn-transition">
-                <span>Help me choose</span><MS icon="arrow_forward" className="text-base" />
-              </button>
+          <div className="pw-duo">
+            <Link href="/pack-ai" className="pw-duo-card">
+              <div className="pw-duo-copy">
+                <small>Packworkz AI</small>
+                <h3>Not sure what packaging fits?</h3>
+                <p>Describe what you sell. Get a practical format, MOQ and sampling plan.</p>
+                <AiPromptDemo />
+                <span className="pw-duo-cta">Help me choose <ArrowRight size={15} /></span>
+              </div>
+              <figure><img src="/images/hero-studio-packaging-v6.webp" alt="" loading="lazy" /></figure>
+            </Link>
+            <Link href="/manufacturing" className="pw-duo-card">
+              <div className="pw-duo-copy">
+                <small>Packworkz Make <em>New</em></small>
+                <h3>Need a factory to make your products?</h3>
+                <p>Get matched with private-label and contract manufacturers for food, supplements, beauty and home care.</p>
+                <span className="pw-duo-cta">Find a manufacturer <ArrowRight size={15} /></span>
+              </div>
+              <figure><img src="/images/manufacturing-v2/landing-card.webp" alt="Consumer products matched to a modern manufacturing line" loading="lazy" /></figure>
             </Link>
           </div>
         </div>

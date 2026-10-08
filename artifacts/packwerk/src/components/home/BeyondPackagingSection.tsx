@@ -3,6 +3,14 @@ import { ArrowUpRight } from "lucide-react";
 
 const CARDS = [
   {
+    href: "/manufacturing",
+    vertical: "Make",
+    text: "Private-label and contract manufacturers matched to your product.",
+    image: "/images/manufacturing-v2/landing-card.webp",
+    className: "is-make",
+    badge: "New",
+  },
+  {
     href: "/machinery",
     vertical: "Machinery",
     text: "Sealers, fillers, coders and labellers matched to your pack.",
@@ -27,15 +35,15 @@ export function BeyondPackagingSection() {
           <p>Beyond the pack</p>
           <div>
             <h2 id="pw-beyond-title">Packaging doesn&apos;t stop <em>at the pack.</em></h2>
-            <span>Set up the equipment that fills it and route the production scrap it leaves behind — both connected to the same packaging specification.</span>
+            <span>Find the factory that makes your product, the equipment that fills it, and the recyclers who take the scrap it leaves behind — all connected to the same packaging specification.</span>
           </div>
         </div>
         <div className="pw-beyond-grid">
-          {CARDS.map(({ href, vertical, text, image, className }, index) => (
+          {CARDS.map(({ href, vertical, text, image, className, badge }: { href: string; vertical: string; text: string; image: string; className: string; badge?: string }, index) => (
             <Link key={href} href={href} className={`pw-beyond-card ${className} scroll-animate scroll-animate-delay-${index + 1}`}>
               <img src={image} alt="" loading="lazy" />
               <div className="pw-beyond-copy">
-                <span className="pw-beyond-lockup"><span className="pw-brand-mark" aria-hidden="true"><i /><b /></span>Packworkz</span>
+                <span className="pw-beyond-lockup"><span className="pw-brand-mark" aria-hidden="true"><i /><b /></span>Packworkz{badge && <em>{badge}</em>}</span>
                 <h3>{vertical}</h3>
                 <small>{text}</small>
               </div>

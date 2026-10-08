@@ -23,7 +23,7 @@ const STEPS = [
   { Icon: FileCheck2, title: "Payment & paperwork", text: "Paid per load, with the recycler’s documentation for your records." },
 ];
 
-const FAQS = [
+export const FAQS = [
   ["Who can sell scrap through Packworkz?", "Packaging converters, printers, brand factories and warehouses generating regular production scrap. We focus on clean, identified industrial scrap rather than mixed household waste."],
   ["Which materials pay best?", "Clean, single-polymer streams — PE film, BOPP, PET, HDPE and corrugated. Multilayer and metallised laminates are accepted by specialist buyers at lower rates."],
   ["What is the minimum quantity?", "Usually a few hundred kilos per pickup. Smaller regular volumes can be pooled into scheduled monthly pickups."],

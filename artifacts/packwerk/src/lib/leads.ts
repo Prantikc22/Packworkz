@@ -1,4 +1,11 @@
-export type LeadKind = "machinery" | "circular";
+export type LeadKind = "machinery" | "circular" | "manufacturing_requirement" | "manufacturer_application";
+
+const PREFIX: Record<LeadKind, string> = {
+  machinery: "Machinery",
+  circular: "Circular",
+  manufacturing_requirement: "Manufacturing",
+  manufacturer_application: "Factory listing",
+};
 
 type LeadInput = {
   kind: LeadKind;
@@ -20,12 +27,12 @@ export async function submitLead(input: LeadInput): Promise<string> {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      source: "contact",
+      source: input.kind.startsWith("manufactur") ? input.kind : "contact",
       name: input.name,
       company: input.company,
       email: input.email,
       phone: input.phone,
-      subject: `[${input.kind === "machinery" ? "Machinery" : "Circular"}] ${input.subject}`,
+      subject: `[${PREFIX[input.kind]}] ${input.subject}`,
       message: input.message,
       metadata: { kind: input.kind, page: typeof window !== "undefined" ? window.location.pathname : "", ...input.metadata },
     }),

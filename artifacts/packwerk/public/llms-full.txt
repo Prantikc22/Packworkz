@@ -1,0 +1,929 @@
+# Packworkz — full reference
+
+> Managed packaging platform in India: custom packaging, contract-manufacturer matching (Packworkz Make), packaging machinery and scrap recycling. All prices are in Indian rupees (INR) and exclude GST unless stated. Website: https://packworkz.com
+
+## Packaging products
+
+### Stand-up Pouch (FP-101)
+URL: https://packworkz.com/products/stand-up-pouch
+Category: flexible
+The core D2C pouch family for dry foods, supplements and pet products, with stock-label and direct-print routes.
+Used for: Snacks, coffee, pet food, spices, dry goods
+Minimum order: 250 units
+Indicative unit price: ₹9.49–₹23.95
+How to buy: customise online; final price confirmed within 4 business hours
+Typical delivery in India: 12 days
+
+### Centre-seal Pillow Pouch (FP-102)
+URL: https://packworkz.com/products/pillow-pouch
+Category: flexible
+A premade flat pillow pouch with a centre back seal for snacks, confectionery, soap and compact retail packs. Choose the laminate around barrier, sealing and filling needs.
+Used for: Snacks, biscuits, confectionery, soap, seeds and small retail packs
+Minimum order: 2,000 units
+Indicative unit price: ₹5.33–₹10
+How to buy: customise online; final price confirmed within 4 business hours
+Typical delivery in India: 10 days
+
+### Flat-bottom & Gusseted Pouch (FP-103)
+URL: https://packworkz.com/products/flat-bottom-pouch
+Category: flexible
+A premium high-capacity pouch family covering flat-bottom, side-gusset and quad-seal constructions.
+Used for: Specialty coffee, protein powder, premium snacks, tea
+Minimum order: 500 units
+Indicative unit price: ₹11.81–₹23.5
+How to buy: customise online; final price confirmed within 4 business hours
+Typical delivery in India: 14 days
+
+### Spout & Refill Pouch (FP-104)
+URL: https://packworkz.com/products/spout-pouch
+Category: flexible
+Leak-resistant refill packaging for liquids and concentrates, with corner or centre spouts and mono-material options.
+Used for: Home care, personal care, sauces, concentrates, oils and refill systems
+Minimum order: 500 units
+Indicative unit price: ₹8.49–₹20.63
+How to buy: customise online; final price confirmed within 4 business hours
+Typical delivery in India: 14 days
+
+### Sachet / Stick Pack (FP-105)
+URL: https://packworkz.com/products/sachet-stick-pack
+Category: flexible
+Single-serve sachet or stick pack for portion-controlled packaging.
+Used for: Sugar, salt, condiments, instant coffee, ORS, supplements
+Minimum order: 5,000 units
+Indicative unit price: ₹3.77–₹3.9
+How to buy: customise online; final price confirmed within 4 business hours
+Typical delivery in India: 10 days
+
+### Plastic Bottles & Jars (BC-201)
+URL: https://packworkz.com/products/plastic-bottle
+Category: bottles
+Stock PET and HDPE containers for food, personal care and home care, configured by shape, neck and closure.
+Used for: Beverages, supplements, powders, sauces, personal care and home care
+Minimum order: 500 units
+Indicative unit price: ₹12.5–₹25.5
+How to buy: customise online; final price confirmed within 4 business hours
+Typical delivery in India: 10 days
+
+### Glass Bottles & Jars (BC-202)
+URL: https://packworkz.com/products/glass-bottle
+Category: bottles
+Stock glass containers with compatible closures for food, beverage, wellness and premium retail products.
+Used for: Sauces, oils, beverages, preserves, candles and wellness products
+Minimum order: 200 units
+Indicative unit price: ₹36.4–₹67.97
+How to buy: customise online; final price confirmed within 4 business hours
+Typical delivery in India: 18 days
+
+### Cosmetic Jar (BC-204)
+URL: https://packworkz.com/products/cosmetic-jar
+Category: bottles
+Elegant cosmetic-grade jar in acrylic, PETG, or glass. Ideal for high-end skincare and beauty brands.
+Used for: Face cream, body butter, hair mask, serums, beard balm
+Minimum order: 200 units
+Indicative unit price: ₹28.09–₹54.67
+How to buy: customise online; final price confirmed within 4 business hours
+Typical delivery in India: 14 days
+
+### Dropper Bottle (BC-205)
+URL: https://packworkz.com/products/dropper-bottle
+Category: bottles
+Precision dropper bottle for serums, essential oils, CBD, and pharma liquids. Tamper-evident options available.
+Used for: Face serums, essential oils, CBD tinctures, eye drops, aromatherapy
+Minimum order: 200 units
+Indicative unit price: ₹24.77–₹46.38
+How to buy: customise online; final price confirmed within 4 business hours
+Typical delivery in India: 12 days
+
+### Airless Pump Bottle (BC-206)
+URL: https://packworkz.com/products/airless-pump-bottle
+Category: bottles
+Vacuum-based airless pump bottle. No contamination, precise dose control. Preferred by premium skincare brands.
+Used for: Serums, moisturizers, foundations, sunscreens, anti-aging creams
+Minimum order: 200 units
+Indicative unit price: ₹59.67–₹97.87
+How to buy: customise online; final price confirmed within 4 business hours
+Typical delivery in India: 18 days
+
+### Cosmetic Tube (TS-301)
+URL: https://packworkz.com/products/cosmetic-tube
+Category: tubes
+Flexible squeeze tube in HDPE, LDPE, or laminate. Available with flip-top, disc-top, and nozzle closures.
+Used for: Toothpaste, lotions, sunscreen, hair color, hand cream, pharma gels
+Minimum order: 1,000 units
+Indicative unit price: ₹10.7–₹21.44
+How to buy: customise online; final price confirmed within 4 business hours
+Typical delivery in India: 12 days
+
+### Custom Printed Folding Carton (BX-401)
+URL: https://packworkz.com/products/straight-tuck-end-carton
+Category: boxes
+A custom full-colour paperboard mono carton like the pictured snack packs, configured for the product, shelf presentation and packing line.
+Used for: Snacks, confectionery, bakery, supplements, beauty, pharma and retail products
+Minimum order: 100 units
+Indicative unit price: ₹15.5–₹53.5
+How to buy: customise online; final price confirmed within 4 business hours
+Typical delivery in India: 12 days
+
+### Custom Printed Two-piece Rigid Box (BX-402)
+URL: https://packworkz.com/products/two-piece-rigid-box
+Category: boxes
+A fully wrapped, custom-printed lift-off lid and base box for premium presentation, shown separately from folding cartons and magnetic constructions.
+Used for: Gifting, jewellery, beauty, fashion, electronics and premium D2C kits
+Minimum order: 50 units
+Indicative unit price: ₹146.5–₹341.5
+How to buy: customise online; final price confirmed within 4 business hours
+Typical delivery in India: 18 days
+
+### Magnetic Closure Box (BX-403)
+URL: https://packworkz.com/products/magnetic-closure-box
+Category: boxes
+Premium collapsible magnetic-closure box. Flat-pack design reduces shipping costs. Ideal for D2C brand gifting.
+Used for: D2C gifting, subscription boxes, luxury retail, electronics unboxing
+Minimum order: 50 units
+Indicative unit price: ₹170.5–₹396.5
+How to buy: customise online; final price confirmed within 4 business hours
+Typical delivery in India: 18 days
+
+### Mailer Box (EC-501)
+URL: https://packworkz.com/products/mailer-box
+Category: ecommerce
+Self-locking tuck-top mailer box in corrugated or rigid board. Premium unboxing experience for D2C brands.
+Used for: D2C shipping, subscription boxes, fashion, food kits, cosmetics
+Minimum order: 50 units
+Indicative unit price: ₹15.5–₹35.5
+How to buy: priced and ordered instantly online
+Typical delivery in India: 10 days
+
+### Corrugated Box (Shipping) (EC-502)
+URL: https://packworkz.com/products/corrugated-shipping-box
+Category: ecommerce
+Standard RSC or die-cut corrugated shipping box. Available in 3-ply and 5-ply configurations.
+Used for: General e-commerce shipping, FMCG bulk dispatch, B2B warehouse
+Minimum order: 500 units
+Indicative unit price: ₹16.47–₹31.43
+How to buy: customise online; final price confirmed within 4 business hours
+Typical delivery in India: 10 days
+
+### Food Delivery Box (EC-503)
+URL: https://packworkz.com/products/food-delivery-box
+Category: ecommerce
+Thermal or standard corrugated box for food delivery. Grease-resistant coating and FSSAI-compliant materials.
+Used for: Cloud kitchens, QSR, tiffin services, meal kit delivery, bakeries
+Minimum order: 200 units
+Indicative unit price: ₹15.63–₹31.43
+How to buy: customise online; final price confirmed within 4 business hours
+Typical delivery in India: 10 days
+
+### Courier & Return Mailers (EC-504)
+URL: https://packworkz.com/products/courier-bag
+Category: ecommerce
+Tamper-evident shipping mailers covering standard, recycled-content, compostable and return-ready formats.
+Used for: E-commerce courier shipping, clothing, documents, books
+Minimum order: 1,000 units
+Indicative unit price: ₹5.34–₹9
+How to buy: priced and ordered instantly online
+Typical delivery in India: 8 days
+
+### Protective Wrap & Void Fill (PR-601)
+URL: https://packworkz.com/products/bubble-wrap-air-pillows
+Category: protective
+A single fulfilment family for cushioning and void fill, selected by fragility, presentation and plastic-reduction target.
+Used for: E-commerce fulfilment, fragile goods, gifting, cosmetics and electronics
+Minimum order: 1 rolls
+Indicative unit price: ₹1,081.5–₹1,496.9
+How to buy: customise online; final price confirmed within 4 business hours
+Typical delivery in India: 7 days
+
+### Custom Inserts & Dividers (PR-602)
+URL: https://packworkz.com/products/foam-thermocol-inserts
+Category: protective
+Engineered product retention and impact protection using foam, corrugated board or moulded fibre.
+Used for: Electronics, bottles, cosmetics, diagnostics, gifting and multi-product kits
+Minimum order: 100 units
+Indicative unit price: ₹16.5–₹181.5
+How to buy: customise online; final price confirmed within 4 business hours
+Typical delivery in India: 14 days
+
+### Printed Flexible Rollstock (RL-701)
+URL: https://packworkz.com/products/printed-packaging-roll
+Category: rolls
+Enterprise printed film supplied to machine specification, including standard, high-barrier and mono-material structures.
+Used for: Snacks, wafers, namkeen, biscuits, instant noodles, dry fruits
+Minimum order: 100 kg
+Indicative unit price: ₹181.5–₹451.5
+How to buy: customise online; final price confirmed within 4 business hours
+Typical delivery in India: 21 days
+
+### Three-side Seal Pouch (FP-106)
+URL: https://packworkz.com/products/three-side-seal-pouch
+Category: flexible
+Flat pouches sealed on three sides with a tear notch — the most economical printed format for single-serve spices, samples, masks and refills.
+Used for: Spices, samples, masks, powders and single-use refills
+Minimum order: 500 units
+Indicative unit price: ₹4.4–₹9.4
+How to buy: customise online; final price confirmed within 4 business hours
+Materials: PET/PE, MetPET/PE
+Typical delivery in India: 10 days
+
+### Centre-seal Side-gusset Pouch (FP-107)
+URL: https://packworkz.com/products/side-gusset-pouch
+Category: flexible
+A centre back seal with two expanding side gussets for efficient shelf presentation and higher fill volumes. Supplied flat or with a reseal and valve where the product needs them.
+Used for: Coffee, tea, grains, pet food and bulk dry goods
+Minimum order: 500 units
+Indicative unit price: ₹8.4–₹17.4
+How to buy: customise online; final price confirmed within 4 business hours
+Materials: PET/PE, MetPET/PE, Kraft laminate
+Typical delivery in India: 18 days
+
+### Quad-seal Pouch (FP-108)
+URL: https://packworkz.com/products/quad-seal-pouch
+Category: flexible
+A four-corner sealed pouch with reinforced side panels, strong shelf geometry and room for branding across the front, back and gussets.
+Used for: Premium coffee, protein, grains and pet nutrition
+Minimum order: 1,000 units
+Indicative unit price: ₹9.3–₹20
+How to buy: customise online; final price confirmed within 4 business hours
+Materials: PET/PE, MetPET/PE
+Typical delivery in India: 18 days
+
+### Coffee Pouch with Degassing Valve (FP-109)
+URL: https://packworkz.com/products/coffee-valve-pouch
+Category: flexible
+Stand-up and flat-bottom coffee bags with a one-way degassing valve and reseal zipper, built for freshly roasted beans and ground coffee.
+Used for: Fresh roasted coffee beans and ground coffee
+Minimum order: 500 units
+Indicative unit price: ₹10.4–₹21.3
+How to buy: customise online; final price confirmed within 4 business hours
+Materials: MetPET/PE, Kraft laminate
+Typical delivery in India: 10 days
+
+### Retort Pouch (FP-110)
+URL: https://packworkz.com/products/retort-pouch
+Category: flexible
+Retort Pouch configured for Indian D2C and enterprise procurement, with material, print, quantity and delivery choices captured in one production-ready specification.
+Used for: Ready meals, curries, sauces, pet food and sterilised foods
+Minimum order: 10,000 units
+Indicative unit price: ₹5.7–₹16
+How to buy: customise online; final price confirmed within 4 business hours
+Materials: PET/Al/CPP, PET/NY/CPP
+Typical delivery in India: 24 days
+
+### Flow-wrap & Centre-seal Rollstock (FP-112)
+URL: https://packworkz.com/products/centre-seal-fin-pouch
+Category: flexible
+Enterprise roll-fed film for biscuits, snacks, bars and soap, specified around the forming shoulder, filling machine, repeat length and barrier requirement.
+Used for: Biscuits, snacks, soap bars and horizontal flow-wrap products
+Minimum order: 250 kg
+Indicative unit price: ₹166.5–₹331.5
+How to buy: customise online; final price confirmed within 4 business hours
+Materials: BOPP/CPP, BOPP/MetBOPP/CPP
+Typical delivery in India: 24 days
+
+### Two-side Seal Pouch (FP-115)
+URL: https://packworkz.com/products/two-side-seal-pouch
+Category: flexible
+A compact flat pouch sealed along two opposing sides, configured around the filling direction, opening edge and product barrier requirement.
+Used for: Tea bags, portion packs, samples, medical consumables and small flat products
+Minimum order: 1,000 units
+Indicative unit price: ₹6.5–₹6.5
+How to buy: customise online; final price confirmed within 4 business hours
+Materials: BOPP/MetPET/PE, PET/PE, Paper/PE
+Typical delivery in India: 18 days
+
+### Metal Tin and Can (BC-209)
+URL: https://packworkz.com/products/metal-tin-can
+Category: bottles
+Metal Tin and Can configured for Indian D2C and enterprise procurement, with material, print, quantity and delivery choices captured in one production-ready specification.
+Used for: Tea, coffee, confectionery, candles, cosmetics and gifting
+Minimum order: 250 units
+Indicative unit price: ₹45.5–₹96.5
+How to buy: customise online; final price confirmed within 4 business hours
+Materials: Tinplate, Aluminium
+Typical delivery in India: 18 days
+
+### Perfume and Attar Bottle (BC-213)
+URL: https://packworkz.com/products/perfume-bottle
+Category: bottles
+Perfume and Attar Bottle configured for Indian D2C and enterprise procurement, with material, print, quantity and delivery choices captured in one production-ready specification.
+Used for: Perfume, attar, essential oil and premium sampling
+Minimum order: 100 units
+Indicative unit price: ₹43.04–₹76.27
+How to buy: customise online; final price confirmed within 4 business hours
+Materials: Glass, Aluminium closure
+Typical delivery in India: 18 days
+
+### Custom Printed Shampoo & Lotion Bottles (BC-214)
+URL: https://packworkz.com/products/custom-printed-shampoo-lotion-bottles
+Category: bottles
+Custom-printed stock shampoo and lotion bottles in 250 ml, 500 ml and 1 litre sizes, paired with flip-top, disc-top or pump closures.
+Used for: Shampoo, conditioner, body wash, lotion and salon products
+Minimum order: 250 units
+Indicative unit price: ₹28.5–₹55.5
+How to buy: customise online; final price confirmed within 4 business hours
+Materials: HDPE, PET, PCR-content option
+Typical delivery in India: 10 days
+
+### Custom Printed Mono-material & PCR Cosmetic Tubes (TS-306)
+URL: https://packworkz.com/products/custom-printed-sustainable-cosmetic-tubes
+Category: tubes
+Custom-printed squeeze tubes in four launch-ready capacities, with mono-material or PCR-content PE and flip-top or screw-cap closures.
+Used for: Sunscreen, cleanser, conditioner, lotion and hair care
+Minimum order: 500 units
+Indicative unit price: ₹16–₹31.5
+How to buy: customise online; final price confirmed within 4 business hours
+Materials: Mono-material PE, PCR-content PE option
+Typical delivery in India: 10 days
+
+### Paper Tube (TS-304)
+URL: https://packworkz.com/products/paper-tube
+Category: tubes
+Paper Tube configured for Indian D2C and enterprise procurement, with material, print, quantity and delivery choices captured in one production-ready specification.
+Used for: Tea, snacks, cosmetics, posters, candles and gift sets
+Minimum order: 100 units
+Indicative unit price: ₹52.5–₹111.5
+How to buy: customise online; final price confirmed within 4 business hours
+Materials: Recycled paperboard, FSC paper option
+Typical delivery in India: 18 days
+
+### Drawer Box (Sleeve & Tray) (BX-405)
+URL: https://packworkz.com/products/sleeve-tray-box
+Category: boxes
+A two-part drawer box: a printed sleeve with a sliding tray inside. A premium, repeatable unboxing moment for skincare sets, candles, confectionery and gifting.
+Used for: Confectionery, skincare sets, candles and accessories
+Minimum order: 25 units
+Indicative unit price: ₹28.5–₹96.5
+How to buy: customise online; final price confirmed within 4 business hours
+Materials: SBS/FBB, Kraft board
+Typical delivery in India: 10 days
+
+### Window Carton (BX-406)
+URL: https://packworkz.com/products/window-carton
+Category: boxes
+Window Carton configured for Indian D2C and enterprise procurement, with material, print, quantity and delivery choices captured in one production-ready specification.
+Used for: Bakery, toys, cosmetics, gifting and visible-product retail
+Minimum order: 25 units
+Indicative unit price: ₹17.5–₹60.5
+How to buy: customise online; final price confirmed within 4 business hours
+Materials: Paperboard, Cellulose or PET window
+Typical delivery in India: 18 days
+
+### Gable and Handle Box (BX-407)
+URL: https://packworkz.com/products/gable-handle-box
+Category: boxes
+Gable and Handle Box configured for Indian D2C and enterprise procurement, with material, print, quantity and delivery choices captured in one production-ready specification.
+Used for: Bakery, gifts, events, takeaway and curated kits
+Minimum order: 50 units
+Indicative unit price: ₹25.5–₹69.5
+How to buy: customise online; final price confirmed within 4 business hours
+Materials: Kraft board, SBS
+Typical delivery in India: 10 days
+
+### Collapsible Rigid Box (BX-408)
+URL: https://packworkz.com/products/collapsible-rigid-box
+Category: boxes
+Collapsible Rigid Box configured for Indian D2C and enterprise procurement, with material, print, quantity and delivery choices captured in one production-ready specification.
+Used for: Premium gifting, fashion, electronics and luxury D2C
+Minimum order: 50 units
+Indicative unit price: ₹150.5–₹346.5
+How to buy: customise online; final price confirmed within 4 business hours
+Materials: Greyboard, Art paper, Recycled board option
+Typical delivery in India: 18 days
+
+### Paper & Padded Mailers (EC-505)
+URL: https://packworkz.com/products/paper-shipping-mailer
+Category: ecommerce
+Plastic-light paper shipping mailers configured as unpadded, paper-padded or bubble-lined formats.
+Used for: Apparel, books, jewellery, beauty, accessories and small electronics
+Minimum order: 100 units
+Indicative unit price: ₹11.15–₹21.5
+How to buy: priced and ordered instantly online
+Materials: FSC kraft paper option
+Typical delivery in India: 10 days
+
+### Frosted Zipper Garment Bag (EC-509)
+URL: https://packworkz.com/products/frosted-zipper-garment-bag
+Category: ecommerce
+Frosted Zipper Garment Bag configured for Indian D2C and enterprise procurement, with material, print, quantity and delivery choices captured in one production-ready specification.
+Used for: Fashion, apparel, linens and premium inner packaging
+Minimum order: 100 units
+Indicative unit price: ₹10–₹19.78
+How to buy: priced and ordered instantly online
+Materials: PE, EVA/PE
+Typical delivery in India: 10 days
+
+### Custom Printed Paper Carry Bags (EC-510)
+URL: https://packworkz.com/products/printed-paper-carrier-bag
+Category: ecommerce
+Retail-ready paper carry bags with your brand printed on natural or white kraft, available in fixed, production-priced sizes.
+Used for: Bakery, cafes, retail, gifting, events, takeaway and D2C stores
+Minimum order: 50 units
+Indicative unit price: ₹9.81–₹21.5
+How to buy: priced and ordered instantly online
+Materials: Kraft paper, Recycled kraft option
+Typical delivery in India: 10 days
+
+### Cotton and Jute Drawstring Bag (EC-511)
+URL: https://packworkz.com/products/cotton-jute-drawstring-bag
+Category: ecommerce
+Cotton and Jute Drawstring Bag configured for Indian D2C and enterprise procurement, with material, print, quantity and delivery choices captured in one production-ready specification.
+Used for: Jewellery, gifting, wellness, travel and reusable retail packs
+Minimum order: 100 units
+Indicative unit price: ₹30.5–₹59.5
+How to buy: customise online; final price confirmed within 4 business hours
+Materials: Cotton, Jute, Canvas
+Typical delivery in India: 18 days
+
+### Lidding and Sealing Film (RL-704)
+URL: https://packworkz.com/products/lidding-sealing-film
+Category: rolls
+Lidding and Sealing Film configured for Indian D2C and enterprise procurement, with material, print, quantity and delivery choices captured in one production-ready specification.
+Used for: Dairy cups, trays, ready meals, pharma and induction seals
+Minimum order: 300 kg
+Indicative unit price: ₹241.5–₹541.5
+How to buy: customise online; final price confirmed within 4 business hours
+Materials: PET/PE, PET/CPP, Aluminium foil laminate
+Typical delivery in India: 24 days
+
+### Shrink Film and Sleeve Rollstock (RL-705)
+URL: https://packworkz.com/products/shrink-film-rollstock
+Category: rolls
+Shrink Film and Sleeve Rollstock configured for Indian D2C and enterprise procurement, with material, print, quantity and delivery choices captured in one production-ready specification.
+Used for: Bottle bundles, tamper bands, multipacks and full-body sleeves
+Minimum order: 300 kg
+Indicative unit price: ₹156.5–₹391.5
+How to buy: customise online; final price confirmed within 4 business hours
+Materials: POF, PVC, PETG
+Typical delivery in India: 24 days
+
+### Round Paper Labels (LC-816)
+URL: https://packworkz.com/products/round-paper-labels
+Category: labels
+Round Paper Labels configured for Indian D2C and enterprise procurement, with material, print, quantity and delivery choices captured in one production-ready specification.
+Used for: Jar lids, bottles, candles, seals, cups and circular brand marks
+Minimum order: 25 units
+Indicative unit price: ₹3.77–₹10
+How to buy: priced and ordered instantly online
+Materials: Coated white paper, Uncoated white paper, Natural kraft paper
+Typical delivery in India: 10 days
+
+### Square Paper Labels (LC-817)
+URL: https://packworkz.com/products/square-paper-labels
+Category: labels
+Square Paper Labels configured for Indian D2C and enterprise procurement, with material, print, quantity and delivery choices captured in one production-ready specification.
+Used for: Jars, pouches, cartons, bakery packs and compact front-panel branding
+Minimum order: 25 units
+Indicative unit price: ₹3.77–₹9.4
+How to buy: priced and ordered instantly online
+Materials: Coated white paper, Uncoated white paper, Natural kraft paper
+Typical delivery in India: 10 days
+
+### Rectangular Paper Labels (LC-818)
+URL: https://packworkz.com/products/rectangular-paper-labels
+Category: labels
+Rectangular Paper Labels configured for Indian D2C and enterprise procurement, with material, print, quantity and delivery choices captured in one production-ready specification.
+Used for: Bottles, pouches, cartons, shipping packs and ingredient panels
+Minimum order: 25 units
+Indicative unit price: ₹3.77–₹9.7
+How to buy: priced and ordered instantly online
+Materials: Coated white paper, Uncoated white paper, Natural kraft paper
+Typical delivery in India: 10 days
+
+### Oval Paper Labels (LC-819)
+URL: https://packworkz.com/products/oval-paper-labels
+Category: labels
+Oval Paper Labels configured for Indian D2C and enterprise procurement, with material, print, quantity and delivery choices captured in one production-ready specification.
+Used for: Cosmetics, candles, gourmet jars, gifting and curved brand marks
+Minimum order: 25 units
+Indicative unit price: ₹3.77–₹9.4
+How to buy: priced and ordered instantly online
+Materials: Coated white paper, Uncoated white paper, Natural kraft paper
+Typical delivery in India: 10 days
+
+### Custom Die-cut Stickers (LC-820)
+URL: https://packworkz.com/products/custom-die-cut-stickers
+Category: labels
+Custom Die-cut Stickers configured for Indian D2C and enterprise procurement, with material, print, quantity and delivery choices captured in one production-ready specification.
+Used for: Logo stickers, launch packs, seals, laptop stickers and expressive brand shapes
+Minimum order: 25 units
+Indicative unit price: ₹3.77–₹15
+How to buy: priced and ordered instantly online
+Materials: Coated paper, White BOPP
+Typical delivery in India: 10 days
+
+### Waterproof BOPP & Vinyl Labels (LC-804)
+URL: https://packworkz.com/products/waterproof-bopp-vinyl-labels
+Category: labels
+Waterproof BOPP & Vinyl Labels configured for Indian D2C and enterprise procurement, with material, print, quantity and delivery choices captured in one production-ready specification.
+Used for: Chilled products, cosmetics, home care, bottles and packs exposed to moisture or handling
+Minimum order: 25 units
+Indicative unit price: ₹3.77–₹13.5
+How to buy: priced and ordered instantly online
+Materials: White BOPP, White vinyl, Freezer-grade film
+Typical delivery in India: 10 days
+
+### Clear & Transparent Labels (LC-805)
+URL: https://packworkz.com/products/clear-transparent-labels
+Category: labels
+Clear & Transparent Labels configured for Indian D2C and enterprise procurement, with material, print, quantity and delivery choices captured in one production-ready specification.
+Used for: Glass bottles, jars, cosmetics and premium products requiring a no-label look
+Minimum order: 25 units
+Indicative unit price: ₹3.77–₹10
+How to buy: priced and ordered instantly online
+Materials: Clear BOPP, Clear PET
+Typical delivery in India: 10 days
+
+### Shrink Sleeve & Wrap-around Labels (LC-806)
+URL: https://packworkz.com/products/shrink-sleeve-label
+Category: labels
+Machine-applied bottle and container decoration specified around the substrate, shrink curve and line speed.
+Used for: Beverages, personal care, home care and tamper evidence
+Minimum order: 10,000 units
+Indicative unit price: ₹3.5–₹10
+How to buy: customise online; final price confirmed within 4 business hours
+Materials: PETG, PVC, OPS
+Typical delivery in India: 24 days
+
+### Hang Tags & Insert Cards (LC-808)
+URL: https://packworkz.com/products/hang-tag-header-card
+Category: labels
+Short-run printed brand touchpoints covering hang tags, thank-you cards, care cards and header cards.
+Used for: Fashion, jewellery, beauty, gifting, product instructions and D2C unboxing
+Minimum order: 50 units
+Indicative unit price: ₹4.34–₹11
+How to buy: priced and ordered instantly online
+Materials: Paperboard, Recycled paper option
+Typical delivery in India: 10 days
+
+### Printed Tissue and Wrapping Paper (LC-810)
+URL: https://packworkz.com/products/printed-tissue-wrapping-paper
+Category: labels
+Printed Tissue and Wrapping Paper configured for Indian D2C and enterprise procurement, with material, print, quantity and delivery choices captured in one production-ready specification.
+Used for: Fashion, gifting, beauty, jewellery and premium unboxing
+Minimum order: 250 units
+Indicative unit price: ₹7.17–₹13.14
+How to buy: priced and ordered instantly online
+Materials: Tissue paper, Glassine, Recycled paper
+Typical delivery in India: 18 days
+
+### Custom Packaging Tape (LC-811)
+URL: https://packworkz.com/products/printed-bopp-tape
+Category: labels
+Branded carton-sealing tape in BOPP or paper, configured by adhesive, colour and print coverage.
+Used for: Branded shipping cartons, tamper visibility and warehouse operations
+Minimum order: 72 units
+Indicative unit price: ₹71.3–₹126.12
+How to buy: priced and ordered instantly online
+Materials: BOPP, Acrylic adhesive
+Typical delivery in India: 10 days
+
+### Machine-applied Roll Labels (LC-814)
+URL: https://packworkz.com/products/machine-applied-roll-labels
+Category: labels
+Production roll labels engineered for the applicator, container and line speed. The detailed brief prevents wrong unwind, core and adhesive specifications.
+Used for: Automated labelling lines for food, beverage, cosmetics, pharma and FMCG
+Minimum order: 5,000 units
+Indicative unit price: ₹3.5–₹6.3
+How to buy: customise online; final price confirmed within 4 business hours
+Materials: Paper, White BOPP, Clear BOPP, Thermal-transfer stock
+Typical delivery in India: 24 days
+
+### Foil & Special-effect Labels (LC-815)
+URL: https://packworkz.com/products/foil-special-effect-labels
+Category: labels
+Foil & Special-effect Labels configured for Indian D2C and enterprise procurement, with material, print, quantity and delivery choices captured in one production-ready specification.
+Used for: Premium food, beauty, gifting, spirits and limited-edition product launches
+Minimum order: 50 units
+Indicative unit price: ₹4.91–₹19.5
+How to buy: priced and ordered instantly online
+Materials: Coated paper, White BOPP, Textured paper
+Typical delivery in India: 10 days
+
+### Bagasse Food Containers (SP-905)
+URL: https://packworkz.com/products/bagasse-clamshell
+Category: sustainable
+Plant-fibre takeaway packaging configured as clamshells or lidded meal trays, with removable branded sleeves or labels for a polished customer handoff.
+Used for: QSR, cloud kitchens, events and hot takeaway food
+Minimum order: 100 units
+Indicative unit price: ₹11.2–₹20
+How to buy: customise online; final price confirmed within 4 business hours
+Materials: Bagasse fibre
+Typical delivery in India: 10 days
+
+### Paper Bowls & Food Containers (SP-907)
+URL: https://packworkz.com/products/paper-bowls-food-containers
+Category: sustainable
+Food-safe white or kraft paper bowls in eight fixed capacities, including tall and flat formats with shared 11.6 cm or 14.8 cm lids.
+Used for: Curries, biryani, rice, noodles, salads, desserts, takeaway and cloud kitchens
+Minimum order: 300 units
+Indicative unit price: ₹6.45–₹10
+How to buy: customise online; final price confirmed within 4 business hours
+Materials: Food-grade paperboard, Aqueous/PE lining
+Typical delivery in India: 18 days
+
+### Custom Printed Greaseproof Food Wrap (SP-909)
+URL: https://packworkz.com/products/greaseproof-food-wrap-paper
+Category: sustainable
+Custom Printed Greaseproof Food Wrap configured for Indian D2C and enterprise procurement, with material, print, quantity and delivery choices captured in one production-ready specification.
+Used for: Burgers, bakery, deli, tray liners and QSR branding
+Minimum order: 5,000 units
+Indicative unit price: ₹3.77–₹4.7
+How to buy: customise online; final price confirmed within 4 business hours
+Materials: Food-grade greaseproof paper
+Typical delivery in India: 10 days
+
+### Compostable Bio Paper Cups (SP-912)
+URL: https://packworkz.com/products/compostable-bio-paper-cups
+Category: sustainable
+Aqueous-coated single-wall cups in five familiar beverage sizes, with optional moulded-fibre lids and a clear path from plain trials to custom-printed production.
+Used for: Coffee, tea, hot chocolate, cold drinks, tastings, events and takeaway beverages
+Minimum order: 100 units
+Indicative unit price: ₹6.3–₹10.4
+How to buy: customise online; final price confirmed within 4 business hours
+Materials: Aqueous-coated food-grade paperboard, Moulded-fibre lid option
+Typical delivery in India: 18 days
+
+### Pillow Box (BX-413)
+URL: https://packworkz.com/products/pillow-box
+Category: boxes
+A curved-end paperboard box that ships flat and folds in seconds. The go-to low-MOQ gift and soap pack, printed full-colour on white, kraft or tinted board.
+Used for: Soap bars, jewellery, accessories, sample kits, favours and small gifts
+Minimum order: 100 units
+Indicative unit price: ₹6.7–₹23.5
+How to buy: customise online; final price confirmed within 4 business hours
+Materials: SBS/FBB board, Natural kraft board
+Typical delivery in India: 18 days
+
+### Hanging Display Box (BX-414)
+URL: https://packworkz.com/products/hanging-display-box
+Category: boxes
+A folding carton with an integrated Euro-slot or round hang tab, built to hang on retail peg hooks and still stand on a shelf.
+Used for: Accessories, cosmetics, mobile covers, toys, hardware and peg-hook retail
+Minimum order: 250 units
+Indicative unit price: ₹7.5–₹17.5
+How to buy: customise online; final price confirmed within 4 business hours
+Materials: SBS/FBB board, Kraft board
+Typical delivery in India: 18 days
+
+### Counter Display Box (CDU) (BX-415)
+URL: https://packworkz.com/products/counter-display-box
+Category: boxes
+A printed counter-top display unit with a tear-away shipper lid and header card, so your product arrives shelf-ready and sells from the counter.
+Used for: Snack pouches, sachets, lip care, confectionery and impulse retail at the counter
+Minimum order: 50 units
+Indicative unit price: ₹69.5–₹146.5
+How to buy: customise online; final price confirmed within 4 business hours
+Materials: E-flute corrugated, SBS-laminated corrugated
+Typical delivery in India: 18 days
+
+### Mithai & Festive Gift Box (BX-416)
+URL: https://packworkz.com/products/mithai-festive-gift-box
+Category: boxes
+Premium lift-off and window gift boxes for sweets, dry fruits and festive hampers, with food-safe trays and foil-accent printing.
+Used for: Mithai, dry fruits, Diwali and wedding gifting, corporate hampers and festive launches
+Minimum order: 100 units
+Indicative unit price: ₹63.5–₹121.5
+How to buy: customise online; final price confirmed within 4 business hours
+Materials: Wrapped greyboard, SBS board, Food-safe trays
+Typical delivery in India: 18 days
+
+### Custom Pizza Box (EC-514)
+URL: https://packworkz.com/products/custom-pizza-box
+Category: ecommerce
+Branded corrugated pizza boxes in standard sizes, food-safe inside and printed on the lid for delivery and takeaway.
+Used for: Pizzerias, cloud kitchens, bakeries and QSR delivery
+Minimum order: 500 units
+Indicative unit price: ₹13–₹25.5
+How to buy: customise online; final price confirmed within 4 business hours
+Materials: E-flute kraft corrugated, White-top corrugated
+Typical delivery in India: 18 days
+
+### Custom Shaped Pouch (FP-114)
+URL: https://packworkz.com/products/custom-shaped-pouch
+Category: flexible
+A die-cut stand-up pouch in your own silhouette — bottle, fruit, character or mascot — for shelf standout that a rectangle can't give you.
+Used for: Kids snacks, pet treats, juices, novelty and limited-edition packs
+Minimum order: 5,000 units
+Indicative unit price: ₹7.1–₹11
+How to buy: customise online; final price confirmed within 4 business hours
+Materials: PET/PE, MetPET/PE, Mono-material PE
+Typical delivery in India: 24 days
+
+## Packworkz Make — contract and private-label manufacturers
+
+Brands describe what they want to make; Packworkz ranks manufacturers by capability fit and introduces them directly. Direct Connect is free with 0% commission from either side. Launch Desk costs ₹14,999 one-time: three shortlisted factories, comparable quotes, samples and packaging planning. Manufacturers list free; the Verified badge (₹4,999 one-time) adds a video factory walkthrough and capacity review. Profiles marked Unclaimed are compiled from each manufacturer's own website and are not audited by Packworkz.
+
+### Categories
+
+- Snacks & namkeen (Food & Beverage): Chips, namkeen, extruded snacks, makhana. 8 manufacturers. https://packworkz.com/manufacturing/snacks
+- Protein & nutrition bars (Food & Beverage): Protein bars, energy bars, granola bars. 6 manufacturers. https://packworkz.com/manufacturing/bars
+- Spreads & sauces (Food & Beverage): Peanut butter, ketchup, mayo, dips. 8 manufacturers. https://packworkz.com/manufacturing/spreads-sauces
+- Beverages (Food & Beverage): Juices, functional drinks, iced tea. 3 manufacturers. https://packworkz.com/manufacturing/beverages
+- Coffee & tea (Food & Beverage): Roasted coffee, instant coffee, tea blends. 5 manufacturers. https://packworkz.com/manufacturing/coffee-tea
+- Spices & masalas (Food & Beverage): Masalas, blends, seasonings, superfoods. 5 manufacturers. https://packworkz.com/manufacturing/spices
+- Bakery & cookies (Food & Beverage): Cookies, biscuits, rusks, cakes. 4 manufacturers. https://packworkz.com/manufacturing/bakery
+- Chocolate & confectionery (Food & Beverage): Chocolates, candies, toffees, gummies. 7 manufacturers. https://packworkz.com/manufacturing/confectionery
+- Ready-to-eat & ready-to-cook (Food & Beverage): Retort meals, RTC mixes, frozen. 5 manufacturers. https://packworkz.com/manufacturing/ready-to-eat
+- Nutraceuticals & supplements (Health & Wellness): Gummies, capsules, protein powder, sachets. 10 manufacturers. https://packworkz.com/manufacturing/nutraceuticals
+- Ayurveda & herbal (Health & Wellness): Churnas, herbal oils, syrups, capsules. 9 manufacturers. https://packworkz.com/manufacturing/ayurveda
+- Skincare & cosmetics (Beauty & Personal Care): Serums, creams, sunscreen, face wash. 14 manufacturers. https://packworkz.com/manufacturing/skincare
+- Haircare (Beauty & Personal Care): Shampoo, hair oil, conditioner, masks. 10 manufacturers. https://packworkz.com/manufacturing/haircare
+- Baby care (Beauty & Personal Care): Wipes, diapers, baby lotion. 9 manufacturers. https://packworkz.com/manufacturing/baby-care
+- Home care & cleaning (Home & Pet): Detergent, dishwash, floor cleaner. 7 manufacturers. https://packworkz.com/manufacturing/home-care
+- Pet food & treats (Home & Pet): Dog treats, chews, pet food. 3 manufacturers. https://packworkz.com/manufacturing/pet-food
+
+### Manufacturers
+
+- **Lerel Health Foods (Proton Biolabs LLP)** — https://packworkz.com/manufacturers/lerel-health-foods Location: Surat, Gujarat. Categories: Protein & nutrition bars. Products: Protein bars. Services: Private label, Contract manufacturing. Standards stated: FSSAI. Minimum order: 5,000 bars.
+- **Fermentis Life Sciences** — https://packworkz.com/manufacturers/fermentis-life-sciences Location: India. Categories: Protein & nutrition bars. Products: Protein bars, Energy bars. Services: Private label, Contract manufacturing. Standards stated: GMP, FSSAI.
+- **Food Innovators** — https://packworkz.com/manufacturers/food-innovators Location: Namakkal, Tamil Nadu. Categories: Protein & nutrition bars. Products: Protein bars, Nutrition bars. Services: Private label, Contract manufacturing, Custom formulation. Standards stated: FSSAI, GMP.
+- **Foodsure** — https://packworkz.com/manufacturers/foodsure Location: India. Categories: Protein & nutrition bars, Spreads & sauces, Beverages. Products: Protein bars, Sauces & ketchup, Sports drinks. Services: Private label, Contract manufacturing. Standards stated: FSSAI, US FDA, ISO 22000, FSSC 22000, BRCGS.
+- **Yew Supplements** — https://packworkz.com/manufacturers/yew-supplements Location: Gujarat. Categories: Nutraceuticals & supplements. Products: Tablets, Capsules, Gummies, Softgels, Sachets, Oral powders. Services: Private label, Contract manufacturing. Standards stated: US FDA, WHO-GMP, ISO. Established: 2018.
+- **Krone Biocare** — https://packworkz.com/manufacturers/krone-biocare Location: India. Categories: Nutraceuticals & supplements. Products: Tablets, Capsules, Gummies, Softgels, Powders, Syrups. Services: Private label, Contract manufacturing. Standards stated: WHO-GMP.
+- **Nukind Healthcare** — https://packworkz.com/manufacturers/nukind-healthcare Location: India. Categories: Nutraceuticals & supplements. Products: Dietary supplements, Gummies, Softgels, Tablets. Services: Private label, Contract manufacturing. Standards stated: GMP.
+- **Biovencer Healthcare** — https://packworkz.com/manufacturers/biovencer-healthcare Location: India. Categories: Nutraceuticals & supplements. Products: Nutraceuticals, Probiotics, Medical nutrition, Enzymes. Services: Private label, Contract manufacturing, Custom formulation.
+- **Nuflower Foods & Nutrition** — https://packworkz.com/manufacturers/nuflower-foods Location: India. Categories: Spreads & sauces. Products: Peanut butter, Nut butters. Services: Private label, Contract manufacturing.
+- **Sonya Foods** — https://packworkz.com/manufacturers/sonya-foods Location: Gujarat. Categories: Spreads & sauces. Products: Peanut butter. Services: Private label, Contract manufacturing.
+- **Elvita Foods** — https://packworkz.com/manufacturers/elvita-foods Location: India. Categories: Spreads & sauces. Products: Peanut butter, Sauces. Services: Private label. Established: 2021.
+- **Just Bite Foods** — https://packworkz.com/manufacturers/just-bite-foods Location: India. Categories: Spreads & sauces. Products: Peanut butter. Services: Private label, Contract manufacturing.
+- **Ishan Snax** — https://packworkz.com/manufacturers/ishan-snax Location: Siliguri, West Bengal. Categories: Snacks & namkeen. Products: Potato chips, Namkeen, Extruded snacks, Fryums. Services: Private label, Contract manufacturing.
+- **Anant Jeet Nutriments** — https://packworkz.com/manufacturers/anant-jeet-nutriments Location: India. Categories: Snacks & namkeen. Products: Chips, Snacks. Services: Private label, Contract manufacturing, Co-packing.
+- **CRN Foods** — https://packworkz.com/manufacturers/crn-foods Location: India. Categories: Snacks & namkeen, Chocolate & confectionery. Products: Namkeen, Chips, Sweets. Services: Private label, Contract manufacturing.
+- **Shyam G Snacks** — https://packworkz.com/manufacturers/shyam-g-snacks Location: India. Categories: Snacks & namkeen. Products: Snacks, Namkeen. Services: Private label.
+- **Radiance Overseas** — https://packworkz.com/manufacturers/radiance-overseas Location: Indore, Madhya Pradesh. Categories: Coffee & tea. Products: Organic coffee. Services: Private label, White label. Standards stated: APEDA, EU Organic, USDA Organic.
+- **A. Tosh & Sons** — https://packworkz.com/manufacturers/a-tosh-and-sons Location: India. Categories: Coffee & tea. Products: Tea blends, Tisanes, Tea bags. Services: Private label, Co-packing.
+- **Arise Cosmetic** — https://packworkz.com/manufacturers/arise-cosmetic Location: India. Categories: Haircare, Skincare & cosmetics. Products: Shampoos, Conditioners, Hair oils, Serums, Masks. Services: Private label, Contract manufacturing.
+- **HCP Wellness** — https://packworkz.com/manufacturers/hcp-wellness Location: India. Categories: Haircare, Skincare & cosmetics, Home care & cleaning, Baby care. Products: Shampoo, Hair oil, Face serum, Baby lotion, Liquid detergent, Hand wash. Services: Private label, Contract manufacturing.
+- **Pine Herbals India** — https://packworkz.com/manufacturers/pine-herbals-india Location: Ambala, Haryana. Categories: Haircare. Products: Shampoo, Hair oil, Hair masks, Conditioner. Services: Private label, Contract manufacturing.
+- **BO International** — https://packworkz.com/manufacturers/bo-international Location: India. Categories: Haircare, Skincare & cosmetics. Products: Shampoos, Conditioners, Skin serums, Hair masks. Services: Private label, Contract manufacturing.
+- **A G Organica** — https://packworkz.com/manufacturers/ag-organica Location: India. Categories: Home care & cleaning, Skincare & cosmetics. Products: Cleaning products, Face serums, Skincare. Services: Private label, Contract manufacturing.
+- **Agrochem Industries (Clean N Care)** — https://packworkz.com/manufacturers/agrochem-clean-n-care Location: Thane, Maharashtra. Categories: Home care & cleaning. Products: Household cleaners, Laundry care, Car care. Services: Private label, Contract manufacturing.
+- **Neerava Hygiene** — https://packworkz.com/manufacturers/neerava-hygiene Location: India. Categories: Home care & cleaning. Products: Household cleaners, Disinfectants, Industrial cleaners. Services: Private label. Established: 2006.
+- **HUK Natural** — https://packworkz.com/manufacturers/huk-natural Location: India. Categories: Home care & cleaning. Products: Liquid detergent. Services: Private label, Custom formulation.
+- **Multipack** — https://packworkz.com/manufacturers/multipack Location: Gujarat. Categories: Home care & cleaning. Products: House care, Laundry care, Liquid cleaners. Services: Private label, Contract manufacturing.
+- **Innomalous Pet Food Products** — https://packworkz.com/manufacturers/innomalous-pet-food Location: Noida, Uttar Pradesh. Categories: Pet food & treats. Products: Dog & cat food, Treats, Chews. Services: Private label, Contract manufacturing.
+- **SAPL Pets** — https://packworkz.com/manufacturers/sapl-pets Location: India. Categories: Pet food & treats. Products: Pet food, Organic pet food. Services: Private label, Custom formulation.
+- **Al Moin Exports** — https://packworkz.com/manufacturers/al-moin-exports Location: India. Categories: Pet food & treats. Products: Dog treats, Bones, Chews. Services: Contract manufacturing. Standards stated: ISO, HACCP, US FDA registered facility.
+- **Harvestia Group** — https://packworkz.com/manufacturers/harvestia-group Location: India. Categories: Spices & masalas, Ready-to-eat & ready-to-cook. Products: Spices, Superfoods, Ready-to-cook mixes. Services: Private label, Co-packing. Standards stated: FSSAI. Minimum order: 50 kg pilot batches.
+- **Aditya Food Product** — https://packworkz.com/manufacturers/aditya-food-product Location: India. Categories: Spices & masalas. Products: Spices, Masalas. Services: Private label. Standards stated: AGMARK.
+- **Mothers Spices** — https://packworkz.com/manufacturers/mothers-spices Location: India. Categories: Spices & masalas. Products: Spices, Blends. Services: Private label, OEM.
+- **Nilind Herbals** — https://packworkz.com/manufacturers/nilind-herbals Location: India. Categories: Ayurveda & herbal. Products: Herbal products, Capsules, Syrups, Oils. Services: Private label, Contract manufacturing. Standards stated: ISO, WHO-GMP, AYUSH.
+- **Aydis Labs** — https://packworkz.com/manufacturers/aydis-labs Location: Saha, Haryana. Categories: Ayurveda & herbal, Nutraceuticals & supplements, Skincare & cosmetics. Products: Ayurvedic products, Nutraceuticals, Cosmetics. Services: Private label, Contract manufacturing. Standards stated: GMP, AYUSH.
+- **Dr. Asma Herbals** — https://packworkz.com/manufacturers/dr-asma-herbals Location: Amritsar, Punjab. Categories: Ayurveda & herbal. Products: Herbal medicines, Ayurvedic products. Services: Private label, White label. Standards stated: GMP. Minimum order: 300 units. Established: 1972.
+- **Ayika Sciences** — https://packworkz.com/manufacturers/ayika-sciences Location: India. Categories: Baby care. Products: Baby wipes. Services: Private label, Custom formulation.
+- **Adroit Molecules (ADML)** — https://packworkz.com/manufacturers/adroit-molecules Location: Hyderabad, Telangana. Categories: Baby care. Products: Baby diapers, Baby wipes. Services: Private label.
+- **Swara Baby Products** — https://packworkz.com/manufacturers/swara-baby-products Location: India. Categories: Baby care. Products: Diapers. Services: Private label, OEM.
+- **Regal Kitchen Foods** — https://packworkz.com/manufacturers/regal-kitchen-foods Location: India. Categories: Ready-to-eat & ready-to-cook. Products: Ready-to-eat meals, Shelf-stable meals. Services: Private label.
+- **Qoot Food** — https://packworkz.com/manufacturers/qoot-food Location: Rajasthan. Categories: Bakery & cookies. Products: Millet cookies, Protein cookies, Butter cookies. Services: Private label, Contract manufacturing.
+- **Koshambh** — https://packworkz.com/manufacturers/koshambh Location: India. Categories: Bakery & cookies. Products: Biscuits. Services: Private label, Contract manufacturing. Capacity: 2,000+ MT biscuits / month.
+- **Cacobean Chocolatier** — https://packworkz.com/manufacturers/cacobean-chocolatier Location: India. Categories: Chocolate & confectionery. Products: Chocolates. Services: White label, Contract manufacturing.
+- **Swan Sweets** — https://packworkz.com/manufacturers/swan-sweets Location: India. Categories: Chocolate & confectionery. Products: Candies, Confectionery. Services: Private label, Contract manufacturing.
+- **Aquapop Bottlers** — https://packworkz.com/manufacturers/aquapop-bottlers Location: Jhajjar, Haryana. Categories: Beverages. Products: Juices, Fruit drinks, Hot-fill beverages, Glass bottle filling. Services: Private label, Contract manufacturing, Co-packing.
+- **Dermat India** — https://packworkz.com/manufacturers/dermat-india Location: India. Categories: Skincare & cosmetics, Haircare. Products: Face serums, Moisturisers, Sunscreens, Face wash, Shampoos. Services: Private label, OEM, ODM.
+- **Aadhunik Ayurveda** — https://packworkz.com/manufacturers/aadhunik-ayurveda Location: India. Categories: Skincare & cosmetics, Ayurveda & herbal. Products: Face serums, Moisturisers. Services: Private label, Contract manufacturing.
+- **CCL Products (India)** — https://packworkz.com/manufacturers/ccl-products. Describes itself as a leading private-label instant coffee manufacturer, supplying 110+ countries. Location: Guntur, Andhra Pradesh. Categories: Coffee & tea. Products: Instant coffee, Freeze-dried coffee, Roast & ground coffee, Coffee premixes. Services: Private label, Contract manufacturing. Established: 1994.
+- **Vintage Coffee & Beverages** — https://packworkz.com/manufacturers/vintage-coffee-beverages. Instant coffee for client labels, packed in bulk cartons, tins, sachets or pouches. Location: Hyderabad, Telangana. Categories: Coffee & tea. Products: Spray-dried coffee, Agglomerated coffee, Instant chicory. Services: Private label, Custom packing.
+- **Madhu Jayanti International (Jay Tea)** — https://packworkz.com/manufacturers/madhu-jayanti-international. Calls itself the largest private-label tea packer from India, making its own tea bags and envelopes in-house. Location: Kolkata, West Bengal. Categories: Coffee & tea. Products: Tea bags, Black & green tea, Herbal infusions, Flavoured tea. Services: Private label, Blending & packing. Standards stated: BRC, IFS, Fairtrade, Organic. Established: 1942.
+- **Mera Kisan** — https://packworkz.com/manufacturers/mera-kisan. B2B makhana maker with 25+ flavour variants and custom seasoning development. Location: Katihar, Bihar. Categories: Snacks & namkeen. Products: Flavoured makhana, Roasted foxnuts. Services: Private label, OEM, Custom formulation. Standards stated: FSSAI, APEDA, Halal. Minimum order: 100 kg. Capacity: Up to 100 MT / month.
+- **Akums Drugs & Pharmaceuticals** — https://packworkz.com/manufacturers/akums. Large contract development and manufacturing organisation with 15+ facilities across India. Location: Delhi. Categories: Nutraceuticals & supplements, Ayurveda & herbal, Skincare & cosmetics. Products: Tablets & capsules, Gummies, Softgels, Ayurvedic formulations, Cosmetics & derma. Services: Contract manufacturing, Custom formulation. Standards stated: WHO-GMP, US FDA, EU-GMP, FSSAI.
+- **Munnangi Easy Eats** — https://packworkz.com/manufacturers/munnangi-easy-eats. R&D-led food maker with a chef-led lab; product development in as little as 90 days. Location: Navi Mumbai, Maharashtra. Categories: Ready-to-eat & ready-to-cook. Products: Retort meals, Frozen snacks, Ready-to-cook kits, Sauces & gravies. Services: Private label, Contract manufacturing, Custom formulation. Standards stated: FSSAI, ISO 22000, HACCP. Established: 2025.
+- **Lotus Chocolate Company** — https://packworkz.com/manufacturers/lotus-chocolate. Cocoa and chocolate maker serving institutional clients and brands with customised solutions. Location: Hyderabad, Telangana. Categories: Chocolate & confectionery. Products: Compound & couverture, Cocoa products, Consumer chocolates. Services: Contract manufacturing, Custom solutions. Established: 1989.
+- **Cosmetify** — https://packworkz.com/manufacturers/cosmetify. Private-label cosmetics maker with an in-house R&D lab and automated filling. Location: Panchkula, Haryana. Categories: Skincare & cosmetics, Haircare, Baby care. Products: Face serums, Creams & lotions, Shampoos & hair masks, Body wash, Baby care. Services: Private label, OEM, Custom formulation. Standards stated: GMP, ISO. Minimum order: 3,000–5,000 pieces.
+- **Vimson Derma** — https://packworkz.com/manufacturers/vimson-derma. Two plants in Santej handling formulation, sampling, packaging design and compliance. Location: Santej, Kalol, Gujarat. Categories: Skincare & cosmetics, Haircare, Baby care. Products: Skincare, Haircare, Body care, Baby & mother care, Men's grooming. Services: Private label, Contract manufacturing, Custom formulation. Standards stated: GMP, ISO 9001, Halal. Minimum order: 6,000 units per SKU.
+- **Organico Beverages** — https://packworkz.com/manufacturers/organico-beverages. Beverage co-packer with warm and hot fill; bottles from 160 ml to 2 litres. Location: Mumbai, Maharashtra. Categories: Beverages. Products: Fruit drinks, Functional sodas, Energy & sports drinks, Iced tea, Dairy drinks. Services: Contract manufacturing, Co-packing, Custom formulation.
+- **GDM Nutraceuticals** — https://packworkz.com/manufacturers/gdm-nutraceuticals. Private-label nutraceuticals for 30+ countries from a 50,000 sq ft facility. Location: Surat, Gujarat. Categories: Nutraceuticals & supplements, Skincare & cosmetics. Products: Tablets & capsules, Effervescent tablets, Syrups, Sachets & powders. Services: Private label, Contract manufacturing, Custom formulation. Standards stated: FSSAI, GMP, ISO. Minimum order: 25,000–50,000 units. Established: 2010.
+- **Ascovita Healthcare** — https://packworkz.com/manufacturers/ascovita-healthcare. Low-MOQ nutraceutical maker with founder-level contact and 48-hour quotes. Location: Anand, Gujarat. Categories: Nutraceuticals & supplements. Products: Effervescent tablets, Capsules & softgels, Gummies, Powders & sachets. Services: Private label, White label, Contract manufacturing. Standards stated: FSSAI, WHO-GMP. Minimum order: 500 units per SKU.
+- **Numix** — https://packworkz.com/manufacturers/numix. Dedicated nutrition-bar plant running sheet-and-cut and cold-extrusion lines with enrobing. Location: Kashipur, Uttarakhand. Categories: Protein & nutrition bars. Products: Protein bars, Energy bars, Granola bars, Vegan bars. Services: Contract manufacturing, Private label. Standards stated: cGMP, ISO 22000, Halal. Capacity: 5,00,000 bars / day.
+- **LD Foods** — https://packworkz.com/manufacturers/ld-foods. Healthy-snack maker offering formulation, manufacturing and packaging as one service. Location: Keshod, Gujarat. Categories: Protein & nutrition bars, Snacks & namkeen. Products: Protein bars, Muesli, Oats, Nut mixes. Services: Private label, Contract manufacturing. Standards stated: FSSAI, HACCP, FSSC 22000. Capacity: 2,00,000 units / day. Established: 2019.
+- **Shanti's** — https://packworkz.com/manufacturers/shantis. Cereal, snack and jam maker offering private-label supply. Location: India. Categories: Snacks & namkeen, Spreads & sauces. Products: Breakfast cereals, Muesli & granola, Cereal snacks, Jams. Services: Private label. Standards stated: FSSAI, ISO 22000, HACCP, Halal. Established: 1984.
+- **VLC Spices** — https://packworkz.com/manufacturers/vlc-spices. Packs spices in PET and glass jars, pouches, tins or bulk bags with your artwork. Location: Navi Mumbai, Maharashtra. Categories: Spices & masalas. Products: Whole spices, Ground spices, Dehydrated products. Services: Private label, Contract packing. Standards stated: FSSC 22000, ISO, US FDA, Halal, Kosher.
+- **Pappadeli India** — https://packworkz.com/manufacturers/pappadeli. 300+ spice varieties near Kochi port, with pilot programmes for new brands. Location: Kochi, Kerala. Categories: Spices & masalas. Products: Whole spices, Spice powders, Masala blends, Seasonings. Services: Private label, Contract packing, Custom formulation. Standards stated: FSSAI, ISO 22000, HACCP. Minimum order: 100 kg (single spices).
+- **Lifevision Cosmetics** — https://packworkz.com/manufacturers/lifevision-cosmetics. Private-label haircare and derma-cosmetics, with a free sampling policy. Location: Chandigarh. Categories: Haircare, Skincare & cosmetics, Baby care. Products: Shampoos, Face wash, Sunscreen, Body wash, Baby care. Services: Private label, Contract manufacturing. Established: 2010.
+- **The Rich Daddy International** — https://packworkz.com/manufacturers/the-rich-daddy-international. Haircare specialist offering low MOQs for startups. Location: Surat, Gujarat. Categories: Haircare. Products: Hair oils, Shampoos, Conditioners, Hair masks, Hair serums. Services: Private label, Contract manufacturing, OEM / ODM.
+- **Ess Pee Quality Products** — https://packworkz.com/manufacturers/ess-pee-quality-products. Export-ready private-label cookies, shipped to 35+ countries. Location: India. Categories: Bakery & cookies. Products: Butter cookies, Choco-chip cookies, Sugar-free cookies, Gluten-free cookies. Services: Private label. Standards stated: US FDA registered, HACCP, ISO 22000, Halal, Kosher.
+- **TummyFriendly Foods** — https://packworkz.com/manufacturers/tummyfriendly-foods. Organic-certified maker with 60+ ready formulations and in-house labs. Location: Hyderabad, Telangana. Categories: Snacks & namkeen, Bakery & cookies, Spreads & sauces. Products: Kids cereals & porridges, Millet cookies, Baked snacks, Nut butters, Health mixes. Services: Private label, White label, Contract manufacturing. Standards stated: FSSAI, NPOP Organic. Minimum order: 100 kg per SKU.
+- **SGS Herbals** — https://packworkz.com/manufacturers/sgs-herbals. Cleaning and hygiene maker with automated filling lines and an R&D lab. Location: Noida, Uttar Pradesh. Categories: Home care & cleaning. Products: Floor cleaners, Housekeeping chemicals, Hygiene products. Services: Private label, OEM, Third-party manufacturing. Established: 2005.
+- **Zoic Cosmetics** — https://packworkz.com/manufacturers/zoic-cosmetics. Herbal and plant-based cosmetic formulations, free from paraffin and alcohol. Location: Mohali, Punjab. Categories: Skincare & cosmetics, Haircare, Ayurveda & herbal. Products: Herbal skincare, Haircare, Ayurvedic cosmetics. Services: Private label, Contract manufacturing. Standards stated: GMP.
+- **Fibro Foods** — https://packworkz.com/manufacturers/fibro-foods. Retort manufacturing offered as a service to brands, QSRs and cloud kitchens. Location: Salem, Tamil Nadu. Categories: Ready-to-eat & ready-to-cook. Products: Retort meals, Ready-to-cook, Pre-cooked rice & pulses. Services: Contract manufacturing, Private label. Standards stated: US FDA, ISO 22000, GMP, FSSAI.
+- **Sanskar Ayush Medicare** — https://packworkz.com/manufacturers/sanskar-ayush-medicare. Ayurvedic third-party maker with an NABL-accredited in-house testing lab. Location: Haridwar, Uttarakhand. Categories: Ayurveda & herbal, Skincare & cosmetics, Nutraceuticals & supplements. Products: Ayurvedic capsules & tablets, Juices & syrups, Churna & granules, Herbal cosmetics. Services: Private label, Third-party manufacturing, Custom formulation. Standards stated: GMP, ISO 9001, HACCP, FSSAI, AYUSH Premium Mark. Established: 2010.
+- **Shree Shanker Ayurvedic Pharmacy** — https://packworkz.com/manufacturers/shree-shanker-ayurvedic-pharmacy. Ayurvedic pharmacy offering contract manufacturing and custom formulations. Location: India. Categories: Ayurveda & herbal. Products: Syrups, Tablets, Capsules, Churna, Oils. Services: Private label, Contract manufacturing, Custom formulation. Standards stated: WHO-GMP, ISO. Minimum order: 2,000 units per pack. Established: 1942.
+- **ShimlaRed (Shimla Hills Offerings)** — https://packworkz.com/manufacturers/shimlared. Shelf-stable Indian meals and sauces, made in bulk or under private label. Location: Shimla, Himachal Pradesh. Categories: Ready-to-eat & ready-to-cook, Spreads & sauces. Products: Retort meals, Dips & sauces, Ketchup, Tomato puree. Services: Private label.
+- **Rigil Healthcare** — https://packworkz.com/manufacturers/rigil-healthcare. Third-party and private-label Ayurvedic manufacturing with in-house R&D. Location: Vadodara, Gujarat. Categories: Ayurveda & herbal. Products: Herbal syrups, Ayurvedic capsules & tablets, Herbal oils, Powders. Services: Private label, Third-party manufacturing. Standards stated: GMP, ISO, AYUSH.
+- **Medkyn Lifecare** — https://packworkz.com/manufacturers/medkyn-lifecare. Existing formulas typically ship in 8–14 weeks, with full batch documentation. Location: Ahmedabad, Gujarat. Categories: Nutraceuticals & supplements. Products: Tablets & capsules, Softgels, Sachets & granules, Liquids. Services: Contract manufacturing, Custom formulation. Standards stated: WHO-GMP, FSSAI, ISO 9001.
+- **Dhiman Foods** — https://packworkz.com/manufacturers/dhiman-foods. Confectionery maker with 75+ years in the trade and an in-house QC lab. Location: Nakodar, Punjab. Categories: Chocolate & confectionery. Products: Toffees, Hard-boiled candies, Lollipops, Gummies. Services: Private label. Capacity: 1 to 600+ MT / month.
+- **Deepam Industries (Parkash)** — https://packworkz.com/manufacturers/deepam-industries. Candy and toffee maker taking private-label and job-work orders. Location: Sirsa, Haryana. Categories: Chocolate & confectionery. Products: Candy, Soft toffee. Services: Private label, Third-party manufacturing, Job work.
+- **Dazzler Confectionery** — https://packworkz.com/manufacturers/dazzler-confectionery. 30+ years making lollipops and gum, shipping to 30+ countries. Location: India. Categories: Chocolate & confectionery. Products: Lollipops, Bubble gum, Hard-boiled candies. Services: Private label, Contract manufacturing. Standards stated: BRCGS. Minimum order: Low MOQ on private-label packs.
+- **Mor Medics** — https://packworkz.com/manufacturers/mor-medics. Wet-wipes maker offering private labelling, R&D and testing. Location: Ludhiana, Punjab. Categories: Baby care. Products: Baby wipes, Facial wipes, Sanitising wipes, Disinfectant wipes. Services: Private label, Contract manufacturing. Standards stated: ISO 9001, Halal.
+- **AmHygiene** — https://packworkz.com/manufacturers/amhygiene. Packs 20 to 80-pull flow packs; standard wipes in about 4–5 weeks. Location: Vahelal, Ahmedabad, Gujarat. Categories: Baby care. Products: Baby wipes, Wet wipes, Hand sanitiser. Services: Private label, Contract manufacturing, Custom formulation. Standards stated: ISO.
+
+## Packworkz Machinery
+
+- **Hand Impulse Sealer** — https://packworkz.com/machinery. Press the arm down and a timed pulse heats the element, sealing the pouch mouth without keeping the bar hot between seals. Output: Manual, one seal per press. Best for: First-time and low-volume sealing of pouches and poly bags. Typical price ₹3,000–₹15,000 (guidance; final quote varies).
+- **Horizontal Continuous Band Sealer** — https://packworkz.com/machinery. Moves filled pouches through heated bands for repeatable sealing without stopping between packs. Output: Continuous conveyor sealing. Best for: Dry, lightweight pouches that can lie flat while sealing. Typical price ₹8,450–₹20,000 (guidance; final quote varies).
+- **Vertical Continuous Band Sealer** — https://packworkz.com/machinery. Supports the filled pack vertically while it passes through a controlled continuous seal. Output: Upright conveyor sealing. Best for: Liquids, powders and products that must remain upright. Typical price ₹30,000–₹50,000 (guidance; final quote varies).
+- **Induction Cap Sealer** — https://packworkz.com/machinery. Bonds a foil liner to a compatible bottle or jar neck for leak resistance and tamper evidence. Output: Handheld to conveyor operation. Best for: Oils, sauces, supplements, cosmetics and other capped containers. Typical price ₹6,600–₹1,61,000 (guidance; final quote varies).
+- **Floor-standing External Vacuum Sealer** — https://packworkz.com/machinery. Draws air out of the pouch through a nozzle, then heat-seals it on a clamped sealing bar. Output: Semi-automatic nozzle vacuum and seal. Best for: Rice, grains, coffee, dry fruits and larger food bags that will not fit a chamber. Typical price ₹43,500–₹2,20,000 (guidance; final quote varies).
+- **Cup & Tray Sealing Machine** — https://packworkz.com/machinery. Heat-seals compatible lidding film to preformed cups and trays for a clean, tamper-evident closure. Output: Semi-automatic cup sealing. Best for: Yoghurt, beverages, dips, ready food and portion packs. Typical price ₹38,000–₹1,50,000 (guidance; final quote varies).
+- **Powder & Granule Filler** — https://packworkz.com/machinery. Measures a set dose into a pouch, jar or container before it moves to the sealing step. Output: Small batches to semi-automatic lines. Best for: Spices, powders, tea, coffee, grains and free-flowing products. Typical price ₹21,000–₹1,70,000 (guidance; final quote varies).
+- **Pneumatic Paste Filler** — https://packworkz.com/machinery. Uses a piston to meter repeatable doses of thicker products into jars, bottles or suitable pouches. Output: 10–1,000 ml semi-automatic filling. Best for: Sauces, spreads, creams, gels and viscous products. Typical price ₹34,700–₹1,50,000 (guidance; final quote varies).
+- **Semi-automatic Tube Filler & Sealer** — https://packworkz.com/machinery. Fills each tube from a heated or plain hopper, then seals and trims the open end on the same rotary table. Output: Rotary table, operator-loaded tubes. Best for: Creams, gels, ointments, toothpaste and cosmetic tubes. Typical price ₹1,90,000–₹5,00,000 (guidance; final quote varies).
+- **Double-head Liquid Filler** — https://packworkz.com/machinery. Meters low to medium-viscosity liquids into bottles, jars and compatible pouches. Output: One or two-nozzle filling. Best for: Oils, syrups, beverages, shampoos and sanitisers. Typical price ₹56,000–₹4,00,000 (guidance; final quote varies).
+- **Handheld Batch & Date Coder** — https://packworkz.com/machinery. Prints variable production information on compatible film, paper, board or labels. Output: Handheld and compact-line coding. Best for: MRP, batch, packed-on and expiry details on packs and cartons. Typical price ₹7,999–₹35,600 (guidance; final quote varies).
+- **Inline Batch Coding Printer** — https://packworkz.com/machinery. Adds variable data as packs move down a conveyor, reducing manual handling at higher volumes. Output: Continuous conveyor coding. Best for: Growing lines printing MRP, lot, date and QR information. Typical price ₹15,500–₹1,25,000 (guidance; final quote varies).
+- **Semi-automatic Flat Surface Labeller** — https://packworkz.com/machinery. Peels a pressure-sensitive label from the roll and presses it flat onto the pack for consistent placement. Output: Pedal-operated, one pack at a time. Best for: Flat faces of pouches, cartons, tins and flat bottles. Typical price ₹49,000–₹1,50,000 (guidance; final quote varies).
+- **Semi-automatic ROPP Capper** — https://packworkz.com/machinery. Rolls and seals compatible metal caps onto filled bottles for a consistent closure. Output: Single-head bottle capping. Best for: Glass and rigid bottles using aluminium ROPP caps. Typical price ₹37,000–₹88,000 (guidance; final quote varies).
+- **Automatic VFFS Pouch Line** — https://packworkz.com/machinery. Forms a pouch from printed rollstock, doses the product and seals it in one production cycle. Output: Automatic form, fill and seal. Best for: Higher-volume powders, grains, pulses, snacks and compatible liquid products. Typical price ₹1,70,000–₹18,00,000 (guidance; final quote varies).
+- **Horizontal Flow-wrap Machine** — https://packworkz.com/machinery. Feeds individual products through printed rollstock, forms a pillow pack and seals it continuously. Output: Automatic pillow-pack wrapping. Best for: Bars, bakery, soap, produce and regular solid products. Typical price ₹5,90,000–₹12,00,000 (guidance; final quote varies).
+- **Shrink-wrapping Line** — https://packworkz.com/machinery. Wraps grouped products in shrink film and passes them through a controlled heat tunnel. Output: Bundling and secondary wrapping. Best for: Bottle multipacks, cartons and transit bundles. Typical price ₹2,50,000–₹4,50,000 (guidance; final quote varies).
+- **Pallet Stretch Wrapper** — https://packworkz.com/machinery. Applies controlled stretch film around a completed pallet before storage or freight. Output: Stable pallet loads for dispatch. Best for: Factories and warehouses shipping repeat pallet loads. Typical price ₹50,000–₹4,00,000 (guidance; final quote varies).
+
+## Frequently asked questions
+
+### https://packworkz.com/samples
+
+**Are these printed with my branding?**
+The kit contains representative production samples and material swatches. Once you shortlist a format, we can scope a custom branded prototype separately.
+
+**How many samples will I receive?**
+Every kit contains at least 25 pieces. Most contain 35–50+ samples depending on current format and material availability.
+
+**How much is shipping?**
+Shipping is a flat ₹100 across India. The kit is ₹299, so your checkout total is ₹399.
+
+**Can I request a specific category?**
+Yes. Add your preference in the order note and we will use it while curating the kit, subject to sample availability.
+
+### https://packworkz.com/machinery
+
+**Who builds and services the machines?**
+Every machine comes from a vetted Indian manufacturing partner who handles installation, operator training, warranty and after-sales service. We help you shortlist, compare and buy the right model — and set up the packaging it runs.
+
+**Are the prices final?**
+No — the ranges are typical market prices for guidance. Your quote depends on speed, fill range, material contact parts, add-ons like nitrogen flushing or coding, freight and installation.
+
+**Can I see the machine working before buying?**
+Yes. We arrange a video demo with your product and pack wherever possible, and a factory visit for larger lines.
+
+**Do you supply packaging that runs on the machine?**
+That's the point. We match pouch film, laminate thickness, seal width and label size to the machine so your first production day isn't a trial-and-error day.
+
+**What about after-sales support?**
+Warranty terms and service response are confirmed in writing by the manufacturer in your quote. We stay on the thread if anything needs escalating.
+
+### https://packworkz.com/circular
+
+**Who can sell scrap through Packworkz?**
+Packaging converters, printers, brand factories and warehouses generating regular production scrap. We focus on clean, identified industrial scrap rather than mixed household waste.
+
+**Which materials pay best?**
+Clean, single-polymer streams — PE film, BOPP, PET, HDPE and corrugated. Multilayer and metallised laminates are accepted by specialist buyers at lower rates.
+
+**What is the minimum quantity?**
+Usually a few hundred kilos per pickup. Smaller regular volumes can be pooled into scheduled monthly pickups.
+
+**Do I get documentation?**
+Every load comes with a weighbridge slip and the recycler’s receipt. Where applicable, recyclers share documentation that supports your EPR reporting.
+
+**Can I buy recycled packaging too?**
+Yes — our sustainable range includes recycled-content and compostable formats, so the loop closes on your own shelves.
+
+### https://packworkz.com/manufacturing
+
+**Is it free to find a manufacturer?**
+Yes. Direct Connect is free for brands and manufacturers. Packworkz takes no commission and does not mark up the factory quote. Launch Desk is an optional one-time paid service if you want us to manage the shortlist, quotes and samples.
+
+**Are these manufacturers verified?**
+Only profiles marked Verified have passed Packworkz checks. Profiles marked Unclaimed are compiled from the manufacturer's own public website and haven't been reviewed by us yet — always confirm licences, capacity and pricing before you commit.
+
+**How is this different from a B2B directory?**
+You don't pay to unlock phone numbers and your details aren't sold to dozens of sellers. You describe one requirement, we rank factories by capability fit and introduce you to the few that fit.
+
+**I run a factory. How do I get listed?**
+List your factory for free. Basic checks (GST, licences) are free and online; the Verified badge adds a video factory walkthrough and capacity review for a one-time fee.
+
+**Can Packworkz supply packaging for my product?**
+Yes — that's the point. Once your manufacturer is fixed, we supply the pouches, rollstock, jars, bottles, cartons and labels to their line.
+
+## Guides
+
+- [Custom Packaging Cost in India: Complete 2026 Pricing Guide](https://packworkz.com/resources/custom-packaging-cost-india-2026) (Cost & MOQ, August 2026): A practical framework for estimating custom packaging costs in India without relying on misleading single-number quotes.
+- [Low MOQ Custom Packaging in India: Complete Guide](https://packworkz.com/resources/low-moq-custom-packaging-india) (Cost & MOQ, August 2026): How low-MOQ packaging works, when it is worth paying more per unit, and how to avoid buying unusable inventory.
+- [Custom Printed Pouch MOQ & Pricing Guide](https://packworkz.com/resources/custom-printed-pouch-moq-pricing) (Cost & MOQ, August 2026): A buyer-friendly guide to pouch quantity tiers, print methods, barriers, closures and the real cost per usable pack.
+- [Custom Printed Box Cost in India](https://packworkz.com/resources/custom-printed-box-cost-india) (Cost & MOQ, August 2026): What changes the cost of folding cartons, mailer boxes, corrugated shippers and rigid presentation boxes.
+- [Packaging for a D2C Brand: Complete Beginner's Guide](https://packworkz.com/resources/packaging-for-d2c-brand-beginners-guide) (Start a D2C Brand, August 2026): A launch sequence for choosing primary, secondary and shipping packaging without overbuying.
+- [FSSAI Packaging & Labelling Requirements in India](https://packworkz.com/resources/fssai-packaging-labelling-requirements-india) (Food Packaging, August 2026): A practical starting checklist for food packaging under the current FSSAI packaging and labelling framework.
+- [Best Packaging for Coffee Beans](https://packworkz.com/resources/best-packaging-coffee-beans-india) (Food Packaging, August 2026): How to choose a coffee pouch around aroma protection, degassing, resealability and roast-to-order operations.
+- [Best Packaging for Snacks](https://packworkz.com/resources/best-packaging-snacks-material-barrier-shelf-life) (Food Packaging, August 2026): A material, barrier and shelf-life guide for chips, namkeen, nuts, baked snacks and similar products.
+- [Cosmetic Packaging in India: Complete Guide](https://packworkz.com/resources/cosmetic-packaging-india-complete-guide) (Beauty & Cosmetics, August 2026): How to build a compatible cosmetic packaging system across bottles, pumps, labels, cartons and shipping packs.
+- [How to Choose Packaging for a Skincare Brand](https://packworkz.com/resources/choose-packaging-skincare-brand) (Beauty & Cosmetics, August 2026): A product-by-product decision path for serums, creams, cleansers, oils and treatment formulas.
+- [Best Packaging for Restaurants & Cloud Kitchens](https://packworkz.com/resources/best-packaging-restaurants-cloud-kitchens) (Food Packaging, August 2026): How to choose takeaway containers by food type, temperature, venting, leak resistance and delivery journey.
+- [BOPP vs LDPE Packaging](https://packworkz.com/resources/bopp-vs-ldpe-packaging) (Materials, August 2026): A plain-language comparison of BOPP and LDPE for print, stiffness, sealing, clarity and flexible packaging structures.
+- [Digital Printing vs Rotogravure Printing](https://packworkz.com/resources/digital-vs-rotogravure-printing) (Materials, August 2026): How to choose a print process using quantity, artwork variants, lead time, colour control and repeat-order economics.
+- [Amazon India Packaging Requirements](https://packworkz.com/resources/amazon-india-packaging-requirements) (Ecommerce & Amazon, August 2026): A practical preparation guide for sellers using FBA, Easy Ship or Self-Ship in India.
+- [How Much Packaging Should a Startup Order?](https://packworkz.com/resources/how-much-packaging-should-startup-order) (Start a D2C Brand, August 2026): A cash-flow-led method for choosing a first packaging quantity and reorder point.
+- [Why D2C Brands Overpay for Packaging (and How to Audit It)](https://packworkz.com/resources/d2c-brands-overpay-packaging-india) (Cost Optimisation, May 2026): A practical method for finding avoidable packaging cost across specifications, order quantities, tooling, freight and emergency purchases.
+- [EPR Compliance for Packaging in India: Complete 2026 Guide](https://packworkz.com/resources/epr-compliance-packaging-india-2026) (Compliance, May 2026): A practical overview of India's plastic-packaging EPR framework for producers, importers and brand owners, with links to the current CPCB rules and portal.
+- [Stand-Up Pouch vs Flat Bottom Pouch: Which Is Right for Your Product?](https://packworkz.com/resources/stand-up-pouch-vs-flat-bottom-pouch) (Product Education, May 2026): Both are premium flexible packaging formats, but they serve very different products and price points. Here's the definitive comparison for D2C and FMCG brands.
+- [Packaging for Blinkit and Zepto: What Quick Commerce Demands in 2026](https://packworkz.com/resources/packaging-blinkit-zepto-quick-commerce-india-2026) (Quick Commerce, May 2026): Quick commerce platforms have fundamentally changed packaging requirements in India. Here's what Blinkit, Zepto, and Swiggy Instamart actually require — and how to comply without premium packaging spend.
+- [How to Consolidate Packaging Vendors Without Disrupting Your Supply Chain](https://packworkz.com/resources/consolidate-packaging-vendors-supply-chain) (Operations, May 2026): Moving from 5+ packaging vendors to one managed platform sounds risky. Here's the step-by-step playbook that India's fastest-growing brands use to consolidate safely.
+- [Packaging Compliance for US/UK Export: FDA, BRC, FSC Explained](https://packworkz.com/resources/packaging-compliance-us-uk-export-fda-brc-fsc) (Export & Compliance, May 2026): Exporting from India to the US, UK, or UAE? Here's exactly which packaging certifications you need, what they cost, and how to build compliance in from the start.

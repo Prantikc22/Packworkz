@@ -23,6 +23,8 @@ const router = Router();
 const SERVICE_AMOUNTS: Record<string, number> = {
   design: 199_900,
   sample_kit: 39_900,
+  launch_desk: 1_499_900,
+  factory_verified: 499_900,
 };
 
 function safeEqualHex(left: string, right: string) {

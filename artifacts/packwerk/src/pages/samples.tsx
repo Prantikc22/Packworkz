@@ -39,7 +39,7 @@ const FORMAT_CARDS = [
 
 const KIT_TICKER = ["Stand-up pouches", "Mailer boxes", "Folding cartons", "Rigid boxes", "Paper labels", "Kraft & barrier films", "Soft-touch & foil finishes", "Tissue & wrapping", "Courier mailers"];
 
-const FAQS = [
+export const FAQS = [
   ["Are these printed with my branding?", "The kit contains representative production samples and material swatches. Once you shortlist a format, we can scope a custom branded prototype separately."],
   ["How many samples will I receive?", "Every kit contains at least 25 pieces. Most contain 35–50+ samples depending on current format and material availability."],
   ["How much is shipping?", `Shipping is a flat ${money(100)} across India. The kit is ${money(299)}, so your checkout total is ${money(399)}.`],

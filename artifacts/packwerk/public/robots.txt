@@ -1,4 +1,4 @@
-# Block private routes for all crawlers
+# Packworkz — https://packworkz.com
 User-agent: *
 Allow: /
 Disallow: /dashboard/
@@ -13,5 +13,24 @@ Disallow: /configure/step/
 Disallow: /configure/confirmed/
 Disallow: /lp/
 
-# Sitemap
+# AI search and assistant crawlers are welcome on public pages.
+User-agent: GPTBot
+User-agent: OAI-SearchBot
+User-agent: ChatGPT-User
+User-agent: ClaudeBot
+User-agent: Claude-SearchBot
+User-agent: Claude-User
+User-agent: PerplexityBot
+User-agent: Perplexity-User
+User-agent: Google-Extended
+User-agent: Applebot-Extended
+User-agent: Bingbot
+Allow: /
+Disallow: /dashboard/
+Disallow: /admin/
+Disallow: /api/
+Disallow: /cart/
+Disallow: /lp/
+
+# Plain-text site guides for language models: /llms.txt and /llms-full.txt
 Sitemap: https://packworkz.com/sitemap.xml

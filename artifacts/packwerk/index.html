@@ -62,15 +62,15 @@
         "@type": "SearchAction",
         "target": {
           "@type": "EntryPoint",
-          "urlTemplate": "https://packworkz.com/products?search={search_term_string}"
+          "urlTemplate": "https://packworkz.com/products?q={search_term_string}"
         },
         "query-input": "required name=search_term_string"
       }
     }
     </script>
 
-    <!-- Structured Data — FAQPage -->
-    <script type="application/ld+json">
+    <!-- Structured Data — FAQPage (homepage only; stripped from other pages at prerender) -->
+    <script type="application/ld+json" data-home-only>
     {
       "@context": "https://schema.org",
       "@type": "FAQPage",
@@ -119,8 +119,8 @@
     }
     </script>
 
-    <!-- Structured Data — Service -->
-    <script type="application/ld+json">
+    <!-- Structured Data — Service (homepage only) -->
+    <script type="application/ld+json" data-home-only>
     {
       "@context": "https://schema.org",
       "@type": "Service",

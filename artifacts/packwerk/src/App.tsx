@@ -39,6 +39,11 @@ import PackAIPlanner from "@/pages/pack-ai";
 import Network from "@/pages/network";
 import Machinery from "@/pages/machinery";
 import Circular from "@/pages/circular";
+import Manufacturing from "@/pages/manufacturing";
+import ManufacturerProfile from "@/pages/manufacturing/profile";
+import ManufacturingLaunch from "@/pages/manufacturing/launch";
+import ListYourFactory from "@/pages/manufacturing/list-factory";
+import ManufacturerDirectory from "@/pages/manufacturing/directory";
 import Privacy from "@/pages/privacy";
 import Terms from "@/pages/terms";
 import Refund from "@/pages/refund";
@@ -145,6 +150,12 @@ function Router() {
       <PublicRoute path="/network" component={Network} layout={PublicLayout} />
       <PublicRoute path="/machinery" component={Machinery} layout={PublicLayout} />
       <PublicRoute path="/circular" component={Circular} layout={PublicLayout} />
+      <PublicRoute path="/manufacturing" component={Manufacturing} layout={PublicLayout} />
+      <PublicRoute path="/manufacturing/launch" component={ManufacturingLaunch} layout={PublicLayout} />
+      <PublicRoute path="/manufacturing/list-your-factory" component={ListYourFactory} layout={PublicLayout} />
+      <PublicRoute path="/manufacturing/:category" component={Manufacturing} layout={PublicLayout} />
+      <PublicRoute path="/manufacturers" component={ManufacturerDirectory} layout={PublicLayout} />
+      <PublicRoute path="/manufacturers/:slug" component={ManufacturerProfile} layout={PublicLayout} />
       <PublicRoute path="/privacy" component={Privacy} layout={PublicLayout} />
       <PublicRoute path="/terms" component={Terms} layout={PublicLayout} />
       <PublicRoute path="/refund" component={Refund} layout={PublicLayout} />

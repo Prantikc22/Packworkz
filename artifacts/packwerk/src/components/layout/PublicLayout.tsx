@@ -13,6 +13,7 @@ import { CartDrawer } from "@/components/cart/CartDrawer";
 import { ExitOfferModal } from "@/components/leads/ExitOfferModal";
 import { useCart } from "@/lib/cart";
 import { ARTICLES } from "@/lib/resources-data";
+import { manufacturingSeoFor } from "@/lib/manufacturers";
 import { getDisplayCurrency, money, setDisplayCurrency } from "@/lib/currency";
 
 function BrandLogo({ footer = false }: { footer?: boolean }) {
@@ -125,6 +126,26 @@ const PAGE_SEO: Record<string, { title: string; description: string; keywords: s
     title: "Packaging Machines for D2C & Food Brands India | Sealers, Fillers, Coders | Packworkz",
     description: "Impulse, band, induction and vacuum sealers, tube, powder and liquid fillers, batch coders, labellers and automatic VFFS lines — matched to your product and output, with packaging that runs on them.",
     keywords: "packaging machine India, band sealer price, pouch sealing machine, batch coding machine, powder filling machine, VFFS machine India",
+  },
+  "/manufacturing": {
+    title: "Find CPG Contract & Private Label Manufacturers | Packworkz Make",
+    description: "Describe what you want to make and get matched with private-label and contract manufacturers for food, beverages, supplements, beauty, home care and pet products. Direct introductions with no marketplace commission.",
+    keywords: "private label manufacturer, contract manufacturer, third party manufacturing, CPG contract manufacturing",
+  },
+  "/manufacturing/launch": {
+    title: "Post a Manufacturing Requirement | Packworkz Launch Desk",
+    description: "Tell Packworkz what you want to make. We match CPG manufacturers for free, or run quotes, samples and timelines for you with Launch Desk.",
+    keywords: "post manufacturing requirement, find contract manufacturer, product launch manufacturing India",
+  },
+  "/manufacturing/list-your-factory": {
+    title: "List Your Factory Free | CPG Manufacturers | Packworkz Make",
+    description: "List your contract or private-label manufacturing unit for free. No lead credits — get matched with brands whose products fit your line.",
+    keywords: "list manufacturing company, contract manufacturer leads India, private label manufacturer listing",
+  },
+  "/manufacturers": {
+    title: "Contract & Private Label Manufacturer Directory India | Packworkz Make",
+    description: "Search contract and private-label manufacturers in India by product, city, standard and service — snacks, bars, beverages, supplements, Ayurveda, skincare, haircare, home care and more.",
+    keywords: "contract manufacturer directory India, private label manufacturers list India, third party manufacturer search",
   },
   "/circular": {
     title: "Sell Packaging & Plastic Scrap | Recycling Pickup India | Packworkz Circular",
@@ -461,6 +482,7 @@ const GLOBAL_STYLES = `
     border-radius: 8px 8px 0 0;
   }
   .pw-site-header .po-cta-btn { border-radius: 999px; }
+  .pw-nav-badge { display:inline-flex; align-items:center; margin-left:6px; padding:2px 6px; border-radius:999px; background:#f2b134; color:#0d1b2a; font-size:9px; font-weight:900; letter-spacing:.08em; text-transform:uppercase; line-height:1.3; vertical-align:middle; }
   .pw-currency-switch { display:inline-flex; padding:3px; border:1px solid rgba(255,255,255,.14); border-radius:999px; }
   .pw-currency-switch button { padding:4px 10px; border:0; border-radius:999px; background:transparent; color:#94A3B8; font-size:12px; font-weight:700; cursor:pointer; }
   .pw-currency-switch button[aria-pressed="true"] { background:rgba(255,255,255,.12); color:#fff; }
@@ -560,6 +582,47 @@ const GLOBAL_STYLES = `
   @media (max-width: 1180px) {
     .po-mega-column { padding-left: 20px; padding-right: 20px; }
     .po-mega-footer-link { padding-left: 16px; padding-right: 16px; }
+  }
+
+  .pw-sol { overflow: hidden; }
+  .pw-sol-grid { display: grid; grid-template-columns: minmax(0, 1fr) 300px; }
+  .pw-sol-main { padding: 26px 28px 30px; }
+  .pw-sol-head { display: flex; align-items: baseline; justify-content: space-between; gap: 20px; margin-bottom: 18px; }
+  .pw-sol-head span { color: #0D1B2A; font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: .02em; }
+  .pw-sol-head p { margin: 0; color: #718096; font-size: 12.5px; }
+  .pw-sol-tiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+  .pw-sol-tile { display: flex; flex-direction: column; min-width: 0; color: #0D1B2A; text-decoration: none; opacity: 0; transform: translateY(8px); animation: pwSolIn .45s cubic-bezier(.22,1,.36,1) forwards; }
+  @keyframes pwSolIn { to { opacity: 1; transform: none; } }
+  .pw-sol-tile figure { position: relative; margin: 0 0 14px; aspect-ratio: 4 / 3; overflow: hidden; border-radius: 4px; background: #EEF1F5; }
+  .pw-sol-tile img { width: 100%; height: 100%; object-fit: cover; transition: transform .8s cubic-bezier(.22,1,.36,1); }
+  .pw-sol-tile:hover img { transform: scale(1.06); }
+  .pw-sol-tile figure::after { content: ''; position: absolute; inset: 0; border-radius: 4px; box-shadow: inset 0 0 0 1px rgba(13,27,42,.06); }
+  .pw-sol-tile figure em { position: absolute; top: 10px; left: 10px; padding: 3px 8px; border-radius: 3px; background: #0D1B2A; color: #fff; font-size: 10px; font-style: normal; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+  .pw-sol-step { display: flex; align-items: center; gap: 8px; color: #718096; font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+  .pw-sol-step i { font-style: normal; color: var(--sol, #1B6CA8); }
+  .pw-sol-tile.is-make { --sol: #1E5ED2; }
+  .pw-sol-tile.is-pack { --sol: #0D1B2A; }
+  .pw-sol-tile.is-machinery { --sol: #C98A0B; }
+  .pw-sol-tile.is-circular { --sol: #3E8E4F; }
+  .pw-sol-tile b { display: flex; align-items: center; gap: 6px; margin-top: 6px; font-family: 'Space Grotesk', sans-serif; font-size: 16px; font-weight: 700; letter-spacing: -.02em; }
+  .pw-sol-tile b svg { flex: none; opacity: 0; transform: translateX(-4px); transition: opacity .2s, transform .25s; color: var(--sol); }
+  .pw-sol-tile:hover b svg { opacity: 1; transform: none; }
+  .pw-sol-tile small { margin-top: 4px; color: #5A6B7C; font-size: 12.5px; line-height: 1.45; }
+  .pw-sol-side { display: flex; flex-direction: column; padding: 26px 24px 24px; background: #F6F8FB; border-left: 1px solid #E3E8EF; }
+  .pw-sol-side-title { margin-bottom: 8px; color: #0D1B2A; font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 700; }
+  .pw-sol-team { display: grid; grid-template-columns: 18px minmax(0, 1fr); gap: 12px; align-items: start; padding: 12px 0; border-bottom: 1px solid #E3E8EF; color: #0D1B2A; text-decoration: none; }
+  .pw-sol-team svg { margin-top: 2px; color: #5A6B7C; transition: color .2s; }
+  .pw-sol-team b { display: block; font-size: 14px; font-weight: 700; transition: color .2s; }
+  .pw-sol-team small { display: block; margin-top: 2px; color: #718096; font-size: 12px; line-height: 1.4; }
+  .pw-sol-team:hover b, .pw-sol-team:hover svg { color: #0B3FA0; }
+  .pw-sol-talk { display: grid; gap: 4px; margin-top: auto; padding: 16px 16px 15px; border-radius: 4px; background: #0D1B2A; color: #fff; text-decoration: none; transition: background .2s; }
+  .pw-sol-talk span { color: rgba(226,236,248,.65); font-size: 12px; }
+  .pw-sol-talk b { display: flex; align-items: center; gap: 6px; font-size: 13.5px; }
+  .pw-sol-talk:hover { background: #0B3FA0; }
+  @media (max-width: 1180px) {
+    .pw-sol-grid { grid-template-columns: minmax(0, 1fr) 250px; }
+    .pw-sol-tiles { gap: 12px; }
+    .pw-sol-tile small { display: none; }
   }
   .po-cta-btn:hover { color: #0D1B2A; }
   .po-cta-btn:hover::before { transform: translateX(0); }
@@ -708,6 +771,59 @@ function ResourcesMenu() {
   );
 }
 
+const SOLUTION_TILES = [
+  { step: "01", verb: "Make it", label: "Make", desc: "Find the factory that makes your product", href: "/manufacturing", image: "/images/manufacturing-v2/landing-tile.webp", tone: "is-make", badge: "New" },
+  { step: "02", verb: "Pack it", label: "Packaging", desc: "66 formats, priced instantly or in 4 hours", href: "/products", image: "/images/flow-packaging-still-life-v2.webp", tone: "is-pack" },
+  { step: "03", verb: "Run the line", label: "Machinery", desc: "Sealers, fillers and coders for your line", href: "/machinery", image: "/images/machinery/packaging-line-hero-v1.webp", tone: "is-machinery" },
+  { step: "04", verb: "Recover", label: "Circular", desc: "Sell production scrap to verified recyclers", href: "/circular", image: "/images/circular/film-bale.webp", tone: "is-circular" },
+];
+
+function SolutionsMenu() {
+  const teams = [
+    { icon: Network, label: "Enterprise", desc: "Multi-SKU procurement, one owner", href: "/enterprise" },
+    { icon: Zap, label: "SmartStock", desc: "Repeat orders before stock runs out", href: "/smartstock" },
+    { icon: Palette, label: "3D Studio", desc: "Preview your pack before print", href: "/mockup-studio" },
+  ];
+  return (
+    <div className="po-mega-panel pw-sol" aria-label="Solutions menu">
+      <div className="pw-sol-grid">
+        <div className="pw-sol-main">
+          <div className="pw-sol-head">
+            <span>The Packworkz platform</span>
+            <p>One team from the factory floor to the scrap bale.</p>
+          </div>
+          <div className="pw-sol-tiles">
+            {SOLUTION_TILES.map((tile, i) => (
+              <Link key={tile.href} href={tile.href} className={`pw-sol-tile ${tile.tone}`} style={{ animationDelay: `${40 + i * 45}ms` }}>
+                <figure>
+                  <img src={tile.image} alt="" loading="lazy" />
+                  {tile.badge && <em>{tile.badge}</em>}
+                </figure>
+                <span className="pw-sol-step"><i>{tile.step}</i>{tile.verb}</span>
+                <b>Packworkz {tile.label}<ArrowRight size={15} /></b>
+                <small>{tile.desc}</small>
+              </Link>
+            ))}
+          </div>
+        </div>
+        <aside className="pw-sol-side">
+          <span className="pw-sol-side-title">For teams</span>
+          {teams.map(({ icon: Icon, label, desc, href }) => (
+            <Link key={href} href={href} className="pw-sol-team">
+              <Icon size={17} strokeWidth={1.8} />
+              <span><b>{label}</b><small>{desc}</small></span>
+            </Link>
+          ))}
+          <Link href="/contact" className="pw-sol-talk">
+            <span>Not sure where to start?</span>
+            <b>Talk to a Packworkz owner <ArrowRight size={14} /></b>
+          </Link>
+        </aside>
+      </div>
+    </div>
+  );
+}
+
 function AboutMenu() {
   return (
     <div className="po-mega-panel" aria-label="About Packworkz menu">
@@ -728,8 +844,6 @@ function AboutMenu() {
             { icon: Network, label: "Factory Network", desc: "Production routes matched to your spec", href: "/network" },
             { icon: ShieldCheck, label: "Quality Workflow", desc: "Documented checkpoints before dispatch", href: "/how-it-works" },
             { icon: Zap, label: "SmartStock", desc: "Plan repeat orders before stock becomes urgent", href: "/smartstock" },
-            { icon: Factory, label: "Packaging Machinery", desc: "Sealers, fillers and coders for your line", href: "/machinery" },
-            { icon: Recycle, label: "Packworkz Circular", desc: "Sell production scrap to verified recyclers", href: "/circular" },
           ].map(item => (
             <Link key={item.label} href={item.href} className="po-mega-link">
               <IconBox Icon={item.icon} />
@@ -830,9 +944,10 @@ function NewsletterSignup() {
 
 // ── NavItem with optional dropdown ───────────────────────────────────────────
 function NavItem({
-  label, children, href, active, mega = false,
+  label, children, href, active, mega = false, badge,
 }: {
   label: string;
+  badge?: string;
   children?: React.ReactNode;
   href?: string;
   active?: boolean;
@@ -877,6 +992,7 @@ function NavItem({
     return (
       <Link href={href} className={`po-nav-link${active ? " active" : ""}`}>
         {label}
+        {badge && <span className="pw-nav-badge">{badge}</span>}
       </Link>
     );
   }
@@ -1323,7 +1439,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
           keywords: resource.keywords.join(", "),
         }
       : undefined;
-    const seo = productSeo ?? resourceSeo ?? PAGE_SEO[pathname] ??
+    const seo = productSeo ?? resourceSeo ?? manufacturingSeoFor(pathname) ?? PAGE_SEO[pathname] ??
       (Object.entries(PAGE_SEO)
         .filter(([k]) => k !== "/" && pathname.startsWith(k))
         .sort((a, b) => b[0].length - a[0].length)[0]?.[1]) ??
@@ -1413,7 +1529,10 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
           <NavItem label="Industries" active={location.startsWith("/industries")} mega>
             <IndustriesMenu />
           </NavItem>
-          <NavItem label="Get a Sample" href="/samples" active={location.startsWith("/samples")} />
+          <NavItem label="Solutions" active={["/manufactur", "/machinery", "/circular", "/enterprise", "/smartstock", "/mockup-studio"].some((path) => location.startsWith(path))} mega>
+            <SolutionsMenu />
+          </NavItem>
+          <NavItem label="Get Samples" href="/samples" active={location.startsWith("/samples")} />
           <NavItem label="Sustainability" href="/sustainable" active={location.startsWith("/sustainable")} />
           <NavItem label="Resources" active={location.startsWith("/resources")} mega>
             <ResourcesMenu />
@@ -1525,9 +1644,23 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
               </div>
             )}
 
+            <div style={{ padding: "10px 0", borderBottom: "1px solid rgba(255,255,255,0.07)" }}>
+              <div style={{ fontSize: 22, fontWeight: 900, textTransform: "uppercase", color: "white" }}>Solutions</div>
+              {[
+                { label: "Packworkz Make", href: "/manufacturing", badge: "New" },
+                { label: "Packworkz Machinery", href: "/machinery" },
+                { label: "Packworkz Circular", href: "/circular" },
+                { label: "Enterprise", href: "/enterprise" },
+              ].map((item) => (
+                <Link key={item.href} href={item.href} onClick={() => setMobileOpen(false)}
+                  style={{ display: "flex", alignItems: "center", gap: 8, padding: "9px 4px", fontSize: 15, fontWeight: 700, color: "rgba(255,255,255,0.7)", textDecoration: "none" }}>
+                  {item.label}{item.badge && <span className="pw-nav-badge">{item.badge}</span>}
+                </Link>
+              ))}
+            </div>
             <Link href="/samples" onClick={() => setMobileOpen(false)}
               style={{ fontSize: 22, fontWeight: 900, textTransform: "uppercase", color: "white", textDecoration: "none", padding: "10px 0", borderBottom: "1px solid rgba(255,255,255,0.07)" }}>
-              Get a Sample
+              Get Samples
             </Link>
             <Link href="/sustainable" onClick={() => setMobileOpen(false)}
               style={{ fontSize: 22, fontWeight: 900, textTransform: "uppercase", color: "white", textDecoration: "none", padding: "10px 0", borderBottom: "1px solid rgba(255,255,255,0.07)" }}>

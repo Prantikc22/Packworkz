@@ -74,18 +74,22 @@ body.pw-at-hero .pw-sample-widget { opacity: 0; transform: translateY(20px); poi
 .pw-beyond-head h2 { margin: 0; color: #0d1b2a; font-family: 'Space Grotesk', sans-serif; font-size: clamp(2.4rem, 4.4vw, 4.4rem); font-weight: 800; letter-spacing: -.055em; line-height: 1; }
 .pw-beyond-head h2 em { color: #245e92; font-style: normal; }
 .pw-beyond-head span { display: block; max-width: 900px; margin-top: 22px; color: #5a6b7c; font-size: clamp(1rem, 1.3vw, 1.2rem); line-height: 1.7; }
-.pw-beyond-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; margin-top: clamp(44px, 5vw, 72px); }
-.pw-beyond-card { position: relative; display: flex; aspect-ratio: 16 / 10; align-items: flex-end; overflow: hidden; border-radius: 4px; background: #0d1b2a; color: #fff; text-decoration: none; isolation: isolate; }
+.pw-beyond-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; margin-top: clamp(44px, 5vw, 72px); }
+.pw-beyond-card { position: relative; display: flex; aspect-ratio: 4 / 5; align-items: flex-end; overflow: hidden; border-radius: 4px; background: #0d1b2a; color: #fff; text-decoration: none; isolation: isolate; }
 .pw-beyond-card img { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; transition: transform 1.1s cubic-bezier(.22,1,.36,1); }
 .pw-beyond-card::before { content: ''; position: absolute; inset: 0; z-index: -1; background: linear-gradient(0deg, rgba(7,19,32,.92) 0%, rgba(7,19,32,.62) 30%, rgba(7,19,32,0) 58%); }
+.pw-beyond-card.is-make img { object-position: 62% 50%; }
 .pw-beyond-card.is-circular::before { background: linear-gradient(0deg, rgba(4,26,21,.94) 0%, rgba(4,26,21,.64) 30%, rgba(4,26,21,0) 58%); }
 .pw-beyond-card:hover img { transform: scale(1.05); }
 .pw-beyond-copy { display: grid; justify-items: start; gap: 8px; padding: 0 96px clamp(26px, 2.6vw, 38px) clamp(26px, 2.6vw, 38px); }
 .pw-beyond-lockup { display: inline-flex; align-items: center; gap: 7px; color: #fff; font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 900; letter-spacing: -.03em; }
 .pw-beyond-lockup .pw-brand-mark { transform: scale(.72); transform-origin: left center; margin-right: -5px; }
 .pw-beyond-copy small { max-width: 420px; color: rgba(255,255,255,.8); font-size: 14px; font-weight: 600; line-height: 1.5; }
-.pw-beyond-copy h3 { margin: -2px 0 0; color: #f2b134; font-family: 'Space Grotesk', sans-serif; font-size: clamp(2.2rem, 3.6vw, 3.4rem); font-weight: 800; letter-spacing: -.055em; line-height: .95; }
+.pw-beyond-copy h3 { margin: -2px 0 0; color: #f2b134; font-family: 'Space Grotesk', sans-serif; font-size: clamp(2rem, 2.8vw, 2.8rem); font-weight: 800; letter-spacing: -.055em; line-height: .95; }
 .pw-beyond-card.is-circular h3 { color: #b8e093; }
+.pw-beyond-card.is-make h3 { color: #8cc2ff; }
+.pw-beyond-card.is-make .pw-beyond-arrow { background: #8cc2ff; }
+.pw-beyond-lockup em { margin-left: 8px; padding: 2px 7px; border-radius: 999px; background: #f2b134; color: #0d1b2a; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 10px; font-style: normal; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; }
 .pw-beyond-card.is-circular .pw-beyond-arrow { background: #b8e093; }
 .pw-beyond-card.is-circular:hover .pw-beyond-arrow { background: #cdeeab; }
 .pw-beyond-arrow { position: absolute; right: clamp(22px, 2.6vw, 38px); bottom: clamp(26px, 2.6vw, 38px); display: grid; width: 46px; height: 46px; place-items: center; border-radius: 50%; background: #f2b134; color: #0d1b2a; transition: transform .45s cubic-bezier(.22,1,.36,1), background-color .3s; }
@@ -129,4 +133,8 @@ body.pw-at-hero .pw-sample-widget { opacity: 0; transform: translateY(20px); poi
 }
 @media (prefers-reduced-motion: reduce) {
   .pw-qp, .pw-qp-price { animation: none; }
+}
+@media (max-width: 900px) and (min-width: 701px) {
+  .pw-beyond-grid { grid-template-columns: 1fr; }
+  .pw-beyond-card { aspect-ratio: 16 / 9; }
 }
