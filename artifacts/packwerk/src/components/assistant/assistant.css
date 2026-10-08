@@ -1,6 +1,6 @@
 /* ── Site assistant (replaces the sample-kit widget) ────────────────────── */
 .pwa { --pwa-ink: #0d1b2a; --pwa-copy: #4d5a69; --pwa-mute: #87919c; --pwa-line: #e3e6ea; --pwa-blue: #1e5ed2; --pwa-amber: #f2b134;
-  position: fixed; right: 22px; bottom: 22px; z-index: 900; display: flex; flex-direction: column; align-items: flex-end; gap: 12px; font-family: 'Plus Jakarta Sans', sans-serif; }
+  position: fixed; right: 22px; bottom: 22px; z-index: 1001; display: flex; flex-direction: column; align-items: flex-end; gap: 12px; font-family: 'Plus Jakarta Sans', sans-serif; }
 
 .pwa-launcher { display: flex; align-items: center; gap: 11px; min-height: 56px; padding: 0 18px 0 16px; border: 0; border-radius: 4px; background: var(--pwa-ink); color: #fff; box-shadow: 0 18px 40px -12px rgba(7,24,42,.45); cursor: pointer; text-align: left; transition: transform .25s cubic-bezier(.22,1,.36,1), background .2s; }
 .pwa-launcher:hover { transform: translateY(-2px); background: #13263b; }
@@ -9,7 +9,7 @@
 .pwa-launcher b { font-size: 13.5px; font-weight: 800; }
 .pwa-launcher small { color: rgba(226,236,248,.62); font-size: 11px; font-weight: 600; }
 
-.pwa-panel { display: flex; flex-direction: column; width: 384px; height: min(620px, calc(100vh - 120px)); overflow: hidden; border: 1px solid rgba(13,27,42,.08); border-radius: 6px; background: #fff; box-shadow: 0 30px 80px -24px rgba(7,24,42,.45); transform-origin: bottom right; animation: pwaIn .32s cubic-bezier(.22,1,.36,1); }
+.pwa-panel { display: flex; flex-direction: column; width: 384px; height: min(620px, calc(100vh - 210px)); min-height: 360px; overflow: hidden; border: 1px solid rgba(13,27,42,.08); border-radius: 6px; background: #fff; box-shadow: 0 30px 80px -24px rgba(7,24,42,.45); transform-origin: bottom right; animation: pwaIn .32s cubic-bezier(.22,1,.36,1); }
 @keyframes pwaIn { from { opacity: 0; transform: translateY(12px) scale(.98); } to { opacity: 1; transform: none; } }
 
 .pwa-head { display: flex; align-items: center; gap: 12px; padding: 16px 14px 16px 18px; background: var(--pwa-ink); color: #fff; }
@@ -64,10 +64,13 @@
 .pwa-input button { display: grid; place-items: center; width: 44px; height: 44px; border: 0; border-radius: 4px; background: var(--pwa-ink); color: #fff; cursor: pointer; transition: background .2s, opacity .2s; }
 .pwa-input button:hover:not(:disabled) { background: var(--pwa-blue); }
 .pwa-input button:disabled { opacity: .35; cursor: default; }
-.pwa-kit { display: flex; align-items: center; gap: 8px; margin: 0 12px; padding: 10px 12px; border-radius: 4px; background: #fbf6ea; color: var(--pwa-ink); font-size: 13px; font-weight: 700; text-decoration: none; transition: background .2s; }
-.pwa-kit svg:first-child { color: #c98a0b; }
-.pwa-kit span { flex: 1; }
-.pwa-kit:hover { background: #f7ecd2; }
+.pwa-kit { display: grid; grid-template-columns: 52px minmax(0, 1fr) auto; align-items: center; gap: 12px; margin: 0 12px; padding: 10px 0 2px; border-top: 1px solid var(--pwa-line); color: var(--pwa-ink); text-decoration: none; }
+.pwa-kit img { width: 52px; height: 40px; object-fit: cover; border-radius: 3px; }
+.pwa-kit span { display: grid; gap: 1px; min-width: 0; }
+.pwa-kit b { font-size: 13px; font-weight: 800; }
+.pwa-kit small { color: var(--pwa-mute); font-size: 11.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pwa-kit i { display: inline-flex; align-items: center; gap: 4px; padding: 7px 10px; border: 1px solid #cfd5dc; border-radius: 4px; font-size: 12px; font-style: normal; font-weight: 700; transition: border-color .2s, background .2s, color .2s; }
+.pwa-kit:hover i { border-color: var(--pwa-ink); background: var(--pwa-ink); color: #fff; }
 .pwa-note { margin: 0; padding: 8px 14px 12px; color: var(--pwa-mute); font-size: 11px; text-align: center; }
 
 @media (max-width: 700px) {

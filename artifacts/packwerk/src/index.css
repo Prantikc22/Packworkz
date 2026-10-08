@@ -245,6 +245,23 @@
 .pw-editorial-actions .pw-editorial-primary { border-color: #e1a329; background: #f2b134; }
 .pw-editorial-actions .pw-editorial-primary:hover { background: #fac34f; }
 .pw-editorial-actions .pw-editorial-secondary:hover { background: #0d1b2a; color: #fff; }
+/* Hero CTA motion: one sheen on load + on hover, fill wipe on the secondary, arrow nudge */
+.pw-editorial-actions > div > a { position: relative; overflow: hidden; isolation: isolate; }
+.pw-editorial-actions > div > a > * { position: relative; z-index: 1; }
+.pw-editorial-actions > div > a svg { transition: transform .3s cubic-bezier(.22,1,.36,1); }
+.pw-editorial-actions > div > a:hover svg { transform: translateX(4px); }
+.pw-editorial-actions .pw-editorial-primary::after { content: ''; position: absolute; top: 0; bottom: 0; left: -60%; z-index: 0; width: 45%; background: linear-gradient(105deg, transparent 0%, rgba(255,255,255,.55) 50%, transparent 100%); transform: skewX(-18deg); animation: pwCtaSheen 1.1s cubic-bezier(.22,1,.36,1) 1.6s 1 both; pointer-events: none; }
+.pw-editorial-actions .pw-editorial-primary:hover::after { animation: pwCtaSheenHover .9s cubic-bezier(.22,1,.36,1) both; }
+@keyframes pwCtaSheen { from { left: -60%; } to { left: 130%; } }
+@keyframes pwCtaSheenHover { from { left: -60%; } to { left: 130%; } }
+.pw-editorial-actions .pw-editorial-secondary::before { content: ''; position: absolute; inset: 0; z-index: 0; background: #0d1b2a; transform: translateX(-101%); transition: transform .35s cubic-bezier(.22,1,.36,1); }
+.pw-editorial-actions .pw-editorial-secondary:hover::before { transform: none; }
+.pw-editorial-actions .pw-editorial-secondary:hover { background: transparent; color: #fff; }
+.pw-editorial-actions > div > a:active { transform: translateY(0) scale(.98); }
+@media (prefers-reduced-motion: reduce) {
+  .pw-editorial-actions .pw-editorial-primary::after { display: none; }
+  .pw-editorial-actions > div > a, .pw-editorial-actions > div > a svg, .pw-editorial-actions .pw-editorial-secondary::before { transition: none; }
+}
 .pw-editorial-enterprise { display: inline-flex; align-items: center; gap: 6px; margin-top: 18px; color: #4f6278; font-size: 14px; font-weight: 600; text-decoration: none; }
 .pw-editorial-enterprise b { color: #0d1b2a; font-weight: 800; text-decoration: underline; text-decoration-color: rgba(13,27,42,.25); text-underline-offset: 4px; transition: text-decoration-color .2s; }
 .pw-editorial-enterprise svg { color: #0d1b2a; transition: transform .25s; }

@@ -643,7 +643,11 @@ const GLOBAL_STYLES = `
   @media (max-width: 900px) { .po-footer-directory { grid-template-columns: 1fr; padding: 28px 24px; gap: 24px; } }
   .po-cta-btn:hover { color: #0D1B2A; }
   .po-cta-btn:hover::before { transform: translateX(0); }
-  .po-cta-btn span { position: relative; z-index: 1; }
+  .po-cta-btn span { position: relative; z-index: 1; display: inline-flex; align-items: center; }
+  .po-cta-btn span i { display: inline-block; max-width: 0; overflow: hidden; font-style: normal; opacity: 0; transform: translateX(-6px); transition: max-width .3s cubic-bezier(.22,1,.36,1), opacity .25s, transform .3s cubic-bezier(.22,1,.36,1), margin .3s; }
+  .po-cta-btn:hover span i { max-width: 18px; margin-left: 8px; opacity: 1; transform: none; }
+  .po-cta-btn:active { transform: scale(.97); }
+  @media (prefers-reduced-motion: reduce) { .po-cta-btn::before, .po-cta-btn span i { transition: none; } }
 `;
 
 // ── Icon wrapper for dropdown items ──────────────────────────────────────────
@@ -1547,7 +1551,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
             )}
             <span style={{ marginLeft: 8 }}>
               <Link href="/products" className="po-cta-btn">
-                <span>START YOUR ORDER</span>
+                <span>START YOUR ORDER<i aria-hidden="true">→</i></span>
               </Link>
             </span>
           </div>

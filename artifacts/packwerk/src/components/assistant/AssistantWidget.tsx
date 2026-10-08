@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Link } from "wouter";
-import { ArrowRight, ArrowUp, MessageCircle, Package, Phone, X } from "lucide-react";
+import { ArrowRight, ArrowUp, MessageCircle, Phone, X } from "lucide-react";
 import { SUGGESTIONS, WHATSAPP, answerLocally, factsFor, type AssistantLink } from "@/lib/assistant-kb";
 import { trackMarketingEvent } from "@/lib/analytics";
 import "./assistant.css";
@@ -143,7 +143,7 @@ export function AssistantWidget({ location }: { location: string }) {
         <div className="pwa-panel" role="dialog" aria-label="Chat with Packworkz">
           <header className="pwa-head">
             <span className="pwa-mark" aria-hidden="true"><i /><b /></span>
-            <div><strong>Packworkz</strong><small>Instant answers · real team on WhatsApp</small></div>
+            <div><strong>Packworkz</strong><small>Answers in seconds · humans on WhatsApp</small></div>
             {!fresh && <button type="button" className="pwa-reset" onClick={reset}>New chat</button>}
             <button type="button" className="pwa-close" onClick={() => setOpen(false)} aria-label="Close chat"><X size={18} /></button>
           </header>
@@ -173,7 +173,9 @@ export function AssistantWidget({ location }: { location: string }) {
             <button type="submit" disabled={!draft.trim() || thinking} aria-label="Send"><ArrowUp size={17} /></button>
           </form>
           <Link href="/samples" className="pwa-kit" onClick={() => setOpen(false)}>
-            <Package size={15} /> <span>Get 25–50+ samples for ₹299</span> <ArrowRight size={14} />
+            <img src="/images/sample-kit-hero-v1.webp" alt="" loading="lazy" />
+            <span><b>Packaging sample kit</b><small>25–50+ real samples · ₹299 + ₹100 shipping</small></span>
+            <i>Order <ArrowRight size={13} /></i>
           </Link>
           <p className="pwa-note">Automated answers from Packworkz product data. Ask for a person any time.</p>
         </div>
