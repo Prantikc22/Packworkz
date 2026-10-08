@@ -146,6 +146,7 @@ export default function Products() {
           <p className="pc-eyebrow">Packaging catalogue · {CATALOG_SKUS.length} formats</p>
           <h1>{category ? getCategoryLabel(category) : <>Custom packaging, <em>priced upfront.</em></>}</h1>
           <p className="pc-head-sub">{instantCount} formats check out instantly. Every other format shows a market-based price and is confirmed within 4 business hours — add anything to your cart.</p>
+          <p className="pc-head-sub" style={{ marginTop: 8 }}>Not sure which format? <Link href="/packaging" style={{ color: "inherit", fontWeight: 800, textDecoration: "underline", textUnderlineOffset: 3 }}>Shop packaging by what you sell →</Link></p>
         </div>
         <label className="pc-search">
           <Search size={19} />

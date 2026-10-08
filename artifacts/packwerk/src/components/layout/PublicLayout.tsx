@@ -14,6 +14,10 @@ import { ExitOfferModal } from "@/components/leads/ExitOfferModal";
 import { useCart } from "@/lib/cart";
 import { ARTICLES } from "@/lib/resources-data";
 import { manufacturingSeoFor } from "@/lib/manufacturers";
+import { useCaseSeoFor } from "@/lib/use-case-content";
+import { AssistantWidget } from "@/components/assistant/AssistantWidget";
+import { USE_CASES, titleCase } from "@/lib/use-cases";
+import { MFG_CATEGORIES } from "@/lib/manufacturers";
 import { getDisplayCurrency, money, setDisplayCurrency } from "@/lib/currency";
 
 function BrandLogo({ footer = false }: { footer?: boolean }) {
@@ -141,6 +145,11 @@ const PAGE_SEO: Record<string, { title: string; description: string; keywords: s
     title: "List Your Factory Free | CPG Manufacturers | Packworkz Make",
     description: "List your contract or private-label manufacturing unit for free. No lead credits — get matched with brands whose products fit your line.",
     keywords: "list manufacturing company, contract manufacturer leads India, private label manufacturer listing",
+  },
+  "/packaging": {
+    title: "Packaging by Product Type India | Coffee, Spices, Skincare & More | Packworkz",
+    description: "Find the right packaging for what you sell — coffee, tea, spices, snacks, supplements, skincare, haircare, pet food, apparel and more — with real MOQs, prices and labelling basics.",
+    keywords: "packaging for products India, product packaging ideas, packaging by industry India",
   },
   "/manufacturers": {
     title: "Contract & Private Label Manufacturer Directory India | Packworkz Make",
@@ -624,6 +633,14 @@ const GLOBAL_STYLES = `
     .pw-sol-tiles { gap: 12px; }
     .pw-sol-tile small { display: none; }
   }
+
+  .po-footer-directory { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; padding: 34px 64px; border-top: 1px solid rgba(255,255,255,0.08); }
+  .po-footer-directory h4 { margin: 0 0 12px; font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; }
+  .po-footer-directory h4 a { color: #fff; text-decoration: none; }
+  .po-footer-directory p { display: flex; flex-wrap: wrap; gap: 6px 14px; margin: 0; }
+  .po-footer-directory p a { color: #94A3B8; font-size: 13px; text-decoration: none; transition: color .15s; }
+  .po-footer-directory p a:hover, .po-footer-directory h4 a:hover { color: #fff; }
+  @media (max-width: 900px) { .po-footer-directory { grid-template-columns: 1fr; padding: 28px 24px; gap: 24px; } }
   .po-cta-btn:hover { color: #0D1B2A; }
   .po-cta-btn:hover::before { transform: translateX(0); }
   .po-cta-btn span { position: relative; z-index: 1; }
@@ -1342,33 +1359,6 @@ function PackAIWidget() {
   );
 }
 
-function SampleSupportWidget({ location }: { location: string }) {
-  const [open, setOpen] = useState(false);
-
-  // The home hero now carries the sample-kit link and a price widget, so the
-  // prompt no longer auto-opens over it; it stays one click away.
-
-  if (location.startsWith("/samples")) return null;
-
-  return (
-    <aside className={`pw-sample-widget ${open ? "is-open" : ""}`} aria-label="Packaging sample kit">
-      {open && (
-        <div className="pw-sample-widget-card">
-          <button type="button" className="pw-sample-widget-close" onClick={() => setOpen(false)} aria-label="Close sample prompt"><X size={17} /></button>
-          <span className="pw-sample-widget-kicker">FEEL IT BEFORE YOU ORDER IT</span>
-          <strong>Get 25–50+ packaging samples.</strong>
-          <p>A curated material and format kit delivered to your doorstep for <b>{money(299)} + {money(100)} shipping</b>.</p>
-          <Link href="/samples" className="pw-sample-widget-link">Get a sample kit <ArrowRight size={17} /></Link>
-        </div>
-      )}
-      <button type="button" className="pw-sample-widget-trigger" onClick={() => setOpen(value => !value)} aria-expanded={open}>
-        <Package size={22} />
-        <span>Get samples<small>{money(299)} + {money(100)} shipping</small></span>
-      </button>
-    </aside>
-  );
-}
-
 // ── Public Layout ─────────────────────────────────────────────────────────────
 export function PublicLayout({ children }: { children: React.ReactNode }) {
   const [location] = useLocation();
@@ -1439,7 +1429,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
           keywords: resource.keywords.join(", "),
         }
       : undefined;
-    const seo = productSeo ?? resourceSeo ?? manufacturingSeoFor(pathname) ?? PAGE_SEO[pathname] ??
+    const seo = productSeo ?? resourceSeo ?? manufacturingSeoFor(pathname) ?? useCaseSeoFor(pathname) ?? PAGE_SEO[pathname] ??
       (Object.entries(PAGE_SEO)
         .filter(([k]) => k !== "/" && pathname.startsWith(k))
         .sort((a, b) => b[0].length - a[0].length)[0]?.[1]) ??
@@ -1750,7 +1740,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
       )}
 
       <CartDrawer />
-      <SampleSupportWidget location={location} />
+      <AssistantWidget location={location} />
       <ExitOfferModal location={location} />
 
       <main className="flex-1">
@@ -1872,6 +1862,25 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
             <NewsletterSignup />
           </div>
         </div>
+
+        {/* Directory band: crawlable links to every product-type page, manufacturer category and core product */}
+        <nav className="po-footer-directory" aria-label="Packaging and manufacturing directory">
+          <div>
+            <h4><Link href="/packaging">Packaging for</Link></h4>
+            <p>{USE_CASES.map((useCase) => <Link key={useCase.slug} href={`/packaging/${useCase.slug}`}>{titleCase(useCase.name)}</Link>)}</p>
+          </div>
+          <div>
+            <h4><Link href="/manufacturers">Find manufacturers</Link></h4>
+            <p>{MFG_CATEGORIES.map((category) => <Link key={category.id} href={`/manufacturing/${category.id}`}>{category.label}</Link>)}</p>
+          </div>
+          <div>
+            <h4><Link href="/products">Popular packaging</Link></h4>
+            <p>{["stand-up-pouch", "flat-bottom-pouch", "coffee-valve-pouch", "mailer-box", "straight-tuck-end-carton", "two-piece-rigid-box", "dropper-bottle", "cosmetic-tube", "plastic-bottle", "glass-bottle", "round-paper-labels", "custom-die-cut-stickers", "printed-packaging-roll", "retort-pouch", "courier-bag", "custom-pizza-box"].map((slug) => {
+              const sku = CATALOG_SKUS.find((item) => item.slug === slug);
+              return sku ? <Link key={slug} href={`/products/${slug}`}>{sku.name.replace(/^Custom Printed /, "")}</Link> : null;
+            })}</p>
+          </div>
+        </nav>
 
         {/* Locations */}
         <section className="po-footer-locations" aria-labelledby="po-footer-locations-title">

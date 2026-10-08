@@ -9,6 +9,8 @@ import { formatINR } from "@/lib/format";
 import { getCategoryBySlug } from "@/lib/skus";
 import { CATALOG_SKUS, getCatalogImage, getCategoryLabel, requiresQuote, type CatalogSku } from "@/lib/catalog";
 import { ARTICLES } from "@/lib/resources-data";
+import { useCasesForSku, titleCase } from "@/lib/use-cases";
+import { MFG_CATEGORIES } from "@/lib/manufacturers";
 import { createConfiguredCartItem, useCart } from "@/lib/cart";
 import { formatRupeeRange, formatUnitRate, getIndicativePrice } from "@/lib/indicative-pricing";
 import { ARTWORK_ACCEPT, uploadArtwork } from "@/lib/artwork-upload";
@@ -199,6 +201,9 @@ function ProductBuilder({ product }: { product: CatalogSku }) {
   const guides = ARTICLES
     .map((article) => ({ article, score: productTerms.reduce((score, term) => score + (`${article.title} ${article.description} ${article.keywords.join(" ")}`.toLowerCase().includes(term) ? 1 : 0), 0) }))
     .sort((a, b) => b.score - a.score).slice(0, 3).map(({ article }) => article);
+
+  const useCases = useCasesForSku(product.code).slice(0, 6);
+  const makerCategories = MFG_CATEGORIES.filter((category) => category.packaging.includes(product.code)).slice(0, 4);
 
   const priceHeadline = hasExactPrice
     ? <><strong>{formatUnitRate(exactUnit)}</strong><span>/ {unitLabel}</span></>
@@ -476,6 +481,20 @@ function ProductBuilder({ product }: { product: CatalogSku }) {
               </Link>
             ))}
           </div>
+        </section>
+      )}
+
+      {(useCases.length > 0 || makerCategories.length > 0) && (
+        <section className="pb-related pb-uses">
+          <div className="pb-related-head"><p className="pb-eyebrow">Popular for</p><h2>Brands use this for.</h2><Link href="/packaging">Packaging by product <ArrowRight size={15} /></Link></div>
+          <div className="pb-use-grid">
+            {useCases.map((useCase) => (
+              <Link key={useCase.slug} href={`/packaging/${useCase.slug}`}><b>{titleCase(useCase.name)} packaging</b><small>{useCase.formats.length} recommended formats</small></Link>
+            ))}
+          </div>
+          {makerCategories.length > 0 && (
+            <p className="pb-make-line">Need a factory to make your product? <span>{makerCategories.map((category, i) => <span key={category.id}>{i > 0 && " · "}<Link href={`/manufacturing/${category.id}`}>{category.label} manufacturers</Link></span>)}</span></p>
+          )}
         </section>
       )}
 

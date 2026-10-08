@@ -163,6 +163,14 @@
 .pb-related-card span { display: grid; gap: 4px; padding: 14px; }
 .pb-related-card b { font-size: 14px; }
 .pb-related-card small { color: var(--pb-muted); font-size: 12.5px; font-weight: 700; }
+.pb-use-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.pb-use-grid a { display: grid; gap: 4px; padding: 16px 18px; border: 1px solid #e3e8ef; border-radius: 4px; color: var(--pb-navy); text-decoration: none; transition: border-color .2s, transform .2s; }
+.pb-use-grid a:hover { border-color: var(--pb-navy); transform: translateY(-2px); }
+.pb-use-grid b { font-size: 15px; }
+.pb-use-grid small { color: #6b7c8e; font-size: 12.5px; }
+.pb-make-line { margin-top: 16px; color: #5a6b7c; font-size: 14px; }
+.pb-make-line a { color: var(--pb-navy); font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+@media (max-width: 760px) { .pb-use-grid { grid-template-columns: 1fr; } }
 .pb-guide-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
 .pb-guide-grid a { display: grid; gap: 8px; padding: 20px; border: 1px solid var(--pb-line); background: var(--pb-cream); color: var(--pb-navy); text-decoration: none; transition: border-color .2s; }
 .pb-guide-grid a:hover { border-color: var(--pb-navy); }

@@ -245,6 +245,11 @@
 .pw-editorial-actions .pw-editorial-primary { border-color: #e1a329; background: #f2b134; }
 .pw-editorial-actions .pw-editorial-primary:hover { background: #fac34f; }
 .pw-editorial-actions .pw-editorial-secondary:hover { background: #0d1b2a; color: #fff; }
+.pw-editorial-enterprise { display: inline-flex; align-items: center; gap: 6px; margin-top: 18px; color: #4f6278; font-size: 14px; font-weight: 600; text-decoration: none; }
+.pw-editorial-enterprise b { color: #0d1b2a; font-weight: 800; text-decoration: underline; text-decoration-color: rgba(13,27,42,.25); text-underline-offset: 4px; transition: text-decoration-color .2s; }
+.pw-editorial-enterprise svg { color: #0d1b2a; transition: transform .25s; }
+.pw-editorial-enterprise:hover b { text-decoration-color: #0d1b2a; }
+.pw-editorial-enterprise:hover svg { transform: translateX(3px); }
 .pw-editorial-actions small { margin-top: 6px; display: block; color: #65778a; font-size: 9px; line-height: 1.4; text-align: center; }
 .pw-editorial-enterprise { margin: 14px 0 0; color: #5d6f81; font-size: 12px; font-weight: 700; }
 .pw-editorial-enterprise a { display: inline-flex; align-items: center; gap: 5px; margin-left: 4px; color: #183c5b; font-weight: 900; text-decoration: none; border-bottom: 1px solid rgba(24,60,91,.4); }
@@ -5585,3 +5590,15 @@ body, html {
 .pw-sample-widget-link {
   border-radius: 6px;
 }
+
+/* Guide → product / use-case links */
+.pw-guide-links { padding: 56px 32px; border-top: 1px solid #e2eaf4; background: #fff; }
+.pw-guide-links > div { max-width: 1100px; margin: 0 auto; }
+.pw-guide-links h2 { margin: 0 0 24px; color: #0d1b2a; font-size: 22px; font-weight: 800; letter-spacing: -.02em; }
+.pw-guide-links-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; }
+.pw-guide-links-grid p { margin: 0 0 10px; padding-bottom: 10px; border-bottom: 1px solid #0d1b2a; color: #65778a; font-size: 11px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+.pw-guide-links-grid ul { margin: 0; padding: 0; list-style: none; }
+.pw-guide-links-grid li { border-bottom: 1px solid #edf1f6; }
+.pw-guide-links-grid a { display: block; padding: 11px 0; color: #0d1b2a; font-size: 14.5px; font-weight: 600; text-decoration: none; }
+.pw-guide-links-grid a:hover { color: #1e5ed2; }
+@media (max-width: 760px) { .pw-guide-links-grid { grid-template-columns: 1fr; gap: 24px; } }

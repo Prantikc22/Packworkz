@@ -4,6 +4,7 @@ import { ArrowRight, ArrowUpRight, BadgeCheck, Plus, ShieldCheck } from "lucide-
 import { CATALOG_SKUS } from "@/lib/catalog";
 import { CATEGORY_BY_ID, MFG_CATEGORIES, SEEDED_ON, matchManufacturers, type CategoryId, type Manufacturer, type Match, type ParsedRequirement } from "@/lib/manufacturers";
 import { parseRequirement, useManufacturerPool } from "@/lib/mfg-api";
+import { titleCase, useCasesForMfgCategory } from "@/lib/use-cases";
 import { money } from "@/lib/currency";
 import { trackMarketingEvent } from "@/lib/analytics";
 import "./manufacturing.css";
@@ -294,7 +295,10 @@ export default function Manufacturing({ params }: { params?: { category?: string
             {packSuggestions.length > 0 && (
               <div className="mk-packline">
                 <p><b>Packaging, sorted too.</b> We supply your pack straight to the manufacturer's line.</p>
-                <div>{packSuggestions.map((sku) => <Link key={sku!.code} href={`/products/${sku!.slug}`}>{sku!.name} <ArrowUpRight size={14} /></Link>)}</div>
+                <div>
+                  {packSuggestions.map((sku) => <Link key={sku!.code} href={`/products/${sku!.slug}`}>{sku!.name} <ArrowUpRight size={14} /></Link>)}
+                  {(parsed?.category || presetCategory) && useCasesForMfgCategory((parsed?.category || presetCategory)!).map((useCase) => <Link key={useCase.slug} href={`/packaging/${useCase.slug}`}>{titleCase(useCase.name)} packaging guide <ArrowUpRight size={14} /></Link>)}
+                </div>
               </div>
             )}
           </div>

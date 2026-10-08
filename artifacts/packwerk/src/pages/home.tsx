@@ -761,12 +761,15 @@ export default function Home() {
                 <small>{CATALOG_SKUS.length} formats · instant or 4-hour pricing</small>
               </div>
               <div>
-                <Link href="/enterprise" className="pw-editorial-secondary">
-                  <span>Packworkz Enterprise</span><ArrowRight size={20} />
+                <Link href="/samples" className="pw-editorial-secondary">
+                  <span>Get samples · {money(299)}</span><ArrowRight size={20} />
                 </Link>
-                <small>For high-volume &amp; multi-SKU procurement</small>
+                <small>25–50+ real samples · {money(100)} shipping</small>
               </div>
             </div>
+            <Link href="/enterprise" className="pw-editorial-enterprise">
+              Buying 20+ SKUs? <b>Packworkz Enterprise</b> <ArrowRight size={15} />
+            </Link>
 
             <div className="pw-editorial-heritage">
               <Handshake size={29} strokeWidth={1.7} />

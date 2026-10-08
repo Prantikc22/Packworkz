@@ -1,0 +1,83 @@
+/* ── Site assistant (replaces the sample-kit widget) ────────────────────── */
+.pwa { --pwa-ink: #0d1b2a; --pwa-copy: #4d5a69; --pwa-mute: #87919c; --pwa-line: #e3e6ea; --pwa-blue: #1e5ed2; --pwa-amber: #f2b134;
+  position: fixed; right: 22px; bottom: 22px; z-index: 900; display: flex; flex-direction: column; align-items: flex-end; gap: 12px; font-family: 'Plus Jakarta Sans', sans-serif; }
+
+.pwa-launcher { display: flex; align-items: center; gap: 11px; min-height: 56px; padding: 0 18px 0 16px; border: 0; border-radius: 4px; background: var(--pwa-ink); color: #fff; box-shadow: 0 18px 40px -12px rgba(7,24,42,.45); cursor: pointer; text-align: left; transition: transform .25s cubic-bezier(.22,1,.36,1), background .2s; }
+.pwa-launcher:hover { transform: translateY(-2px); background: #13263b; }
+.pwa-launcher svg { flex: none; color: var(--pwa-amber); }
+.pwa-launcher span { display: grid; gap: 1px; }
+.pwa-launcher b { font-size: 13.5px; font-weight: 800; }
+.pwa-launcher small { color: rgba(226,236,248,.62); font-size: 11px; font-weight: 600; }
+
+.pwa-panel { display: flex; flex-direction: column; width: 384px; height: min(620px, calc(100vh - 120px)); overflow: hidden; border: 1px solid rgba(13,27,42,.08); border-radius: 6px; background: #fff; box-shadow: 0 30px 80px -24px rgba(7,24,42,.45); transform-origin: bottom right; animation: pwaIn .32s cubic-bezier(.22,1,.36,1); }
+@keyframes pwaIn { from { opacity: 0; transform: translateY(12px) scale(.98); } to { opacity: 1; transform: none; } }
+
+.pwa-head { display: flex; align-items: center; gap: 12px; padding: 16px 14px 16px 18px; background: var(--pwa-ink); color: #fff; }
+.pwa-mark { position: relative; display: inline-block; flex: none; width: 22px; height: 26px; }
+.pwa-mark i, .pwa-mark b { position: absolute; display: block; transform: skewY(-14deg); border-radius: 2px; }
+.pwa-mark i { left: 0; top: 0; width: 14px; height: 18px; background: var(--pwa-amber); }
+.pwa-mark b { right: 0; bottom: 0; width: 12px; height: 16px; background: #f8fafc; }
+.pwa-head > div { flex: 1; min-width: 0; display: grid; gap: 1px; }
+.pwa-head strong { font-family: 'Space Grotesk', sans-serif; font-size: 16px; letter-spacing: -.02em; }
+.pwa-head small { color: rgba(226,236,248,.62); font-size: 11.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pwa-reset { padding: 6px 9px; border: 1px solid rgba(255,255,255,.2); border-radius: 3px; background: none; color: rgba(255,255,255,.8); font: inherit; font-size: 11.5px; font-weight: 700; cursor: pointer; }
+.pwa-reset:hover { border-color: #fff; color: #fff; }
+.pwa-close { display: grid; place-items: center; width: 34px; height: 34px; border: 0; border-radius: 3px; background: none; color: rgba(255,255,255,.75); cursor: pointer; }
+.pwa-close:hover { background: rgba(255,255,255,.08); color: #fff; }
+
+.pwa-list { flex: 1; display: flex; flex-direction: column; gap: 10px; padding: 18px 16px 12px; overflow-y: auto; background: #f6f7f9; overscroll-behavior: contain; }
+.pwa-msg { max-width: 88%; animation: pwaMsg .3s cubic-bezier(.22,1,.36,1); }
+@keyframes pwaMsg { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.pwa-msg p { margin: 0; padding: 11px 14px; font-size: 14px; line-height: 1.55; white-space: pre-line; }
+.pwa-msg.is-assistant { align-self: flex-start; }
+.pwa-msg.is-assistant p { border: 1px solid var(--pwa-line); border-radius: 4px 12px 12px 12px; background: #fff; color: var(--pwa-ink); }
+.pwa-msg.is-user { align-self: flex-end; }
+.pwa-msg.is-user p { border-radius: 12px 4px 12px 12px; background: var(--pwa-ink); color: #fff; }
+.pwa-links { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.pwa-links a { display: inline-flex; align-items: center; gap: 5px; padding: 7px 11px; border: 1px solid #cfd5dc; border-radius: 4px; background: #fff; color: var(--pwa-ink); font-size: 12.5px; font-weight: 700; text-decoration: none; transition: border-color .2s, color .2s; }
+.pwa-links a:hover { border-color: var(--pwa-ink); color: var(--pwa-blue); }
+
+.pwa-suggest { display: grid; margin-top: 4px; border: 1px solid var(--pwa-line); border-radius: 6px; background: #fff; overflow: hidden; }
+.pwa-suggest button { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 14px; border: 0; border-top: 1px solid var(--pwa-line); background: none; color: var(--pwa-ink); font: inherit; font-size: 13.5px; font-weight: 600; text-align: left; cursor: pointer; transition: background .15s, color .15s; }
+.pwa-suggest button:first-child { border-top: 0; }
+.pwa-suggest button svg { flex: none; color: var(--pwa-mute); transition: transform .2s, color .2s; }
+.pwa-suggest button:hover { background: #f3f6fb; color: var(--pwa-blue); }
+.pwa-suggest button:hover svg { color: var(--pwa-blue); transform: translateX(2px); }
+
+.pwa-msg.is-typing { display: flex; gap: 4px; padding: 14px 16px; border: 1px solid var(--pwa-line); border-radius: 4px 12px 12px 12px; background: #fff; }
+.pwa-msg.is-typing span { width: 6px; height: 6px; border-radius: 50%; background: var(--pwa-mute); animation: pwaDot 1s infinite ease-in-out; }
+.pwa-msg.is-typing span:nth-child(2) { animation-delay: .15s; }
+.pwa-msg.is-typing span:nth-child(3) { animation-delay: .3s; }
+@keyframes pwaDot { 0%, 80%, 100% { opacity: .3; transform: translateY(0); } 40% { opacity: 1; transform: translateY(-3px); } }
+
+.pwa-callback { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 8px; padding: 10px; border: 1px solid var(--pwa-line); border-radius: 6px; background: #fff; }
+.pwa-callback input { min-width: 0; height: 38px; padding: 0 10px; border: 1px solid #cfd5dc; border-radius: 4px; font: inherit; font-size: 13px; color: var(--pwa-ink); outline: 0; }
+.pwa-callback input:focus { border-color: var(--pwa-ink); }
+.pwa-callback button { grid-column: 1 / -1; display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 38px; border: 0; border-radius: 4px; background: var(--pwa-ink); color: #fff; font: inherit; font-size: 13px; font-weight: 700; cursor: pointer; }
+.pwa-callback button:hover { background: var(--pwa-blue); }
+.pwa-callback small { grid-column: 1 / -1; color: #a12020; font-size: 12px; }
+.pwa-callback-done { margin-top: 8px !important; padding: 10px 12px !important; border-radius: 6px !important; background: #e9f6ef !important; border: 0 !important; color: #157d4e !important; font-size: 13px !important; }
+
+.pwa-input { display: flex; gap: 8px; padding: 12px 12px 10px; border-top: 1px solid var(--pwa-line); background: #fff; }
+.pwa-input input { flex: 1; min-width: 0; height: 44px; padding: 0 14px; border: 1px solid #cfd5dc; border-radius: 4px; font: inherit; font-size: 14px; color: var(--pwa-ink); outline: 0; transition: border-color .2s, box-shadow .2s; }
+.pwa-input input:focus { border-color: var(--pwa-ink); box-shadow: 0 0 0 3px rgba(30,94,210,.12); }
+.pwa-input button { display: grid; place-items: center; width: 44px; height: 44px; border: 0; border-radius: 4px; background: var(--pwa-ink); color: #fff; cursor: pointer; transition: background .2s, opacity .2s; }
+.pwa-input button:hover:not(:disabled) { background: var(--pwa-blue); }
+.pwa-input button:disabled { opacity: .35; cursor: default; }
+.pwa-kit { display: flex; align-items: center; gap: 8px; margin: 0 12px; padding: 10px 12px; border-radius: 4px; background: #fbf6ea; color: var(--pwa-ink); font-size: 13px; font-weight: 700; text-decoration: none; transition: background .2s; }
+.pwa-kit svg:first-child { color: #c98a0b; }
+.pwa-kit span { flex: 1; }
+.pwa-kit:hover { background: #f7ecd2; }
+.pwa-note { margin: 0; padding: 8px 14px 12px; color: var(--pwa-mute); font-size: 11px; text-align: center; }
+
+@media (max-width: 700px) {
+  .pwa { right: 12px; bottom: 12px; }
+  .pwa.is-raised:not(.is-open) { bottom: 84px; }
+  .pwa-launcher { min-height: 50px; padding: 0 14px; }
+  .pwa-launcher small { display: none; }
+  .pwa.is-open { inset: 0; right: 0; bottom: 0; gap: 0; z-index: 1200; }
+  .pwa.is-open .pwa-launcher { display: none; }
+  .pwa-panel { width: 100vw; height: 100dvh; border: 0; border-radius: 0; animation-name: pwaUp; }
+  @keyframes pwaUp { from { transform: translateY(30px); opacity: 0; } to { transform: none; opacity: 1; } }
+}
+@media (prefers-reduced-motion: reduce) { .pwa *, .pwa-panel { animation: none !important; transition: none !important; } }

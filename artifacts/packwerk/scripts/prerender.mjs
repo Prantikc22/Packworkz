@@ -168,6 +168,21 @@ function buildJsonLd(route, productCount, faqs) {
     };
     graph.push(breadcrumb([["Packworkz Make", "/manufacturing"], [route.label, route.path]]));
   }
+  if (route.kind === "use-case") {
+    graph[0] = {
+      "@type": "CollectionPage",
+      name: route.title,
+      description: route.description,
+      url: canonicalUrl,
+      mainEntity: {
+        "@type": "ItemList",
+        name: route.label,
+        numberOfItems: route.members.length,
+        itemListElement: route.members.map((m, i) => ({ "@type": "ListItem", position: i + 1, name: m.name, url: `${SITE}${m.path}` })),
+      },
+    };
+    graph.push(breadcrumb([["Packaging", "/products"], ["By product", "/packaging"], [route.label, route.path]]));
+  }
   if (route.kind === "manufacturer") {
     graph[0] = {
       "@type": "ProfilePage",
@@ -348,6 +363,12 @@ const ROUTES = [
     keywords: "private label manufacturer India, contract manufacturer India, third party manufacturing India, FMCG contract manufacturing, find manufacturer for my product",
   },
   {
+    path: "/packaging",
+    title: "Packaging by Product Type India | Coffee, Spices, Skincare & More | Packworkz",
+    description: "Find the right packaging for what you sell — coffee, tea, spices, snacks, supplements, skincare, haircare, pet food, apparel and more — with real MOQs, prices and labelling basics.",
+    keywords: "packaging for products India, product packaging ideas, packaging by industry India, custom packaging for small business",
+  },
+  {
     path: "/manufacturers",
     title: "Contract & Private Label Manufacturer Directory India | Packworkz Make",
     description: "Search contract and private-label manufacturers in India by product, city, standard and service — snacks, bars, beverages, supplements, Ayurveda, skincare, haircare, home care and more.",
@@ -514,7 +535,7 @@ function loadLastmods() {
 }
 
 function sitemapGroup(route) {
-  if (route.kind === "product" || route.path === "/products") return "products";
+  if (route.kind === "product" || route.path === "/products" || route.path.startsWith("/packaging")) return "products";
   if (route.kind === "article" || route.path === "/resources") return "resources";
   if (route.kind === "manufacturer" || route.kind === "mfg-category" || route.path.startsWith("/manufactur")) return "manufacturing";
   return "pages";
@@ -566,6 +587,10 @@ function buildLlms(routes, data) {
     "",
     "## Packaging products",
     ...data.skus.map((sku) => link(`/products/${sku.slug}`, sku.name)).filter(Boolean),
+    "",
+    "## Packaging by product type",
+    ...["/packaging"].map((p) => link(p)).filter(Boolean),
+    ...routes.filter((r) => r.kind === "use-case").map((r) => link(r.path, r.label)).filter(Boolean),
     "",
     "## Packworkz Make (contract manufacturing)",
     ...["/manufacturing", "/manufacturers", "/manufacturing/launch", "/manufacturing/list-your-factory"].map((p) => link(p)).filter(Boolean),
@@ -670,6 +695,7 @@ async function prerender() {
     ...dynamicSeo.products,
     ...dynamicSeo.resources,
     ...(dynamicSeo.manufacturing || []),
+    ...(dynamicSeo.packaging || []),
   ];
   // dist/public/index.html becomes the prerendered homepage, so keep a pristine
   // copy of the Vite template for re-runs without a fresh client build.
@@ -779,7 +805,7 @@ async function prerender() {
       html = html.replace("</head>", `${canonicalTag}\n</head>`);
     }
 
-    const jsonLd = JSON.stringify(buildJsonLd(route, dynamicSeo.productCount, pageFaqs[routePath])).replace(/</g, "\\u003c");
+    const jsonLd = JSON.stringify(buildJsonLd(route, dynamicSeo.productCount, route.faqs || pageFaqs[routePath])).replace(/</g, "\\u003c");
     const jsonLdTag = `<script type="application/ld+json">${jsonLd}</script>`;
     html = html.replace("</head>", `${jsonLdTag}\n</head>`);
 

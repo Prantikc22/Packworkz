@@ -13,6 +13,7 @@ import uploadRouter from "./upload";
 import leadsRouter from "./leads";
 import guestTrackingRouter from "./guest_tracking";
 import manufacturingRouter from "./manufacturing";
+import assistantRouter from "./assistant";
 
 const router: IRouter = Router();
 
@@ -30,5 +31,6 @@ router.use(uploadRouter);
 router.use(leadsRouter);
 router.use(guestTrackingRouter);
 router.use(manufacturingRouter);
+router.use(assistantRouter);
 
 export default router;

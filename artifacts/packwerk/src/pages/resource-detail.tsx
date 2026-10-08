@@ -1,6 +1,9 @@
 import { Link, useRoute } from "wouter";
 import { ARTICLES } from "@/lib/resources-data";
 import type { ResourceSection } from "@/lib/resources-data";
+import { USE_CASES, titleCase } from "@/lib/use-cases";
+import { CATALOG_SKUS } from "@/lib/catalog";
+import { MFG_CATEGORIES } from "@/lib/manufacturers";
 
 export default function ResourceDetail() {
   const [, params] = useRoute("/resources/:slug");
@@ -30,6 +33,19 @@ export default function ResourceDetail() {
     .sort((a, b) => b.score - a.score)
     .slice(0, 3)
     .map(({ candidate }) => candidate);
+
+  // Contextual links: product types, products and manufacturer categories this guide covers.
+  const articleText = [article.title, article.description, ...article.keywords, ...article.content.flatMap((section) => [section.text || "", ...(section.items || [])])].join(" ").toLowerCase();
+  const relatedUseCases = USE_CASES
+    .map((useCase) => ({ useCase, score: (useCase.guides.includes(article.slug) ? 5 : 0) + useCase.keywords.reduce((n, keyword) => n + (articleText.includes(keyword.split(" ")[0].toLowerCase()) ? 1 : 0), 0) + (articleText.includes(useCase.name.split(" ")[0].toLowerCase()) ? 2 : 0) }))
+    .filter(({ score }) => score >= 2)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 6)
+    .map(({ useCase }) => useCase);
+  const relatedSkus = CATALOG_SKUS
+    .filter((sku) => articleText.includes(sku.name.toLowerCase().replace(/^custom printed /, "").replace(/ \(.*\)$/, "")))
+    .slice(0, 6);
+  const relatedMakers = MFG_CATEGORIES.filter((category) => category.keywords.some((keyword) => keyword.length > 4 && article.title.toLowerCase().includes(keyword))).slice(0, 3);
 
   return (
     <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", background: "white" }}>
@@ -117,6 +133,28 @@ export default function ResourceDetail() {
           </div>
         </div>
       </section>
+
+      {(relatedUseCases.length > 0 || relatedSkus.length > 0 || relatedMakers.length > 0) && (
+        <section className="pw-guide-links" aria-label="Put this guide into practice">
+          <div>
+            <h2>Put this into practice</h2>
+            <div className="pw-guide-links-grid">
+              {relatedUseCases.length > 0 && (
+                <div><p>Packaging by product</p><ul>{relatedUseCases.map((useCase) => <li key={useCase.slug}><Link href={`/packaging/${useCase.slug}`}>{titleCase(useCase.name)} packaging</Link></li>)}</ul></div>
+              )}
+              {relatedSkus.length > 0 && (
+                <div><p>Products in this guide</p><ul>{relatedSkus.map((sku) => <li key={sku.code}><Link href={`/products/${sku.slug}`}>{sku.name}</Link></li>)}</ul></div>
+              )}
+              <div><p>Next steps</p><ul>
+                <li><Link href="/samples">Order the ₹299 sample kit</Link></li>
+                <li><Link href="/products">Browse all packaging</Link></li>
+                {relatedMakers.map((category) => <li key={category.id}><Link href={`/manufacturing/${category.id}`}>{category.label} manufacturers</Link></li>)}
+                {relatedMakers.length === 0 && <li><Link href="/manufacturing">Find a manufacturer</Link></li>}
+              </ul></div>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Related articles */}
       <section style={{ background: "#F8F9FC", padding: "64px 32px 80px" }}>

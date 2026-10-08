@@ -1,3 +1,4 @@
+import { MAKE_ARTICLES } from "@/lib/resources-make";
 export type ResourceArticle = {
   slug: string;
   title: string;
@@ -593,10 +594,11 @@ const EXISTING_ARTICLES: ResourceArticle[] = [
   },
 ];
 
-export const ARTICLES: ResourceArticle[] = [...PRIORITY_ARTICLES, ...EXISTING_ARTICLES];
+export const ARTICLES: ResourceArticle[] = [...MAKE_ARTICLES, ...PRIORITY_ARTICLES, ...EXISTING_ARTICLES];
 
 export const CATEGORIES = [
   "All",
+  "Manufacturing",
   "Cost Optimisation",
   "Compliance",
   "Product Education",

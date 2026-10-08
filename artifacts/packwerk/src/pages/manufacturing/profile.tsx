@@ -4,6 +4,7 @@ import { ArrowRight, ArrowUpRight, ExternalLink, Factory } from "lucide-react";
 import { CATALOG_SKUS, getCatalogImage } from "@/lib/catalog";
 import { CATEGORY_BY_ID, SEEDED_ON, getManufacturer, manufacturerSeo, matchManufacturers, parseRequirementLocally, type Manufacturer, type Match } from "@/lib/manufacturers";
 import { useManufacturerPool } from "@/lib/mfg-api";
+import { titleCase, useCasesForMfgCategory } from "@/lib/use-cases";
 import { trackMarketingEvent } from "@/lib/analytics";
 import { VerificationBadge } from "./index";
 import "./manufacturing.css";
@@ -91,6 +92,7 @@ export default function ManufacturerProfile({ params }: { params: { slug: string
   const packaging = Array.from(new Set(categories.flatMap((category) => category.packaging))).map((code) => CATALOG_SKUS.find((sku) => sku.code === code)).filter(Boolean).slice(0, 4);
   const similar = pool.filter((other) => other.slug !== m.slug && other.categories.some((id) => m.categories.includes(id))).slice(0, 5);
   const sourced = m.sourcedOn || SEEDED_ON;
+  const packGuides = m.categories.flatMap((id) => useCasesForMfgCategory(id)).filter((useCase, k, all) => all.indexOf(useCase) === k).slice(0, 4);
 
   const facts: Array<[string, string]> = [
     ["Standards stated", m.certifications.slice(0, 3).join(", ") || "Not listed"],
@@ -175,6 +177,7 @@ export default function ManufacturerProfile({ params }: { params: { slug: string
                     </Link>
                   ))}
                 </div>
+                {packGuides.length > 0 && <p className="mk-fine">Packaging guides: {packGuides.map((useCase, k) => <span key={useCase.slug}>{k > 0 && " · "}<Link href={`/packaging/${useCase.slug}`}>{titleCase(useCase.name)} packaging</Link></span>)}</p>}
               </div>
             )}
 

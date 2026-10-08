@@ -31,6 +31,9 @@ import Circular, { FAQS as CIRCULAR_FAQS } from "@/pages/circular";
 import Manufacturing, { FAQS as MANUFACTURING_FAQS } from "@/pages/manufacturing";
 import ManufacturerProfile from "@/pages/manufacturing/profile";
 import ManufacturerDirectory from "@/pages/manufacturing/directory";
+import PackagingHub, { PackagingFor } from "@/pages/packaging-for";
+import { USE_CASES, titleCase } from "@/lib/use-cases";
+import { faqsFor, resolveFormats, useCaseSeo } from "@/lib/use-case-content";
 import { CATEGORY_BY_ID, MFG_CATEGORIES, SEED_MANUFACTURERS, SEEDED_ON, categorySeo, manufacturerSeo } from "@/lib/manufacturers";
 import { MACHINES } from "@/lib/machinery";
 import Privacy from "@/pages/privacy";
@@ -85,6 +88,18 @@ export function getDynamicSeoRoutes() {
         lastmod: isoDate(manufacturer.sourcedOn || SEEDED_ON),
       })),
     ],
+    packaging: USE_CASES.map((useCase) => {
+      const formats = resolveFormats(useCase);
+      return {
+        path: `/packaging/${useCase.slug}`,
+        ...useCaseSeo(useCase),
+        kind: "use-case" as const,
+        image: formats[0]?.image,
+        label: `${titleCase(useCase.name)} packaging`,
+        members: formats.map(({ sku }) => ({ name: sku.name, path: `/products/${sku.slug}` })),
+        faqs: faqsFor(useCase),
+      };
+    }),
     resources: ARTICLES.map((article) => ({
       path: `/resources/${article.slug}`,
       title: `${article.title} | Packworkz`,
@@ -239,6 +254,12 @@ function SSRApp({ url }: { url: string }) {
             </Route>
             <Route path="/manufacturing/:category">
               {(params: { category: string }) => <PublicLayout><Manufacturing params={params} /></PublicLayout>}
+            </Route>
+            <Route path="/packaging">
+              <PublicLayout><PackagingHub /></PublicLayout>
+            </Route>
+            <Route path="/packaging/:slug">
+              {(params: { slug: string }) => <PublicLayout><PackagingFor params={params} /></PublicLayout>}
             </Route>
             <Route path="/manufacturers">
               <PublicLayout><ManufacturerDirectory /></PublicLayout>
