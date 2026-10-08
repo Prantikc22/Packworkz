@@ -824,6 +824,14 @@ async function prerender() {
     process.stdout.write(`${status}  ${outPath}\n`);
   }
 
+  // Unknown URLs get a real 404 status (see vercel.json) with this shell; the
+  // client router renders the not-found page inside it.
+  const notFound = innerTemplate
+    .replace(/<title>[^<]*<\/title>/, "<title>Page not found | Packworkz</title>")
+    .replace("</head>", '<meta name="robots" content="noindex" />\n</head>')
+    .replace(/<link rel="canonical"[^>]*\/?>/i, "");
+  writeFileSync(join(DIST, "404.html"), notFound);
+
   // Drop pages that no longer exist, then persist content-based lastmod dates.
   const livePaths = new Set(routes.map((route) => route.path));
   for (const path of Object.keys(lastmods)) if (!livePaths.has(path)) delete lastmods[path];
