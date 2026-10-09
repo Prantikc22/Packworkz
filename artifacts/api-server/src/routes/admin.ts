@@ -348,9 +348,16 @@ router.get("/admin/orders", async (_req, res): Promise<void> => {
     ? await sb.from("invoices").select("order_id,status,amount,invoice_id").in("order_id", orderIds)
     : { data: [] as any[] };
   const invoiceByOrder = new Map((invoices || []).map(invoice => [invoice.order_id, invoice]));
+  // Customer contact lives on the quote the order was created from.
+  const quoteIds = (orders || []).map(order => order.quote_request_id).filter(Boolean);
+  const { data: quotes } = quoteIds.length
+    ? await sb.from("quote_requests").select("id,quote_id,contact_name,company_name,email,phone,notes,artwork_file_url").in("id", quoteIds)
+    : { data: [] as any[] };
+  const quoteById = new Map((quotes || []).map(quote => [quote.id, quote]));
   res.json(
     (orders || []).map(o => ({
       ...o,
+      customer: quoteById.get(o.quote_request_id) || null,
       total_price: Number(o.total_price),
       discount_applied: Number(o.discount_applied ?? 0),
       delivery_address: o.delivery_address ?? {},
