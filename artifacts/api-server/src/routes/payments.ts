@@ -11,6 +11,8 @@ import { sb } from "../lib/supabase";
 import { generateId } from "../lib/generateId";
 import { notifySlack } from "../lib/slack";
 import { createRecoveryReference, readRecoveryCheckoutToken } from "../lib/checkoutToken";
+import { SERVICE_AMOUNTS, cleanServiceNotes, finalizeServicePayment } from "../lib/servicePayments";
+import { requireAdmin } from "../lib/auth";
 
 function getRazorpay(): Razorpay | null {
   const keyId = process.env.RAZORPAY_KEY_ID;
@@ -20,12 +22,6 @@ function getRazorpay(): Razorpay | null {
 }
 
 const router = Router();
-const SERVICE_AMOUNTS: Record<string, number> = {
-  design: 199_900,
-  sample_kit: 39_900,
-  launch_desk: 1_499_900,
-  factory_verified: 499_900,
-};
 
 function safeEqualHex(left: string, right: string) {
   if (!left || !right || left.length !== right.length || !/^[a-f0-9]+$/i.test(left) || !/^[a-f0-9]+$/i.test(right)) return false;
@@ -446,7 +442,9 @@ router.post("/payments/create-order", async (req, res): Promise<void> => {
       res.status(400).json({ error: "Invalid service payment" });
       return;
     }
-    const order = await razorpay.orders.create({ amount, currency: "INR", notes: { service } });
+    // Customer details ride on the order so the payment can always be recorded
+    // server-side, even if the visitor's browser never returns.
+    const order = await razorpay.orders.create({ amount, currency: "INR", notes: { ...cleanServiceNotes(req.body?.notes), service } });
     res.json({ order_id: order.id, key_id: process.env.RAZORPAY_KEY_ID, amount: order.amount, currency: order.currency });
   } catch (error: any) {
     console.error("[payments/create-order] Razorpay order creation failed", {
@@ -527,7 +525,9 @@ router.post("/payments/verify", async (req, res): Promise<void> => {
       res.status(202).json({ success: true, pending: true, payment_id: razorpay_payment_id });
       return;
     }
-    res.json({ success: true, payment_id: razorpay_payment_id });
+    const recorded = await finalizeServicePayment(razorpay, razorpay_order_id, razorpay_payment_id, { sendEmail: true, via: "checkout" })
+      .catch((error) => { console.error("[payments/verify] service record failed", error?.message); return null; });
+    res.json({ success: true, payment_id: razorpay_payment_id, sample_id: recorded && "sampleId" in recorded ? recorded.sampleId : undefined });
   } catch (error: any) {
     res.status(500).json({ success: false, error: error.message || "Payment verification failed" });
   }
@@ -551,9 +551,63 @@ router.post("/payments/webhook", async (req, res): Promise<void> => {
   const paymentId = req.body?.payload?.payment?.entity?.id;
   if ((event === "payment.captured" || event === "order.paid") && gatewayOrderId) {
     const recoveryOrder = await finalizeRecoveryOrder(gatewayOrderId, paymentId);
-    if (!recoveryOrder) await finalizeCommerceOrder(gatewayOrderId, paymentId);
+    const commerceOrder = recoveryOrder ? null : await finalizeCommerceOrder(gatewayOrderId, paymentId);
+    const razorpay = getRazorpay();
+    if (!recoveryOrder && !commerceOrder && razorpay && paymentId) {
+      await finalizeServicePayment(razorpay, gatewayOrderId, paymentId, { sendEmail: true, via: "webhook" })
+        .catch((error) => console.error("[payments/webhook] service record failed", error?.message));
+    }
   }
   res.json({ received: true });
+});
+
+// Polled by checkout while a payment is still confirming. Idempotent: it only
+// records a captured payment that matches its own Razorpay order.
+router.post("/payments/reconcile", async (req, res): Promise<void> => {
+  const orderId = String(req.body?.razorpay_order_id || "").slice(0, 60);
+  const paymentId = String(req.body?.razorpay_payment_id || "").slice(0, 60);
+  const razorpay = getRazorpay();
+  if (!orderId || !paymentId || !razorpay) {
+    res.status(400).json({ error: "Missing payment details" });
+    return;
+  }
+  try {
+    const result = await finalizeServicePayment(razorpay, orderId, paymentId, { details: req.body?.details, sendEmail: true, via: "checkout poll" });
+    res.json(result);
+  } catch (error: any) {
+    console.error("[payments/reconcile]", error?.message);
+    res.status(502).json({ error: "Could not confirm the payment yet" });
+  }
+});
+
+// Admin: pull recent captured service payments from Razorpay and record any
+// that are missing. Safe to run any time.
+router.post("/admin/payments/sync", requireAdmin as never, async (req, res): Promise<void> => {
+  const razorpay = getRazorpay();
+  if (!razorpay) {
+    res.status(503).json({ error: "Payment gateway not configured" });
+    return;
+  }
+  const days = Math.min(Math.max(Number(req.body?.days) || 30, 1), 180);
+  const from = Math.floor(Date.now() / 1000) - days * 86_400;
+  const summary = { checked: 0, recorded: [] as string[], already: 0, skipped: 0, errors: [] as string[] };
+  for (let skip = 0; skip < 1000; skip += 100) {
+    const page = await razorpay.payments.all({ from, count: 100, skip }) as { items: Array<Record<string, any>> };
+    for (const payment of page.items || []) {
+      summary.checked += 1;
+      if (payment.status !== "captured" || !payment.order_id || !SERVICE_AMOUNTS[String(payment.notes?.service || "")]) { summary.skipped += 1; continue; }
+      try {
+        const result = await finalizeServicePayment(razorpay, payment.order_id, payment.id, { via: "admin sync" });
+        if (result.status === "recorded") summary.recorded.push(`${payment.id} → ${result.sampleId || result.ledgerId}`);
+        else if (result.status === "duplicate") summary.already += 1;
+        else summary.skipped += 1;
+      } catch (error: any) {
+        summary.errors.push(`${payment.id}: ${error?.message || "failed"}`);
+      }
+    }
+    if ((page.items || []).length < 100) break;
+  }
+  res.json(summary);
 });
 
 export default router;

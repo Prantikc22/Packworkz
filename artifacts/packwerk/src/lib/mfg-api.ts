@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { listingToManufacturer, normaliseLocation, parseRequirementLocally, SEED_MANUFACTURERS, type CategoryId, type Manufacturer, type ParsedRequirement } from "@/lib/manufacturers";
-import { openRazorpay } from "@/lib/razorpay";
+import { openRazorpay, waitForServicePayment } from "@/lib/razorpay";
 
 export const LAUNCH_DESK_PAISE = 1_499_900;
 export const VERIFIED_PAISE = 499_900;
@@ -72,7 +72,7 @@ export function payForService(opts: {
     prefillName: opts.name,
     prefillEmail: opts.email,
     prefillContact: opts.phone,
-    notes: { service: opts.service, reference: opts.inquiryId },
+    notes: { service: opts.service, reference: opts.inquiryId, contact_name: opts.name, email: opts.email, phone: opts.phone },
     onSuccess: async (payment) => {
       await fetch("/api/manufacturing/mark-paid", {
         method: "POST",
@@ -81,7 +81,11 @@ export function payForService(opts: {
       }).catch(() => undefined);
       opts.onDone("paid");
     },
-    onPending: () => opts.onDone("pending"),
+    onPending: async (payment) => {
+      opts.onDone("pending");
+      const result = await waitForServicePayment(payment);
+      if (result) opts.onDone("paid");
+    },
     onError: opts.onError,
   });
 }

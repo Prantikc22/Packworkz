@@ -12,7 +12,7 @@ import {
   SwatchBook,
   Truck,
 } from "lucide-react";
-import { openRazorpay } from "@/lib/razorpay";
+import { openRazorpay, waitForServicePayment } from "@/lib/razorpay";
 import { CountUp, Marquee } from "@/components/marketing/motion";
 import "./premium-pages.css";
 import { billedInInrNote, isUsd, money } from "@/lib/currency";
@@ -93,11 +93,22 @@ export default function Samples() {
         prefillName: customer.contact_name,
         prefillEmail: customer.email,
         prefillContact: customer.phone,
-        notes: { service: "sample_kit", pincode: customer.pincode },
+        // Details travel with the Razorpay order so the kit is recorded server-side
+        // even if this tab closes before the confirmation below completes.
+        notes: { service: "sample_kit", contact_name: customer.contact_name, email: customer.email, phone: customer.phone, pincode: customer.pincode, address: customer.shipping_address, note: customer.order_note },
         onDismiss: () => setPaymentState("idle"),
-        onPending: () => {
+        onPending: async (payment) => {
           setPaymentState("pending");
-          setMessage("Razorpay is still confirming this payment. Please do not pay again.");
+          setMessage("Razorpay is confirming your payment — this usually takes a few seconds. Please keep this page open and do not pay again.");
+          const details = { contact_name: customer.contact_name, email: customer.email, phone: customer.phone, pincode: customer.pincode, address: customer.shipping_address, note: customer.order_note };
+          const result = await waitForServicePayment(payment, details);
+          if (result) {
+            setSampleId(result.sampleId || "");
+            setPaymentState("paid");
+            setMessage("");
+          } else {
+            setMessage(`Your payment is still being confirmed by Razorpay. It will be recorded automatically once it clears — please do not pay again. Payment ID ${payment.razorpay_payment_id}.`);
+          }
         },
         onError: (error) => {
           setPaymentState("error");
@@ -118,8 +129,13 @@ export default function Samples() {
                 razorpay_order_id: payment.razorpay_order_id,
               }),
             });
-            const result = await response.json().catch(() => ({}));
-            if (!response.ok) throw new Error(result.error || "Your payment was verified, but the sample order could not be saved.");
+            let result = await response.json().catch(() => ({}));
+            if (response.status === 202 || !response.ok) {
+              // Fall back to the server-side recorder, which the webhook also uses.
+              const recorded = await waitForServicePayment(payment, { contact_name: customer.contact_name, email: customer.email, phone: customer.phone, pincode: customer.pincode, address: customer.shipping_address, note: customer.order_note }, { attempts: 20 });
+              if (!recorded) throw new Error(result.error || "Your payment was verified, but the sample order could not be saved.");
+              result = { sample_id: recorded.sampleId };
+            }
             setSampleId(result.sample_id || "");
             setPaymentState("paid");
             setMessage("");

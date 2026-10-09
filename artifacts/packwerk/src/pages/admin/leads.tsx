@@ -15,6 +15,8 @@ const KIND_META: Record<string, { label: string; tone: string }> = {
   pack_ai_handoff: { label: "Packworkz AI", tone: "is-violet" },
   newsletter: { label: "Newsletter", tone: "is-slate" },
   support: { label: "Support", tone: "is-red" },
+  service_payment: { label: "Payment", tone: "is-green" },
+  assistant_callback: { label: "Chat callback", tone: "is-blue" },
 };
 
 const HIDDEN_META = new Set(["kind", "page", "photos", "profile", "documents", "approved", "verification_level", "reviewed_at"]);

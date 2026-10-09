@@ -80,6 +80,33 @@ export async function openRazorpay(opts: RazorpayOptions) {
   rzp.open();
 }
 
+/**
+ * After a service payment reports "pending" (common with UPI), keep asking the
+ * server until Razorpay captures it and the order is recorded server-side.
+ */
+export async function waitForServicePayment(
+  payment: { razorpay_payment_id: string; razorpay_order_id: string },
+  details: Record<string, string> = {},
+  { attempts = 40, intervalMs = 3000 } = {},
+): Promise<{ status: string; sampleId?: string } | null> {
+  for (let i = 0; i < attempts; i += 1) {
+    try {
+      const response = await fetch(`${API}/api/payments/reconcile`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...payment, details }),
+      });
+      const result = await response.json().catch(() => ({}));
+      if (result.status === "recorded" || result.status === "duplicate") return result;
+      if (result.status === "ignored") return null;
+    } catch {
+      // network blip; try again
+    }
+    await new Promise((resolve) => setTimeout(resolve, intervalMs));
+  }
+  return null;
+}
+
 export type PreparedOrderPayment = {
   status: "ready" | "manual_confirmation" | "gateway_not_configured" | "already_paid" | "payment_processing";
   quote_id: string;

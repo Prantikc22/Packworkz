@@ -3,6 +3,7 @@ import { sb } from "../lib/supabase";
 import { generateId } from "../lib/generateId";
 import { sendDesignConfirmation, sendSampleConfirmation } from "../lib/email";
 import { notifySlack } from "../lib/slack";
+import { finalizeServicePayment } from "../lib/servicePayments";
 import Razorpay from "razorpay";
 
 const router: IRouter = Router();
@@ -114,92 +115,33 @@ router.post("/sample-requests", async (req, res): Promise<void> => {
     res.status(503).json({ error: "Payment verification is not configured" });
     return;
   }
+  if (Number(amount_paid) !== 399 || sample_tier !== "kit") {
+    res.status(400).json({ error: "The verified payment does not match this sample kit" });
+    return;
+  }
 
+  // Shared with the webhook and the checkout poll, so the kit is recorded once
+  // whichever path reaches the server first.
   try {
     const razorpay = new Razorpay({ key_id: keyId, key_secret: keySecret });
-    const [payment, order] = await Promise.all([
-      razorpay.payments.fetch(String(razorpay_payment_id)),
-      razorpay.orders.fetch(String(razorpay_order_id)),
-    ]);
-    const notes = (order.notes || {}) as Record<string, string>;
-    if (
-      payment.status !== "captured" ||
-      String(payment.order_id || "") !== String(razorpay_order_id) ||
-      Number(payment.amount) !== 39_900 ||
-      Number(order.amount) !== 39_900 ||
-      Number(amount_paid) !== 399 ||
-      sample_tier !== "kit" ||
-      notes.service !== "sample_kit"
-    ) {
+    const result = await finalizeServicePayment(razorpay, String(razorpay_order_id), String(razorpay_payment_id), {
+      details: { contact_name, email, phone, pincode, address: shipping_address, note: order_note },
+      sendEmail: true,
+      via: "checkout",
+    });
+    if (result.status === "pending") {
+      res.status(202).json({ pending: true });
+      return;
+    }
+    if (result.status === "ignored" || result.service !== "sample_kit") {
       res.status(400).json({ error: "The verified payment does not match this sample kit" });
       return;
     }
+    res.status(result.status === "recorded" ? 201 : 200).json({ sample_id: "sampleId" in result ? result.sampleId : undefined, duplicate: result.status === "duplicate" });
   } catch (error: any) {
-    console.error("[sample-requests] payment verification error:", error?.message);
-    res.status(502).json({ error: "The sample payment could not be verified" });
-    return;
+    console.error("[sample-requests] record error:", error?.message);
+    res.status(502).json({ error: "The sample payment could not be recorded yet" });
   }
-
-  const duplicate = await sb.from("sample_requests").select("sample_id,id").eq("razorpay_payment_id", razorpay_payment_id).maybeSingle();
-  if (duplicate.data) {
-    res.json({ sample_id: duplicate.data.sample_id, id: duplicate.data.id, duplicate: true });
-    return;
-  }
-
-  const sampleId = await generateId("SAM", "sample_requests", "sample_id");
-
-  const { data: sample, error } = await sb
-    .from("sample_requests")
-    .insert({
-      sample_id: sampleId,
-      user_id: user_id ?? null,
-      contact_name,
-      email,
-      phone,
-      product_id: product_id ?? null,
-      sample_tier,
-      amount_paid,
-      razorpay_payment_id: razorpay_payment_id ?? null,
-      status: "paid",
-      admin_notes: [
-        `Shipping address: ${shipping_address}`,
-        `Pincode: ${pincode}`,
-        order_note ? `Customer note: ${order_note}` : "",
-      ].filter(Boolean).join("\n"),
-    })
-    .select()
-    .single();
-
-  if (error || !sample) {
-    console.error("[sample-requests] insert error:", error?.message);
-    res.status(500).json({ error: "Failed to create sample request" });
-    return;
-  }
-
-  await Promise.allSettled([
-    sendSampleConfirmation({
-      to: email,
-      name: contact_name,
-      sampleId,
-      sampleTier: sample_tier,
-      amountPaid: amount_paid,
-    }),
-    notifySlack({
-      source: "Sample",
-      title: "New paid sample request",
-      referenceId: sampleId,
-      summary: `${sample_tier} sample requested`,
-      fields: [
-        { label: "Contact", value: contact_name },
-        { label: "Email", value: email },
-        { label: "Phone", value: phone },
-        { label: "Delivery", value: `${shipping_address}, ${pincode}` },
-        { label: "Paid", value: `₹${amount_paid}` },
-      ],
-    }),
-  ]);
-
-  res.status(201).json({ sample_id: sample.sample_id, id: sample.id });
 });
 
 export default router;

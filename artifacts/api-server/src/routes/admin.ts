@@ -214,10 +214,11 @@ router.delete("/admin/quotes/:id", async (req, res): Promise<void> => {
 
 router.put("/admin/samples/:id/update", async (req, res): Promise<void> => {
   const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
-  const { status, admin_notes, payment_link } = req.body;
-
-  const updateFields: Record<string, any> = { admin_notes, payment_link };
-  if (status) updateFields.status = status;
+  const { status } = req.body;
+  // sample_requests only has a status column to edit (no notes/payment link).
+  const allowed = ["paid", "pending", "dispatched", "delivered", "cancelled"];
+  if (!allowed.includes(String(status))) { res.status(400).json({ error: "Invalid status" }); return; }
+  const updateFields: Record<string, any> = { status };
 
   const { data: updated, error } = await sb
     .from("sample_requests")
@@ -232,11 +233,11 @@ router.put("/admin/samples/:id/update", async (req, res): Promise<void> => {
 
 router.put("/admin/designs/:id/notes", async (req, res): Promise<void> => {
   const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
-  const { designer_notes, payment_link } = req.body;
+  const { designer_notes } = req.body;
 
   const { data: updated, error } = await sb
     .from("design_requests")
-    .update({ designer_notes, payment_link })
+    .update({ designer_notes })
     .eq("id", id)
     .select()
     .maybeSingle();
@@ -489,8 +490,17 @@ router.put("/admin/designs/:id/status", async (req, res): Promise<void> => {
 });
 
 router.get("/admin/samples", async (_req, res): Promise<void> => {
-  const { data: samples } = await sb.from("sample_requests").select("*").order("created_at", { ascending: false });
-  res.json(samples || []);
+  const [{ data: samples }, { data: ledger }] = await Promise.all([
+    sb.from("sample_requests").select("*").order("created_at", { ascending: false }),
+    sb.from("quote_requests").select("items").filter("items", "cs", JSON.stringify([{ metadata: { kind: "service_payment", service: "sample_kit" } }])).limit(1000),
+  ]);
+  // Shipping details are stored on the payment ledger row (see servicePayments).
+  const shipping = new Map<string, { address?: string; pincode?: string; note?: string }>();
+  for (const row of ledger || []) {
+    const meta = (row as any).items?.[0]?.metadata || {};
+    if (meta.sample_id) shipping.set(meta.sample_id, { address: meta.address || "", pincode: meta.pincode || "", note: meta.note || "" });
+  }
+  res.json((samples || []).map((sample: any) => ({ ...sample, shipping: shipping.get(sample.sample_id) || null })));
 });
 
 router.get("/admin/users", async (_req, res): Promise<void> => {
