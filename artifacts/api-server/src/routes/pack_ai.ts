@@ -70,6 +70,15 @@ function setCooldown(model: string) {
   modelCooldown.set(model, Date.now());
 }
 
+/** Swap the built-in catalog section for the live catalog the page sends. */
+function promptWithCatalog(catalog: string): string {
+  if (!catalog) return SYSTEM_PROMPT;
+  return SYSTEM_PROMPT.replace(
+    /## Current launch catalog[\s\S]*?Do not invent or recommend SKU codes outside this list\./,
+    `## Live Packworkz catalog (indicative unit prices before GST; "instant" = priced online, "quote" = price confirmed within 4 business hours)\n${catalog}\nUse these codes, MOQs and price bands exactly. Do not invent or recommend SKU codes outside this list.`,
+  ) + `\n\n## Formatting\n- Mention each recommended format as **CODE · Name** (for example **FP-109 · Coffee Pouch with Degassing Valve**) so the page can show its product card.\n- Use short paragraphs and "- " bullets; no tables, no headings.`;
+}
+
 async function tryModel(
   model: string,
   messages: Array<{ role: string; content: string }>,
@@ -100,8 +109,9 @@ async function tryModel(
       body: JSON.stringify({
         model,
         messages: preparedMessages,
-        max_tokens: 600,
-        temperature: 0.7,
+        max_tokens: 900,
+        temperature: 0.5,
+        reasoning: { enabled: false },
         provider: {
           sort: "latency",
           allow_fallbacks: true,
@@ -227,6 +237,9 @@ function hasCompletePlanningBrief(messages: Array<{ role: string; content: strin
 
 router.post("/pack-ai/chat", async (req, res): Promise<void> => {
   const { messages } = req.body;
+  // The planner page sends the live catalog and handles its own fallback.
+  const catalog = String(req.body?.catalog ?? "").slice(0, 16000);
+  const clientFallback = Boolean(req.body?.clientFallback);
 
   if (!messages || !Array.isArray(messages)) {
     res.status(400).json({ error: "messages array required" });
@@ -253,6 +266,10 @@ router.post("/pack-ai/chat", async (req, res): Promise<void> => {
     res.json({ reply, slack_delivered: slack.delivered });
   };
 
+  if (!apiKey && clientFallback) {
+    res.json({ reply: null });
+    return;
+  }
   if (!apiKey) {
     console.error("[PackAI] No API key found — returning fallback");
     const fallback = smartFallback(typedMessages);
@@ -260,7 +277,7 @@ router.post("/pack-ai/chat", async (req, res): Promise<void> => {
     return;
   }
 
-  if (hasCompletePlanningBrief(typedMessages)) {
+  if (!clientFallback && hasCompletePlanningBrief(typedMessages)) {
     await respond(smartFallback(typedMessages), "verified catalog planner");
     return;
   }
@@ -269,7 +286,7 @@ router.post("/pack-ai/chat", async (req, res): Promise<void> => {
   for (const model of MODELS) {
     if (isOnCooldown(model)) { console.log(`[PackAI] skipping ${model} (on cooldown)`); continue; }
 
-    const result = await tryModel(model, typedMessages, SYSTEM_PROMPT, apiKey);
+    const result = await tryModel(model, typedMessages.slice(-12), promptWithCatalog(catalog), apiKey!);
     if (result.ok) {
       console.log(`[PackAI] success with ${model}`);
       await respond(result.reply, model);
@@ -279,6 +296,10 @@ router.post("/pack-ai/chat", async (req, res): Promise<void> => {
 
   // All AI models failed — return intelligent static fallback instead of 503
   console.error("[PackAI] All models failed — returning smart fallback");
+  if (clientFallback) {
+    res.json({ reply: null });
+    return;
+  }
   const fallback = smartFallback(typedMessages);
   await respond(fallback, "catalog fallback");
 });

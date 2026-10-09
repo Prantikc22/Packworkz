@@ -156,7 +156,7 @@ export const SUGGESTIONS: Array<{ label: string; query: string }> = [
   { label: "Talk to a person", query: "talk to a person" },
 ];
 
-function matchUseCase(text: string): UseCase | undefined {
+export function matchUseCase(text: string): UseCase | undefined {
   const t = ` ${text.toLowerCase()} `;
   let best: { useCase: UseCase; score: number } | undefined;
   for (const useCase of USE_CASES) {
@@ -169,7 +169,7 @@ function matchUseCase(text: string): UseCase | undefined {
   return best?.useCase;
 }
 
-function matchSku(text: string): CatalogSku | undefined {
+export function matchSku(text: string): CatalogSku | undefined {
   const t = text.toLowerCase();
   return CATALOG_SKUS
     .map((sku) => {

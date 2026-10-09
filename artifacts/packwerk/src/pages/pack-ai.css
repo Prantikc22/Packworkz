@@ -1,0 +1,146 @@
+/* ── Packworkz AI ─────────────────────────────────────────────────────────
+   Deep navy workspace lit by a slow blue light; the brand mark is the AI. */
+.pai {
+  --pai-bg: #050c18;
+  --pai-ink: #eef3fa;
+  --pai-copy: rgba(226, 236, 248, .72);
+  --pai-mute: rgba(226, 236, 248, .46);
+  --pai-line: rgba(255, 255, 255, .1);
+  --pai-glass: rgba(255, 255, 255, .045);
+  --pai-amber: #f2b134;
+  --pai-blue: #6aa8ff;
+  --pai-ease: cubic-bezier(.22, 1, .36, 1);
+  position: relative;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: clip;
+  background: var(--pai-bg);
+  color: var(--pai-ink);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+.pai *, .pai *::before, .pai *::after { box-sizing: border-box; }
+.pai h1, .pai p { margin: 0; }
+
+/* Ambient light */
+.pai-glow { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+.pai-glow span { position: absolute; border-radius: 50%; filter: blur(90px); opacity: .55; }
+.pai-glow span:first-child { width: 62vw; height: 62vw; max-width: 900px; max-height: 900px; left: 50%; top: -38%; background: radial-gradient(circle, rgba(40, 104, 220, .65), transparent 65%); transform: translateX(-50%); animation: paiDrift 22s ease-in-out infinite alternate; }
+.pai-glow span:last-child { width: 38vw; height: 38vw; max-width: 560px; max-height: 560px; right: -10%; bottom: -20%; background: radial-gradient(circle, rgba(242, 177, 52, .22), transparent 65%); animation: paiDrift2 26s ease-in-out infinite alternate; }
+.pai.is-empty .pai-glow span:first-child { top: -24%; opacity: .7; }
+@keyframes paiDrift { to { transform: translate(-42%, 6%) scale(1.08); } }
+@keyframes paiDrift2 { to { transform: translate(-12%, -10%) scale(.92); } }
+
+/* Brand mark as the AI presence */
+.pai-mark { position: relative; flex: none; display: inline-block; }
+.pai-mark i, .pai-mark b { position: absolute; display: block; border-radius: 2px; transform: skewY(-14deg); }
+.pai-mark i { left: 14%; top: 10%; width: 46%; height: 58%; background: var(--pai-amber); box-shadow: 0 6px 18px rgba(242, 177, 52, .35); }
+.pai-mark b { right: 14%; bottom: 10%; width: 40%; height: 52%; background: #f8fafc; }
+.pai-mark.is-live { border-radius: 50%; }
+.pai-mark.is-live::before { content: ''; position: absolute; inset: -14%; border-radius: 50%; background: conic-gradient(from 0deg, transparent 0 62%, rgba(106, 168, 255, .9) 78%, transparent 92%); -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 1px)); mask: radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 1px)); animation: paiSpin 2.4s linear infinite; }
+.pai-mark.is-live i { animation: paiBreathA 2.4s var(--pai-ease) infinite; }
+.pai-mark.is-live b { animation: paiBreathB 2.4s var(--pai-ease) infinite; }
+@keyframes paiSpin { to { transform: rotate(360deg); } }
+@keyframes paiBreathA { 50% { transform: skewY(-14deg) translate(-6%, -5%); } }
+@keyframes paiBreathB { 50% { transform: skewY(-14deg) translate(6%, 5%); } }
+
+/* Top bar */
+.pai-top { position: sticky; top: 0; z-index: 5; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px clamp(16px, 3vw, 32px); background: linear-gradient(var(--pai-bg) 40%, rgba(5, 12, 24, 0)); }
+.pai-brand { display: inline-flex; align-items: center; gap: 9px; color: var(--pai-ink); font-family: 'Space Grotesk', sans-serif; font-size: 19px; font-weight: 700; letter-spacing: -.03em; text-decoration: none; }
+.pai-brand em { padding: 2px 7px; border: 1px solid rgba(106, 168, 255, .45); border-radius: 4px; color: var(--pai-blue); font-family: 'Plus Jakarta Sans', sans-serif; font-size: 11px; font-style: normal; font-weight: 800; letter-spacing: .08em; }
+.pai-top nav { display: flex; align-items: center; gap: 4px; }
+.pai-top nav a, .pai-top nav button { display: inline-flex; align-items: center; gap: 7px; padding: 9px 12px; border: 0; border-radius: 4px; background: none; color: var(--pai-copy); font: inherit; font-size: 13.5px; font-weight: 600; text-decoration: none; cursor: pointer; transition: background .2s, color .2s; }
+.pai-top nav a:hover, .pai-top nav button:hover { background: rgba(255, 255, 255, .07); color: #fff; }
+
+/* Empty state */
+.pai-hero { position: relative; z-index: 1; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; width: min(760px, calc(100% - 32px)); margin: 0 auto; padding: 24px 0 48px; text-align: center; }
+.pai-hero > * { animation: paiUp .8s var(--pai-ease) both; }
+.pai-hero > :nth-child(2) { animation-delay: 80ms; }
+.pai-hero > :nth-child(3) { animation-delay: 140ms; }
+.pai-hero > :nth-child(4) { animation-delay: 200ms; }
+.pai-hero > :nth-child(5) { animation-delay: 260ms; }
+@keyframes paiUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+.pai-hero h1 { margin-top: 28px; font-family: 'Space Grotesk', sans-serif; font-size: clamp(2.4rem, 5vw, 3.9rem); font-weight: 600; letter-spacing: -.05em; line-height: 1; }
+.pai-hero > p:not(.pai-fine) { max-width: 600px; margin-top: 18px; color: var(--pai-copy); font-size: 16.5px; line-height: 1.65; }
+
+/* Composer */
+.pai-composer { position: relative; display: flex; align-items: flex-end; gap: 10px; width: 100%; padding: 10px 10px 10px 20px; border: 1px solid rgba(255, 255, 255, .14); border-radius: 14px; background: rgba(12, 22, 40, .72); box-shadow: 0 30px 70px -30px rgba(0, 0, 0, .8); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); transition: border-color .25s, box-shadow .25s; }
+.pai-composer:focus-within { border-color: rgba(106, 168, 255, .6); box-shadow: 0 0 0 4px rgba(106, 168, 255, .12), 0 30px 70px -30px rgba(0, 0, 0, .8); }
+.pai-composer.is-hero { margin-top: 34px; padding: 14px 14px 14px 22px; text-align: left; }
+.pai-composer textarea { flex: 1; min-height: 28px; max-height: 180px; padding: 6px 0; border: 0; outline: 0; resize: none; background: transparent; color: #fff; font: inherit; font-size: 16px; line-height: 1.55; }
+.pai-composer.is-hero textarea { min-height: 56px; font-size: 17px; }
+.pai-composer textarea::placeholder { color: var(--pai-mute); }
+.pai-composer button { flex: none; display: grid; place-items: center; width: 42px; height: 42px; border: 0; border-radius: 10px; background: var(--pai-amber); color: #0d1b2a; cursor: pointer; transition: transform .2s var(--pai-ease), opacity .2s, background .2s; }
+.pai-composer button:hover:not(:disabled) { background: #ffc554; transform: translateY(-1px); }
+.pai-composer button:disabled { opacity: .3; cursor: default; }
+
+.pai-starters { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; margin-top: 16px; }
+.pai-starters button { display: grid; grid-template-columns: 16px minmax(0, 1fr) 15px; align-items: center; gap: 12px; padding: 13px 14px; border: 1px solid var(--pai-line); border-radius: 10px; background: var(--pai-glass); color: var(--pai-copy); font: inherit; font-size: 13.5px; font-weight: 600; line-height: 1.4; text-align: left; cursor: pointer; transition: border-color .2s, background .2s, color .2s, transform .25s var(--pai-ease); }
+.pai-starters button svg:first-child { color: var(--pai-blue); }
+.pai-starters button svg:last-child { color: var(--pai-mute); transition: transform .25s var(--pai-ease); }
+.pai-starters button:hover { border-color: rgba(255, 255, 255, .24); background: rgba(255, 255, 255, .07); color: #fff; transform: translateY(-1px); }
+.pai-starters button:hover svg:last-child { color: #fff; transform: translateX(3px); }
+.pai-fine { margin-top: 22px !important; color: var(--pai-mute); font-size: 12px; }
+
+/* Conversation */
+.pai-thread { position: relative; z-index: 1; flex: 1; display: flex; flex-direction: column; gap: 26px; width: min(780px, calc(100% - 32px)); margin: 0 auto; padding: 24px 0 180px; }
+.pai-msg { display: flex; gap: 14px; animation: paiUp .5s var(--pai-ease) both; }
+.pai-msg.is-user { justify-content: flex-end; }
+.pai-msg.is-user .pai-msg-body { max-width: 78%; padding: 12px 16px; border: 1px solid rgba(106, 168, 255, .2); border-radius: 14px 14px 4px 14px; background: rgba(40, 104, 220, .16); color: #fff; }
+.pai-msg.is-assistant .pai-msg-body { flex: 1; min-width: 0; padding-top: 3px; color: var(--pai-copy); }
+.pai-msg-body { font-size: 15.5px; line-height: 1.7; }
+.pai-msg-body strong { color: #fff; font-weight: 700; }
+.pai-p, .pai-li { display: block; }
+.pai-li { position: relative; padding-left: 18px; margin-top: 4px; }
+.pai-li::before { content: ''; position: absolute; left: 2px; top: .72em; width: 6px; height: 6px; border-radius: 1px; background: var(--pai-amber); }
+.pai-li.is-sub { margin-top: 2px; padding-left: 34px; color: var(--pai-mute); font-size: 14px; }
+.pai-li.is-sub::before { left: 20px; width: 4px; height: 4px; background: var(--pai-mute); }
+.pai-gap { display: block; height: 10px; }
+
+.pai-thinking { display: grid; gap: 8px; margin: 4px 0 0; padding: 0; list-style: none; font-size: 14px; color: var(--pai-mute); }
+.pai-thinking li { display: flex; align-items: center; gap: 10px; transition: color .3s; }
+.pai-thinking li::before { content: ''; width: 8px; height: 8px; border: 1.5px solid currentColor; border-radius: 50%; transition: background .3s, border-color .3s; }
+.pai-thinking li.is-on { color: #fff; }
+.pai-thinking li.is-on::before { border-color: var(--pai-blue); background: var(--pai-blue); box-shadow: 0 0 0 4px rgba(106, 168, 255, .18); animation: paiPulse 1s ease-in-out infinite; }
+.pai-thinking li.is-done { color: var(--pai-copy); }
+.pai-thinking li.is-done::before { border-color: var(--pai-amber); background: var(--pai-amber); }
+@keyframes paiPulse { 50% { box-shadow: 0 0 0 7px rgba(106, 168, 255, .05); } }
+
+.pai-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin-top: 16px; }
+.pai-card { display: grid; grid-template-rows: auto 1fr auto; overflow: hidden; border: 1px solid var(--pai-line); border-radius: 10px; background: rgba(255, 255, 255, .04); color: var(--pai-ink); text-decoration: none; animation: paiUp .5s var(--pai-ease) both; transition: border-color .2s, transform .3s var(--pai-ease), background .2s; }
+.pai-card:nth-child(2) { animation-delay: 80ms; }
+.pai-card:nth-child(3) { animation-delay: 160ms; }
+.pai-card:nth-child(4) { animation-delay: 240ms; }
+.pai-card:hover { border-color: rgba(255, 255, 255, .28); background: rgba(255, 255, 255, .07); transform: translateY(-2px); }
+.pai-card img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; }
+.pai-card-body { display: grid; gap: 3px; padding: 12px 14px 8px; }
+.pai-card-body small { color: var(--pai-blue); font-size: 11px; font-weight: 800; letter-spacing: .08em; }
+.pai-card-body b { font-size: 14.5px; line-height: 1.35; }
+.pai-card-body em { color: var(--pai-mute); font-size: 12.5px; font-style: normal; }
+.pai-card-body .pai-card-total { color: var(--pai-amber); font-weight: 700; }
+.pai-card-go { display: inline-flex; align-items: center; gap: 5px; padding: 0 14px 13px; color: #fff; font-size: 12.5px; font-weight: 700; }
+
+.pai-dock { position: fixed; left: 0; right: 0; bottom: 0; z-index: 4; display: flex; flex-direction: column; align-items: center; padding: 28px 16px 14px; background: linear-gradient(rgba(5, 12, 24, 0), var(--pai-bg) 38%); }
+.pai-dock .pai-composer { width: min(780px, 100%); }
+.pai-dock .pai-fine { margin-top: 10px !important; text-align: center; }
+.pai-end { scroll-margin-bottom: 160px; }
+
+@media (max-width: 700px) {
+  .pai-top { padding: 12px 14px; }
+  .pai.is-empty .pai-top nav span { display: inline; }
+  .pai:not(.is-empty) .pai-top nav span { display: none; }
+  .pai-top nav a, .pai-top nav button { padding: 9px 10px; }
+  .pai-top nav a[aria-label="Catalog"] { display: none; }
+  .pai-top nav svg { width: 18px; height: 18px; }
+  .pai-hero { justify-content: flex-start; padding-top: 28px; }
+  .pai-hero > p:not(.pai-fine) { font-size: 15px; }
+  .pai-starters { grid-template-columns: 1fr; }
+  .pai-msg.is-user .pai-msg-body { max-width: 88%; }
+  .pai-msg .pai-mark { display: none; }
+  .pai-cards { grid-template-columns: 1fr 1fr; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pai *, .pai *::before, .pai-glow span { animation: none !important; transition: none !important; }
+}

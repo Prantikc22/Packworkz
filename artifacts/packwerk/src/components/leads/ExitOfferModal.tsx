@@ -7,6 +7,7 @@ const SESSION_KEY = "packworkz_exit_offer_seen_v2";
 const CAPTURED_KEY = "packworkz_exit_offer_captured_v2";
 const SAMPLE_KIT_PRICE = 299;
 const SAMPLE_KIT_SHIPPING = 100;
+const MODAL_IMAGE = "/images/sample-kit-modal-v1.webp";
 const SUPPRESSED_PATHS = ["/samples", "/cart", "/configure", "/procurement-plan", "/dashboard", "/login", "/signup", "/track-order"];
 
 type SubmitState = "idle" | "sending" | "sent" | "error";
@@ -25,6 +26,8 @@ export function ExitOfferModal({ location }: { location: string }) {
 
     let armed = false;
     let shown = false;
+    // Fetch the offer photo while the visitor reads, so the modal opens complete.
+    const warm = window.setTimeout(() => { const image = new Image(); image.src = MODAL_IMAGE; }, 4_000);
     const show = () => {
       if (shown || sessionStorage.getItem(SESSION_KEY)) return;
       if (!armed && !window.matchMedia("(pointer: coarse)").matches) return;
@@ -42,6 +45,7 @@ export function ExitOfferModal({ location }: { location: string }) {
 
     document.addEventListener("mouseout", onMouseOut);
     return () => {
+      window.clearTimeout(warm);
       window.clearTimeout(armTimer);
       window.clearTimeout(mobileTimer);
       document.removeEventListener("mouseout", onMouseOut);
@@ -125,7 +129,7 @@ export function ExitOfferModal({ location }: { location: string }) {
 
         <div className="grid md:grid-cols-[1fr_1fr]">
           <div className="relative overflow-hidden bg-[#0d1b2a] text-white">
-            <img src="/images/sample-kit-hero-v1.webp" alt="Open Packworkz sample kit with pouches, cartons, labels and material swatches" className="h-44 w-full object-cover opacity-90 sm:h-52 md:h-60" />
+            <img src={MODAL_IMAGE} width={960} height={640} decoding="async" fetchPriority="high" alt="Open Packworkz sample kit with pouches, cartons, labels and material swatches" className="h-44 w-full bg-[#16283b] object-cover opacity-90 sm:h-52 md:h-60" />
             <span className="absolute left-5 top-5 bg-[#F2B134] px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.16em] text-slate-950">Sample kit</span>
             <div className="px-7 pb-8 pt-6 sm:px-9">
               <h2 id="exit-offer-title" className="text-[2rem] font-black leading-[1.02] tracking-tight sm:text-4xl" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
