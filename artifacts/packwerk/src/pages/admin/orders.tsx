@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useAdminListOrders, useAdminUpdateOrderStatus } from "@workspace/api-client-react";
 import { Loader2, Edit2, X, Check, ExternalLink, Phone, Mail, MapPin, Package } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { whatsappLink } from "@/lib/quote-messages";
 
 const ORDER_STATUSES = ["payment_pending", "confirmed", "in_production", "qc_check", "dispatched", "delivered", "cancelled"];
 
@@ -203,7 +204,6 @@ function OrderDetail({ order, onClose, onEdit }: { order: any; onClose: () => vo
   const customer = order.customer || {};
   const address = order.delivery_address || {};
   const items: any[] = Array.isArray(order.items) ? order.items : [];
-  const phoneDigits = String(customer.phone || "").replace(/\D/g, "");
   return (
     <div className="fixed inset-0 z-50 flex justify-end" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
       <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" onClick={onClose} />
@@ -230,7 +230,7 @@ function OrderDetail({ order, onClose, onEdit }: { order: any; onClose: () => vo
             <p className="text-[16px] font-bold">{customer.contact_name || "—"}</p>
             {customer.company_name && customer.company_name !== "Not provided" && <p className="text-[#64748B]">{customer.company_name}</p>}
             <div className="mt-2 grid gap-1.5">
-              {customer.phone && <a className="flex items-center gap-2 font-semibold text-[#1B6CA8]" href={`https://wa.me/${phoneDigits.length === 10 ? `91${phoneDigits}` : phoneDigits}`} target="_blank" rel="noreferrer"><Phone className="h-3.5 w-3.5" /> {customer.phone} · WhatsApp</a>}
+              {customer.phone && <a className="flex items-center gap-2 font-semibold text-[#1B6CA8]" href={whatsappLink(customer.phone)} target="_blank" rel="noreferrer"><Phone className="h-3.5 w-3.5" /> {customer.phone} · WhatsApp</a>}
               {customer.email && <a className="flex items-center gap-2 text-[#1B6CA8]" href={`mailto:${customer.email}`}><Mail className="h-3.5 w-3.5" /> {customer.email}</a>}
               {customer.quote_id && <span className="text-[12px] text-[#94A3B8]">Quote {customer.quote_id}</span>}
             </div>

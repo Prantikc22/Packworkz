@@ -4,7 +4,7 @@ import { Loader2, ChevronDown, ChevronUp, ExternalLink, MessageSquare, Link2, Sa
 import { formatINR } from "@/lib/format";
 import { useToast } from "@/hooks/use-toast";
 import { DEFAULT_PAYMENT_TERMS } from "@/lib/payment-terms";
-import { buildQuoteEmail, buildQuoteWhatsApp } from "@/lib/quote-messages";
+import { buildQuoteEmail, buildQuoteWhatsApp, whatsappLink } from "@/lib/quote-messages";
 
 const STATUS_OPTIONS = ["submitted", "reviewing", "quoted", "accepted", "rejected"];
 
@@ -73,7 +73,7 @@ function QuoteRow({ q, onRefetch }: { q: any; onRefetch: () => void }) {
   });
 
   const buildWhatsAppHref = () =>
-    `https://wa.me/${q.phone?.replace(/\D/g, "")}?text=${encodeURIComponent(buildQuoteWhatsApp(quoteMessage()))}`;
+    whatsappLink(q.phone, buildQuoteWhatsApp(quoteMessage()));
 
   const buildEmailHref = () => {
     const { subject, body } = buildQuoteEmail(quoteMessage());

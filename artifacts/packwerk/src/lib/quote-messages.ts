@@ -176,3 +176,18 @@ export function buildQuoteWhatsApp(input: QuoteMessageInput) {
     SALES_EMAIL,
   ].join("\n");
 }
+
+/**
+ * wa.me needs the full international number with no "+" or leading zero.
+ * Indian numbers are often saved as "09310434605" or "9310434605".
+ */
+export function whatsappNumber(phone?: string | null): string {
+  let digits = String(phone || "").replace(/\D/g, "").replace(/^00/, "");
+  if (digits.length === 11 && digits.startsWith("0")) digits = digits.slice(1);
+  if (digits.length === 10) digits = `91${digits}`;
+  return digits;
+}
+
+export function whatsappLink(phone?: string | null, text?: string): string {
+  return `https://wa.me/${whatsappNumber(phone)}${text ? `?text=${encodeURIComponent(text)}` : ""}`;
+}

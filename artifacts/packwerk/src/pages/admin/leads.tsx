@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Copy, Download, ExternalLink, FileText, Image as ImageIcon, Inbox, Loader2, Mail, MessageCircle, Phone, RefreshCw, Search } from "lucide-react";
 import "../dashboard/dashboard.css";
+import { whatsappLink, whatsappNumber } from "@/lib/quote-messages";
 
 type LeadKind = "machinery" | "circular" | "manufacturing_requirement" | "manufacturer_application" | "contact" | "exit_offer" | "enterprise_benchmark" | "pack_ai_handoff" | "newsletter" | "support";
 
@@ -85,11 +86,7 @@ function fileName(url: string) {
 }
 
 const formatDate = (value?: string) => value ? new Date(value).toLocaleString("en-IN", { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" }) : "—";
-const waHref = (phone?: string) => {
-  const digits = String(phone || "").replace(/\D/g, "");
-  if (digits.length < 10) return "";
-  return `https://wa.me/${digits.length === 10 ? `91${digits}` : digits}`;
-};
+const waHref = (phone?: string) => (whatsappNumber(phone).length < 10 ? "" : whatsappLink(phone));
 
 type UploadRow = { url: string; reference: string; company: string; context: string; date: string; source: "Order / quote" | "Enquiry" };
 

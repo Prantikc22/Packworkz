@@ -3,6 +3,7 @@ import { Loader2, RefreshCw } from "lucide-react";
 import { getStatusColor } from "@/lib/format";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import { whatsappLink } from "@/lib/quote-messages";
 
 const SAMPLE_STATUSES = ["paid", "dispatched", "delivered", "cancelled"];
 
@@ -101,7 +102,7 @@ export default function AdminSamples() {
                   <td className="p-4 font-mono text-[#1B6CA8]">{s.sample_id}</td>
                   <td className="p-4">
                     <div className="font-semibold text-[#0D1B2A]">{s.contact_name || "—"}</div>
-                    {s.phone && <a className="block text-[#1B6CA8]" href={`https://wa.me/${s.phone.replace(/\D/g, "")}`} target="_blank" rel="noreferrer">{s.phone}</a>}
+                    {s.phone && <a className="block text-[#1B6CA8]" href={whatsappLink(s.phone)} target="_blank" rel="noreferrer">{s.phone}</a>}
                     {s.email && <a className="block text-[#64748B]" href={`mailto:${s.email}`}>{s.email}</a>}
                   </td>
                   <td className="p-4 max-w-xs text-[#334155]">
