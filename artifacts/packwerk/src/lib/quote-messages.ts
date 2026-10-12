@@ -38,7 +38,8 @@ const firstName = (name?: string) => String(name || "").trim().split(/\s+/)[0] |
 function productLines(item: any) {
   const lines: Array<[string, string]> = [];
   const specs: Record<string, any> = item.custom_specs || {};
-  const [w, h, d] = SIZE_KEYS.map((key) => Number(specs[key]) || 0);
+  // Values arrive as "80 mm" (new quotes) or "80" (older quotes, always mm).
+  const [w, h, d] = SIZE_KEYS.map((key) => parseFloat(String(specs[key] ?? "")) || 0);
   if (w && h) lines.push(["Size", `${w} × ${h} mm (W × H)${d ? `, ${d} mm gusset` : ""}`]);
   const variants = Object.entries(item.variant_selections || {})
     .filter(([key, value]) => value && !SKIP_VARIANTS.has(key) && !/^(none|n\/a|-)$/i.test(String(value)))

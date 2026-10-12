@@ -1,5 +1,6 @@
 import { SKUS, SKU_IMAGES, CATEGORIES, type Sku } from "./skus";
 import { EXPANDED_SKUS, type PurchaseMode } from "./catalog-expansion";
+import { PRINT_SPEC_OVERRIDES } from "./sku-print-specs";
 import { COMMERCE_PRODUCTS, getEffectiveCommerceTiers, MINIMUM_NET_UNIT_PRICE_RUPEES, UNIT_PRICE_INCREASE_RUPEES } from "@workspace/commerce";
 
 export type BuyingMode = "self_serve" | "assisted";
@@ -429,7 +430,7 @@ function defaultQuoteThreshold(sku: Sku): number | undefined {
 }
 
 export const CATALOG_SKUS: CatalogSku[] = ALL_CATALOG_SKUS.filter((sku) => !STOREFRONT_EXCLUSIONS.has(sku.code)).map((sourceSku) => {
-  const sku: Sku = { ...sourceSku, ...STOREFRONT_OVERRIDES[sourceSku.code] };
+  const sku: Sku = { ...sourceSku, ...STOREFRONT_OVERRIDES[sourceSku.code], ...PRINT_SPEC_OVERRIDES[sourceSku.code] };
   const purchaseMode = resolveMode(sku);
   const publicBuyingPath = resolvePublicBuyingPath(sku);
   const commerceProduct = COMMERCE_PRODUCTS[sku.code];

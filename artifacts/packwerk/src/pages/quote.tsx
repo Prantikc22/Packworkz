@@ -98,6 +98,13 @@ function calcPrice(sku: Sku | undefined, qty: number, delivery: DeliveryOption, 
 }
 
 // ── Spec unit helpers ───────────────────────────────────────────────────────
+const CUSTOM_SIZE = "CUSTOM";
+const SIZE_UNITS = new Set(["mm", "cm", "in", "m", "ml", "oz"]);
+const SIZE_KEYS = new Set(["size", "volume_ml", "capacity_oz", "diameter"]);
+/** Measurements that a chosen standard size already answers. */
+function isSizeField(field: { key: string; unit?: string }) {
+  return SIZE_UNITS.has(field.unit || "") || SIZE_KEYS.has(field.key);
+}
 function stripUnitSuffix(label: string) {
   return label.replace(/\s*\([^)]+\)\s*$/, "").trim();
 }
@@ -898,6 +905,20 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
     && !exceedsOnlineOrderLimit
     ? "self"
     : "assisted";
+  const usingStandardSize = Boolean(commerceProduct?.sizes.length) && selectedSizeCode !== CUSTOM_SIZE;
+  const visibleCustomFields = (selectedSku?.customization_fields || []).filter((field) => !(usingStandardSize && isSizeField(field)));
+  /** What the converter receives: every visible field, select defaults included, with its unit. */
+  const buildCustomSpecs = () => {
+    const specs: Record<string, string> = {};
+    for (const field of visibleCustomFields) {
+      const raw = customFieldValues[field.key] || (field.type === "select" ? field.options?.[0] || "" : "");
+      if (!String(raw).trim()) continue;
+      const unit = field.unit && /^\d+(\.\d+)?$/.test(String(raw).trim()) ? ` ${field.unit}` : "";
+      specs[field.key] = `${String(raw).trim()}${unit}`;
+    }
+    if (usingStandardSize && selectedSizeCode) specs.standard_size = selectedSizeCode;
+    return specs;
+  };
 const quantityPresets = useMemo(() => {
   if (!selectedSku || qtyUnit !== "pieces") return [50, 100, 250, 500, 1000];
   const tierQuantities = (selectedSku.price_tiers || [])
@@ -920,11 +941,12 @@ const maxSelfServeQuantity = selectedSku ? getMaxSelfServeQuantity(selectedSku) 
 
   useEffect(() => {
     if (!commerceProduct) return;
-    if (!commerceProduct.sizes.some((item) => item.code === selectedSizeCode)) {
+    const customAllowed = selectedSizeCode === CUSTOM_SIZE && selectedSkuBuyingMode === "assisted";
+    if (!customAllowed && !commerceProduct.sizes.some((item) => item.code === selectedSizeCode)) {
       setSelectedSizeCode(commerceProduct.sizes[0].code);
     }
     if (qtyUnit !== "pieces") setQtyUnit("pieces");
-  }, [commerceProduct, qtyUnit, selectedSizeCode]);
+  }, [commerceProduct, qtyUnit, selectedSizeCode, selectedSkuBuyingMode]);
 
   const initVariants = (sku: Sku) => {
     const defaults: Record<string, string> = {};
@@ -940,6 +962,7 @@ const maxSelfServeQuantity = selectedSku ? getMaxSelfServeQuantity(selectedSku) 
       setSelectedCategory(sku.category);
       setCustomQtyInput("");
       const defaults = initVariants(sku);
+      if (sku.id !== selectedSkuId) setCustomFieldValues({});
       setSelectedSizeCode(COMMERCE_PRODUCTS[sku.code]?.sizes[0]?.code || "");
       if (qtyUnit === "pieces") setQty(prev => Math.max(prev, getMinimumQuantityForConfiguration(sku.code, defaults)));
     }
@@ -959,6 +982,7 @@ const maxSelfServeQuantity = selectedSku ? getMaxSelfServeQuantity(selectedSku) 
     if (first) {
       setSelectedSkuId(first.id);
       const defaults = initVariants(first);
+      setCustomFieldValues({});
       setSelectedSizeCode(COMMERCE_PRODUCTS[first.code]?.sizes[0]?.code || "");
       if (qtyUnit === "pieces") setQty(getMinimumQuantityForConfiguration(first.code, defaults));
     }
@@ -1045,10 +1069,7 @@ const maxSelfServeQuantity = selectedSku ? getMaxSelfServeQuantity(selectedSku) 
             ...variantSelections,
             promotion_code: LAUNCH_PROMOTION_CODE,
           },
-          custom_specs: {
-            ...(Object.keys(customFieldValues).length ? customFieldValues : {}),
-            ...(selectedSizeCode ? { standard_size: selectedSizeCode } : {}),
-          },
+          custom_specs: buildCustomSpecs(),
           sample_requested: false,
           sample_tier: "none",
           design_paid: designPaid,
@@ -1491,14 +1512,16 @@ const maxSelfServeQuantity = selectedSku ? getMaxSelfServeQuantity(selectedSku) 
                 )}
 
                 {/* Fixed, priced size menu for every instant-buy family. */}
-                {selectedSkuBuyingMode === "self" && commerceProduct && (
+                {commerceProduct && commerceProduct.sizes.length > 0 && (
                   <div className="bg-white border border-slate-200 p-5">
                     <div className="flex items-start justify-between gap-4 mb-4">
                       <div>
-                        <div className="font-bold text-slate-800 text-sm" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>Choose a standard size</div>
-                        <p className="text-xs text-slate-500 mt-1">These sizes are ready to order with clear pricing. Need a different size? We will confirm it for you.</p>
+                        <div className="font-bold text-slate-800 text-sm" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>{selectedSkuBuyingMode === "self" ? "Choose a standard size" : "Choose a size"}</div>
+                        <p className="text-xs text-slate-500 mt-1">{selectedSkuBuyingMode === "self"
+                          ? "These sizes are ready to order with clear pricing. Need a different size? We will confirm it for you."
+                          : "Pick a standard size, or choose Custom size and enter your own measurements."}</p>
                       </div>
-                      <span className="border border-emerald-700 bg-white px-2 py-1 text-[10px] font-black uppercase tracking-wider text-emerald-800">Price locked</span>
+                      {selectedSkuBuyingMode === "self" && <span className="border border-emerald-700 bg-white px-2 py-1 text-[10px] font-black uppercase tracking-wider text-emerald-800">Price locked</span>}
                     </div>
                     <div className="grid grid-cols-2 gap-2">
                       {commerceProduct.sizes.map((item) => {
@@ -1516,12 +1539,23 @@ const maxSelfServeQuantity = selectedSku ? getMaxSelfServeQuantity(selectedSku) 
                           </button>
                         );
                       })}
+                      {selectedSkuBuyingMode === "assisted" && (
+                        <button
+                          type="button"
+                          onClick={() => setSelectedSizeCode(CUSTOM_SIZE)}
+                          className="text-left p-3 border transition-colors"
+                          style={{ borderColor: selectedSizeCode === CUSTOM_SIZE ? "#0D1B2A" : "#DCE4EE", background: "#FFFFFF", boxShadow: selectedSizeCode === CUSTOM_SIZE ? "inset 0 -3px 0 #1B6CA8" : "none" }}
+                        >
+                          <span className="block text-sm font-black" style={{ color: selectedSizeCode === CUSTOM_SIZE ? "#155A8C" : "#0D1B2A" }}>Custom size</span>
+                          <span className="block text-[11px] mt-1 leading-snug text-slate-500">Enter your own measurements</span>
+                        </button>
+                      )}
                     </div>
                   </div>
                 )}
 
                 {/* Package Size & Specs */}
-                {selectedSku && selectedSkuBuyingMode === "assisted" && selectedSku.customization_fields.length > 0 && selectedSku.category !== "rolls" && (
+                {selectedSku && selectedSkuBuyingMode === "assisted" && visibleCustomFields.length > 0 && (
                   <div className="bg-white rounded-lg border border-slate-200 p-5">
                     <div className="font-bold text-slate-800 text-sm mb-1" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
                       Package Size &amp; Specs
@@ -1531,7 +1565,7 @@ const maxSelfServeQuantity = selectedSku ? getMaxSelfServeQuantity(selectedSku) 
                     {/* Unit switchers */}
                     <div className="flex flex-wrap gap-3 mb-4 pb-3 border-b border-slate-100">
                       {/* Dimension unit */}
-                      {selectedSku.customization_fields.some(f => f.unit === "mm") && (
+                      {visibleCustomFields.some(f => f.unit === "mm" && f.type === "number") && (
                         <div className="flex items-center gap-2">
                           <span className="text-xs text-slate-500 font-medium">Dimensions:</span>
                           <div className="flex rounded border border-slate-200 overflow-hidden">
@@ -1546,7 +1580,7 @@ const maxSelfServeQuantity = selectedSku ? getMaxSelfServeQuantity(selectedSku) 
                         </div>
                       )}
                       {/* Weight unit */}
-                      {selectedSku.customization_fields.some(f => f.unit === "g") && (
+                      {visibleCustomFields.some(f => f.unit === "g" && f.type === "number") && (
                         <div className="flex items-center gap-2">
                           <span className="text-xs text-slate-500 font-medium">Weight:</span>
                           <div className="flex rounded border border-slate-200 overflow-hidden">
@@ -1563,8 +1597,8 @@ const maxSelfServeQuantity = selectedSku ? getMaxSelfServeQuantity(selectedSku) 
                     </div>
 
                     <div className="grid grid-cols-2 gap-3">
-                      {selectedSku.customization_fields.map(field => {
-                        const dispUnit = fieldDisplayUnit(field.unit, dimUnit, weightUnit);
+                      {visibleCustomFields.map(field => {
+                        const dispUnit = field.type === "number" ? fieldDisplayUnit(field.unit, dimUnit, weightUnit) : field.unit || "";
                         const dispVal = toDisplay(customFieldValues[field.key] || "", field.unit, dimUnit, weightUnit);
                         return (
                           <div key={field.key}>
@@ -1579,6 +1613,14 @@ const maxSelfServeQuantity = selectedSku ? getMaxSelfServeQuantity(selectedSku) 
                               >
                                 {field.options?.map(opt => <option key={opt} value={opt}>{opt}</option>)}
                               </select>
+                            ) : field.type === "text" ? (
+                              <input
+                                type="text"
+                                value={customFieldValues[field.key] || ""}
+                                onChange={e => setCustomFieldValues(prev => ({ ...prev, [field.key]: e.target.value }))}
+                                placeholder={field.placeholder || ""}
+                                className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-400 bg-slate-50"
+                              />
                             ) : (
                               <input
                                 type="number"
@@ -1844,17 +1886,19 @@ const maxSelfServeQuantity = selectedSku ? getMaxSelfServeQuantity(selectedSku) 
                         ["SKU", selectedSku?.name || "—"],
                         ["SKU Code", selectedSku?.code || "—"],
                         ["Quantity", `${qty.toLocaleString()} ${qtyUnit}`],
-                        ...(selectedSkuBuyingMode === "self" && commerceProduct ? [["Production size", formatMeasurementInCm(commerceProduct.sizes.find((item) => item.code === selectedSizeCode)?.label || selectedSizeCode)]] : []),
+                        ...(commerceProduct && usingStandardSize ? [["Production size", formatMeasurementInCm(commerceProduct.sizes.find((item) => item.code === selectedSizeCode)?.label || selectedSizeCode)]] : []),
                         ...Object.entries(variantSelections).map(([k, v]) => {
                           const group = selectedSku?.variants.find(g => g.key === k);
                           return [group?.label || k, v];
                         }),
-                        ...Object.entries(customFieldValues).filter(([, v]) => v).map(([k, v]) => {
-                          const field = selectedSku?.customization_fields.find(f => f.key === k);
-                          const displayValue = field ? toDisplay(v, field.unit, dimUnit, weightUnit) : v;
-                          const displayUnit = field ? fieldDisplayUnit(field.unit, dimUnit, weightUnit) : "";
-                          return [(field?.label || k), displayUnit ? `${displayValue} ${displayUnit}` : displayValue];
-                        }),
+                        ...(selectedSkuBuyingMode === "assisted" ? visibleCustomFields.map((field) => {
+                          const v = customFieldValues[field.key] || (field.type === "select" ? field.options?.[0] || "" : "");
+                          if (!v) return null;
+                          const numeric = field.type === "number";
+                          const displayValue = numeric ? toDisplay(v, field.unit, dimUnit, weightUnit) : v;
+                          const displayUnit = numeric ? fieldDisplayUnit(field.unit, dimUnit, weightUnit) : field.unit || "";
+                          return [field.label, displayUnit ? `${displayValue} ${displayUnit}` : displayValue];
+                        }).filter((row): row is string[] => Boolean(row)) : []),
                         ["Artwork", artworkOption === "upload"
                           ? (artworkUploading ? "⏳ Uploading…" : artworkFileUrl ? `✓ ${artworkFileUrl.split("/").pop()?.substring(0, 28) || "File uploaded"}` : artworkFile ? `⚠ ${artworkFile.name} (upload failed)` : "Artwork to follow after ordering")
                           : artworkOption === "design" ? `Design Service — ${money(1999)} ${designPaid ? "✓ Paid" : "(pending payment)"}` : "Plain / unprinted"],
