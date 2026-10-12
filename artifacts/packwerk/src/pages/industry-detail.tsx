@@ -123,7 +123,7 @@ const INDUSTRY_DATA: Record<string, {
     caseStudy: {
       headline: "D2C Brand Cuts Packaging Cost 28% While Going Premium.",
       highlight: "28% While Going Premium",
-      body: "By consolidating 12 cosmetics packaging vendors into Packwerk's single platform, this D2C brand reduced per-unit cost, improved consistency across their SKU line, and launched a new luxury tier.",
+      body: "By consolidating 12 cosmetics packaging vendors into Packworkz's single platform, this D2C brand reduced per-unit cost, improved consistency across their SKU line, and launched a new luxury tier.",
       testimonial: "We went from 12 vendors to 1. Our per-unit cost dropped 28% and our packaging is now the #1 customer compliment.",
       author: "Founder, Leading Indian Skincare Brand",
       stat1: { val: "-28%", label: "UNIT COST" },
@@ -189,7 +189,7 @@ const INDUSTRY_DATA: Record<string, {
     caseStudy: {
       headline: "National Brand Cuts Lead Time 55%.",
       highlight: "Lead Time 55%",
-      body: "By using Packwerk's SmartStock AI, this national FMCG brand reduced packaging lead time from 21 days to 9 days across all SKUs, enabling faster product launches.",
+      body: "By using Packworkz's SmartStock AI, this national FMCG brand reduced packaging lead time from 21 days to 9 days across all SKUs, enabling faster product launches.",
       testimonial: "We launched 3 new SKUs in Q4 that we couldn't before because of packaging delays. That's gone.",
       author: "Packaging Manager, National Beverage Brand",
       stat1: { val: "-55%", label: "LEAD TIME" },
@@ -222,7 +222,7 @@ const INDUSTRY_DATA: Record<string, {
     caseStudy: {
       headline: "Machine Parts Manufacturer Cuts Damage Rate 78%.",
       highlight: "Damage Rate 78%",
-      body: "By switching to Packwerk's double-wall corrugated solution with custom foam inserts, this auto parts manufacturer eliminated transit damage claims.",
+      body: "By switching to Packworkz's double-wall corrugated solution with custom foam inserts, this auto parts manufacturer eliminated transit damage claims.",
       testimonial: "We had ₹4L in damage claims per month. Now it's near zero.",
       author: "Logistics Manager, Auto Parts OEM",
       stat1: { val: "-78%", label: "DAMAGE RATE" },
@@ -256,7 +256,7 @@ const INDUSTRY_DATA: Record<string, {
       headline: "Seed Company Extends Germination Viability 18 Months.",
       highlight: "18 Months",
       body: "By switching to our nitrogen-flushed moisture barrier pouches, germination rate after 18 months storage improved from 62% to 94%.",
-      testimonial: "Our seed viability is now our product guarantee. Packwerk made that possible.",
+      testimonial: "Our seed viability is now our product guarantee. Packworkz made that possible.",
       author: "Production Head, Indian Seeds Company",
       stat1: { val: "+52%", label: "GERMINATION RATE" },
       stat2: { val: "18mo", label: "SHELF EXTENSION" },

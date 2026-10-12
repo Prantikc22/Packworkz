@@ -192,7 +192,7 @@ export default function DashboardQuotes() {
                     <div>
                       <p className="font-black text-[18px]" style={{ color: "#E8A838", fontFamily: "monospace" }}>{quote.quote_id}</p>
                       <p className="text-[13px] mt-0.5" style={{ color: "#64748B" }}>
-                        Submitted {daysSince(quote.created_at)}d ago
+                        Submitted {daysSince(quote.created_at) === 0 ? "today" : daysSince(quote.created_at) === 1 ? "yesterday" : `${daysSince(quote.created_at)} days ago`}
                       </p>
                     </div>
                     <span className="text-[11px] font-black px-3 py-1"

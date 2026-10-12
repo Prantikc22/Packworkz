@@ -8,7 +8,7 @@ router.get("/testimonials", async (_req, res): Promise<void> => {
     .from("testimonials")
     .select("*")
     .eq("is_active", true)
-    .order("created_at", { ascending: false });
+    .order("company_name", { ascending: true });
 
   if (error) {
     console.error("[testimonials] error:", error.message);

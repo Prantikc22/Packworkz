@@ -52,7 +52,7 @@ export const PRINT_SPEC_OVERRIDES: Record<string, Partial<Pick<Sku, "variants" |
   },
   "FP-106": {
     variants: [
-      v("closure", "Closure", ["Heat seal only", "Resealable zipper"]),
+      v("closure", "Closure", ["Heat seal only", "Resealable zipper", "Child-resistant zipper"]),
       v("material", "Material", ["PET/PE", "MetPET/PE", "Kraft laminate", "Mono-material PE"]),
       v("finish", "Finish", ["Matte", "Gloss", "Soft touch"]),
       v("tear_notch", "Tear notch", ["Tear notch", "No tear notch"]),
@@ -292,3 +292,20 @@ export const PRINT_SPEC_OVERRIDES: Record<string, Partial<Pick<Sku, "variants" |
     customization_fields: [num("capacity_oz", "Capacity", "oz", "e.g. 8"), mm("rim", "Rim diameter", "e.g. 80")],
   },
 };
+
+// Asked for every product in these families: converters check barrier, seal and
+// board strength against what goes inside before they quote.
+const PRODUCT_PACKED = text("product_packed", "Product being packed", "e.g. roasted coffee beans, oily snack, face serum");
+const PACKED_WEIGHT = num("packed_weight", "Weight packed per box", "kg", "e.g. 2");
+const SHRINK_TUNNEL = pick("shrink_tunnel", "Shrink tunnel", ["Steam", "Hot air", "Not sure yet"]);
+
+export function withPrintStartFields(sku: Sku): CustomField[] {
+  const fields = [...sku.customization_fields];
+  const add = (field: CustomField) => {
+    if (!fields.some((existing) => existing.key === field.key)) fields.push(field);
+  };
+  if (["flexible", "bottles", "tubes", "rolls", "sustainable"].includes(sku.category)) add(PRODUCT_PACKED);
+  if (["EC-501", "EC-502", "EC-503", "BX-401", "BX-407", "BX-415"].includes(sku.code)) add(PACKED_WEIGHT);
+  if (sku.code === "LC-806" || sku.code === "RL-705") add(SHRINK_TUNNEL);
+  return fields;
+}

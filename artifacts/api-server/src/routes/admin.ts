@@ -294,7 +294,7 @@ router.post("/admin/quotes/:id/accept", async (req, res): Promise<void> => {
 
     await sendWhatsApp(
       quote.phone,
-      `Welcome to Packwerk! Your account is ready.\nEmail: ${quote.email}\nTemp Password: ${tempPassword}\nLogin at packwerk.replit.app/login\nYour order is waiting inside.`
+      `Welcome to Packworkz! Your account is ready.\nEmail: ${quote.email}\nTemp Password: ${tempPassword}\nLogin at packworkz.com/login\nYour order is waiting inside.`
     );
   } else {
     userId = existingUser.id;
@@ -340,7 +340,7 @@ router.post("/admin/quotes/:id/accept", async (req, res): Promise<void> => {
 
   await sendWhatsApp(
     quote.phone,
-    `Your order ${orderId} has been confirmed! Login to your Packwerk dashboard to track progress.`
+    `Your order ${orderId} has been confirmed! Log in to your Packworkz dashboard to track progress.`
   );
 
   res.json({ order_id: orderId, user_created: userCreated });
@@ -481,7 +481,7 @@ router.put("/admin/orders/:id/status", async (req, res): Promise<void> => {
         .eq("id", updated.user_id);
 
       if (creditEligible && user.phone) {
-        await sendWhatsApp(user.phone, `Congratulations! You are now eligible for net-30 credit terms with Packwerk.`);
+        await sendWhatsApp(user.phone, `Congratulations! You are now eligible for net-30 credit terms with Packworkz.`);
       }
     }
   }

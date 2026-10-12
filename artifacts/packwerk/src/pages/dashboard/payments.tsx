@@ -155,7 +155,8 @@ export default function DashboardPayments() {
               <tbody>
                 {invoiceList.map((inv: any) => {
                   const s = INVOICE_STATUS[inv.status] ?? INVOICE_STATUS.pending;
-                  const isOverdue = inv.status === "pending" && new Date(inv.due_date) < new Date();
+                  // Due dates are calendar days: an invoice is overdue only from the day after.
+                  const isOverdue = inv.status === "pending" && String(inv.due_date || "").slice(0, 10) < new Date().toLocaleDateString("en-CA");
                   const isPending = inv.status === "pending";
                   const eff = isOverdue ? INVOICE_STATUS.overdue : s;
                   // Find matching order for payment_link
@@ -165,7 +166,7 @@ export default function DashboardPayments() {
                     <tr key={inv.id} className="border-b border-[#F8F9FC] hover:bg-[#FAFBFC]">
                       <td className="px-5 py-4 font-black" style={{ color: "#E8A838", fontFamily: "monospace" }}>{inv.invoice_id}</td>
                       <td className="px-5 py-4 font-medium" style={{ color: "#64748B", fontFamily: "monospace" }}>
-                        {inv.order_id ? inv.order_id.slice(0, 12) + "…" : "—"}
+                        {matchedOrder?.order_id || (inv.order_id ? `${String(inv.order_id).slice(0, 8)}…` : "—")}
                       </td>
                       <td className="px-5 py-4 font-black" style={{ color: "#0D1B2A" }}>₹{fmt(Number(inv.amount))}</td>
                       <td className="px-5 py-4">
