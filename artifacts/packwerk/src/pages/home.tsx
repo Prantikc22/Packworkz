@@ -860,19 +860,6 @@ export default function Home() {
             })}
           </div>
 
-          <div className="pw-mockup-band">
-            <figure><img src="/images/hero-studio-packaging-v6.webp" alt="3D packaging mockup with brand artwork" loading="lazy" /></figure>
-            <div>
-              <small>FREE WITH EVERY ORDER</small>
-              <h3>See your pack in 3D before we print.</h3>
-              <p>Send your logo or artwork. We put it on the exact pouch, box or bottle you're ordering and share a 3D mockup on WhatsApp and email — nothing goes to print until you approve it.</p>
-              <div className="pw-mockup-band-actions">
-                <a href={`https://wa.me/918208990366?text=${encodeURIComponent("Hi Packworkz, I'd like a free 3D mockup of my packaging. I'll share my artwork here.")}`} target="_blank" rel="noreferrer">Get a free mockup on WhatsApp <ArrowRight size={16} /></a>
-                <Link href="/mockup-studio">Or try it yourself in 3D Studio</Link>
-              </div>
-            </div>
-          </div>
-
           <div className="pw-family-directory" aria-label="Browse all packaging families">
             <div className="pw-family-directory-heading">
               <strong>Explore all packaging types</strong>
@@ -891,6 +878,15 @@ export default function Home() {
                   </span>
                 </Link>
               ))}
+            </div>
+          </div>
+
+          <div className="pw-mockup-band">
+            <img src="/images/flow-packaging-still-life-v2.webp" alt="" loading="lazy" />
+            <p><b>Free 3D mockup before we print.</b> <span>We put your artwork on the exact pack and send it on WhatsApp and email for approval.</span></p>
+            <div className="pw-mockup-band-actions">
+              <a href={`https://wa.me/918208990366?text=${encodeURIComponent("Hi Packworkz, I'd like a free 3D mockup of my packaging. I'll share my artwork here.")}`} target="_blank" rel="noreferrer">Get my mockup <ArrowRight size={15} /></a>
+              <Link href="/mockup-studio">Try 3D Studio</Link>
             </div>
           </div>
 
