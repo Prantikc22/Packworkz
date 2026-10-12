@@ -135,7 +135,8 @@ export function AssistantWidget({ location }: { location: string }) {
   const reset = () => { setMessages([GREETING]); setCalledBack(false); };
   const transcript = messages.map((m) => `${m.role === "user" ? "Visitor" : "Assistant"}: ${m.text}`).join("\n");
   const fresh = messages.length === 1;
-  const raised = /^\/products\/[^/]+/.test(location);
+  // Pages with a sticky bottom action bar on phones: lift the launcher above it.
+  const raised = location === "/" || /^\/products\/[^/]+/.test(location) || /^\/calculators\/[^/]+/.test(location);
 
   return (
     <aside className={`pwa${open ? " is-open" : ""}${raised ? " is-raised" : ""}`} aria-label="Packworkz assistant">

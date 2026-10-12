@@ -409,6 +409,7 @@ function ProductBuilder({ product }: { product: CatalogSku }) {
             {artworkChoice === "upload" && studioDesign && (studioDesign.artworkDataUrl || studioDesign.logoDataUrl) && !artworkUrl && !uploading && (
               <button type="button" className="pb-studio-attach" onClick={() => void attachStudioRender()}><Sparkles size={15} /> Attach my 3D Studio artwork</button>
             )}
+            <p className="pb-mockup-promise"><Rotate3D size={15} /><span><b>Free 3D mockup before we print.</b> We put your artwork on this exact pack and send the mockup on WhatsApp and email for your approval.</span></p>
           </fieldset>
 
           {/* Summary */}

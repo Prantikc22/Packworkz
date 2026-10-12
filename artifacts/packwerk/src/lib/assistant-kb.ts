@@ -63,7 +63,7 @@ const INTENTS: Intent[] = [
     id: "artwork", keys: ["artwork", "design", "designer", "logo", "print file", "proof", "mockup", "3d", "dieline"],
     answer: () => ({
       intent: "artwork",
-      text: "Upload your artwork when you order — we check it and send a digital proof, and nothing is printed until you approve. You can preview your pack in the 3D studio, or ask our design service to prepare print-ready files.",
+      text: "Upload your artwork when you order — we check it, put it on your exact pack and send you a free 3D mockup on WhatsApp and email. Nothing is printed until you approve. You can also try it yourself in the 3D studio, or ask our design service to prepare print-ready files.",
       links: [{ label: "3D mockup studio", href: "/mockup-studio" }, { label: "Design service", href: "/design" }],
     }),
   },

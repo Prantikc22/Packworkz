@@ -9,7 +9,7 @@ import TestimonialsSection from "@/components/home/TestimonialsSection";
 import { BeyondPackagingSection } from "@/components/home/BeyondPackagingSection";
 import { formatUnitRate, getFromUnitPrice } from "@/lib/indicative-pricing";
 import "./home-conversion.css";
-import { CATALOG_SKUS, getCatalogImage, isCatalogSkuInCategory } from "@/lib/catalog";
+import { CATALOG_SKUS, getCatalogImage, getUnitPriceForQuantity, isCatalogSkuInCategory } from "@/lib/catalog";
 import {
   Search, GitBranch, ShieldCheck, Truck,
   Leaf, Droplets, FileCheck, ArrowRight, ArrowLeft,
@@ -189,9 +189,22 @@ const CAT_IMAGES: Record<string, string> = {
 };
 
 const STARTER_SKU_CODES = ["FP-101", "EC-501", "LC-816", "SP-907", "RL-701"];
-const STARTER_SKUS = STARTER_SKU_CODES
+const skusFor = (codes: string[]) => codes
   .map((code) => CATALOG_SKUS.find((sku) => sku.code === code))
   .filter((sku): sku is (typeof CATALOG_SKUS)[number] => Boolean(sku));
+
+// Shop-by-product rail on the homepage: prices shown as "₹X each · lot of N ₹Y".
+const SHOP_TABS = [
+  { id: "popular", label: "Popular", skus: skusFor(STARTER_SKU_CODES) },
+  { id: "pouches", label: "Pouches", skus: skusFor(["FP-101", "FP-103", "FP-106", "FP-109", "FP-104"]) },
+  { id: "boxes", label: "Boxes", skus: skusFor(["EC-501", "BX-401", "BX-406", "BX-402", "BX-403"]) },
+  { id: "labels", label: "Labels & stickers", skus: skusFor(["LC-816", "LC-818", "LC-804", "LC-805", "LC-815"]) },
+  { id: "mailers", label: "Mailers & bags", skus: skusFor(["EC-504", "EC-505", "EC-510", "EC-509", "EC-502"]) },
+  { id: "bottles", label: "Bottles & jars", skus: skusFor(["BC-201", "BC-202", "BC-205", "BC-206", "TS-306"]) },
+  { id: "food", label: "Food service", skus: skusFor(["SP-907", "SP-912", "SP-905", "EC-503", "SP-909"]) },
+];
+const lotUnit = (sku: (typeof CATALOG_SKUS)[number]) => sku.moq_unit === "units" ? "pcs" : sku.moq_unit;
+const perUnit = (sku: (typeof CATALOG_SKUS)[number]) => sku.moq_unit === "units" ? "each" : `/ ${sku.moq_unit.replace(/s$/, "")}`;
 
 const INDUSTRIES = [
   { slug: "food-beverage", label: "Food & Beverage",    icon: "restaurant",               img: INDUSTRY_IMAGES.food },
@@ -622,6 +635,8 @@ function AiPromptDemo() {
 }
 
 export default function Home() {
+  const [shopTab, setShopTab] = useState("popular");
+  const shopSkus = (SHOP_TABS.find((tab) => tab.id === shopTab) || SHOP_TABS[0]).skus;
   const [monthlySpend, setMonthlySpend] = useState(500000);
   const [vendorBucket, setVendorBucket] = useState<VendorBucket>("2 to 4");
   const [useCredit, setUseCredit] = useState<CreditOption>("Yes");
@@ -806,27 +821,56 @@ export default function Home() {
         <div className="pw-starter-inner">
           <div className="pw-starter-heading">
             <div>
-              <span>PACKAGING CATALOG</span>
+              <span>SHOP BY PRODUCT</span>
               <h2 id="starter-products-title">Start with something familiar.</h2>
-              <p>Choose a common format below, or browse by packaging type. We will guide the technical details.</p>
+              <p>Real prices for every format — what one piece costs, and what the smallest lot comes to. We guide the technical details.</p>
             </div>
-            <Link href="/products" className="pw-starter-all">See every product <ArrowRight size={17} /></Link>
+            <div className="pw-starter-links">
+              <Link href="/calculators" className="pw-starter-all is-quiet">Price calculators <ArrowRight size={17} /></Link>
+              <Link href="/products" className="pw-starter-all">See every product <ArrowRight size={17} /></Link>
+            </div>
+          </div>
+          <div className="pw-shop-tabs" role="tablist" aria-label="Shop by product">
+            {SHOP_TABS.map((tab) => (
+              <button key={tab.id} type="button" role="tab" aria-selected={shopTab === tab.id} className={shopTab === tab.id ? "is-on" : ""} onClick={() => setShopTab(tab.id)}>
+                {tab.label}
+              </button>
+            ))}
           </div>
           <div className="pw-starter-grid">
-            {STARTER_SKUS.map((sku) => (
+            {shopSkus.map((sku) => {
+              const each = getUnitPriceForQuantity(sku, sku.moq);
+              const lowest = getFromUnitPrice(sku);
+              return (
               <Link key={sku.code} href={`/products/${sku.slug}`} className="pw-starter-card">
                 <div className="pw-starter-image">
                   <img src={getCatalogImage(sku)} alt={`${sku.name} custom printed packaging`} loading="eager" />
                 </div>
                 <div className="pw-starter-copy">
-                  <small>{sku.publicBuyingPath === "quote" ? "Price confirmed in 4 hrs" : `Ships in ${sku.delivery_days_india} days`}</small>
+                  <small>{sku.publicBuyingPath === "quote" ? "Price confirmed in 4 hrs" : `Order online · ships in ${sku.delivery_days_india} days`}</small>
                   <h3>{sku.name}</h3>
                   <p>{sku.use_case}</p>
-                  <span className="pw-starter-price"><em>From</em><b>{formatUnitRate(getFromUnitPrice(sku))}</b><em>/ {sku.moq_unit.replace(/s$/, "")}</em>{sku.publicBuyingPath === "quote" && <i>est.</i>}</span>
-                  <div><strong>MOQ {sku.moq.toLocaleString("en-IN")} {sku.moq_unit}</strong><ArrowRight size={17} /></div>
+                  <span className="pw-starter-price"><b>{formatUnitRate(each)}</b><em>{perUnit(sku)}</em>{sku.publicBuyingPath === "quote" && <i>est.</i>}</span>
+                  <span className="pw-starter-lot">Lot of {sku.moq.toLocaleString("en-IN")} {lotUnit(sku)} · <b>{money(each * sku.moq)}</b></span>
+                  {lowest < each - 0.01 && <span className="pw-starter-volume">Down to {formatUnitRate(lowest)} {perUnit(sku)} at volume</span>}
+                  <div><strong>{sku.publicBuyingPath === "quote" ? "Get my price" : "Order now"}</strong><ArrowRight size={17} /></div>
                 </div>
               </Link>
-            ))}
+              );
+            })}
+          </div>
+
+          <div className="pw-mockup-band">
+            <figure><img src="/images/hero-studio-packaging-v6.webp" alt="3D packaging mockup with brand artwork" loading="lazy" /></figure>
+            <div>
+              <small>FREE WITH EVERY ORDER</small>
+              <h3>See your pack in 3D before we print.</h3>
+              <p>Send your logo or artwork. We put it on the exact pouch, box or bottle you're ordering and share a 3D mockup on WhatsApp and email — nothing goes to print until you approve it.</p>
+              <div className="pw-mockup-band-actions">
+                <a href={`https://wa.me/918208990366?text=${encodeURIComponent("Hi Packworkz, I'd like a free 3D mockup of my packaging. I'll share my artwork here.")}`} target="_blank" rel="noreferrer">Get a free mockup on WhatsApp <ArrowRight size={16} /></a>
+                <Link href="/mockup-studio">Or try it yourself in 3D Studio</Link>
+              </div>
+            </div>
           </div>
 
           <div className="pw-family-directory" aria-label="Browse all packaging families">
