@@ -5,17 +5,10 @@ import { requireAdmin, hashPassword, generateTempPassword } from "../lib/auth";
 import { generateId } from "../lib/generateId";
 import { sendWhatsApp } from "../lib/whatsapp";
 import { sendWelcomeEmail, sendAdminQuoteNotification } from "../lib/email";
+import { advancePercent } from "../lib/paymentTerms";
 
 const router: IRouter = Router();
 
-function advancePercent(paymentTerms?: string | null) {
-  const terms = String(paymentTerms || "");
-  if (/\b(net[- ]?\d+|credit)\b/i.test(terms) && !/advance/i.test(terms)) return 0;
-  const match = terms.match(/(?:advance|upfront)[^\d]{0,12}(\d+(?:\.\d+)?)\s*%/i)
-    || terms.match(/(\d+(?:\.\d+)?)\s*%[^,;.]{0,20}(?:advance|upfront|before production)/i);
-  const parsed = match ? Number(match[1]) : 50;
-  return Number.isFinite(parsed) ? Math.min(100, Math.max(0, parsed)) : 50;
-}
 
 router.post("/admin/test-email", requireAdmin, (req, res): void => {
   void (async () => {

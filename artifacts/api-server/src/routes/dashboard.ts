@@ -5,6 +5,7 @@ import { requireAuth } from "../lib/auth";
 import { generateId } from "../lib/generateId";
 import { pushToSheetDB } from "../lib/sheetdb";
 import { claimCustomerReference } from "../lib/customerHistory";
+import { advancePercent } from "../lib/paymentTerms";
 
 type AuthRequest = Request & { userId: string };
 
@@ -42,14 +43,6 @@ function normalizeQuote(quote: any) {
   };
 }
 
-function advancePercent(paymentTerms?: string | null) {
-  const terms = String(paymentTerms || "");
-  if (/\b(net[- ]?\d+|credit)\b/i.test(terms) && !/advance/i.test(terms)) return 0;
-  const advanceMatch = terms.match(/(?:advance|upfront)[^\d]{0,12}(\d+(?:\.\d+)?)\s*%/i)
-    || terms.match(/(\d+(?:\.\d+)?)\s*%[^,;.]{0,20}(?:advance|upfront|before production)/i);
-  const parsed = advanceMatch ? Number(advanceMatch[1]) : 50;
-  return Number.isFinite(parsed) ? Math.min(100, Math.max(0, parsed)) : 50;
-}
 
 function dateOnly(value?: string | null) {
   if (!value) return null;

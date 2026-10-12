@@ -1,6 +1,6 @@
 // Email via Resend — Packworkz (domain verified: packworkz.com)
-const FROM = "Packworkz <quote@packworkz.com>";
-const REPLY_TO = "quote@packworkz.com";
+const FROM = "Packworkz <sales@packworkz.com>";
+const REPLY_TO = "sales@packworkz.com";
 const WHATSAPP = "+91 82089 90366";
 const SITE = "packworkz.com";
 

@@ -3,15 +3,11 @@ import { useAdminListQuotes } from "@workspace/api-client-react";
 import { Loader2, ChevronDown, ChevronUp, ExternalLink, MessageSquare, Link2, Save, Trash2, Mail } from "lucide-react";
 import { formatINR } from "@/lib/format";
 import { useToast } from "@/hooks/use-toast";
+import { DEFAULT_PAYMENT_TERMS } from "@/lib/payment-terms";
+import { buildQuoteEmail, buildQuoteWhatsApp } from "@/lib/quote-messages";
 
 const STATUS_OPTIONS = ["submitted", "reviewing", "quoted", "accepted", "rejected"];
 
-function advancePercent(terms: string) {
-  if (/\b(net[- ]?\d+|credit)\b/i.test(terms) && !/advance/i.test(terms)) return 0;
-  const match = terms.match(/(?:advance|upfront)[^\d]{0,12}(\d+(?:\.\d+)?)\s*%/i)
-    || terms.match(/(\d+(?:\.\d+)?)\s*%[^,;.]{0,20}(?:advance|upfront|before production)/i);
-  return match ? Math.min(100, Math.max(0, Number(match[1]))) : 50;
-}
 
 function apiPut(path: string, body: object) {
   const adminKey = localStorage.getItem("packwerk_admin_key") || "";
@@ -33,7 +29,7 @@ function QuoteRow({ q, onRefetch }: { q: any; onRefetch: () => void }) {
   const [paymentLink, setPaymentLink] = useState(q.payment_link || "");
   const [quotedAmount, setQuotedAmount] = useState(q.quoted_amount ? String(q.quoted_amount) : "");
   const [deliveryDate, setDeliveryDate] = useState(q.delivery_date || "");
-  const [paymentTerms, setPaymentTerms] = useState(q.payment_terms || "50% advance, 50% on delivery");
+  const [paymentTerms, setPaymentTerms] = useState(q.payment_terms || DEFAULT_PAYMENT_TERMS);
   const [savingNotes, setSavingNotes] = useState(false);
   const [savingStatus, setSavingStatus] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -67,80 +63,20 @@ function QuoteRow({ q, onRefetch }: { q: any; onRefetch: () => void }) {
     } finally { setDeleting(false); }
   };
 
-  const buildWhatsAppHref = () => {
-    const percent = advancePercent(paymentTerms);
-    const advance = quotedAmount ? `₹${Math.round(Number(quotedAmount) * percent / 100).toLocaleString("en-IN")}` : `${percent}% (to be shared)`;
-    const balance = quotedAmount ? `₹${Math.round(Number(quotedAmount) * (100 - percent) / 100).toLocaleString("en-IN")}` : `${100 - percent}% (to be shared)`;
-    const dashboardUrl = `${window.location.origin}/dashboard/quotes?quote=${encodeURIComponent(q.quote_id)}`;
-    const msg = [
-      `Hi ${q.contact_name || ""},`,
-      ``,
-      `Thank you for your enquiry with *Packworkz*. Here is your quotation:`,
-      ``,
-      `📋 *Quote ID:* ${q.quote_id}`,
-      `🏢 *Company:* ${q.company_name}`,
-      `📦 *Product:* ${firstItem.product_name || "—"}`,
-      `🔢 *Quantity:* ${firstItem.quantity?.toLocaleString() || "—"} ${firstItem.quantity_unit || ""}`.trim(),
-      ...(firstItem.variant_selections && Object.keys(firstItem.variant_selections).length
-        ? Object.entries(firstItem.variant_selections).map(([k, v]) => `   • ${k.replace(/_/g, " ")}: ${v}`)
-        : []),
-      ...(firstItem.custom_specs && Object.keys(firstItem.custom_specs).length
-        ? [`📐 *Dimensions:* ${Object.entries(firstItem.custom_specs).filter(([,v]) => v).map(([k,v]) => `${k.replace(/_/g," ")}: ${v}`).join(", ")}`]
-        : []),
-      ...(quotedAmount ? [``, `💰 *Quoted Price:* ₹${Number(quotedAmount).toLocaleString("en-IN")}`] : []),
-      ...(deliveryDate ? [`📅 *Estimated Delivery:* ${deliveryDate}`] : []),
-      ``,
-      `💳 *Payment Terms:*`,
-      `• Advance (${percent}%): ${advance} — due to confirm order`,
-      `• Before delivery after QC (${100 - percent}%): ${balance}`,
-      ``,
-      `Review the full quote and pay the advance securely from your dashboard:`,
-      dashboardUrl,
-      ``,
-      `— Packworkz Team`,
-      `📞 +91 82089 90366`,
-    ].join("\n");
-    return `https://wa.me/${q.phone?.replace(/\D/g, "")}?text=${encodeURIComponent(msg)}`;
-  };
+  const quoteMessage = () => ({
+    quote: q,
+    quotedAmount: quotedAmount ? Number(quotedAmount) : null,
+    delivery: deliveryDate,
+    paymentTerms,
+    paymentLink,
+    dashboardUrl: `${window.location.origin}/dashboard/quotes?quote=${encodeURIComponent(q.quote_id)}`,
+  });
+
+  const buildWhatsAppHref = () =>
+    `https://wa.me/${q.phone?.replace(/\D/g, "")}?text=${encodeURIComponent(buildQuoteWhatsApp(quoteMessage()))}`;
 
   const buildEmailHref = () => {
-    const percent = advancePercent(paymentTerms);
-    const advance = quotedAmount ? `₹${Math.round(Number(quotedAmount) * percent / 100).toLocaleString("en-IN")}` : `${percent}%`;
-    const balance = quotedAmount ? `₹${Math.round(Number(quotedAmount) * (100 - percent) / 100).toLocaleString("en-IN")}` : `${100 - percent}%`;
-    const subject = `Your Packworkz Quotation — ${q.quote_id}`;
-    const dashboardUrl = `${window.location.origin}/dashboard/quotes?quote=${encodeURIComponent(q.quote_id)}`;
-    const body = [
-      `Dear ${q.contact_name || ""},`,
-      ``,
-      `Thank you for your enquiry with Packworkz. Please find your quotation details below:`,
-      ``,
-      `Quote ID: ${q.quote_id}`,
-      `Company: ${q.company_name}`,
-      `Product: ${firstItem.product_name || "—"}`,
-      `Quantity: ${firstItem.quantity?.toLocaleString() || "—"} ${firstItem.quantity_unit || ""}`.trim(),
-      ...(firstItem.variant_selections && Object.keys(firstItem.variant_selections).length
-        ? Object.entries(firstItem.variant_selections).map(([k, v]) => `  - ${k.replace(/_/g, " ")}: ${v}`)
-        : []),
-      ...(firstItem.custom_specs && Object.keys(firstItem.custom_specs).length
-        ? [`Dimensions: ${Object.entries(firstItem.custom_specs).filter(([,v]) => v).map(([k,v]) => `${k.replace(/_/g," ")}: ${v}`).join(", ")}`]
-        : []),
-      ...(quotedAmount ? [`Quoted Price: ₹${Number(quotedAmount).toLocaleString("en-IN")}`] : []),
-      ...(deliveryDate ? [`Estimated Delivery: ${deliveryDate}`] : []),
-      ``,
-      `Payment Terms:`,
-      `  • Advance (${percent}%): ${advance} — due immediately to confirm your order`,
-      `  • Balance before delivery after QC (${100 - percent}%): ${balance}`,
-      ``,
-      `Review the full quote and complete the advance payment in your Packworkz dashboard:`,
-      dashboardUrl,
-      `Production begins only after the advance payment is verified.`,
-      ``,
-      `For any questions, reply to this email or WhatsApp us at +91 82089 90366.`,
-      ``,
-      `Best regards,`,
-      `Packworkz Team`,
-      `quote@packworkz.com | packworkz.com`,
-    ].join("\n");
+    const { subject, body } = buildQuoteEmail(quoteMessage());
     return `mailto:${q.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   };
 
@@ -419,7 +355,7 @@ function QuoteRow({ q, onRefetch }: { q: any; onRefetch: () => void }) {
                         type="text"
                         value={paymentTerms}
                         onChange={e => setPaymentTerms(e.target.value)}
-                        placeholder="e.g. 50% advance, 50% on delivery"
+                        placeholder={`e.g. ${DEFAULT_PAYMENT_TERMS}`}
                         className="w-full border border-[#E2EAF4] rounded px-3 py-2 text-sm focus:outline-none focus:border-[#1B6CA8] bg-[#F8F9FC]"
                       />
                     </div>

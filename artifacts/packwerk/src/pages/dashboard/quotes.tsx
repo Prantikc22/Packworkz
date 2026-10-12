@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useGetDashboardQuotes, useAcceptDashboardQuote } from "@workspace/api-client-react";
 import { Loader2, MessageCircle, CheckCircle } from "lucide-react";
 import { Link, useLocation } from "wouter";
+import { advancePercent, DEFAULT_PAYMENT_TERMS } from "@/lib/payment-terms";
 
 const MS = ({ icon, className = "", style }: { icon: string; className?: string; style?: React.CSSProperties }) => (
   <span className={`material-symbols-outlined ${className}`} style={style}>{icon}</span>
@@ -22,17 +23,10 @@ function daysSince(dateStr: string) {
   return Math.floor((Date.now() - new Date(dateStr).getTime()) / 86400000);
 }
 
-function getAdvancePercent(terms?: string | null) {
-  const text = String(terms || "");
-  if (/\b(net[- ]?\d+|credit)\b/i.test(text) && !/advance/i.test(text)) return 0;
-  const match = text.match(/(?:advance|upfront)[^\d]{0,12}(\d+(?:\.\d+)?)\s*%/i)
-    || text.match(/(\d+(?:\.\d+)?)\s*%[^,;.]{0,20}(?:advance|upfront|before production)/i);
-  return match ? Math.min(100, Math.max(0, Number(match[1]))) : 50;
-}
 
 function getAdvanceAmount(quote: any) {
   const total = Number(quote.quoted_amount || quote.total_estimated_max || 0);
-  return Math.round(total * getAdvancePercent(quote.payment_terms)) / 100;
+  return Math.round(total * advancePercent(quote.payment_terms)) / 100;
 }
 
 function ConfirmModal({ quote, onConfirm, onCancel, loading }: {
@@ -77,7 +71,7 @@ function ConfirmModal({ quote, onConfirm, onCancel, loading }: {
           )}
           <div className="flex justify-between text-[13px]">
             <span style={{ color: "#64748B" }}>Payment terms</span>
-            <span className="font-bold" style={{ color: "#0D1B2A" }}>{quote.payment_terms || "50% advance, 50% on delivery"}</span>
+            <span className="font-bold" style={{ color: "#0D1B2A" }}>{quote.payment_terms || DEFAULT_PAYMENT_TERMS}</span>
           </div>
           {advanceAmount > 0 && (
             <div className="flex justify-between text-[13px] pt-2 border-t border-[#E7E8EB]">
@@ -260,7 +254,7 @@ export default function DashboardQuotes() {
                             </p>
                           )}
                           <p className="text-[12px] mt-0.5" style={{ color: "#94A3B8" }}>
-                            Payment: {quote.payment_terms || "50% advance · 50% on delivery"}
+                            Payment: {quote.payment_terms || DEFAULT_PAYMENT_TERMS}
                           </p>
                         </div>
                       </div>
