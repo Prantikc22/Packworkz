@@ -565,6 +565,7 @@ function sitemapGroup(route) {
   if (route.kind === "product" || route.path === "/products" || route.path.startsWith("/packaging")) return "products";
   if (route.kind === "article" || route.path === "/resources") return "resources";
   if (route.kind === "manufacturer" || route.kind === "mfg-category" || route.path.startsWith("/manufactur")) return "manufacturing";
+  if (route.path === "/calculators" || route.path.startsWith("/calculators/")) return "tools";
   return "pages";
 }
 

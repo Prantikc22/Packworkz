@@ -112,6 +112,9 @@ export function getDynamicSeoRoutes() {
         keywords: c.keywords,
         kind: "calculator" as const,
         label: c.name,
+        image: c.kind === "price"
+          ? (() => { const sku = CATALOG_SKUS.find((s) => s.code === c.codes[0]); return sku ? getCatalogImage(sku) : undefined; })()
+          : c.slug === "dieline-generator" ? "/catalog/formats/drawer-box.webp" : "/images/enterprise-production-line-v1.webp",
         faqs: c.faqs,
       })),
     ],

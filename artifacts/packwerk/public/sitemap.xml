@@ -16,4 +16,8 @@
     <loc>https://packworkz.com/sitemaps/products.xml</loc>
     <lastmod>2026-10-12</lastmod>
   </sitemap>
+  <sitemap>
+    <loc>https://packworkz.com/sitemaps/tools.xml</loc>
+    <lastmod>2026-10-12</lastmod>
+  </sitemap>
 </sitemapindex>
