@@ -286,6 +286,7 @@ const ABOUT_ITEMS = [
   { icon: Network,  label: "Factory Network", href: "/network" },
   { icon: Factory,  label: "Packaging Machinery", href: "/machinery" },
   { icon: Recycle,  label: "Packworkz Circular", href: "/circular" },
+  { icon: Leaf,     label: "Sustainability",  href: "/sustainable" },
   { icon: Users,    label: "Careers",         href: "/careers" },
   { icon: Mail,     label: "Contact Us",      href: "/contact" },
 ];
@@ -499,6 +500,29 @@ const GLOBAL_STYLES = `
   .pw-currency-switch button[aria-pressed="true"] { background:rgba(255,255,255,.12); color:#fff; }
   @media (max-width: 1023px) {
     .pw-site-header { top: 0; width: 100%; border-radius: 0; backdrop-filter: none; -webkit-backdrop-filter: none; }
+  }
+
+  /* Desktop nav needs ~1180px. Below that the hamburger takes over, so the bar
+     never overflows on laptops, zoomed browsers or scaled displays. */
+  .pw-site-header { gap: 12px; }
+  .pw-site-header > a { flex: none; }
+  .pw-nav-desktop { display: none; min-width: 0; }
+  .pw-nav-desktop > nav, nav.pw-nav-desktop { gap: 2px; }
+  .pw-nav-mobile { display: inline-flex; }
+  .pw-nav-optional { display: contents; }
+  @media (min-width: 1180px) {
+    .pw-nav-desktop { display: flex; }
+    .pw-nav-mobile { display: none; }
+  }
+  @media (min-width: 1180px) and (max-width: 1439px) {
+    .pw-site-header { padding-left: 28px !important; padding-right: 20px !important; }
+    .pw-site-header .pw-brand-lockup { font-size: 22px; }
+    .pw-site-header .po-nav-link { padding: 6px 8px; font-size: 12.5px; letter-spacing: .02em; }
+    .pw-site-header .po-cta-btn { padding: 8px 16px; font-size: 12px; }
+    .pw-nav-home-light .po-cta-btn { padding: 9px 18px; }
+  }
+  @media (min-width: 1180px) and (max-width: 1319px) {
+    .pw-nav-optional { display: none; }
   }
 
   /* Amber CTA button fill animation */
@@ -1518,7 +1542,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
         </Link>
 
         {/* Centre navigation */}
-        <nav className="hidden lg:flex h-full items-center gap-2">
+        <nav className="pw-nav-desktop h-full items-center">
           <NavItem label="Products" active={location.startsWith("/products")} mega>
             <ProductsMenu />
           </NavItem>
@@ -1529,7 +1553,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
             <SolutionsMenu />
           </NavItem>
           <NavItem label="Get Samples" href="/samples" active={location.startsWith("/samples")} />
-          <NavItem label="Sustainability" href="/sustainable" active={location.startsWith("/sustainable")} />
+          <span className="pw-nav-optional"><NavItem label="Sustainability" href="/sustainable" active={location.startsWith("/sustainable")} /></span>
           <NavItem label="Resources" active={location.startsWith("/resources")} mega>
             <ResourcesMenu />
           </NavItem>
@@ -1541,7 +1565,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
         {/* Right side */}
         <div className="flex items-center gap-1">
           {/* Desktop-only buttons */}
-          <div className="hidden lg:flex items-center gap-1">
+          <div className="pw-nav-desktop items-center gap-1">
             {isLoggedIn ? (
               <Link href="/dashboard" className="po-nav-link" style={{ color: "#E8A838" }}>
                 Dashboard
@@ -1574,7 +1598,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
           </button>
 
           {/* Mobile hamburger only */}
-          <button className="lg:hidden p-2 ml-1" style={{ color: navHomeLight ? "#0D1B2A" : "white", background: "none", border: "none", cursor: "pointer", lineHeight: 1 }} onClick={() => setMobileOpen(!mobileOpen)}>
+          <button className="pw-nav-mobile p-2 ml-1" style={{ color: navHomeLight ? "#0D1B2A" : "white", background: "none", border: "none", cursor: "pointer", lineHeight: 1 }} onClick={() => setMobileOpen(!mobileOpen)}>
             <span className="material-symbols-outlined" style={{ fontSize: 28 }}>{mobileOpen ? "close" : "menu"}</span>
           </button>
         </div>
