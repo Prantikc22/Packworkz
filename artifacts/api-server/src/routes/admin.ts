@@ -1,4 +1,5 @@
 import { Router, type IRouter } from "express";
+import { deliveryLabel, toCalendarDate, withDeliveryLabel } from "../lib/quoteDelivery";
 import { sb } from "../lib/supabase";
 import { requireAdmin, hashPassword, generateTempPassword } from "../lib/auth";
 import { generateId } from "../lib/generateId";
@@ -91,7 +92,7 @@ router.get("/admin/quotes", async (req, res): Promise<void> => {
         quoted_amount: q.quoted_amount ? Number(q.quoted_amount) : (adminMeta.quoted_amount ? Number(adminMeta.quoted_amount) : null),
         admin_notes: q.admin_notes ?? adminMeta.admin_notes ?? null,
         payment_link: q.payment_link ?? adminMeta.payment_link ?? null,
-        delivery_date: q.delivery_date ?? adminMeta.delivery_date ?? null,
+        delivery_date: deliveryLabel(q, adminMeta),
         payment_terms: q.payment_terms ?? adminMeta.payment_terms ?? null,
         rejection_reason: adminMeta.admin_notes ? null : q.rejection_reason,
       };
@@ -159,7 +160,18 @@ router.put("/admin/quotes/:id/notes", async (req, res): Promise<void> => {
   }
   // The quote stores the client-facing delivery promise as text. This may be
   // an exact date ("1 October 2026") or a reviewed lead-time window.
-  if (delivery_date !== undefined) fullUpdate.delivery_date = delivery_date || null;
+  if (delivery_date !== undefined) {
+    const label = String(delivery_date || "").trim();
+    fullUpdate.delivery_date = toCalendarDate(label);
+    const { data: current, error: readError } = await sb.from("quote_requests").select("items").eq("id", id).maybeSingle();
+    if (readError) {
+      console.error("[admin/quotes/notes] read", readError.message);
+      res.status(500).json({ error: `Failed to save: ${readError.message}` });
+      return;
+    }
+    if (!current) { res.status(404).json({ error: "Quote not found" }); return; }
+    fullUpdate.items = withDeliveryLabel(current.items, label || null);
+  }
   if (payment_terms !== undefined) fullUpdate.payment_terms = payment_terms;
 
   let result = await sb.from("quote_requests").update(fullUpdate).eq("id", id).select().maybeSingle();
@@ -198,7 +210,7 @@ router.put("/admin/quotes/:id/notes", async (req, res): Promise<void> => {
 
   if (result.error) {
     console.error("[admin/quotes/notes]", result.error.message);
-    res.status(500).json({ error: "Failed to save" });
+    res.status(500).json({ error: `Failed to save: ${result.error.message}` });
     return;
   }
   if (!result.data) { res.status(404).json({ error: "Quote not found" }); return; }
@@ -396,9 +408,15 @@ router.put("/admin/orders/:id/status", async (req, res): Promise<void> => {
   if (tracking_number !== undefined) updateFields.tracking_number = tracking_number;
   if (tracking_url !== undefined) updateFields.tracking_url = tracking_url;
   if (payment_link !== undefined) updateFields.payment_link = payment_link;
-  if (estimated_delivery !== undefined) updateFields.estimated_delivery = estimated_delivery;
+  // estimated_delivery is a date column and total_price is numeric: a cleared
+  // input arrives as "" and must become null / be skipped, not be written as text.
+  if (estimated_delivery !== undefined) updateFields.estimated_delivery = toCalendarDate(estimated_delivery);
   if (internal_notes !== undefined) updateFields.internal_notes = internal_notes;
-  if (total_price !== undefined) updateFields.total_price = total_price.toString();
+  if (total_price !== undefined && total_price !== null && String(total_price).trim() !== "") {
+    const price = Number(String(total_price).replace(/[₹,\s]/g, ""));
+    if (!Number.isFinite(price) || price < 0) { res.status(400).json({ error: "Total price must be a number." }); return; }
+    updateFields.total_price = String(price);
+  }
   if (advance_paid === true && existing.status === "payment_pending") {
     updateFields.status = status === "payment_pending" || status === undefined ? "confirmed" : status;
     const verifiedNote = `Advance payment verified ${new Date().toISOString()}`;
@@ -412,7 +430,12 @@ router.put("/admin/orders/:id/status", async (req, res): Promise<void> => {
     .select()
     .maybeSingle();
 
-  if (error || !updated) {
+  if (error) {
+    console.error("[admin/orders/update]", error.message);
+    res.status(500).json({ error: `Failed to update the order: ${error.message}` });
+    return;
+  }
+  if (!updated) {
     res.status(404).json({ error: "Order not found" });
     return;
   }

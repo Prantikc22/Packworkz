@@ -1,4 +1,5 @@
 import { Router, type IRouter, type Request } from "express";
+import { deliveryLabel, toCalendarDate } from "../lib/quoteDelivery";
 import { sb } from "../lib/supabase";
 import { requireAuth } from "../lib/auth";
 import { generateId } from "../lib/generateId";
@@ -36,7 +37,7 @@ function normalizeQuote(quote: any) {
     total_estimated_max: quote.total_estimated_max ? Number(quote.total_estimated_max) : null,
     quoted_amount: quote.quoted_amount ? Number(quote.quoted_amount) : (meta.quoted_amount ? Number(meta.quoted_amount) : null),
     payment_link: safePaymentUrl(quote.payment_link || meta.payment_link),
-    delivery_date: quote.delivery_date || meta.delivery_date || null,
+    delivery_date: deliveryLabel(quote, meta),
     payment_terms: quote.payment_terms || meta.payment_terms || null,
   };
 }
@@ -62,7 +63,7 @@ async function enrichOrdersWithQuoteCommercials(orders: any[]) {
   const orderIds = orders.map(order => order.id).filter(Boolean);
   const [{ data: quotes }, { data: invoices }] = await Promise.all([
     sb.from("quote_requests")
-      .select("id,payment_link,delivery_date,payment_terms,quoted_amount,rejection_reason")
+      .select("id,items,payment_link,delivery_date,payment_terms,quoted_amount,rejection_reason")
       .in("id", quoteIds),
     sb.from("invoices").select("order_id,status").in("order_id", orderIds),
   ]);
@@ -75,7 +76,7 @@ async function enrichOrdersWithQuoteCommercials(orders: any[]) {
     return {
       ...order,
       payment_link: safePaymentUrl(order.payment_link || quote?.payment_link),
-      estimated_delivery: order.estimated_delivery || dateOnly(quote?.delivery_date),
+      estimated_delivery: order.estimated_delivery || dateOnly(toCalendarDate(quote?.delivery_date)),
       delivery_date_label: quote?.delivery_date || order.estimated_delivery || null,
       payment_terms: quote?.payment_terms || null,
       advance_amount: percent > 0 ? Math.round(fullAmount * percent) / 100 : 0,
@@ -292,7 +293,7 @@ router.post("/dashboard/quotes/:id/accept", async (req, res): Promise<void> => {
       discount_applied: "0",
       delivery_address: {},
       status: initialStatus,
-      estimated_delivery: dateOnly(normalizedQuote.delivery_date),
+      estimated_delivery: dateOnly(toCalendarDate(normalizedQuote.delivery_date)),
       payment_link: normalizedQuote.payment_link || null,
       internal_notes: advanceAmount > 0 ? `Awaiting ${percent}% advance payment for ${quote.quote_id}` : null,
     })

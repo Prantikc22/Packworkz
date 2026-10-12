@@ -156,8 +156,8 @@ function QuoteRow({ q, onRefetch }: { q: any; onRefetch: () => void }) {
       });
       toast({ title: "Quote details saved" });
       onRefetch();
-    } catch {
-      toast({ variant: "destructive", title: "Failed to save" });
+    } catch (error) {
+      toast({ variant: "destructive", title: "Failed to save", description: error instanceof Error ? error.message : undefined });
     } finally { setSavingNotes(false); }
   };
 
