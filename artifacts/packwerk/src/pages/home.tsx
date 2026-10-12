@@ -1295,7 +1295,7 @@ export default function Home() {
             {([
               { feature: "Vendor redundancy",    good: "Compatible backup routes planned where the specification allows.",  bad: "One vendor. Their delay is your delay." },
               { feature: "Quality control",       good: "Our team inspects every dispatch. Photo evidence in dashboard.", bad: "Vendor self-certifies. Rejection risk is yours." },
-              { feature: "Pricing transparency",  good: "Visible quantity pricing, delivery and first-order launch saving.", bad: "Extra tooling and freight often appear late." },
+              { feature: "Pricing transparency",  good: "Visible quantity pricing and delivery before you pay.", bad: "Extra tooling and freight often appear late." },
               { feature: "Product coverage",      good: "A focused buying catalogue, with specialist formats handled through one production brief.", bad: "Specialised in one category. Source the rest yourself." },
               { feature: "Compliance & certs",    good: "Applicable documents matched to the final format and factory.", bad: "Certification varies by vendor. Risk sits with you." },
               { feature: "Design service",        good: `Print-ready artwork from ${money(1999)}. Files yours forever.`,         bad: "Mostly unavailable. Third-party dependency." },

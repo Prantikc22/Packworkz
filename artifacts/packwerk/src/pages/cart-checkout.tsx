@@ -2,7 +2,7 @@ import { useMemo, useRef, useState, type FormEvent } from "react";
 import { Link, useLocation } from "wouter";
 import { ArrowLeft, LockKeyhole, PackageCheck } from "lucide-react";
 import { useSubmitQuote } from "@workspace/api-client-react";
-import { LAUNCH_PROMOTION_CODE, RAZORPAY_PAYMENT_LIMIT_RUPEES } from "@workspace/commerce";
+import { LAUNCH_PROMOTION_CODE, LAUNCH_PROMOTION_ENABLED, RAZORPAY_PAYMENT_LIMIT_RUPEES } from "@workspace/commerce";
 import { CATALOG_SKUS } from "@/lib/catalog";
 import { formatINR } from "@/lib/format";
 import { billedInInrNote, isUsd } from "@/lib/currency";
@@ -105,7 +105,7 @@ export default function CartCheckout() {
           quantity_unit: item.quantityUnit,
           artwork_status: item.artworkOption || "upload",
           artwork_file_url: item.artworkFileUrl || undefined,
-          variant_selections: { ...item.variantSelections, promotion_code: LAUNCH_PROMOTION_CODE },
+          variant_selections: { ...item.variantSelections, ...(LAUNCH_PROMOTION_ENABLED ? { promotion_code: LAUNCH_PROMOTION_CODE } : {}) },
           custom_specs: { ...item.customSpecs, standard_size: item.sizeCode },
           sample_requested: false,
           sample_tier: "none",

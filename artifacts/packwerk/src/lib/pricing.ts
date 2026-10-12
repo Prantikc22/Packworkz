@@ -1,4 +1,4 @@
-import { calculateCommerceEstimate, LAUNCH_PROMOTION_CODE, MINIMUM_NET_UNIT_PRICE_RUPEES, UNIT_PRICE_INCREASE_RUPEES } from "@workspace/commerce";
+import { calculateCommerceEstimate, LAUNCH_PROMOTION_CODE, LAUNCH_PROMOTION_ENABLED, MINIMUM_NET_UNIT_PRICE_RUPEES, UNIT_PRICE_INCREASE_RUPEES } from "@workspace/commerce";
 
 export type PricingSku = {
   code?: string;
@@ -31,7 +31,7 @@ export function calculateOrderEstimate(
       delivery,
       artwork,
       configuration,
-      promotionCode: LAUNCH_PROMOTION_CODE,
+      promotionCode: (LAUNCH_PROMOTION_ENABLED ? LAUNCH_PROMOTION_CODE : undefined),
     });
     if (!commerce.reason || commerce.reason === "payment_limit") {
       return {

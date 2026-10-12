@@ -77,7 +77,6 @@ function commercials(input: QuoteMessageInput) {
     perUnit: total && quantity && unit === "units" ? total / quantity : null,
     advance: total ? (total * percent) / 100 : null,
     balance: total ? (total * (100 - percent)) / 100 : null,
-    promo: item.variant_selections?.promotion_code || null,
     link: /^https:\/\//.test(String(input.paymentLink || "")) ? String(input.paymentLink) : null,
   };
 }
@@ -109,7 +108,6 @@ export function buildQuoteEmail(input: QuoteMessageInput) {
     ...(c.total
       ? [`Quoted price: ${inr(c.total)}${c.perUnit ? ` (${inrUnit(c.perUnit)} per unit)` : ""}`]
       : [`Quoted price: to be confirmed`]),
-    ...(c.promo ? [`Promotion code: ${c.promo}`] : []),
     `GST: extra, as applicable`,
     `Delivery charges: extra, billed at actuals`,
     ...(input.delivery ? [`Estimated delivery: ${input.delivery}`] : []),

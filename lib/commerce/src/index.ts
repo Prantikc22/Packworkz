@@ -3,6 +3,10 @@ export const GST_RATE = 0.18;
 export const TARGET_PRODUCT_GROSS_MARGIN = 0.35;
 export const LAUNCH_PROMOTION_CODE = "PACK7";
 export const LAUNCH_PROMOTION_RATE = 0.07;
+// PACK7 is switched off: no code is applied at checkout and list prices are not
+// grossed up for it. Flip to true to bring the launch saving back.
+export const LAUNCH_PROMOTION_ENABLED = false;
+const ACTIVE_PROMOTION_RATE = LAUNCH_PROMOTION_ENABLED ? LAUNCH_PROMOTION_RATE : 0;
 export const LAUNCH_PROMOTION_MONTHLY_LIMIT = 100;
 // Supplier quotes are loaded with expected rejection/wastage (3%), inward
 // freight (3%) and production packing/handling (2%) before margin is tested.
@@ -245,7 +249,7 @@ export function getEffectiveCommerceTiers(skuCode: string): CommerceTier[] {
     const landedCost = costAtQuantity(skuCode, tier.minQty);
     const marginFloor = landedCost === undefined ? tier.unitPrice : roundUpCurrency(landedCost / (1 - TARGET_PRODUCT_GROSS_MARGIN));
     const increasedPrice = Math.max(tier.unitPrice, marginFloor) + UNIT_PRICE_INCREASE_RUPEES;
-    const launchSafeFloor = MINIMUM_NET_UNIT_PRICE_RUPEES / (1 - LAUNCH_PROMOTION_RATE);
+    const launchSafeFloor = MINIMUM_NET_UNIT_PRICE_RUPEES / (1 - ACTIVE_PROMOTION_RATE);
     return { ...tier, unitPrice: roundUpCurrency(Math.max(increasedPrice, launchSafeFloor)) };
   });
 }
@@ -321,7 +325,7 @@ export function calculateCommerceEstimate(input: CommerceEstimateInput): Commerc
   const sizedLandedUnitCost = landedUnitCost === undefined ? undefined : Number((landedUnitCost * selectedSize.priceMultiplier * configurationMultiplier).toFixed(2));
   const baselineTierPrice = Math.max(0, tier.unitPrice - UNIT_PRICE_INCREASE_RUPEES);
   const sizedTierPrice = baselineTierPrice * selectedSize.priceMultiplier * configurationMultiplier + UNIT_PRICE_INCREASE_RUPEES;
-  const promotionCode = input.promotionCode?.toUpperCase() === LAUNCH_PROMOTION_CODE
+  const promotionCode = LAUNCH_PROMOTION_ENABLED && input.promotionCode?.toUpperCase() === LAUNCH_PROMOTION_CODE
     ? LAUNCH_PROMOTION_CODE
     : undefined;
   const promotionRate = promotionCode ? LAUNCH_PROMOTION_RATE : 0;

@@ -11,6 +11,7 @@ import { createConfiguredCartItem, useCart } from "@/lib/cart";
 import {
   COMMERCE_PRODUCTS,
   LAUNCH_PROMOTION_CODE,
+  LAUNCH_PROMOTION_ENABLED,
   RAZORPAY_PAYMENT_LIMIT_RUPEES,
   formatMeasurementInCm,
   getMinimumQuantityForConfiguration,
@@ -1067,7 +1068,7 @@ const maxSelfServeQuantity = selectedSku ? getMaxSelfServeQuantity(selectedSku) 
           artwork_file_url: artworkFileUrl || undefined,
           variant_selections: {
             ...variantSelections,
-            promotion_code: LAUNCH_PROMOTION_CODE,
+            ...(LAUNCH_PROMOTION_ENABLED ? { promotion_code: LAUNCH_PROMOTION_CODE } : {}),
           },
           custom_specs: buildCustomSpecs(),
           sample_requested: false,

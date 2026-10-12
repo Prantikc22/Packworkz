@@ -12,6 +12,7 @@ import {
   formatMeasurementInCm,
   getEffectiveCommerceTiers,
   getMinimumQuantityForConfiguration,
+  LAUNCH_PROMOTION_ENABLED,
 } from "./index.ts";
 
 const configurationScenarios = [
@@ -71,7 +72,7 @@ test("every self-serve tier, size and configuration preserves the product margin
             `${product.code}/${productSize.code}/${quantity} returned ${estimate.grossMarginRate}`,
           );
           assert.ok(
-            estimate.unitPrice * (1 - LAUNCH_PROMOTION_RATE) >= MINIMUM_NET_UNIT_PRICE_RUPEES,
+            estimate.unitPrice * (1 - (LAUNCH_PROMOTION_ENABLED ? LAUNCH_PROMOTION_RATE : 0)) >= MINIMUM_NET_UNIT_PRICE_RUPEES,
             `${product.code}/${productSize.code}/${quantity} fell below the ₹${MINIMUM_NET_UNIT_PRICE_RUPEES} net floor`,
           );
           checked += 1;
@@ -94,7 +95,7 @@ test("configuration changes the effective price without weakening margin", () =>
   assert.ok((configured.grossMarginRate ?? 0) >= TARGET_PRODUCT_GROSS_MARGIN);
 });
 
-test("the launch offer is applied while preserving product margin", () => {
+test("PACK7 is ignored at checkout while the launch offer is switched off", () => {
   const estimate = calculateCommerceEstimate({
     skuCode: "LC-816",
     quantity: 25,
@@ -103,11 +104,12 @@ test("the launch offer is applied while preserving product margin", () => {
     delivery: "standard",
     promotionCode: LAUNCH_PROMOTION_CODE,
   });
-  assert.equal(estimate.promotionCode, LAUNCH_PROMOTION_CODE);
-  assert.ok(estimate.discount > 0);
+  assert.equal(LAUNCH_PROMOTION_ENABLED, false);
+  assert.equal(estimate.promotionCode, undefined);
+  assert.equal(estimate.discount, 0);
   assert.ok((estimate.grossMarginRate ?? 0) >= TARGET_PRODUCT_GROSS_MARGIN);
   assert.equal(estimate.logistics, 99);
-  assert.ok(estimate.total < 350, `Expected a competitive 25-label checkout after the requested uplift, got ${estimate.total}`);
+  assert.ok(estimate.total < 350, `Expected a competitive 25-label checkout, got ${estimate.total}`);
 });
 
 test("foodservice branding uses honest production minimums", () => {

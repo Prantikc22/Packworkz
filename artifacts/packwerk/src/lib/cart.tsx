@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import type { CatalogSku } from "@/lib/catalog";
-import { COMMERCE_PRODUCTS, LAUNCH_PROMOTION_CODE, calculateCommerceCartEstimate } from "@workspace/commerce";
+import { COMMERCE_PRODUCTS, LAUNCH_PROMOTION_CODE, LAUNCH_PROMOTION_ENABLED, calculateCommerceCartEstimate } from "@workspace/commerce";
 import { calculateOrderEstimate } from "@/lib/pricing";
 import { getCatalogImage, requiresQuote } from "@/lib/catalog";
 import { formatRupeeRange, getIndicativePrice } from "@/lib/indicative-pricing";
@@ -122,7 +122,7 @@ export function getCartCheckoutDecision(rows: Array<{ item: CartItem; sku: Catal
     artwork: item.artworkOption || "upload",
     delivery: item.deliveryOption || "standard",
     configuration: item.variantSelections,
-    promotionCode: LAUNCH_PROMOTION_CODE,
+    promotionCode: (LAUNCH_PROMOTION_ENABLED ? LAUNCH_PROMOTION_CODE : undefined),
   })));
   const hasManagedItem = rows.some(({ item, sku }) => (
     sku.publicBuyingPath !== "instant" || requiresQuote(sku, item.quantity)
@@ -140,7 +140,7 @@ export function getCartCheckoutDecision(rows: Array<{ item: CartItem; sku: Catal
 export function getCartEstimate(item: CartItem, sku: CatalogSku) {
   return calculateOrderEstimate(sku, item.quantity, item.deliveryOption || "standard", item.artworkOption || "upload", item.sizeCode, {
     ...item.variantSelections,
-    promotion_code: LAUNCH_PROMOTION_CODE,
+    ...(LAUNCH_PROMOTION_ENABLED ? { promotion_code: LAUNCH_PROMOTION_CODE } : {}),
   });
 }
 

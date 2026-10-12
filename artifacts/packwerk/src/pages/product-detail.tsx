@@ -19,6 +19,7 @@ import { trackMarketingEvent } from "@/lib/analytics";
 import {
   COMMERCE_PRODUCTS,
   LAUNCH_PROMOTION_CODE,
+  LAUNCH_PROMOTION_ENABLED,
   RAZORPAY_PAYMENT_LIMIT_RUPEES,
   formatMeasurementInCm,
   getMinimumQuantityForConfiguration,
@@ -274,7 +275,7 @@ function ProductBuilder({ product }: { product: CatalogSku }) {
 
           <div className="pb-price">
             <div className="pb-price-main">{priceHeadline}</div>
-            <p>{hasExactPrice ? <>Launch price incl. {LAUNCH_PROMOTION_CODE} saving · MOQ {minimumQuantity.toLocaleString("en-IN")}</> : <>Market-based estimate · MOQ {minimumQuantity.toLocaleString("en-IN")} · pay nothing until you approve</>}</p>
+            <p>{hasExactPrice ? <>{LAUNCH_PROMOTION_ENABLED ? <>Launch price incl. {LAUNCH_PROMOTION_CODE} saving · </> : <>Online price · </>}MOQ {minimumQuantity.toLocaleString("en-IN")}</> : <>Market-based estimate · MOQ {minimumQuantity.toLocaleString("en-IN")} · pay nothing until you approve</>}</p>
           </div>
 
           {/* 1. Size */}
