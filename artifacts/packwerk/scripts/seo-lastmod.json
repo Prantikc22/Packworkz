@@ -1,1006 +1,1034 @@
 {
   "/": {
-    "hash": "806eb5b43869f804",
-    "date": "2026-10-08"
+    "hash": "10e8e2b47350d508",
+    "date": "2026-10-12"
   },
   "/about": {
-    "hash": "4a9c79d176b6a897",
-    "date": "2026-10-08"
+    "hash": "1f6dbe75d4a2b18b",
+    "date": "2026-10-12"
+  },
+  "/calculators": {
+    "hash": "88f4c387609fee0a",
+    "date": "2026-10-12"
+  },
+  "/calculators/bottle-jar-price": {
+    "hash": "77c38cd00aff8b73",
+    "date": "2026-10-12"
+  },
+  "/calculators/box-price": {
+    "hash": "f38e996fca9880d9",
+    "date": "2026-10-12"
+  },
+  "/calculators/label-price": {
+    "hash": "b7fe77bc59c4a117",
+    "date": "2026-10-12"
+  },
+  "/calculators/mailer-bag-price": {
+    "hash": "67d857cd965d47fa",
+    "date": "2026-10-12"
+  },
+  "/calculators/pouch-price": {
+    "hash": "0f1b8f9b3024f539",
+    "date": "2026-10-12"
+  },
+  "/calculators/volumetric-weight": {
+    "hash": "14e4f45c511d792d",
+    "date": "2026-10-12"
   },
   "/careers": {
-    "hash": "9704abad61b09d00",
-    "date": "2026-10-08"
+    "hash": "049d0869506f82d7",
+    "date": "2026-10-12"
   },
   "/circular": {
-    "hash": "97e8f0ed558c46b3",
-    "date": "2026-10-08"
+    "hash": "12d4651c2443f1a6",
+    "date": "2026-10-12"
   },
   "/configure": {
-    "hash": "8f1cb0fbf6cea888",
-    "date": "2026-10-08"
+    "hash": "3f7fc78f96cdf09a",
+    "date": "2026-10-12"
   },
   "/contact": {
-    "hash": "67a3f3aa9bc5ab64",
-    "date": "2026-10-08"
+    "hash": "99db4a08259fde3c",
+    "date": "2026-10-12"
   },
   "/design": {
-    "hash": "a38b260445d7eaa2",
-    "date": "2026-10-08"
+    "hash": "cf69f7dc3f1688cd",
+    "date": "2026-10-12"
   },
   "/enterprise": {
-    "hash": "8724894ce1055304",
-    "date": "2026-10-08"
+    "hash": "8b018f26095fb0fd",
+    "date": "2026-10-12"
   },
   "/how-it-works": {
-    "hash": "6e0b6bd662254842",
-    "date": "2026-10-08"
+    "hash": "0063f93afd285ee4",
+    "date": "2026-10-12"
   },
   "/industries": {
-    "hash": "0840be67dd28a6df",
-    "date": "2026-10-08"
+    "hash": "649e92a72648b4d8",
+    "date": "2026-10-12"
   },
   "/industries/beauty": {
-    "hash": "4b93c416b73e395d",
-    "date": "2026-10-08"
+    "hash": "e690cd76fc82628a",
+    "date": "2026-10-12"
   },
   "/industries/d2c": {
-    "hash": "8297747aaa7a2477",
-    "date": "2026-10-08"
+    "hash": "0013642777134007",
+    "date": "2026-10-12"
   },
   "/industries/electronics": {
-    "hash": "66fbb0af69adae16",
-    "date": "2026-10-08"
+    "hash": "d47b354b57fe68ee",
+    "date": "2026-10-12"
   },
   "/industries/exports": {
-    "hash": "7e4929f0be06a882",
-    "date": "2026-10-08"
+    "hash": "963e7b4d64e5aadc",
+    "date": "2026-10-12"
   },
   "/industries/fmcg": {
-    "hash": "bb9a1213cee934cd",
-    "date": "2026-10-08"
+    "hash": "07c2a00a06f0fc81",
+    "date": "2026-10-12"
   },
   "/industries/food": {
-    "hash": "db0ec620573def97",
-    "date": "2026-10-08"
+    "hash": "9376461c07606d5e",
+    "date": "2026-10-12"
   },
   "/industries/luxury": {
-    "hash": "703b99247224ba23",
-    "date": "2026-10-08"
+    "hash": "5c72240180557691",
+    "date": "2026-10-12"
   },
   "/industries/pharma": {
-    "hash": "d0b4ae6cacd6af3d",
-    "date": "2026-10-08"
+    "hash": "58ab6191cdc80636",
+    "date": "2026-10-12"
   },
   "/machinery": {
-    "hash": "95be3893008b0efd",
-    "date": "2026-10-08"
+    "hash": "bffc19af96afffe0",
+    "date": "2026-10-12"
   },
   "/manufacturers": {
-    "hash": "0d741daf67b82377",
-    "date": "2026-10-08"
+    "hash": "14b3bde0b7bbae36",
+    "date": "2026-10-12"
   },
   "/manufacturers/a-tosh-and-sons": {
-    "hash": "b23d09dfa90a847d",
+    "hash": "9898847642e09296",
     "date": "2026-10-05"
   },
   "/manufacturers/aadhunik-ayurveda": {
-    "hash": "886a6df9d66bda25",
+    "hash": "7abed54b934d18f0",
     "date": "2026-10-05"
   },
   "/manufacturers/aditya-food-product": {
-    "hash": "d5465b7dd2c09f19",
+    "hash": "8325e7eaac335905",
     "date": "2026-10-05"
   },
   "/manufacturers/adroit-molecules": {
-    "hash": "5c96889a426b4ffc",
+    "hash": "7a26837408f9dce8",
     "date": "2026-10-05"
   },
   "/manufacturers/ag-organica": {
-    "hash": "28469b3b17abe7bc",
+    "hash": "4f97bb8102eee0ae",
     "date": "2026-10-05"
   },
   "/manufacturers/agrochem-clean-n-care": {
-    "hash": "89dd30bf3e935360",
+    "hash": "4546148c7de8a467",
     "date": "2026-10-05"
   },
   "/manufacturers/akums": {
-    "hash": "d6e784bc6cb27f6d",
+    "hash": "6970b1d5068b5b51",
     "date": "2026-10-07"
   },
   "/manufacturers/al-moin-exports": {
-    "hash": "f99d46383f9791ec",
+    "hash": "2f48f56f3f8dc2a6",
     "date": "2026-10-05"
   },
   "/manufacturers/amhygiene": {
-    "hash": "9dd85c2ca55458a4",
+    "hash": "e98cd9f9559768a8",
     "date": "2026-10-07"
   },
   "/manufacturers/anant-jeet-nutriments": {
-    "hash": "b194cc2ab6d4e137",
+    "hash": "ddd9d06eb09f9254",
     "date": "2026-10-05"
   },
   "/manufacturers/aquapop-bottlers": {
-    "hash": "271139a3136194be",
+    "hash": "bcfbe56afb192da6",
     "date": "2026-10-05"
   },
   "/manufacturers/arise-cosmetic": {
-    "hash": "30394980a5adb952",
+    "hash": "f0434301e70b2e97",
     "date": "2026-10-05"
   },
   "/manufacturers/ascovita-healthcare": {
-    "hash": "29dcc50a76be7327",
+    "hash": "017b648233819164",
     "date": "2026-10-07"
   },
   "/manufacturers/aydis-labs": {
-    "hash": "6af3986263a04810",
+    "hash": "ff58e0604fd684c7",
     "date": "2026-10-05"
   },
   "/manufacturers/ayika-sciences": {
-    "hash": "128ef7d60ca9e658",
+    "hash": "89eafd5effc99489",
     "date": "2026-10-05"
   },
   "/manufacturers/biovencer-healthcare": {
-    "hash": "dfc00f3b80a8f855",
+    "hash": "621659f8ffeff290",
     "date": "2026-10-05"
   },
   "/manufacturers/bo-international": {
-    "hash": "ceb78da90849edcd",
+    "hash": "7581424bf7ac1339",
     "date": "2026-10-05"
   },
   "/manufacturers/cacobean-chocolatier": {
-    "hash": "9db35a6c61b451a4",
+    "hash": "ea40358222bb9ccb",
     "date": "2026-10-05"
   },
   "/manufacturers/ccl-products": {
-    "hash": "2efa162c38497fc1",
+    "hash": "4d8939c06420b8fc",
     "date": "2026-10-07"
   },
   "/manufacturers/cosmetify": {
-    "hash": "54c91448211be149",
+    "hash": "1fe20dad65300bcf",
     "date": "2026-10-07"
   },
   "/manufacturers/crn-foods": {
-    "hash": "6d528dd9c2a26ea6",
+    "hash": "47a04def310b1bc8",
     "date": "2026-10-05"
   },
   "/manufacturers/dazzler-confectionery": {
-    "hash": "681b1a5ab1ae9ee2",
+    "hash": "59bfe6f824bf9bd4",
     "date": "2026-10-07"
   },
   "/manufacturers/deepam-industries": {
-    "hash": "eadacacd5a875897",
+    "hash": "6350911d860e5970",
     "date": "2026-10-07"
   },
   "/manufacturers/dermat-india": {
-    "hash": "ed31d2ed44b87b10",
+    "hash": "f6bfb0e78c3c9fd3",
     "date": "2026-10-05"
   },
   "/manufacturers/dhiman-foods": {
-    "hash": "607a5efcec2ffad3",
+    "hash": "f69bbd67924a935f",
     "date": "2026-10-07"
   },
   "/manufacturers/dr-asma-herbals": {
-    "hash": "1ca21895344c3e99",
+    "hash": "15b564e18d54cdf9",
     "date": "2026-10-05"
   },
   "/manufacturers/elvita-foods": {
-    "hash": "26a1abcc82ef3500",
+    "hash": "e53eeba14aff8582",
     "date": "2026-10-05"
   },
   "/manufacturers/ess-pee-quality-products": {
-    "hash": "b8e2ae358c7c05f7",
+    "hash": "8d105b3ad567ef16",
     "date": "2026-10-07"
   },
   "/manufacturers/fermentis-life-sciences": {
-    "hash": "c1b991aa9a8c27c5",
+    "hash": "1f743b7e8e292034",
     "date": "2026-10-05"
   },
   "/manufacturers/fibro-foods": {
-    "hash": "ec90a745b2dbd43a",
+    "hash": "bc1c5235bdc6aefb",
     "date": "2026-10-07"
   },
   "/manufacturers/food-innovators": {
-    "hash": "6846c7e451018bce",
+    "hash": "3fd225c4474479ba",
     "date": "2026-10-05"
   },
   "/manufacturers/foodsure": {
-    "hash": "8e1a345886172774",
+    "hash": "d1a1a19c576e6116",
     "date": "2026-10-05"
   },
   "/manufacturers/gdm-nutraceuticals": {
-    "hash": "ccb8f940a804637c",
+    "hash": "af058edbe6aeb619",
     "date": "2026-10-07"
   },
   "/manufacturers/harvestia-group": {
-    "hash": "6c1af3ea9fd3f50e",
+    "hash": "9e92621a88f36b09",
     "date": "2026-10-05"
   },
   "/manufacturers/hcp-wellness": {
-    "hash": "30b191b411770f71",
+    "hash": "7dc94e6732e246e1",
     "date": "2026-10-05"
   },
   "/manufacturers/huk-natural": {
-    "hash": "ca0435d2567086b1",
+    "hash": "fd223c09f2495691",
     "date": "2026-10-05"
   },
   "/manufacturers/innomalous-pet-food": {
-    "hash": "b82eb9dbb286ab5b",
+    "hash": "7958c90ab266e64c",
     "date": "2026-10-05"
   },
   "/manufacturers/ishan-snax": {
-    "hash": "fe566ee4c1844666",
+    "hash": "39c6f25f5a94f50b",
     "date": "2026-10-05"
   },
   "/manufacturers/just-bite-foods": {
-    "hash": "a783e57694ce16ff",
+    "hash": "ff951f3bce5e332c",
     "date": "2026-10-05"
   },
   "/manufacturers/koshambh": {
-    "hash": "3f49a708d3c782e7",
+    "hash": "157a0195851a5c77",
     "date": "2026-10-05"
   },
   "/manufacturers/krone-biocare": {
-    "hash": "ce64b6ceb196e8c9",
+    "hash": "bd6bdd1a3a333a84",
     "date": "2026-10-05"
   },
   "/manufacturers/ld-foods": {
-    "hash": "d0c414906d06899d",
+    "hash": "7266b53c49527481",
     "date": "2026-10-07"
   },
   "/manufacturers/lerel-health-foods": {
-    "hash": "64cc066d6f9bfc63",
+    "hash": "b5380076bdf7fd5b",
     "date": "2026-10-05"
   },
   "/manufacturers/lifevision-cosmetics": {
-    "hash": "7395934342be2a17",
+    "hash": "cf717828397cc593",
     "date": "2026-10-07"
   },
   "/manufacturers/lotus-chocolate": {
-    "hash": "dadd6726fce6b4d9",
+    "hash": "8b7a1872f313d7b3",
     "date": "2026-10-07"
   },
   "/manufacturers/madhu-jayanti-international": {
-    "hash": "f74995eb631dcc5a",
+    "hash": "73a3293f2b93d2f4",
     "date": "2026-10-07"
   },
   "/manufacturers/medkyn-lifecare": {
-    "hash": "73fa287d000c0a3f",
+    "hash": "8c3f6c05e10d2d07",
     "date": "2026-10-07"
   },
   "/manufacturers/mera-kisan": {
-    "hash": "c0954c9bd3ba622c",
+    "hash": "98b779a2c0a23c84",
     "date": "2026-10-07"
   },
   "/manufacturers/mor-medics": {
-    "hash": "960ced6eb897b850",
+    "hash": "445e339e73b567af",
     "date": "2026-10-07"
   },
   "/manufacturers/mothers-spices": {
-    "hash": "22393d5bd523f2dc",
+    "hash": "9c4c5f743dbff2bd",
     "date": "2026-10-05"
   },
   "/manufacturers/multipack": {
-    "hash": "1e7d89b1aa45b7a5",
+    "hash": "d8c2455866355fe7",
     "date": "2026-10-05"
   },
   "/manufacturers/munnangi-easy-eats": {
-    "hash": "db83dcd06df24eff",
+    "hash": "719ced16426da925",
     "date": "2026-10-07"
   },
   "/manufacturers/neerava-hygiene": {
-    "hash": "03d59a849b56b4b2",
+    "hash": "b8c2aa389b85ce54",
     "date": "2026-10-05"
   },
   "/manufacturers/nilind-herbals": {
-    "hash": "3d8241c56c4c1bac",
+    "hash": "4c66030775e455a5",
     "date": "2026-10-05"
   },
   "/manufacturers/nuflower-foods": {
-    "hash": "7fba7c7646bb1560",
+    "hash": "7c3b3ea1d945582f",
     "date": "2026-10-05"
   },
   "/manufacturers/nukind-healthcare": {
-    "hash": "ce822b36263b910d",
+    "hash": "763087c43d4a78be",
     "date": "2026-10-05"
   },
   "/manufacturers/numix": {
-    "hash": "7820ed329edb9188",
+    "hash": "b906323cc83ce7e4",
     "date": "2026-10-07"
   },
   "/manufacturers/organico-beverages": {
-    "hash": "eaf0fac9914d6e9e",
+    "hash": "ea7c0f055836dd5f",
     "date": "2026-10-07"
   },
   "/manufacturers/pappadeli": {
-    "hash": "6b522746243701a7",
+    "hash": "20865380da9ef739",
     "date": "2026-10-07"
   },
   "/manufacturers/pine-herbals-india": {
-    "hash": "5c8838d470b25825",
+    "hash": "ec0f8e186ceb30f1",
     "date": "2026-10-05"
   },
   "/manufacturers/qoot-food": {
-    "hash": "67c797f246c3d68f",
+    "hash": "a904f225e55177a2",
     "date": "2026-10-05"
   },
   "/manufacturers/radiance-overseas": {
-    "hash": "6c203a0cf215fe0f",
+    "hash": "86cb1d726655c127",
     "date": "2026-10-05"
   },
   "/manufacturers/regal-kitchen-foods": {
-    "hash": "c98e0efe24c4b317",
+    "hash": "903ecdf7021c965f",
     "date": "2026-10-05"
   },
   "/manufacturers/rigil-healthcare": {
-    "hash": "2ddba8bac486873f",
+    "hash": "1d80da0c8cb08f99",
     "date": "2026-10-07"
   },
   "/manufacturers/sanskar-ayush-medicare": {
-    "hash": "e916e5a860617afc",
+    "hash": "9f6b43343a41b0da",
     "date": "2026-10-07"
   },
   "/manufacturers/sapl-pets": {
-    "hash": "9de54227142bb88e",
+    "hash": "4d739dcfd9937ee1",
     "date": "2026-10-05"
   },
   "/manufacturers/sgs-herbals": {
-    "hash": "10e1f72fc9de2b3a",
+    "hash": "3fa3db24a8d6a2fd",
     "date": "2026-10-07"
   },
   "/manufacturers/shantis": {
-    "hash": "cb41e02d956803ef",
+    "hash": "f92ebcf4482e9ded",
     "date": "2026-10-07"
   },
   "/manufacturers/shimlared": {
-    "hash": "eef6ad1026529adb",
+    "hash": "4d499b2ba5fca3f3",
     "date": "2026-10-07"
   },
   "/manufacturers/shree-shanker-ayurvedic-pharmacy": {
-    "hash": "9287c0f6fcda84d7",
+    "hash": "5297a03ff6a408bb",
     "date": "2026-10-07"
   },
   "/manufacturers/shyam-g-snacks": {
-    "hash": "6176c5d4bbcce212",
+    "hash": "73b8f435a20c7bdd",
     "date": "2026-10-05"
   },
   "/manufacturers/sonya-foods": {
-    "hash": "f76a850aacb7b69c",
+    "hash": "15c9ae9e5704fd62",
     "date": "2026-10-05"
   },
   "/manufacturers/swan-sweets": {
-    "hash": "faa8c9a221623e33",
+    "hash": "13313be1259667c2",
     "date": "2026-10-05"
   },
   "/manufacturers/swara-baby-products": {
-    "hash": "7166099f4a6811b1",
+    "hash": "d81497bb5bf6df61",
     "date": "2026-10-05"
   },
   "/manufacturers/the-rich-daddy-international": {
-    "hash": "3034649dd9a134c6",
+    "hash": "cfc5069772943d1d",
     "date": "2026-10-07"
   },
   "/manufacturers/tummyfriendly-foods": {
-    "hash": "16b80a64c556e02d",
+    "hash": "42186185517a0d9d",
     "date": "2026-10-07"
   },
   "/manufacturers/vimson-derma": {
-    "hash": "22d8e479f7e9c8f3",
+    "hash": "ccb3642ea6885799",
     "date": "2026-10-07"
   },
   "/manufacturers/vintage-coffee-beverages": {
-    "hash": "ab1e0c779e7cb1a0",
+    "hash": "91b8cfb6d9296534",
     "date": "2026-10-07"
   },
   "/manufacturers/vlc-spices": {
-    "hash": "43f0ab8280053dbb",
+    "hash": "434815b29791479d",
     "date": "2026-10-07"
   },
   "/manufacturers/yew-supplements": {
-    "hash": "54399a659603bb7b",
+    "hash": "e8a745b71bb06d10",
     "date": "2026-10-05"
   },
   "/manufacturers/zoic-cosmetics": {
-    "hash": "5e5229e3a5f4a81a",
+    "hash": "d7160f3d30dc63d5",
     "date": "2026-10-07"
   },
   "/manufacturing": {
-    "hash": "776fd431225f2c52",
-    "date": "2026-10-08"
+    "hash": "750a0c30b08668e4",
+    "date": "2026-10-12"
   },
   "/manufacturing/ayurveda": {
-    "hash": "d615426b423819e7",
-    "date": "2026-10-08"
+    "hash": "fa6b41b44a301c23",
+    "date": "2026-10-12"
   },
   "/manufacturing/baby-care": {
-    "hash": "1146eb2fad942d52",
-    "date": "2026-10-08"
+    "hash": "6b6ef6b609e2bbe7",
+    "date": "2026-10-12"
   },
   "/manufacturing/bakery": {
-    "hash": "d83e7dbb6f1f5307",
-    "date": "2026-10-08"
+    "hash": "4f12018cebd30a9f",
+    "date": "2026-10-12"
   },
   "/manufacturing/bars": {
-    "hash": "2c09646fcc7476fa",
-    "date": "2026-10-08"
+    "hash": "5606feb9e27e7377",
+    "date": "2026-10-12"
   },
   "/manufacturing/beverages": {
-    "hash": "4c32ddee53f31def",
-    "date": "2026-10-08"
+    "hash": "727c71bfbfbfb754",
+    "date": "2026-10-12"
   },
   "/manufacturing/coffee-tea": {
-    "hash": "29d2e3ec20a4411a",
-    "date": "2026-10-08"
+    "hash": "e29cd697618c8b7c",
+    "date": "2026-10-12"
   },
   "/manufacturing/confectionery": {
-    "hash": "9be0f4705b41f8c6",
-    "date": "2026-10-08"
+    "hash": "b05a38b9ed421ac0",
+    "date": "2026-10-12"
   },
   "/manufacturing/haircare": {
-    "hash": "3d93840a6c135b8a",
-    "date": "2026-10-08"
+    "hash": "893b8e97c8db3196",
+    "date": "2026-10-12"
   },
   "/manufacturing/home-care": {
-    "hash": "bbc5316ca92fe502",
-    "date": "2026-10-08"
+    "hash": "2695ece9f196421a",
+    "date": "2026-10-12"
   },
   "/manufacturing/launch": {
-    "hash": "fb3013a2bf5e6e9b",
-    "date": "2026-10-08"
+    "hash": "5ec43d79e253f493",
+    "date": "2026-10-12"
   },
   "/manufacturing/list-your-factory": {
-    "hash": "18bcb5d1b1ce66e6",
-    "date": "2026-10-08"
+    "hash": "659e398d519260d9",
+    "date": "2026-10-12"
   },
   "/manufacturing/nutraceuticals": {
-    "hash": "dfc5e9607b2c0954",
-    "date": "2026-10-08"
+    "hash": "6cb10d0fd87ea19a",
+    "date": "2026-10-12"
   },
   "/manufacturing/pet-food": {
-    "hash": "c51a234f9cee0106",
-    "date": "2026-10-08"
+    "hash": "fa24b4f03eb055ea",
+    "date": "2026-10-12"
   },
   "/manufacturing/ready-to-eat": {
-    "hash": "ec269f192424a376",
-    "date": "2026-10-08"
+    "hash": "df091d9efd7567d3",
+    "date": "2026-10-12"
   },
   "/manufacturing/skincare": {
-    "hash": "2fa33bfb64dbf612",
-    "date": "2026-10-08"
+    "hash": "24028627d9233a03",
+    "date": "2026-10-12"
   },
   "/manufacturing/snacks": {
-    "hash": "03b05a1b6def6c23",
-    "date": "2026-10-08"
+    "hash": "db01ec14111ccad8",
+    "date": "2026-10-12"
   },
   "/manufacturing/spices": {
-    "hash": "2b24db92fa135547",
-    "date": "2026-10-08"
+    "hash": "4b2687b3fad7dc35",
+    "date": "2026-10-12"
   },
   "/manufacturing/spreads-sauces": {
-    "hash": "dc404e4f3bcd07c9",
-    "date": "2026-10-08"
+    "hash": "85f2224010e190e7",
+    "date": "2026-10-12"
   },
   "/mockup-studio": {
-    "hash": "1aaff2cce2735acf",
-    "date": "2026-10-08"
+    "hash": "d7de9486bcfa0ed4",
+    "date": "2026-10-12"
   },
   "/network": {
-    "hash": "fd1a8dde18779c1f",
-    "date": "2026-10-08"
+    "hash": "74723ae135ec3eee",
+    "date": "2026-10-12"
   },
   "/packaging": {
-    "hash": "cb154662e01b6656",
-    "date": "2026-10-08"
+    "hash": "845c2e25a577d879",
+    "date": "2026-10-12"
   },
   "/packaging/apparel": {
-    "hash": "58062332efe84a03",
-    "date": "2026-10-08"
+    "hash": "dcb73647d3cc50b4",
+    "date": "2026-10-12"
   },
   "/packaging/ayurveda": {
-    "hash": "1a36c0457fced33c",
-    "date": "2026-10-08"
+    "hash": "65c0677d87fe576f",
+    "date": "2026-10-12"
   },
   "/packaging/baby-care": {
-    "hash": "4cc6ecc82a603225",
-    "date": "2026-10-08"
+    "hash": "657dadaec846c5bb",
+    "date": "2026-10-12"
   },
   "/packaging/bakery": {
-    "hash": "671fe0b675fee0a2",
-    "date": "2026-10-08"
+    "hash": "a44a3a1aa283910f",
+    "date": "2026-10-12"
   },
   "/packaging/beverages": {
-    "hash": "bfb33f567c3bbc11",
-    "date": "2026-10-08"
+    "hash": "8e0e4e3f4cb8cb44",
+    "date": "2026-10-12"
   },
   "/packaging/chocolates-sweets": {
-    "hash": "8451c7cdef997e77",
-    "date": "2026-10-08"
+    "hash": "23be147a4518f83f",
+    "date": "2026-10-12"
   },
   "/packaging/coffee": {
-    "hash": "7dc847d48588b0db",
-    "date": "2026-10-08"
+    "hash": "ff62dd113cb19a03",
+    "date": "2026-10-12"
   },
   "/packaging/creams-lotions": {
-    "hash": "e5b770b1e891632a",
-    "date": "2026-10-08"
+    "hash": "9333a3ebb7f71a99",
+    "date": "2026-10-12"
   },
   "/packaging/ecommerce-shipping": {
-    "hash": "3f22f3310572345e",
-    "date": "2026-10-08"
+    "hash": "b72180be13608c39",
+    "date": "2026-10-12"
   },
   "/packaging/gift-hampers": {
-    "hash": "be54286662cbe17e",
-    "date": "2026-10-08"
+    "hash": "ce2717a0fb07d380",
+    "date": "2026-10-12"
   },
   "/packaging/haircare": {
-    "hash": "0d33db1631e0936d",
-    "date": "2026-10-08"
+    "hash": "b077e594359f80f3",
+    "date": "2026-10-12"
   },
   "/packaging/home-cleaning": {
-    "hash": "4601a30ec1f31bdb",
-    "date": "2026-10-08"
+    "hash": "20b4c8282515d7fb",
+    "date": "2026-10-12"
   },
   "/packaging/jewellery": {
-    "hash": "9bcc860f75badcb5",
-    "date": "2026-10-08"
+    "hash": "90fab3690a82ecbe",
+    "date": "2026-10-12"
   },
   "/packaging/perfume": {
-    "hash": "c995931638ab9552",
-    "date": "2026-10-08"
+    "hash": "9e967e3d68f98428",
+    "date": "2026-10-12"
   },
   "/packaging/pet-food": {
-    "hash": "1d4cddb54f289cc8",
-    "date": "2026-10-08"
+    "hash": "2109a9fe13fe2f30",
+    "date": "2026-10-12"
   },
   "/packaging/protein-bars": {
-    "hash": "8e3b0836393d21e0",
-    "date": "2026-10-08"
+    "hash": "5061e18eb7fca658",
+    "date": "2026-10-12"
   },
   "/packaging/protein-powder": {
-    "hash": "ddf807907db49ac5",
-    "date": "2026-10-08"
+    "hash": "b30caaeb298637c3",
+    "date": "2026-10-12"
   },
   "/packaging/ready-meals": {
-    "hash": "b8bd867e81a4299c",
-    "date": "2026-10-08"
+    "hash": "ee241b783ffee814",
+    "date": "2026-10-12"
   },
   "/packaging/restaurants": {
-    "hash": "43dd1aa2e160d02c",
-    "date": "2026-10-08"
+    "hash": "46f672b7d5b688bb",
+    "date": "2026-10-12"
   },
   "/packaging/sauces-spreads": {
-    "hash": "abea7a7aae10e870",
-    "date": "2026-10-08"
+    "hash": "8c462da53090179e",
+    "date": "2026-10-12"
   },
   "/packaging/skincare": {
-    "hash": "88f69921cc322126",
-    "date": "2026-10-08"
+    "hash": "5019e802421d88e7",
+    "date": "2026-10-12"
   },
   "/packaging/snacks": {
-    "hash": "ae85a052b26f14e9",
-    "date": "2026-10-08"
+    "hash": "bab9e3176e33be1e",
+    "date": "2026-10-12"
   },
   "/packaging/spices": {
-    "hash": "c0deb9629c7242c7",
-    "date": "2026-10-08"
+    "hash": "1fc6af3d3cf0cbb5",
+    "date": "2026-10-12"
   },
   "/packaging/supplements": {
-    "hash": "0bcdca5666581682",
-    "date": "2026-10-08"
+    "hash": "22fd6bb3f06819d1",
+    "date": "2026-10-12"
   },
   "/packaging/tea": {
-    "hash": "69c41691a68eab77",
-    "date": "2026-10-08"
+    "hash": "ddc9295020f47b96",
+    "date": "2026-10-12"
   },
   "/privacy": {
-    "hash": "0d70ae9859aa2d54",
-    "date": "2026-10-08"
+    "hash": "d4303d44ed20bdec",
+    "date": "2026-10-12"
   },
   "/procurement-plan": {
-    "hash": "8db3c330581c1c91",
-    "date": "2026-10-08"
+    "hash": "a3ce2776647a1030",
+    "date": "2026-10-12"
   },
   "/products": {
-    "hash": "b76b3cffb65f3449",
-    "date": "2026-10-08"
+    "hash": "f342b2dd80f261f5",
+    "date": "2026-10-12"
   },
   "/products/airless-pump-bottle": {
-    "hash": "0c2ac1415e198057",
-    "date": "2026-10-08"
+    "hash": "0a5c766a529643fb",
+    "date": "2026-10-12"
   },
   "/products/bagasse-clamshell": {
-    "hash": "9866d285adac3b3a",
-    "date": "2026-10-08"
+    "hash": "d0a4edd5ff2286ef",
+    "date": "2026-10-12"
   },
   "/products/bubble-wrap-air-pillows": {
-    "hash": "9c52614bee81ebe3",
-    "date": "2026-10-08"
+    "hash": "2036e5a141b881f4",
+    "date": "2026-10-12"
   },
   "/products/centre-seal-fin-pouch": {
-    "hash": "84cadc189eeaf209",
-    "date": "2026-10-08"
+    "hash": "aa6ac2897480ae10",
+    "date": "2026-10-12"
   },
   "/products/clear-transparent-labels": {
-    "hash": "36ead9a3ff5ac140",
-    "date": "2026-10-08"
+    "hash": "b6a1914a2c79daf4",
+    "date": "2026-10-12"
   },
   "/products/coffee-valve-pouch": {
-    "hash": "51071a3e47e0863a",
-    "date": "2026-10-08"
+    "hash": "3d1822582320329c",
+    "date": "2026-10-12"
   },
   "/products/collapsible-rigid-box": {
-    "hash": "0d0cd6a428446845",
-    "date": "2026-10-08"
+    "hash": "97d1cfd8f2552ab1",
+    "date": "2026-10-12"
   },
   "/products/compostable-bio-paper-cups": {
-    "hash": "30b7b2b46e355727",
-    "date": "2026-10-08"
+    "hash": "967e72fdafb4e791",
+    "date": "2026-10-12"
   },
   "/products/corrugated-shipping-box": {
-    "hash": "ccfdcdda27563135",
-    "date": "2026-10-08"
+    "hash": "2b58901152c4a060",
+    "date": "2026-10-12"
   },
   "/products/cosmetic-jar": {
-    "hash": "2bee91294d5e1eef",
-    "date": "2026-10-08"
+    "hash": "31521cbafa1e457e",
+    "date": "2026-10-12"
   },
   "/products/cosmetic-tube": {
-    "hash": "e1d1aad1530a1e53",
-    "date": "2026-10-08"
+    "hash": "c611a54575a65f7a",
+    "date": "2026-10-12"
   },
   "/products/cotton-jute-drawstring-bag": {
-    "hash": "2553956b33958ce7",
-    "date": "2026-10-08"
+    "hash": "4a9dbd65d7a833e2",
+    "date": "2026-10-12"
   },
   "/products/counter-display-box": {
-    "hash": "2940c35b7d658697",
-    "date": "2026-10-08"
+    "hash": "b163a913ee2769de",
+    "date": "2026-10-12"
   },
   "/products/courier-bag": {
-    "hash": "884e084e6facbbbb",
-    "date": "2026-10-08"
+    "hash": "5b31a06e165fe63c",
+    "date": "2026-10-12"
   },
   "/products/custom-die-cut-stickers": {
-    "hash": "79813580200e0bda",
-    "date": "2026-10-08"
+    "hash": "031bf01a78d96c5b",
+    "date": "2026-10-12"
   },
   "/products/custom-pizza-box": {
-    "hash": "0c654f3a903072e8",
-    "date": "2026-10-08"
+    "hash": "f41421b2e24da4ca",
+    "date": "2026-10-12"
   },
   "/products/custom-printed-shampoo-lotion-bottles": {
-    "hash": "952b7da8edbf6c01",
-    "date": "2026-10-08"
+    "hash": "237bdd8c5aa181ec",
+    "date": "2026-10-12"
   },
   "/products/custom-printed-sustainable-cosmetic-tubes": {
-    "hash": "e58da8ebaf89ccdf",
-    "date": "2026-10-08"
+    "hash": "0a3dbfe2a9b162e9",
+    "date": "2026-10-12"
   },
   "/products/custom-shaped-pouch": {
-    "hash": "542c835aac4f0824",
-    "date": "2026-10-08"
+    "hash": "0fcaa6a11c69dc08",
+    "date": "2026-10-12"
   },
   "/products/dropper-bottle": {
-    "hash": "ae8b8beacddc7f49",
-    "date": "2026-10-08"
+    "hash": "5dd3e7e63d322eaa",
+    "date": "2026-10-12"
   },
   "/products/flat-bottom-pouch": {
-    "hash": "b445c2cd81313e1c",
-    "date": "2026-10-08"
+    "hash": "d31c0c51b4bf8a04",
+    "date": "2026-10-12"
   },
   "/products/foam-thermocol-inserts": {
-    "hash": "38c167ec8d5c88ce",
-    "date": "2026-10-08"
+    "hash": "7e586f42f38bb20c",
+    "date": "2026-10-12"
   },
   "/products/foil-special-effect-labels": {
-    "hash": "2682c52627dc1b04",
-    "date": "2026-10-08"
+    "hash": "d18c04dba036f802",
+    "date": "2026-10-12"
   },
   "/products/food-delivery-box": {
-    "hash": "c869a1fe3d6c5ced",
-    "date": "2026-10-08"
+    "hash": "d9208454f9ec57d7",
+    "date": "2026-10-12"
   },
   "/products/frosted-zipper-garment-bag": {
-    "hash": "53f4b137dfb24a32",
-    "date": "2026-10-08"
+    "hash": "21eec48a328285a9",
+    "date": "2026-10-12"
   },
   "/products/gable-handle-box": {
-    "hash": "08d527d9b1d03ad2",
-    "date": "2026-10-08"
+    "hash": "51c1c3b25268ca17",
+    "date": "2026-10-12"
   },
   "/products/glass-bottle": {
-    "hash": "5359469b4eb61b23",
-    "date": "2026-10-08"
+    "hash": "1ff867dfcf416c71",
+    "date": "2026-10-12"
   },
   "/products/greaseproof-food-wrap-paper": {
-    "hash": "f990a151aa866000",
-    "date": "2026-10-08"
+    "hash": "bf535b5a2bd951ae",
+    "date": "2026-10-12"
   },
   "/products/hang-tag-header-card": {
-    "hash": "95f05222103976cc",
-    "date": "2026-10-08"
+    "hash": "dd8d4fb4efc0e967",
+    "date": "2026-10-12"
   },
   "/products/hanging-display-box": {
-    "hash": "2ef19e4a081893e5",
-    "date": "2026-10-08"
+    "hash": "22b963ec4d3dc75c",
+    "date": "2026-10-12"
   },
   "/products/lidding-sealing-film": {
-    "hash": "269da67123294dab",
-    "date": "2026-10-08"
+    "hash": "fa0bc62590e95aa9",
+    "date": "2026-10-12"
   },
   "/products/machine-applied-roll-labels": {
-    "hash": "c16321eb57fc05ce",
-    "date": "2026-10-08"
+    "hash": "e2ee984db45a367f",
+    "date": "2026-10-12"
   },
   "/products/magnetic-closure-box": {
-    "hash": "9dd757e623d02030",
-    "date": "2026-10-08"
+    "hash": "019b87ac83db7176",
+    "date": "2026-10-12"
   },
   "/products/mailer-box": {
-    "hash": "75f02416271b2865",
-    "date": "2026-10-08"
+    "hash": "efbc62ac7cde8dc4",
+    "date": "2026-10-12"
   },
   "/products/metal-tin-can": {
-    "hash": "08dffada734b2a04",
-    "date": "2026-10-08"
+    "hash": "7d5fb84bb7f44370",
+    "date": "2026-10-12"
   },
   "/products/mithai-festive-gift-box": {
-    "hash": "97e5d4ef067fda0b",
-    "date": "2026-10-08"
+    "hash": "52c15a32bd786d70",
+    "date": "2026-10-12"
   },
   "/products/oval-paper-labels": {
-    "hash": "323f2daeca329293",
-    "date": "2026-10-08"
+    "hash": "ead272f6490202d0",
+    "date": "2026-10-12"
   },
   "/products/paper-bowls-food-containers": {
-    "hash": "65afad02b0761a81",
-    "date": "2026-10-08"
+    "hash": "2ea4f24d66df86f6",
+    "date": "2026-10-12"
   },
   "/products/paper-shipping-mailer": {
-    "hash": "ad9d49f733f40d63",
-    "date": "2026-10-08"
+    "hash": "44b267f0147924bb",
+    "date": "2026-10-12"
   },
   "/products/paper-tube": {
-    "hash": "43d8a122bcaa983a",
-    "date": "2026-10-08"
+    "hash": "8ab20f5a530da7da",
+    "date": "2026-10-12"
   },
   "/products/perfume-bottle": {
-    "hash": "3ceeda9068cd5f76",
-    "date": "2026-10-08"
+    "hash": "b6c3e08642b1cd81",
+    "date": "2026-10-12"
   },
   "/products/pillow-box": {
-    "hash": "5ec849c02f4e670d",
-    "date": "2026-10-08"
+    "hash": "687c5cfc1eb76bf2",
+    "date": "2026-10-12"
   },
   "/products/pillow-pouch": {
-    "hash": "88a4d60dbe59960c",
-    "date": "2026-10-08"
+    "hash": "4a30890eeca3baf3",
+    "date": "2026-10-12"
   },
   "/products/plastic-bottle": {
-    "hash": "1d2c69e26005b216",
-    "date": "2026-10-08"
+    "hash": "c1b46e7f32f1f4c4",
+    "date": "2026-10-12"
   },
   "/products/printed-bopp-tape": {
-    "hash": "ded96e1f51c9f591",
-    "date": "2026-10-08"
+    "hash": "9e599ceec5b0f6f2",
+    "date": "2026-10-12"
   },
   "/products/printed-packaging-roll": {
-    "hash": "f9f9f1d56fce3241",
-    "date": "2026-10-08"
+    "hash": "76a1239915a7cd09",
+    "date": "2026-10-12"
   },
   "/products/printed-paper-carrier-bag": {
-    "hash": "f784c51943f88cd7",
-    "date": "2026-10-08"
+    "hash": "7a32f7d7432021fd",
+    "date": "2026-10-12"
   },
   "/products/printed-tissue-wrapping-paper": {
-    "hash": "1d4ae049d67a55c6",
-    "date": "2026-10-08"
+    "hash": "f76ba07039f89164",
+    "date": "2026-10-12"
   },
   "/products/quad-seal-pouch": {
-    "hash": "c9f1e126df94f161",
-    "date": "2026-10-08"
+    "hash": "8e86013ed32fc5db",
+    "date": "2026-10-12"
   },
   "/products/rectangular-paper-labels": {
-    "hash": "35c856de6ff64300",
-    "date": "2026-10-08"
+    "hash": "5d3dfa3ed0f34191",
+    "date": "2026-10-12"
   },
   "/products/retort-pouch": {
-    "hash": "f0ddb496dddf8d59",
-    "date": "2026-10-08"
+    "hash": "e4d200ca64ee9f4e",
+    "date": "2026-10-12"
   },
   "/products/round-paper-labels": {
-    "hash": "4da65b987b96ac6e",
-    "date": "2026-10-08"
+    "hash": "4a9c03d4878feb56",
+    "date": "2026-10-12"
   },
   "/products/sachet-stick-pack": {
-    "hash": "749cbecaf2d198b7",
-    "date": "2026-10-08"
+    "hash": "a63eed016876b79a",
+    "date": "2026-10-12"
   },
   "/products/shrink-film-rollstock": {
-    "hash": "edd0dedcdf549038",
-    "date": "2026-10-08"
+    "hash": "9e1b118a48e5c404",
+    "date": "2026-10-12"
   },
   "/products/shrink-sleeve-label": {
-    "hash": "ff28919f849c5385",
-    "date": "2026-10-08"
+    "hash": "534b3a17e0d854a3",
+    "date": "2026-10-12"
   },
   "/products/side-gusset-pouch": {
-    "hash": "04a91a79a977c29b",
-    "date": "2026-10-08"
+    "hash": "e063dd0f012c70b3",
+    "date": "2026-10-12"
   },
   "/products/sleeve-tray-box": {
-    "hash": "649ab8d0a6d2fefe",
-    "date": "2026-10-08"
+    "hash": "4c0a182ae9184cac",
+    "date": "2026-10-12"
   },
   "/products/spout-pouch": {
-    "hash": "c7feb0454619258e",
-    "date": "2026-10-08"
+    "hash": "2089e1fb20fff500",
+    "date": "2026-10-12"
   },
   "/products/square-paper-labels": {
-    "hash": "c88bf23088d3a9f6",
-    "date": "2026-10-08"
+    "hash": "f208e09345e396c3",
+    "date": "2026-10-12"
   },
   "/products/stand-up-pouch": {
-    "hash": "bebfa6bfc04b9a11",
-    "date": "2026-10-08"
+    "hash": "6cd8c52b2ff5b2aa",
+    "date": "2026-10-12"
   },
   "/products/straight-tuck-end-carton": {
-    "hash": "8039a69b753b5faf",
-    "date": "2026-10-08"
+    "hash": "9ee5c8864a481d0e",
+    "date": "2026-10-12"
   },
   "/products/three-side-seal-pouch": {
-    "hash": "ef92b94b7b20d883",
-    "date": "2026-10-08"
+    "hash": "24534d9a71ebb117",
+    "date": "2026-10-12"
   },
   "/products/two-piece-rigid-box": {
-    "hash": "4d76aca74925f45e",
-    "date": "2026-10-08"
+    "hash": "b8715856b3030448",
+    "date": "2026-10-12"
   },
   "/products/two-side-seal-pouch": {
-    "hash": "a67b820575741bbe",
-    "date": "2026-10-08"
+    "hash": "6d63a25d0c591a78",
+    "date": "2026-10-12"
   },
   "/products/waterproof-bopp-vinyl-labels": {
-    "hash": "f4577ee5c7e0a3ca",
-    "date": "2026-10-08"
+    "hash": "c411eb49e0d102a0",
+    "date": "2026-10-12"
   },
   "/products/window-carton": {
-    "hash": "55907e4849b0da41",
-    "date": "2026-10-08"
+    "hash": "671a7a068f26d5e7",
+    "date": "2026-10-12"
   },
   "/refund": {
-    "hash": "668625ffd89e0484",
-    "date": "2026-10-08"
+    "hash": "8fe39a7981dce61e",
+    "date": "2026-10-12"
   },
   "/resources": {
-    "hash": "2abfce007c0b999c",
-    "date": "2026-10-08"
+    "hash": "8f94a5c68b6d0dda",
+    "date": "2026-10-12"
   },
   "/resources/amazon-india-packaging-requirements": {
-    "hash": "63811e6d72d8a9c9",
-    "date": "2026-10-08"
+    "hash": "42bedf4bfed3f42f",
+    "date": "2026-10-12"
   },
   "/resources/best-packaging-coffee-beans-india": {
-    "hash": "c66d917600312b3e",
-    "date": "2026-10-08"
+    "hash": "ec12a5598122c951",
+    "date": "2026-10-12"
   },
   "/resources/best-packaging-restaurants-cloud-kitchens": {
-    "hash": "d5ca4688d7915ae3",
-    "date": "2026-10-08"
+    "hash": "b6330fca85c8a809",
+    "date": "2026-10-12"
   },
   "/resources/best-packaging-snacks-material-barrier-shelf-life": {
-    "hash": "7922464e0a1ce8ca",
-    "date": "2026-10-08"
+    "hash": "c33182ea2535d322",
+    "date": "2026-10-12"
   },
   "/resources/bopp-vs-ldpe-packaging": {
-    "hash": "96a6619ce9aa053d",
-    "date": "2026-10-08"
+    "hash": "591695bba6692a92",
+    "date": "2026-10-12"
   },
   "/resources/choose-packaging-skincare-brand": {
-    "hash": "85055eb66da8288c",
-    "date": "2026-10-08"
+    "hash": "2ae771b23957355b",
+    "date": "2026-10-12"
   },
   "/resources/consolidate-packaging-vendors-supply-chain": {
-    "hash": "15246932ecad7544",
-    "date": "2026-10-08"
+    "hash": "942c48fc02fb5526",
+    "date": "2026-10-12"
   },
   "/resources/contract-manufacturer-india-guide": {
-    "hash": "4b53867f5833084f",
-    "date": "2026-10-08"
+    "hash": "b972d400a36ba504",
+    "date": "2026-10-12"
   },
   "/resources/cosmetic-packaging-india-complete-guide": {
-    "hash": "6a8fdce42457ec10",
-    "date": "2026-10-08"
+    "hash": "4971992dd9e95045",
+    "date": "2026-10-12"
   },
   "/resources/custom-packaging-cost-india-2026": {
-    "hash": "d56ccaac32380ec0",
-    "date": "2026-10-08"
+    "hash": "1002b99a5ee21e5c",
+    "date": "2026-10-12"
   },
   "/resources/custom-printed-box-cost-india": {
-    "hash": "e90e8e94ba38a2bd",
-    "date": "2026-10-08"
+    "hash": "40fc0f1ac559a4c7",
+    "date": "2026-10-12"
   },
   "/resources/custom-printed-pouch-moq-pricing": {
-    "hash": "dceda2d4791fcd2d",
-    "date": "2026-10-08"
+    "hash": "78f2f06cc9990108",
+    "date": "2026-10-12"
   },
   "/resources/d2c-brands-overpay-packaging-india": {
-    "hash": "7aa6338f4a31a627",
-    "date": "2026-10-08"
+    "hash": "d2509e3456261100",
+    "date": "2026-10-12"
   },
   "/resources/digital-vs-rotogravure-printing": {
-    "hash": "52b9ecdd66868bda",
-    "date": "2026-10-08"
+    "hash": "f786eeafdf902bdf",
+    "date": "2026-10-12"
   },
   "/resources/epr-compliance-packaging-india-2026": {
-    "hash": "391149a64bf05ebe",
-    "date": "2026-10-08"
+    "hash": "dc8861793bfcd16a",
+    "date": "2026-10-12"
   },
   "/resources/fssai-packaging-labelling-requirements-india": {
-    "hash": "31cef100ada04714",
-    "date": "2026-10-08"
+    "hash": "d511b538ef3c1105",
+    "date": "2026-10-12"
   },
   "/resources/how-much-packaging-should-startup-order": {
-    "hash": "249e31d9b4d9052a",
-    "date": "2026-10-08"
+    "hash": "1fea7fbb28e3a24c",
+    "date": "2026-10-12"
   },
   "/resources/low-moq-custom-packaging-india": {
-    "hash": "199e44dd98023a54",
-    "date": "2026-10-08"
+    "hash": "7f0b68688b42ebb5",
+    "date": "2026-10-12"
   },
   "/resources/nutraceutical-supplement-packaging-india": {
-    "hash": "07d0b98adacf286b",
-    "date": "2026-10-08"
+    "hash": "8dc4cb03e28bf1fc",
+    "date": "2026-10-12"
   },
   "/resources/packaging-blinkit-zepto-quick-commerce-india-2026": {
-    "hash": "ab429923b2ef5ea5",
-    "date": "2026-10-08"
+    "hash": "21cb15101fdc8976",
+    "date": "2026-10-12"
   },
   "/resources/packaging-compliance-us-uk-export-fda-brc-fsc": {
-    "hash": "5d5933031f58b31f",
-    "date": "2026-10-08"
+    "hash": "dbb879bc9b71d2a5",
+    "date": "2026-10-12"
   },
   "/resources/packaging-for-d2c-brand-beginners-guide": {
-    "hash": "6fa31ffebdea3a53",
-    "date": "2026-10-08"
+    "hash": "d783668ff3f5d048",
+    "date": "2026-10-12"
   },
   "/resources/packaging-machines-small-business-india": {
-    "hash": "8b50bd6294c80ea1",
-    "date": "2026-10-08"
+    "hash": "90a6993782571265",
+    "date": "2026-10-12"
   },
   "/resources/private-label-vs-contract-manufacturing": {
-    "hash": "db2576fa00a82b8f",
-    "date": "2026-10-08"
+    "hash": "9daa6e0412b12315",
+    "date": "2026-10-12"
   },
   "/resources/protein-bar-private-label-manufacturing-india": {
-    "hash": "2e60917c603f9b17",
-    "date": "2026-10-08"
+    "hash": "b5ab275989079182",
+    "date": "2026-10-12"
   },
   "/resources/sell-plastic-packaging-scrap-india": {
-    "hash": "17907eb79e007dd4",
-    "date": "2026-10-08"
+    "hash": "eaee463acfd26c6b",
+    "date": "2026-10-12"
   },
   "/resources/stand-up-pouch-vs-flat-bottom-pouch": {
-    "hash": "cf17ab708405b0b7",
-    "date": "2026-10-08"
+    "hash": "c1a215ef55b7785c",
+    "date": "2026-10-12"
   },
   "/samples": {
-    "hash": "b660fc7396dcae3b",
-    "date": "2026-10-08"
+    "hash": "6e10e1e60685a594",
+    "date": "2026-10-12"
   },
   "/smartstock": {
-    "hash": "5eef25936f36d89e",
-    "date": "2026-10-08"
+    "hash": "ef36a2253e11c57a",
+    "date": "2026-10-12"
   },
   "/solutions/growing-brands": {
-    "hash": "60c3f222c9f61de3",
-    "date": "2026-10-08"
+    "hash": "556991dd6c69af1a",
+    "date": "2026-10-12"
   },
   "/sustainable": {
-    "hash": "42b8dbef6fd35977",
-    "date": "2026-10-08"
+    "hash": "5b765e6963e5f578",
+    "date": "2026-10-12"
   },
   "/terms": {
-    "hash": "5cf89affed4e3b60",
-    "date": "2026-10-08"
+    "hash": "313bf2fbed05d95a",
+    "date": "2026-10-12"
   }
 }

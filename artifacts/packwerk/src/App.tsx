@@ -45,6 +45,7 @@ import ManufacturingLaunch from "@/pages/manufacturing/launch";
 import ListYourFactory from "@/pages/manufacturing/list-factory";
 import ManufacturerDirectory from "@/pages/manufacturing/directory";
 import PackagingHub, { PackagingFor } from "@/pages/packaging-for";
+import CalculatorsHub, { CalculatorPage } from "@/pages/calculators";
 import Privacy from "@/pages/privacy";
 import Terms from "@/pages/terms";
 import Refund from "@/pages/refund";
@@ -155,6 +156,8 @@ function Router() {
       <PublicRoute path="/manufacturing/launch" component={ManufacturingLaunch} layout={PublicLayout} />
       <PublicRoute path="/manufacturing/list-your-factory" component={ListYourFactory} layout={PublicLayout} />
       <PublicRoute path="/manufacturing/:category" component={Manufacturing} layout={PublicLayout} />
+      <PublicRoute path="/calculators" component={CalculatorsHub} layout={PublicLayout} />
+      <PublicRoute path="/calculators/:slug" component={CalculatorPage} layout={PublicLayout} />
       <PublicRoute path="/packaging" component={PackagingHub} layout={PublicLayout} />
       <PublicRoute path="/packaging/:slug" component={PackagingFor} layout={PublicLayout} />
       <PublicRoute path="/manufacturers" component={ManufacturerDirectory} layout={PublicLayout} />

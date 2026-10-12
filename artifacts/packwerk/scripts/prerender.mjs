@@ -168,6 +168,33 @@ function buildJsonLd(route, productCount, faqs) {
     };
     graph.push(breadcrumb([["Packworkz Make", "/manufacturing"], [route.label, route.path]]));
   }
+  if (route.kind === "calculator-hub") {
+    graph[0] = {
+      "@type": "CollectionPage",
+      name: route.title,
+      description: route.description,
+      url: canonicalUrl,
+      mainEntity: {
+        "@type": "ItemList",
+        name: route.label,
+        numberOfItems: route.members.length,
+        itemListElement: route.members.map((m, i) => ({ "@type": "ListItem", position: i + 1, name: m.name, url: `${SITE}${m.path}` })),
+      },
+    };
+    graph.push(breadcrumb([["Calculators", "/calculators"]]));
+  }
+  if (route.kind === "calculator") {
+    graph.push({
+      "@type": "WebApplication",
+      name: route.label,
+      description: route.description,
+      url: canonicalUrl,
+      applicationCategory: "BusinessApplication",
+      operatingSystem: "Any",
+      offers: { "@type": "Offer", price: "0", priceCurrency: "INR" },
+    });
+    graph.push(breadcrumb([["Calculators", "/calculators"], [route.label, route.path]]));
+  }
   if (route.kind === "use-case") {
     graph[0] = {
       "@type": "CollectionPage",
@@ -596,6 +623,9 @@ function buildLlms(routes, data) {
     ...["/manufacturing", "/manufacturers", "/manufacturing/launch", "/manufacturing/list-your-factory"].map((p) => link(p)).filter(Boolean),
     ...data.categories.map((c) => link(`/manufacturing/${c.id}`, `${c.label} manufacturers`)).filter(Boolean),
     "",
+    "## Free packaging calculators",
+    ...routes.filter((r) => r.kind === "calculator-hub" || r.kind === "calculator").map((r) => link(r.path, r.label)).filter(Boolean),
+    "",
     "## Machinery and recycling",
     ...["/machinery", "/circular"].map((p) => link(p)).filter(Boolean),
     "",
@@ -696,6 +726,7 @@ async function prerender() {
     ...dynamicSeo.resources,
     ...(dynamicSeo.manufacturing || []),
     ...(dynamicSeo.packaging || []),
+    ...(dynamicSeo.calculators || []),
   ];
   // dist/public/index.html becomes the prerendered homepage, so keep a pristine
   // copy of the Vite template for re-runs without a fresh client build.

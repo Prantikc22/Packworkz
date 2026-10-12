@@ -32,6 +32,8 @@ import Manufacturing, { FAQS as MANUFACTURING_FAQS } from "@/pages/manufacturing
 import ManufacturerProfile from "@/pages/manufacturing/profile";
 import ManufacturerDirectory from "@/pages/manufacturing/directory";
 import PackagingHub, { PackagingFor } from "@/pages/packaging-for";
+import CalculatorsHub, { CalculatorPage } from "@/pages/calculators";
+import { CALCULATORS, CALCULATORS_HUB } from "@/lib/calculators";
 import { USE_CASES, titleCase } from "@/lib/use-cases";
 import { faqsFor, resolveFormats, useCaseSeo } from "@/lib/use-case-content";
 import { CATEGORY_BY_ID, MFG_CATEGORIES, SEED_MANUFACTURERS, SEEDED_ON, categorySeo, manufacturerSeo } from "@/lib/manufacturers";
@@ -100,6 +102,19 @@ export function getDynamicSeoRoutes() {
         faqs: faqsFor(useCase),
       };
     }),
+    calculators: [
+      { path: "/calculators", ...CALCULATORS_HUB, kind: "calculator-hub" as const, label: "Packaging calculators",
+        members: CALCULATORS.map((c) => ({ name: c.name, path: `/calculators/${c.slug}` })) },
+      ...CALCULATORS.map((c) => ({
+        path: `/calculators/${c.slug}`,
+        title: c.title,
+        description: c.intro,
+        keywords: c.keywords,
+        kind: "calculator" as const,
+        label: c.name,
+        faqs: c.faqs,
+      })),
+    ],
     resources: ARTICLES.map((article) => ({
       path: `/resources/${article.slug}`,
       title: `${article.title} | Packworkz`,
@@ -254,6 +269,12 @@ function SSRApp({ url }: { url: string }) {
             </Route>
             <Route path="/manufacturing/:category">
               {(params: { category: string }) => <PublicLayout><Manufacturing params={params} /></PublicLayout>}
+            </Route>
+            <Route path="/calculators">
+              <PublicLayout><CalculatorsHub /></PublicLayout>
+            </Route>
+            <Route path="/calculators/:slug">
+              {(params: { slug: string }) => <PublicLayout><CalculatorPage params={params} /></PublicLayout>}
             </Route>
             <Route path="/packaging">
               <PublicLayout><PackagingHub /></PublicLayout>

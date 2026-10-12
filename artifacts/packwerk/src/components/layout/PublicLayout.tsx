@@ -15,6 +15,7 @@ import { useCart } from "@/lib/cart";
 import { ARTICLES } from "@/lib/resources-data";
 import { manufacturingSeoFor } from "@/lib/manufacturers";
 import { useCaseSeoFor } from "@/lib/use-case-content";
+import { calculatorSeoFor } from "@/lib/calculators";
 import { AssistantWidget } from "@/components/assistant/AssistantWidget";
 import { USE_CASES, titleCase } from "@/lib/use-cases";
 import { MFG_CATEGORIES } from "@/lib/manufacturers";
@@ -291,6 +292,7 @@ const ABOUT_ITEMS = [
 
 const RESOURCE_ITEMS = [
   { icon: BookOpen, label: "Blogs & Guides", desc: "Packaging cost, MOQ, formats and materials", href: "/resources" },
+  { icon: Calculator, label: "Packaging Calculators", desc: "Price pouches, boxes, labels and courier weight", href: "/calculators" },
   { icon: MessageSquare, label: "FAQs", desc: "Straight answers before you order", href: "/resources#faqs" },
   { icon: FileText, label: "Case Studies", desc: "Packaging work and operating outcomes", href: "/resources#case-studies" },
   { icon: Lightbulb, label: "Insights & Thoughts", desc: "Practical procurement and compliance views", href: "/resources#insights" },
@@ -1433,7 +1435,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
           keywords: resource.keywords.join(", "),
         }
       : undefined;
-    const seo = productSeo ?? resourceSeo ?? manufacturingSeoFor(pathname) ?? useCaseSeoFor(pathname) ?? PAGE_SEO[pathname] ??
+    const seo = productSeo ?? resourceSeo ?? manufacturingSeoFor(pathname) ?? useCaseSeoFor(pathname) ?? calculatorSeoFor(pathname) ?? PAGE_SEO[pathname] ??
       (Object.entries(PAGE_SEO)
         .filter(([k]) => k !== "/" && pathname.startsWith(k))
         .sort((a, b) => b[0].length - a[0].length)[0]?.[1]) ??
@@ -1827,6 +1829,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
               { label: "Packworkz Circular", href: "/circular" },
               { label: "Sustainability", href: "/sustainable" },
               { label: "Resources", href: "/resources" },
+              { label: "Packaging Calculators", href: "/calculators" },
               { label: "Careers", href: "/careers" },
               { label: "Contact Us", href: "/contact" },
             ].map(l => (
