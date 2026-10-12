@@ -14,6 +14,7 @@ import leadsRouter from "./leads";
 import guestTrackingRouter from "./guest_tracking";
 import manufacturingRouter from "./manufacturing";
 import assistantRouter from "./assistant";
+import cronRouter from "./cron";
 
 const router: IRouter = Router();
 
@@ -31,6 +32,7 @@ router.use(uploadRouter);
 router.use(leadsRouter);
 router.use(guestTrackingRouter);
 router.use(manufacturingRouter);
+router.use(cronRouter);
 router.use(assistantRouter);
 
 export default router;

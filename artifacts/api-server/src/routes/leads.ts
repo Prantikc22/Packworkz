@@ -2,9 +2,11 @@ import { Router, type IRouter } from "express";
 import { sb } from "../lib/supabase";
 import { generateId } from "../lib/generateId";
 import { notifySlack } from "../lib/slack";
+import { sendCalculatorQuote } from "../lib/email";
+import { calculatorWhatsAppLink, readCalculatorQuote } from "../lib/calculatorQuote";
 
 const router: IRouter = Router();
-const ALLOWED_SOURCES = new Set(["contact", "support", "pack_ai_handoff", "exit_offer", "newsletter", "enterprise_benchmark", "manufacturing_requirement", "manufacturer_application"]);
+const ALLOWED_SOURCES = new Set(["contact", "support", "pack_ai_handoff", "exit_offer", "newsletter", "enterprise_benchmark", "manufacturing_requirement", "manufacturer_application", "calculator_quote"]);
 
 const clean = (value: unknown, max = 1200) => String(value ?? "").trim().slice(0, max);
 
@@ -50,6 +52,8 @@ router.post("/leads", async (req, res): Promise<void> => {
               ? "Manufacturing requirement"
               : source === "manufacturer_application"
                 ? "Factory listing"
+                : source === "calculator_quote"
+                  ? "Price calculator"
             : "Contact";
   const safeEmail = email || `unknown+${inquiryId.toLowerCase()}@packworkz.invalid`;
 
@@ -61,7 +65,7 @@ router.post("/leads", async (req, res): Promise<void> => {
       company_name: company,
       email: safeEmail,
       phone: phone || "Not provided",
-      items: [{ source, subject, message, metadata }],
+      items: [{ source, subject, message, metadata: source === "calculator_quote" ? { ...metadata, kind: "calculator_quote" } : metadata }],
       delivery_country: "India",
       preferred_timeline: "inquiry",
       notes: message,
@@ -77,6 +81,9 @@ router.post("/leads", async (req, res): Promise<void> => {
     return;
   }
 
+  const calculatorQuote = source === "calculator_quote" ? readCalculatorQuote(metadata) : null;
+  const followUpLink = calculatorQuote && phone ? calculatorWhatsAppLink(phone, name, calculatorQuote) : undefined;
+
   const slack = await notifySlack({
     source: sourceLabel,
     title: subject,
@@ -87,8 +94,17 @@ router.post("/leads", async (req, res): Promise<void> => {
       { label: "Company", value: company !== "Not provided" ? company : undefined },
       { label: "Email", value: email || undefined },
       { label: "Phone", value: phone || undefined },
+      { label: "WhatsApp follow-up", value: followUpLink ? `<${followUpLink}|Open chat with a follow-up message>` : undefined },
     ],
   });
+
+  // The visitor asked for this price by email: send it now. A follow-up goes the
+  // next day from /cron/calculator-followups unless they order first.
+  let emailed = false;
+  if (calculatorQuote && email) {
+    const sent = await sendCalculatorQuote({ to: email, name, quote: calculatorQuote }).catch(() => null);
+    emailed = Boolean(sent?.ok);
+  }
 
   if (!slack.delivered) {
     await sb.from("quote_requests")
@@ -97,7 +113,7 @@ router.post("/leads", async (req, res): Promise<void> => {
     console.warn(`[leads/post] Slack notification pending: ${slack.reason}`);
   }
 
-  res.status(201).json({ inquiry_id: inquiryId, saved: true, slack_delivered: slack.delivered });
+  res.status(201).json({ inquiry_id: inquiryId, saved: true, slack_delivered: slack.delivered, ...(calculatorQuote ? { emailed } : {}) });
 });
 
 export default router;

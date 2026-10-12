@@ -18,6 +18,7 @@ const KIND_META: Record<string, { label: string; tone: string }> = {
   support: { label: "Support", tone: "is-red" },
   service_payment: { label: "Payment", tone: "is-green" },
   assistant_callback: { label: "Chat callback", tone: "is-blue" },
+  calculator_quote: { label: "Calculator price", tone: "is-amber" },
 };
 
 const HIDDEN_META = new Set(["kind", "page", "photos", "profile", "documents", "approved", "verification_level", "reviewed_at"]);

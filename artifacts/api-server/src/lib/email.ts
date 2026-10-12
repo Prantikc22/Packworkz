@@ -380,3 +380,78 @@ export async function sendWelcomeEmail(opts: {
     html,
   });
 }
+
+// ─── Price calculator: the saved price, and one follow-up the next day ────────
+
+export type CalculatorQuote = {
+  product: string;
+  size?: string;
+  quantity: number;
+  unitLabel?: string;
+  options?: Record<string, string>;
+  unitPrice?: number;
+  total?: number;
+  exact?: boolean;
+  orderUrl: string;
+};
+
+const esc = (value: unknown) => String(value ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]!));
+const rupees = (value: number, digits = 0) => `₹${value.toLocaleString("en-IN", { minimumFractionDigits: digits, maximumFractionDigits: digits })}`;
+
+function calculatorSummary(q: CalculatorQuote) {
+  const rows: Array<[string, string]> = [
+    ["Product", q.product],
+    ...(q.size ? [["Size", q.size] as [string, string]] : []),
+    ["Quantity", `${q.quantity.toLocaleString("en-IN")} ${q.unitLabel || "pcs"}`],
+    ...Object.entries(q.options || {}).slice(0, 6).map(([k, v]) => [k, v] as [string, string]),
+    ...(q.unitPrice ? [["Per piece (before GST)", rupees(q.unitPrice, 2)] as [string, string]] : []),
+    ...(q.total ? [[q.exact ? "Total incl. GST & delivery" : "Estimated total", rupees(q.total)] as [string, string]] : []),
+  ];
+  return `<table style="width:100%;border-collapse:collapse;font-size:14px">${rows.map(([k, v]) =>
+    `<tr><td style="padding:7px 0;color:#64748B;border-bottom:1px solid #EEF2F6">${esc(k)}</td><td style="padding:7px 0;font-weight:700;text-align:right;border-bottom:1px solid #EEF2F6">${esc(v)}</td></tr>`).join("")}</table>`;
+}
+
+function calculatorButton(url: string, label: string) {
+  return `<a href="${esc(url)}" style="display:inline-block;background:#E8A838;color:#0D1B2A;padding:13px 26px;text-decoration:none;font-weight:800;font-size:14px;border-radius:4px">${esc(label)} →</a>`;
+}
+
+export async function sendCalculatorQuote(opts: { to: string; name: string; quote: CalculatorQuote }) {
+  const first = esc(opts.name.split(" ")[0] || "there");
+  const html = `
+    <div style="font-family:'Plus Jakarta Sans',Arial,sans-serif;max-width:560px;margin:0 auto;color:#0D1B2A">
+      ${emailHeader("Your saved price")}
+      <div style="padding:36px 40px 0">
+        <h1 style="font-size:24px;font-weight:900;margin:0 0 14px">Here's your price, ${first}.</h1>
+        <p style="font-size:15px;color:#475569;line-height:1.7;margin:0 0 24px">${opts.quote.exact
+          ? "This is the same price you'll pay at checkout, including GST and delivery across India."
+          : "This is an estimate. Our team confirms the exact price within 4 business hours once you send the request."}</p>
+        <div style="background:#F8F9FC;border:1px solid #E2EAF4;padding:20px 22px;margin-bottom:26px;border-radius:4px">${calculatorSummary(opts.quote)}</div>
+        <p style="margin:0 0 26px">${calculatorButton(opts.quote.orderUrl, opts.quote.exact ? "Order this now" : "Get my exact price")}</p>
+        <p style="font-size:14px;color:#475569;line-height:1.7;margin:0 0 10px">Before you print, we put your artwork on this exact pack and send you a <strong>free 3D mockup</strong> to approve.</p>
+        <p style="font-size:14px;color:#475569;line-height:1.7">Questions? Reply to this email or WhatsApp us at <a href="https://wa.me/918208990366" style="color:#1B6CA8;font-weight:700">${WHATSAPP}</a>.</p>
+      </div>
+      ${emailFooter()}
+    </div>`;
+  return sendEmail({ from: FROM, to: opts.to, subject: `Your Packworkz price — ${opts.quote.product}`, html });
+}
+
+export async function sendCalculatorFollowUp(opts: { to: string; name: string; quote: CalculatorQuote }) {
+  const first = esc(opts.name.split(" ")[0] || "there");
+  const html = `
+    <div style="font-family:'Plus Jakarta Sans',Arial,sans-serif;max-width:560px;margin:0 auto;color:#0D1B2A">
+      ${emailHeader("Following up")}
+      <div style="padding:36px 40px 0">
+        <h1 style="font-size:22px;font-weight:900;margin:0 0 14px">Still planning your ${esc(opts.quote.product.toLowerCase())}, ${first}?</h1>
+        <p style="font-size:15px;color:#475569;line-height:1.7;margin:0 0 20px">Yesterday you priced ${esc(opts.quote.quantity.toLocaleString("en-IN"))} ${esc(opts.quote.unitLabel || "pcs")}${opts.quote.total ? ` at <strong>${rupees(opts.quote.total)}</strong>` : ""}. A few things that usually help at this stage:</p>
+        <ul style="font-size:14px;color:#475569;line-height:1.8;margin:0 0 24px;padding-left:18px">
+          <li><strong>Not sure about the material or size?</strong> Our sample kit (₹299) has 25–50+ real packs to touch and compare.</li>
+          <li><strong>Want to see it with your brand?</strong> Send your logo and we'll share a free 3D mockup on WhatsApp.</li>
+          <li><strong>Different quantity or spec?</strong> Reply with what you need — we'll price it the same day.</li>
+        </ul>
+        <p style="margin:0 0 26px">${calculatorButton(opts.quote.orderUrl, "Pick up where you left off")}</p>
+        <p style="font-size:14px;color:#475569;line-height:1.7">Or just reply to this email — it comes straight to our team.</p>
+      </div>
+      ${emailFooter()}
+    </div>`;
+  return sendEmail({ from: FROM, to: opts.to, subject: `Your ${opts.quote.product} price is saved`, html });
+}

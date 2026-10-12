@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "wouter";
-import { ArrowRight, ArrowUpRight, Box, Calculator as CalcIcon, Plus, Scale } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Box, Calculator as CalcIcon, CheckCircle2, Download, Loader2, Mail, PenTool, Plus, Scale } from "lucide-react";
 import { COMMERCE_PRODUCTS, formatMeasurementInCm, getEffectiveCommerceTiers, getMinimumQuantityForConfiguration } from "@workspace/commerce";
 import { CATALOG_SKUS, getCatalogImage, getConfigureHref, requiresQuote, type CatalogSku } from "@/lib/catalog";
 import { calculateOrderEstimate } from "@/lib/pricing";
 import { CALCULATORS, CALCULATOR_BY_SLUG, type PriceCalculator, type ToolCalculator } from "@/lib/calculators";
+import { DIELINE_STYLES, buildDieline, dielinePdf, dielineSvg, type DielineStyle } from "@/lib/dieline";
 import "./manufacturing/make.css";
 import "./calculators.css";
 
@@ -40,7 +41,7 @@ function OtherCalculators({ current }: { current?: string }) {
         <div className="cx-tiles">
           {CALCULATORS.filter((c) => c.slug !== current).map((c) => (
             <Link key={c.slug} href={`/calculators/${c.slug}`} className="cx-tile">
-              <span className="cx-tile-icon">{c.kind === "tool" ? <Scale size={18} /> : <CalcIcon size={18} />}</span>
+              <span className="cx-tile-icon">{c.slug === "dieline-generator" ? <PenTool size={18} /> : c.kind === "tool" ? <Scale size={18} /> : <CalcIcon size={18} />}</span>
               <b>{c.name}</b>
               <small>{c.short}</small>
               <i><ArrowUpRight size={16} /></i>
@@ -49,6 +50,95 @@ function OtherCalculators({ current }: { current?: string }) {
         </div>
       </div>
     </section>
+  );
+}
+
+// ── "Email me this price" ─────────────────────────────────────────────────────
+
+type SavedPrice = {
+  calculator: string;
+  skuCode: string;
+  product: string;
+  size?: string;
+  quantity: number;
+  unitLabel: string;
+  options: Record<string, string>;
+  unitPrice: number;
+  total: number;
+  exact: boolean;
+  orderPath: string;
+};
+
+function SavePrice({ price }: { price: SavedPrice }) {
+  const [open, setOpen] = useState(false);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [state, setState] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const [error, setError] = useState("");
+  const [emailed, setEmailed] = useState(true);
+
+  const submit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    setState("sending");
+    setError("");
+    const summary = `${price.quantity.toLocaleString("en-IN")} ${price.unitLabel} · ${price.product}${price.size ? ` · ${price.size}` : ""} — ${inr(price.unitPrice, 2)} each, ${price.exact ? "total" : "estimated total"} ${inr(price.total)}`;
+    try {
+      const response = await fetch("/api/leads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          source: "calculator_quote",
+          name: name.trim() || "Calculator visitor",
+          email: email.trim(),
+          phone: phone.trim(),
+          subject: `Calculator price · ${price.product}`,
+          message: `Saved a price on the ${price.calculator} calculator: ${summary}`,
+          metadata: {
+            calculator: price.calculator,
+            sku_code: price.skuCode,
+            product: price.product,
+            size: price.size,
+            quantity: price.quantity,
+            unit_label: price.unitLabel,
+            options: price.options,
+            unit_price: Number(price.unitPrice.toFixed(2)),
+            total: Math.round(price.total),
+            exact: price.exact,
+            order_path: price.orderPath,
+            page: typeof window !== "undefined" ? window.location.pathname : undefined,
+          },
+        }),
+      });
+      const body = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(body.error || "Could not save your price");
+      setEmailed(body.emailed !== false);
+      setState("sent");
+    } catch (cause) {
+      setState("error");
+      setError(cause instanceof Error ? cause.message : "Could not save your price");
+    }
+  };
+
+  if (state === "sent") {
+    return <p className="cx-saved"><CheckCircle2 size={16} /> {emailed
+      ? <>Sent to {email}. Check your inbox — the link takes you straight back to this order.</>
+      : <>Saved. Our team will email it to {email} shortly.</>}</p>;
+  }
+  if (!open) {
+    return <button type="button" className="cx-save-toggle" onClick={() => setOpen(true)}><Mail size={15} /> Email me this price</button>;
+  }
+  return (
+    <form className="cx-save" onSubmit={submit}>
+      <p>We'll email this price with a link back to the order — and check in once tomorrow. No spam.</p>
+      <input type="email" required placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" />
+      <div>
+        <input type="text" placeholder="Name (optional)" value={name} onChange={(e) => setName(e.target.value)} autoComplete="name" />
+        <input type="tel" placeholder="WhatsApp (optional)" value={phone} onChange={(e) => setPhone(e.target.value)} autoComplete="tel" />
+      </div>
+      <button type="submit" disabled={state === "sending"}>{state === "sending" ? <><Loader2 size={15} className="animate-spin" /> Sending…</> : "Send my price"}</button>
+      {state === "error" && <small>{error}</small>}
+    </form>
   );
 }
 
@@ -210,6 +300,22 @@ function PriceCalculatorView({ calc }: { calc: PriceCalculator }) {
             ? "Same price at checkout. Pay securely with Razorpay; production starts after artwork approval."
             : "Free to request. Our team confirms the exact price within 4 business hours — nothing to pay until you approve."}
         </p>
+        <SavePrice
+          key={`${sku.code}-${sizeCode}-${qty}-${JSON.stringify(configuration)}`}
+          price={{
+            calculator: calc.name,
+            skuCode: sku.code,
+            product: sku.name,
+            size: size ? formatMeasurementInCm(size.label) : undefined,
+            quantity: qty,
+            unitLabel: sku.moq_unit === "units" ? "pcs" : sku.moq_unit,
+            options: Object.fromEntries(sku.variants.map((group) => [group.label, configuration[group.key]])),
+            unitPrice: estimate.unit || perPiece,
+            total,
+            exact,
+            orderPath: orderHref,
+          }}
+        />
         <Link className="cx-sample" href="/samples">Feel it first — sample kit {inr(299)} <ArrowRight size={14} /></Link>
       </aside>
 
@@ -313,6 +419,95 @@ function VolumetricView() {
   );
 }
 
+// ── Dieline generator ────────────────────────────────────────────────────────
+
+function download(blob: Blob, filename: string) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  window.setTimeout(() => URL.revokeObjectURL(url), 2000);
+}
+
+function DielineView() {
+  const [style, setStyle] = useState<DielineStyle>("rte");
+  const preset = DIELINE_STYLES.find((s) => s.id === style)!;
+  const [dims, setDims] = useState({ L: String(preset.defaults.L), W: String(preset.defaults.W), H: String(preset.defaults.H), t: String(preset.defaults.t) });
+  const pick = (next: DielineStyle) => {
+    const p = DIELINE_STYLES.find((s) => s.id === next)!;
+    setStyle(next);
+    setDims({ L: String(p.defaults.L), W: String(p.defaults.W), H: String(p.defaults.H), t: String(p.defaults.t) });
+  };
+  const n = (v: string, lo: number, hi: number) => Math.min(hi, Math.max(lo, parseFloat(v) || lo));
+  const L = n(dims.L, 10, 1200), W = n(dims.W, 5, 1200), H = n(dims.H, 5, 1200), t = n(dims.t, 0, 10);
+  const dieline = useMemo(() => buildDieline(style, L, W, H, t), [style, L, W, H, t]);
+  const svg = useMemo(() => dielineSvg(dieline), [dieline]);
+  const title = `${preset.name} ${L} x ${W} x ${H} mm (internal)`;
+  const file = `packworkz-dieline-${style}-${L}x${W}x${H}mm`;
+  const set = (key: "L" | "W" | "H" | "t") => (e: React.ChangeEvent<HTMLInputElement>) => setDims((prev) => ({ ...prev, [key]: e.target.value }));
+  const boxSku = style === "rsc" ? "EC-502" : style === "sleeve" ? "BX-405" : "BX-401";
+
+  return (
+    <div className="cx-tool is-dieline">
+      <div className="cx-inputs">
+        <fieldset className="cx-field">
+          <legend>1 · Box style</legend>
+          <div className="cx-styles">
+            {DIELINE_STYLES.map((s) => (
+              <button key={s.id} type="button" className={`cx-style ${s.id === style ? "is-on" : ""}`} onClick={() => pick(s.id)}>
+                <b>{s.name}</b>
+                <small>{s.detail}</small>
+              </button>
+            ))}
+          </div>
+        </fieldset>
+        <fieldset className="cx-field">
+          <legend>2 · Internal size</legend>
+          <div className="cx-dims is-four">
+            <label><span>Length</span><input type="number" inputMode="decimal" min="10" value={dims.L} onChange={set("L")} /><i>mm</i></label>
+            <label><span>Width (depth)</span><input type="number" inputMode="decimal" min="5" value={dims.W} onChange={set("W")} /><i>mm</i></label>
+            <label><span>Height</span><input type="number" inputMode="decimal" min="5" value={dims.H} onChange={set("H")} /><i>mm</i></label>
+            <label><span>Board</span><input type="number" inputMode="decimal" min="0" step="0.1" value={dims.t} onChange={set("t")} /><i>mm</i></label>
+          </div>
+          <p className="cx-note is-quiet">Measure the product, then add a few millimetres of room on each side. Board: ~0.4 mm for cartons, 3 mm for 3-ply and 5 mm for 5-ply corrugated.</p>
+        </fieldset>
+      </div>
+
+      <aside className="cx-result">
+        <p className="cx-result-label">Flat size</p>
+        <div className="cx-result-unit">
+          <strong>{Math.round(dieline.width)} × {Math.round(dieline.height)}</strong>
+          <span>mm<br />sheet before folding</span>
+        </div>
+        <dl className="cx-breakdown">
+          <div><dt>Style</dt><dd>{preset.name}</dd></div>
+          <div><dt>Internal size</dt><dd>{L} × {W} × {H} mm</dd></div>
+          <div><dt>Legend</dt><dd>— cut · - - fold</dd></div>
+        </dl>
+        <div className="cx-downloads">
+          <button type="button" className="mk-btn is-ink cx-cta" onClick={() => download(dielinePdf(dieline, title), `${file}.pdf`)}><Download size={16} /> Download PDF</button>
+          <button type="button" className="cx-save-toggle" onClick={() => download(new Blob([dielineSvg(dieline, { title, forDownload: true })], { type: "image/svg+xml" }), `${file}.svg`)}><Download size={15} /> Download SVG</button>
+        </div>
+        <p className="cx-fine">True 1:1 scale. Keep artwork 3 mm past cut lines. Our prepress team checks it against the converter's die before printing.</p>
+        <Link className="cx-sample" href={`/calculators/box-price`}>Price this box <ArrowRight size={14} /></Link>
+        <a className="cx-sample" href={`https://wa.me/918208990366?text=${encodeURIComponent(`Hi Packworkz, I made a ${preset.name.toLowerCase()} dieline (${L} x ${W} x ${H} mm). Can you print it and share a free 3D mockup?`)}`} target="_blank" rel="noreferrer">Free 3D mockup on WhatsApp <ArrowRight size={14} /></a>
+      </aside>
+
+      <div className="cx-dieline">
+        <div className="cx-dieline-head">
+          <p className="mk-label"><PenTool size={13} /> Preview · {title}</p>
+          <Link className="mk-link" href={`/products/${CATALOG_SKUS.find((sku) => sku.code === boxSku)?.slug || ""}`}>Order this box style <ArrowRight size={14} /></Link>
+        </div>
+        <div className="cx-dieline-canvas" dangerouslySetInnerHTML={{ __html: svg }} />
+        <ul className="cx-dieline-notes">{dieline.notes.map((note) => <li key={note}>{note}</li>)}</ul>
+      </div>
+    </div>
+  );
+}
+
 // ── Pages ─────────────────────────────────────────────────────────────────────
 
 export function CalculatorPage({ params }: { params: { slug: string } }) {
@@ -329,7 +524,7 @@ export function CalculatorPage({ params }: { params: { slug: string } }) {
       </section>
       <section className="cx-body">
         <div className="mk-wrap">
-          {calc.kind === "price" ? <PriceCalculatorView calc={calc} /> : <VolumetricView />}
+          {calc.kind === "price" ? <PriceCalculatorView calc={calc} /> : calc.slug === "dieline-generator" ? <DielineView /> : <VolumetricView />}
         </div>
       </section>
       <Faqs faqs={calc.faqs} />
@@ -368,11 +563,11 @@ export default function CalculatorsHub() {
               );
             })}
           </div>
-          <p className="mk-label" style={{ marginTop: 56 }}>Shipping tools</p>
+          <p className="mk-label" style={{ marginTop: 56 }}>Design & shipping tools</p>
           <div className="cx-tiles">
             {tools.map((c) => (
               <Link key={c.slug} href={`/calculators/${c.slug}`} className="cx-tile">
-                <span className="cx-tile-icon"><Scale size={18} /></span>
+                <span className="cx-tile-icon">{c.slug === "dieline-generator" ? <PenTool size={18} /> : <Scale size={18} />}</span>
                 <b>{c.name}</b>
                 <small>{c.short}</small>
                 <i><ArrowUpRight size={16} /></i>

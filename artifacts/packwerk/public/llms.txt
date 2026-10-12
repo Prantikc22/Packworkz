@@ -143,6 +143,7 @@ Key facts:
 - [Courier bag & paper bag price calculator](https://packworkz.com/calculators/mailer-bag-price): Price branded courier bags, paper and padded mailers, zipper garment bags and printed paper carry bags for your order quantity.
 - [Bottle, jar & tube price calculator](https://packworkz.com/calculators/bottle-jar-price): Estimate the cost of plastic and glass bottles, cosmetic jars, dropper and airless pump bottles, and printed cosmetic tubes by size and quantity.
 - [Volumetric weight calculator](https://packworkz.com/calculators/volumetric-weight): Couriers charge for whichever is higher — the actual weight or the space a box takes up. Enter your box size to see the volumetric and chargeable weight.
+- [Box dieline generator](https://packworkz.com/calculators/dieline-generator): Enter your box size and download a print-ready dieline at true scale — reverse and straight tuck-end cartons, corrugated shipping boxes and sleeves, as PDF or SVG.
 
 ## Machinery and recycling
 - [Packaging Machines for D2C & Food Brands India](https://packworkz.com/machinery): Impulse, band, induction and vacuum sealers, tube, powder and liquid fillers, batch coders, labellers and automatic VFFS lines — matched to your product and output, with packaging that runs on them.

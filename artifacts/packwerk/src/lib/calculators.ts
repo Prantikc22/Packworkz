@@ -131,6 +131,22 @@ export const CALCULATORS: Calculator[] = [
       ["How do I reduce shipping cost?", "Use the smallest box that protects the product. Cutting a box from 30 × 20 × 15 cm to 25 × 18 × 12 cm drops the volumetric weight from 1.8 kg to 1.08 kg — often a full slab cheaper on every shipment."],
     ],
   },
+  {
+    kind: "tool",
+    slug: "dieline-generator",
+    name: "Box dieline generator",
+    short: "Free printable dielines — tuck-end cartons, shipping boxes, sleeves",
+    title: "Free Box Dieline Generator | Tuck End Carton & Shipping Box Template (PDF, SVG) | Packworkz",
+    h1: "Box dieline generator",
+    intro: "Enter your box size and download a print-ready dieline at true scale — reverse and straight tuck-end cartons, corrugated shipping boxes and sleeves, as PDF or SVG.",
+    keywords: "dieline generator, box dieline template, tuck end box dieline, carton dieline PDF, shipping box template, free dieline maker India",
+    faqs: [
+      ["What is a dieline?", "A dieline is the flat outline of your box: solid lines show where the sheet is cut and dashed lines show where it folds. Designers place artwork on it so every panel lines up once the box is folded."],
+      ["Are these dielines print-ready?", "They are drawn at true 1:1 scale from the internal size you enter, with standard glue flaps, tucks and dust flaps. Before production our prepress team checks your artwork against the converter's exact die, so small allowances are handled for you."],
+      ["Which file should I use?", "Use the PDF in Illustrator, CorelDRAW or Canva (as a background layer), or the SVG in Figma and web tools. Put the dieline on its own layer and keep artwork 3 mm past every cut line for bleed."],
+      ["Which box style should I pick?", "Reverse tuck end is the most common retail carton. Straight tuck end keeps the front face clean for display. Choose the shipping box (RSC) for corrugated transit cartons, and a sleeve to wrap a tray or drawer box."],
+    ],
+  },
 ];
 
 export const CALCULATOR_BY_SLUG: Record<string, Calculator> = Object.fromEntries(CALCULATORS.map((c) => [c.slug, c]));

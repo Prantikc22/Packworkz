@@ -1,6 +1,6 @@
 {
   "/": {
-    "hash": "10e8e2b47350d508",
+    "hash": "20d1c9753442d524",
     "date": "2026-10-12"
   },
   "/about": {
@@ -8,31 +8,35 @@
     "date": "2026-10-12"
   },
   "/calculators": {
-    "hash": "88f4c387609fee0a",
+    "hash": "79a87c77ffe8a54f",
     "date": "2026-10-12"
   },
   "/calculators/bottle-jar-price": {
-    "hash": "77c38cd00aff8b73",
+    "hash": "d1daf18602ae6886",
     "date": "2026-10-12"
   },
   "/calculators/box-price": {
-    "hash": "f38e996fca9880d9",
+    "hash": "22f48271b0ba9a0b",
+    "date": "2026-10-12"
+  },
+  "/calculators/dieline-generator": {
+    "hash": "c5d94e568ba5c1cc",
     "date": "2026-10-12"
   },
   "/calculators/label-price": {
-    "hash": "b7fe77bc59c4a117",
+    "hash": "d6d76c871a65cb27",
     "date": "2026-10-12"
   },
   "/calculators/mailer-bag-price": {
-    "hash": "67d857cd965d47fa",
+    "hash": "97ad237aa47ac21a",
     "date": "2026-10-12"
   },
   "/calculators/pouch-price": {
-    "hash": "0f1b8f9b3024f539",
+    "hash": "698bd1d83095042a",
     "date": "2026-10-12"
   },
   "/calculators/volumetric-weight": {
-    "hash": "14e4f45c511d792d",
+    "hash": "d54c94298d0db383",
     "date": "2026-10-12"
   },
   "/careers": {
@@ -632,267 +636,267 @@
     "date": "2026-10-12"
   },
   "/products/airless-pump-bottle": {
-    "hash": "0a5c766a529643fb",
+    "hash": "2f96a9fbf19439b3",
     "date": "2026-10-12"
   },
   "/products/bagasse-clamshell": {
-    "hash": "d0a4edd5ff2286ef",
+    "hash": "5bfeaf1c2ffa7125",
     "date": "2026-10-12"
   },
   "/products/bubble-wrap-air-pillows": {
-    "hash": "2036e5a141b881f4",
+    "hash": "8e57f1ac01580f98",
     "date": "2026-10-12"
   },
   "/products/centre-seal-fin-pouch": {
-    "hash": "aa6ac2897480ae10",
+    "hash": "fad2b04176d6931d",
     "date": "2026-10-12"
   },
   "/products/clear-transparent-labels": {
-    "hash": "b6a1914a2c79daf4",
+    "hash": "be89773d86af8659",
     "date": "2026-10-12"
   },
   "/products/coffee-valve-pouch": {
-    "hash": "3d1822582320329c",
+    "hash": "ba2cc1c0b134c6b6",
     "date": "2026-10-12"
   },
   "/products/collapsible-rigid-box": {
-    "hash": "97d1cfd8f2552ab1",
+    "hash": "128ef2f919c0b3a1",
     "date": "2026-10-12"
   },
   "/products/compostable-bio-paper-cups": {
-    "hash": "967e72fdafb4e791",
+    "hash": "1f4d85e669250048",
     "date": "2026-10-12"
   },
   "/products/corrugated-shipping-box": {
-    "hash": "2b58901152c4a060",
+    "hash": "1e8e9fc6bd85fddb",
     "date": "2026-10-12"
   },
   "/products/cosmetic-jar": {
-    "hash": "31521cbafa1e457e",
+    "hash": "b858663066b0a272",
     "date": "2026-10-12"
   },
   "/products/cosmetic-tube": {
-    "hash": "c611a54575a65f7a",
+    "hash": "cf69a6580f8de365",
     "date": "2026-10-12"
   },
   "/products/cotton-jute-drawstring-bag": {
-    "hash": "4a9dbd65d7a833e2",
+    "hash": "8780e86eefe10d28",
     "date": "2026-10-12"
   },
   "/products/counter-display-box": {
-    "hash": "b163a913ee2769de",
+    "hash": "53a8289db9b1b38d",
     "date": "2026-10-12"
   },
   "/products/courier-bag": {
-    "hash": "5b31a06e165fe63c",
+    "hash": "a224cb2d357c481c",
     "date": "2026-10-12"
   },
   "/products/custom-die-cut-stickers": {
-    "hash": "031bf01a78d96c5b",
+    "hash": "6587ea8c6b249437",
     "date": "2026-10-12"
   },
   "/products/custom-pizza-box": {
-    "hash": "f41421b2e24da4ca",
+    "hash": "daa1d7a7e4a6d715",
     "date": "2026-10-12"
   },
   "/products/custom-printed-shampoo-lotion-bottles": {
-    "hash": "237bdd8c5aa181ec",
+    "hash": "e3aa2ef41e9c6cfb",
     "date": "2026-10-12"
   },
   "/products/custom-printed-sustainable-cosmetic-tubes": {
-    "hash": "0a3dbfe2a9b162e9",
+    "hash": "58b4941c5068ed7e",
     "date": "2026-10-12"
   },
   "/products/custom-shaped-pouch": {
-    "hash": "0fcaa6a11c69dc08",
+    "hash": "004056f7877fb70d",
     "date": "2026-10-12"
   },
   "/products/dropper-bottle": {
-    "hash": "5dd3e7e63d322eaa",
+    "hash": "66c240f4e0a1a3b3",
     "date": "2026-10-12"
   },
   "/products/flat-bottom-pouch": {
-    "hash": "d31c0c51b4bf8a04",
+    "hash": "e11b0a1df59fc3c9",
     "date": "2026-10-12"
   },
   "/products/foam-thermocol-inserts": {
-    "hash": "7e586f42f38bb20c",
+    "hash": "16458ad9bcb923d9",
     "date": "2026-10-12"
   },
   "/products/foil-special-effect-labels": {
-    "hash": "d18c04dba036f802",
+    "hash": "86f5a50f834dada9",
     "date": "2026-10-12"
   },
   "/products/food-delivery-box": {
-    "hash": "d9208454f9ec57d7",
+    "hash": "f9be63e576ba4854",
     "date": "2026-10-12"
   },
   "/products/frosted-zipper-garment-bag": {
-    "hash": "21eec48a328285a9",
+    "hash": "86da189c3f98fb5d",
     "date": "2026-10-12"
   },
   "/products/gable-handle-box": {
-    "hash": "51c1c3b25268ca17",
+    "hash": "518499da544dbd0c",
     "date": "2026-10-12"
   },
   "/products/glass-bottle": {
-    "hash": "1ff867dfcf416c71",
+    "hash": "9cf6b0174a7baeff",
     "date": "2026-10-12"
   },
   "/products/greaseproof-food-wrap-paper": {
-    "hash": "bf535b5a2bd951ae",
+    "hash": "8bf0fd60c5de30dd",
     "date": "2026-10-12"
   },
   "/products/hang-tag-header-card": {
-    "hash": "dd8d4fb4efc0e967",
+    "hash": "f7060ee471432a33",
     "date": "2026-10-12"
   },
   "/products/hanging-display-box": {
-    "hash": "22b963ec4d3dc75c",
+    "hash": "bfb68c4b7e624026",
     "date": "2026-10-12"
   },
   "/products/lidding-sealing-film": {
-    "hash": "fa0bc62590e95aa9",
+    "hash": "718bf4c32e57708f",
     "date": "2026-10-12"
   },
   "/products/machine-applied-roll-labels": {
-    "hash": "e2ee984db45a367f",
+    "hash": "785b4f5a75030b5b",
     "date": "2026-10-12"
   },
   "/products/magnetic-closure-box": {
-    "hash": "019b87ac83db7176",
+    "hash": "d0e1fa9a4282ef57",
     "date": "2026-10-12"
   },
   "/products/mailer-box": {
-    "hash": "efbc62ac7cde8dc4",
+    "hash": "b110447ac3a31b8b",
     "date": "2026-10-12"
   },
   "/products/metal-tin-can": {
-    "hash": "7d5fb84bb7f44370",
+    "hash": "b3d67565ed45b13c",
     "date": "2026-10-12"
   },
   "/products/mithai-festive-gift-box": {
-    "hash": "52c15a32bd786d70",
+    "hash": "4e78134fa1881117",
     "date": "2026-10-12"
   },
   "/products/oval-paper-labels": {
-    "hash": "ead272f6490202d0",
+    "hash": "a4b9fd1207547328",
     "date": "2026-10-12"
   },
   "/products/paper-bowls-food-containers": {
-    "hash": "2ea4f24d66df86f6",
+    "hash": "d5246593176181d8",
     "date": "2026-10-12"
   },
   "/products/paper-shipping-mailer": {
-    "hash": "44b267f0147924bb",
+    "hash": "7575e9b19f98e850",
     "date": "2026-10-12"
   },
   "/products/paper-tube": {
-    "hash": "8ab20f5a530da7da",
+    "hash": "5562a819dcbe601b",
     "date": "2026-10-12"
   },
   "/products/perfume-bottle": {
-    "hash": "b6c3e08642b1cd81",
+    "hash": "ed5c1f40164756ee",
     "date": "2026-10-12"
   },
   "/products/pillow-box": {
-    "hash": "687c5cfc1eb76bf2",
+    "hash": "acd4c1d76259ec8f",
     "date": "2026-10-12"
   },
   "/products/pillow-pouch": {
-    "hash": "4a30890eeca3baf3",
+    "hash": "1b296e73ef9af83e",
     "date": "2026-10-12"
   },
   "/products/plastic-bottle": {
-    "hash": "c1b46e7f32f1f4c4",
+    "hash": "e178a2b4ee3e995e",
     "date": "2026-10-12"
   },
   "/products/printed-bopp-tape": {
-    "hash": "9e599ceec5b0f6f2",
+    "hash": "9acf6b4751fd699a",
     "date": "2026-10-12"
   },
   "/products/printed-packaging-roll": {
-    "hash": "76a1239915a7cd09",
+    "hash": "bbe731b7c3b05016",
     "date": "2026-10-12"
   },
   "/products/printed-paper-carrier-bag": {
-    "hash": "7a32f7d7432021fd",
+    "hash": "cf5b4e93a1b99848",
     "date": "2026-10-12"
   },
   "/products/printed-tissue-wrapping-paper": {
-    "hash": "f76ba07039f89164",
+    "hash": "fcf55876173fc192",
     "date": "2026-10-12"
   },
   "/products/quad-seal-pouch": {
-    "hash": "8e86013ed32fc5db",
+    "hash": "3436e5dc2412b639",
     "date": "2026-10-12"
   },
   "/products/rectangular-paper-labels": {
-    "hash": "5d3dfa3ed0f34191",
+    "hash": "5d6f4f106eb14bd8",
     "date": "2026-10-12"
   },
   "/products/retort-pouch": {
-    "hash": "e4d200ca64ee9f4e",
+    "hash": "e6f65416bf705f6f",
     "date": "2026-10-12"
   },
   "/products/round-paper-labels": {
-    "hash": "4a9c03d4878feb56",
+    "hash": "fd7468c6e598d060",
     "date": "2026-10-12"
   },
   "/products/sachet-stick-pack": {
-    "hash": "a63eed016876b79a",
+    "hash": "4f6fc12d7927ce99",
     "date": "2026-10-12"
   },
   "/products/shrink-film-rollstock": {
-    "hash": "9e1b118a48e5c404",
+    "hash": "127d86e9fc04bc96",
     "date": "2026-10-12"
   },
   "/products/shrink-sleeve-label": {
-    "hash": "534b3a17e0d854a3",
+    "hash": "35585ab57adc837c",
     "date": "2026-10-12"
   },
   "/products/side-gusset-pouch": {
-    "hash": "e063dd0f012c70b3",
+    "hash": "455b25a6f3a4f155",
     "date": "2026-10-12"
   },
   "/products/sleeve-tray-box": {
-    "hash": "4c0a182ae9184cac",
+    "hash": "5cb0cb204152ce71",
     "date": "2026-10-12"
   },
   "/products/spout-pouch": {
-    "hash": "2089e1fb20fff500",
+    "hash": "d51b792cfc686e61",
     "date": "2026-10-12"
   },
   "/products/square-paper-labels": {
-    "hash": "f208e09345e396c3",
+    "hash": "c1c49863f83b2453",
     "date": "2026-10-12"
   },
   "/products/stand-up-pouch": {
-    "hash": "6cd8c52b2ff5b2aa",
+    "hash": "bc4f2aca7a2a2cbe",
     "date": "2026-10-12"
   },
   "/products/straight-tuck-end-carton": {
-    "hash": "9ee5c8864a481d0e",
+    "hash": "a610b32cb4aeb69e",
     "date": "2026-10-12"
   },
   "/products/three-side-seal-pouch": {
-    "hash": "24534d9a71ebb117",
+    "hash": "0de750260b3e36eb",
     "date": "2026-10-12"
   },
   "/products/two-piece-rigid-box": {
-    "hash": "b8715856b3030448",
+    "hash": "e03a56477c0b8f33",
     "date": "2026-10-12"
   },
   "/products/two-side-seal-pouch": {
-    "hash": "6d63a25d0c591a78",
+    "hash": "45c7e4ecb37169b8",
     "date": "2026-10-12"
   },
   "/products/waterproof-bopp-vinyl-labels": {
-    "hash": "c411eb49e0d102a0",
+    "hash": "f8ef06d0416087b3",
     "date": "2026-10-12"
   },
   "/products/window-carton": {
-    "hash": "671a7a068f26d5e7",
+    "hash": "de8bc8e8886ca564",
     "date": "2026-10-12"
   },
   "/refund": {
