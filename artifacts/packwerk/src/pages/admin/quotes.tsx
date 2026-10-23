@@ -88,6 +88,8 @@ function QuoteRow({ q, onRefetch }: { q: any; onRefetch: () => void }) {
   };
 
   const [emailPreview, setEmailPreview] = useState<{ html: string; to: string } | null>(null);
+  const [sentLog, setSentLog] = useState<Array<{ to: string; at: string }>>(() => (Array.isArray(firstItem.metadata?.quote_emails) ? firstItem.metadata.quote_emails : []));
+  const lastSent = sentLog[sentLog.length - 1];
   const [emailBusy, setEmailBusy] = useState(false);
   const adminPost = async (path: string, body: object) => {
     const response = await fetch(`/api${path}`, {
@@ -111,7 +113,8 @@ function QuoteRow({ q, onRefetch }: { q: any; onRefetch: () => void }) {
     setEmailBusy(true);
     try {
       const result = await adminPost(`/admin/quotes/${q.id}/email`, { data: quoteEmailData(quoteMessage()) });
-      toast({ title: `Quotation emailed to ${result.to}` });
+      toast({ title: `Quotation emailed to ${result.to}`, description: `Sent via Resend from sales@packworkz.com · a copy is BCC'd to ${result.copy_to || "sales@packworkz.com"}` });
+      setSentLog((log) => [...log, { to: result.to, at: result.at || new Date().toISOString() }]);
       setEmailPreview(null);
     } catch (error) {
       toast({ variant: "destructive", title: "Email not sent", description: error instanceof Error ? error.message : undefined });
@@ -351,13 +354,20 @@ function QuoteRow({ q, onRefetch }: { q: any; onRefetch: () => void }) {
                       {emailBusy && !emailPreview ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Mail className="w-3.5 h-3.5" />}
                       Email Quote
                     </button>
+                    {lastSent && (
+                      <p className="w-full text-[11px] text-[#64748B]" title={sentLog.map((entry) => `${entry.to} · ${new Date(entry.at).toLocaleString("en-IN")}`).join("\n")}>
+                        <Mail className="mr-1 inline h-3 w-3" />
+                        Emailed to <b className="text-[#0D1B2A]">{lastSent.to}</b> · {new Date(lastSent.at).toLocaleString("en-IN", { day: "numeric", month: "short", hour: "numeric", minute: "2-digit" })}
+                        {sentLog.length > 1 ? ` · sent ${sentLog.length} times` : ""}
+                      </p>
+                    )}
                     {emailPreview && (
                       <div className="fixed inset-0 z-[2000] flex items-center justify-center bg-[#0B1726]/60 p-4" role="dialog" aria-modal="true" aria-label="Email preview">
                         <div className="flex max-h-[92vh] w-full max-w-[720px] flex-col overflow-hidden rounded-lg bg-white shadow-2xl">
                           <div className="flex items-center justify-between gap-3 border-b border-[#E2EAF4] px-5 py-3">
                             <div className="min-w-0">
                               <p className="text-[11px] font-bold uppercase tracking-wider text-[#94A3B8]">Email preview</p>
-                              <p className="truncate text-sm font-semibold text-[#0D1B2A]">To: {emailPreview.to} · from sales@packworkz.com</p>
+                              <p className="truncate text-sm font-semibold text-[#0D1B2A]">To: {emailPreview.to} · from sales@packworkz.com via Resend · copy BCC to sales@packworkz.com</p>
                             </div>
                             <button type="button" onClick={() => setEmailPreview(null)} className="rounded p-1.5 text-[#64748B] hover:bg-[#F1F5F9]" aria-label="Close preview"><X className="h-4 w-4" /></button>
                           </div>

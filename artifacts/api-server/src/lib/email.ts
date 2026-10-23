@@ -4,7 +4,7 @@ const REPLY_TO = "sales@packworkz.com";
 const WHATSAPP = "+91 82089 90366";
 const SITE = "packworkz.com";
 
-async function sendEmail(body: { from: string; to: string; reply_to?: string; subject: string; html: string }): Promise<{ ok: boolean; status: number; body: unknown }> {
+async function sendEmail(body: { from: string; to: string; reply_to?: string; bcc?: string[]; subject: string; html: string }): Promise<{ ok: boolean; status: number; body: unknown }> {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
     console.warn("[email] RESEND_API_KEY not set — skipping email");
@@ -602,6 +602,8 @@ export async function sendQuoteEmail(opts: { to: string; data: QuoteEmailData })
   return sendEmail({
     from: FROM,
     to: opts.to,
+    // Sent through Resend, not Gmail: the BCC keeps a copy in the team inbox.
+    bcc: [REPLY_TO],
     subject: `Your Packworkz quotation ${opts.data.quoteId} · ${opts.data.product}`,
     html: renderQuoteEmail(opts.data),
   });

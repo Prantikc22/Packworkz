@@ -275,7 +275,22 @@ router.post("/admin/quotes/:id/email", async (req, res): Promise<void> => {
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to) || to.endsWith(".invalid")) { res.status(400).json({ error: "This quote has no valid customer email." }); return; }
   const sent = await sendQuoteEmail({ to, data });
   if (!sent.ok) { res.status(502).json({ error: sent.status === 0 ? "Email is not configured on this server (RESEND_API_KEY)." : `Email provider error (${sent.status})` }); return; }
-  res.json({ sent: true, to });
+
+  // Keep a send log on the quote so the admin panel shows what went out and when.
+  const sentAt = new Date().toISOString();
+  const resendId = (sent.body as { id?: string } | null)?.id;
+  const { data: current } = await sb.from("quote_requests").select("items").eq("id", id).maybeSingle();
+  const items = Array.isArray(current?.items) ? [...current!.items] : [];
+  const first = { ...(items[0] || {}) };
+  const metadata = { ...(first.metadata || {}) };
+  const log = Array.isArray(metadata.quote_emails) ? metadata.quote_emails.slice(-9) : [];
+  log.push({ to, at: sentAt, total: data.total, ...(resendId ? { resend_id: resendId } : {}) });
+  metadata.quote_emails = log;
+  first.metadata = metadata;
+  items[0] = first;
+  await sb.from("quote_requests").update({ items }).eq("id", id);
+
+  res.json({ sent: true, to, at: sentAt, copy_to: "sales@packworkz.com" });
 });
 
 router.delete("/admin/quotes/:id", async (req, res): Promise<void> => {
