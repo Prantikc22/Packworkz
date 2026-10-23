@@ -4,7 +4,7 @@ import { useSubmitQuote } from "@workspace/api-client-react";
 import { useToast } from "@/hooks/use-toast";
 import { CATEGORIES } from "@/lib/skus";
 import type { Sku, VariantGroup } from "@/lib/skus";
-import { requiredSizeFields, sizeChosenByOption, sizeOptionsFor, sizeText } from "@/lib/quote-sizes";
+import { commonSizePresets, requiredSizeFields, sizeChosenByOption, sizeOptionsFor, sizeText } from "@/lib/quote-sizes";
 import { CATALOG_SKUS as SKUS, getCatalogImage, getCatalogSkusByCategory as getSkusByCategory, getMaxSelfServeQuantity, requiresQuote, type CatalogSku } from "@/lib/catalog";
 import { openOrderPayment, openRazorpay, prepareOrderPayment, type PreparedOrderPayment } from "@/lib/razorpay";
 import { calculateOrderEstimate } from "@/lib/pricing";
@@ -1612,6 +1612,22 @@ const maxSelfServeQuantity = selectedSku ? getMaxSelfServeQuantity(selectedSku) 
                       )}
                     </div>
 
+                    {selectedSizeCode === CUSTOM_SIZE && commonSizePresets(selectedSku).length > 0 && (
+                      <label className="block mb-3">
+                        <span className="text-xs font-medium text-slate-600 mb-1 block">Start from a common size</span>
+                        <select
+                          defaultValue=""
+                          onChange={(event) => {
+                            const preset = commonSizePresets(selectedSku).find((item) => item.code === event.target.value);
+                            if (preset) setCustomFieldValues((prev) => ({ ...prev, ...preset.values }));
+                          }}
+                          className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-400 bg-white"
+                        >
+                          <option value="">Choose a size to pre-fill, then adjust…</option>
+                          {commonSizePresets(selectedSku).map((preset) => <option key={preset.code} value={preset.code}>{preset.label}</option>)}
+                        </select>
+                      </label>
+                    )}
                     <div className="grid grid-cols-2 gap-3">
                       {visibleCustomFields.map(field => {
                         const dispUnit = field.type === "number" ? fieldDisplayUnit(field.unit, dimUnit, weightUnit) : field.unit || "";

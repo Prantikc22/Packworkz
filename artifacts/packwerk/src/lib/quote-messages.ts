@@ -207,3 +207,30 @@ export function whatsappNumber(phone?: string | null): string {
 export function whatsappLink(phone?: string | null, text?: string): string {
   return `https://wa.me/${whatsappNumber(phone)}${text ? `?text=${encodeURIComponent(text)}` : ""}`;
 }
+
+/** Structured quote for the designed HTML email (rendered and sent by the API). */
+export function quoteEmailData(input: QuoteMessageInput) {
+  const q = input.quote;
+  const c = commercials(input);
+  const artwork = artworkNote(c.item);
+  return {
+    firstName: firstName(q.contact_name),
+    company: q.company_name || "",
+    quoteId: q.quote_id,
+    product: c.item.product_name || "Custom packaging",
+    quantity: c.quantity,
+    unit: c.unit,
+    specs: [...productLines(c.item), ...(artwork ? [["Artwork", artwork] as [string, string]] : [])],
+    subtotal: c.tax ? c.tax.subtotal : null,
+    gstRate: c.tax ? c.tax.gstRate : null,
+    gst: c.tax ? c.tax.gst : null,
+    total: c.total,
+    perUnit: c.perUnit,
+    delivery: input.delivery || "",
+    advancePercent: c.percent,
+    advance: c.advance,
+    balance: c.balance,
+    paymentLink: c.link,
+    dashboardUrl: input.dashboardUrl,
+  };
+}

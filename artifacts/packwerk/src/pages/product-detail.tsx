@@ -8,7 +8,7 @@ import { calculateOrderEstimate } from "@/lib/pricing";
 import { formatINR } from "@/lib/format";
 import { getCategoryBySlug } from "@/lib/skus";
 import { CATALOG_SKUS, getCatalogImage, getCategoryLabel, requiresQuote, type CatalogSku } from "@/lib/catalog";
-import { requiredSizeFields, sizeChosenByOption, sizeOptionsFor, sizeText } from "@/lib/quote-sizes";
+import { commonSizePresets, requiredSizeFields, sizeChosenByOption, sizeOptionsFor, sizeText } from "@/lib/quote-sizes";
 import { ARTICLES } from "@/lib/resources-data";
 import { useCasesForSku, titleCase } from "@/lib/use-cases";
 import { MFG_CATEGORIES } from "@/lib/manufacturers";
@@ -324,6 +324,18 @@ function ProductBuilder({ product }: { product: CatalogSku }) {
                 </div>
               )}
               {sizeOptions.length > 0 && isQuoteRoute && sizeMode === "standard" && <p className="pb-size-note">Reference sizes — fill weights are a guide for dry products. We confirm the exact size with you before printing.</p>}
+              {sizeMode === "custom" && commonSizePresets(product).length > 0 && (
+                <label className="pb-size-preset">
+                  <span>Start from a common size</span>
+                  <select defaultValue="" onChange={(event) => {
+                    const preset = commonSizePresets(product).find((item) => item.code === event.target.value);
+                    if (preset) { setCustomSpecs((current) => ({ ...current, ...preset.values })); setSizeError(""); }
+                  }}>
+                    <option value="">Choose a size to pre-fill, then adjust…</option>
+                    {commonSizePresets(product).map((preset) => <option key={preset.code} value={preset.code}>{preset.label}</option>)}
+                  </select>
+                </label>
+              )}
               {(sizeMode === "custom" || (!sizeOptions.length && !allowCustom)) && product.customization_fields.length > 0 && (
                 <div className="pb-dims">
                   {product.customization_fields.map((field) => {

@@ -455,3 +455,154 @@ export async function sendCalculatorFollowUp(opts: { to: string; name: string; q
     </div>`;
   return sendEmail({ from: FROM, to: opts.to, subject: `Your ${opts.quote.product} price is saved`, html });
 }
+
+// ─── Admin quotation (designed HTML, table layout for Gmail/Outlook) ──────────
+
+export type QuoteEmailData = {
+  firstName: string;
+  company: string;
+  quoteId: string;
+  product: string;
+  quantity: number;
+  unit: string;
+  specs: Array<[string, string]>;
+  subtotal: number | null;
+  gstRate: number | null;
+  gst: number | null;
+  total: number | null;
+  perUnit: number | null;
+  delivery: string;
+  advancePercent: number;
+  advance: number | null;
+  balance: number | null;
+  paymentLink: string | null;
+  dashboardUrl: string;
+};
+
+const NAVY = "#0B1726";
+const AMBER = "#F2B134";
+const INK = "#0D1B2A";
+const MUTED = "#5F6B7A";
+const LINE = "#E6E9EE";
+const money0 = (v: number) => `₹${Math.round(v).toLocaleString("en-IN")}`;
+const money2 = (v: number) => `₹${v.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+export function renderQuoteEmail(d: QuoteEmailData) {
+  const font = "font-family:'Plus Jakarta Sans','Segoe UI',Helvetica,Arial,sans-serif;";
+  const today = new Date().toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" });
+  const row = (label: string, value: string, opts: { strong?: boolean; big?: boolean; last?: boolean } = {}) =>
+    `<tr><td style="${font}padding:${opts.big ? "14px" : "10px"} 0;color:${MUTED};font-size:${opts.big ? "14px" : "13.5px"};${opts.last ? "" : `border-bottom:1px solid ${LINE};`}">${esc(label)}</td>
+     <td align="right" style="${font}padding:${opts.big ? "14px" : "10px"} 0;color:${INK};font-size:${opts.big ? "22px" : "14px"};font-weight:${opts.strong || opts.big ? "800" : "600"};${opts.last ? "" : `border-bottom:1px solid ${LINE};`}">${esc(value)}</td></tr>`;
+  const specs = d.specs.slice(0, 12).map(([k, v], i, all) => row(k, v, { last: i === all.length - 1 })).join("");
+  const price = d.total
+    ? d.subtotal !== null && d.gstRate !== null && d.gst !== null
+      ? row("Price before GST", `${money0(d.subtotal)}${d.perUnit ? `  ·  ${money2(d.perUnit)}/pc` : ""}`) + row(`GST (${d.gstRate}%)`, money0(d.gst)) + row("Total incl. GST", money0(d.total), { big: true, last: true })
+      : row("Quoted price", `${money0(d.total)}${d.perUnit ? `  ·  ${money2(d.perUnit)}/pc` : ""}`, { big: true }) + row("GST", "Extra, as applicable", { last: true })
+    : row("Quoted price", "To be confirmed", { last: true });
+  const full = d.advancePercent >= 100;
+  const payBox = (label: string, amount: number | null, note: string, highlight: boolean) => `
+    <td width="50%" valign="top" style="padding:0 ${highlight ? "6px 0 0" : "0 0 6px"};">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:separate;background:${highlight ? "#FFF8E8" : "#F6F7F9"};border:1px solid ${highlight ? "#F4D38A" : LINE};border-radius:8px;">
+        <tr><td style="${font}padding:16px 18px;">
+          <div style="font-size:11px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:${highlight ? "#9A6A00" : MUTED};">${esc(label)}</div>
+          <div style="font-size:22px;font-weight:800;color:${INK};margin-top:6px;">${amount ? money0(amount) : "—"}</div>
+          <div style="font-size:12.5px;color:${MUTED};margin-top:4px;line-height:1.45;">${esc(note)}</div>
+        </td></tr>
+      </table>
+    </td>`;
+  const payments = full
+    ? `<tr>${payBox("100% advance", d.total, "To confirm the order and start production", true)}</tr>`
+    : `<tr>${payBox(`Advance · ${d.advancePercent}%`, d.advance, "To confirm the order and start production", true)}${payBox(`Balance · ${100 - d.advancePercent}%`, d.balance, "Before dispatch, after quality check", false)}</tr>`;
+  const button = (href: string, label: string, primary: boolean) =>
+    `<a href="${esc(href)}" style="${font}display:inline-block;padding:14px 24px;border-radius:6px;background:${primary ? AMBER : NAVY};color:${primary ? INK : "#FFFFFF"};font-size:14px;font-weight:800;text-decoration:none;margin:0 8px 8px 0;">${esc(label)} &rarr;</a>`;
+
+  return `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><title>Packworkz quotation ${esc(d.quoteId)}</title></head>
+<body style="margin:0;padding:0;background:#EEF1F4;">
+<div style="display:none;max-height:0;overflow:hidden;opacity:0;">Your quotation for ${esc(d.product)}${d.total ? ` — ${money0(d.total)}` : ""}. Review and approve in your dashboard.</div>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#EEF1F4;"><tr><td align="center" style="padding:28px 12px;">
+<table role="presentation" width="600" cellpadding="0" cellspacing="0" style="width:100%;max-width:600px;border-collapse:separate;background:#FFFFFF;border-radius:12px;overflow:hidden;">
+
+  <tr><td style="background:${NAVY};padding:26px 32px;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>
+      <td style="${font}">
+        <span style="display:inline-block;width:11px;height:14px;background:${AMBER};border-radius:2px;vertical-align:middle;"></span><span style="display:inline-block;width:10px;height:12px;background:#E8EDF3;border-radius:2px;vertical-align:middle;margin:6px 0 0 -4px;"></span>
+        <span style="color:#FFFFFF;font-size:21px;font-weight:800;letter-spacing:-0.4px;vertical-align:middle;margin-left:8px;">Packworkz</span>
+      </td>
+      <td align="right" style="${font}color:rgba(255,255,255,0.62);font-size:11.5px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;">Quotation</td>
+    </tr></table>
+  </td></tr>
+
+  <tr><td style="${font}padding:34px 32px 8px;">
+    <div style="font-size:12px;font-weight:800;letter-spacing:1.4px;text-transform:uppercase;color:#1E5ED2;">${esc(d.quoteId)} &nbsp;·&nbsp; ${esc(today)}</div>
+    <h1 style="margin:10px 0 0;font-size:26px;line-height:1.2;font-weight:800;color:${INK};letter-spacing:-0.5px;">Your quotation is ready, ${esc(d.firstName)}.</h1>
+    <p style="margin:12px 0 0;font-size:15px;line-height:1.65;color:${MUTED};">Thank you for your enquiry${d.company ? ` for <strong style="color:${INK};">${esc(d.company)}</strong>` : ""}. Here's the full price and specification — approve it in your dashboard when you're ready.</p>
+  </td></tr>
+
+  <tr><td style="padding:22px 32px 0;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:separate;border:1px solid ${LINE};border-radius:10px;">
+      <tr><td style="${font}padding:18px 20px 6px;">
+        <div style="font-size:11px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:${MUTED};">Product</div>
+        <div style="font-size:18px;font-weight:800;color:${INK};margin-top:6px;">${esc(d.product)}</div>
+        <div style="font-size:14px;color:${MUTED};margin-top:2px;">${d.quantity ? `${d.quantity.toLocaleString("en-IN")} ${esc(d.unit)}` : ""}</div>
+      </td></tr>
+      ${specs ? `<tr><td style="padding:4px 20px 10px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0">${specs}</table></td></tr>` : ""}
+    </table>
+  </td></tr>
+
+  <tr><td style="padding:16px 32px 0;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:separate;border:1px solid ${LINE};border-radius:10px;">
+      <tr><td style="${font}padding:18px 20px 4px;"><div style="font-size:11px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:${MUTED};">Pricing</div></td></tr>
+      <tr><td style="padding:0 20px 8px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0">${price}</table></td></tr>
+      <tr><td style="${font}padding:0 20px 16px;font-size:12.5px;color:${MUTED};">Delivery charges extra, billed at actuals${d.delivery ? ` &nbsp;·&nbsp; Estimated delivery: <strong style="color:${INK};">${esc(d.delivery)}</strong>` : ""}</td></tr>
+    </table>
+  </td></tr>
+
+  <tr><td style="${font}padding:24px 32px 0;">
+    <div style="font-size:11px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:${MUTED};margin-bottom:10px;">Payment</div>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">${payments}</table>
+  </td></tr>
+
+  <tr><td style="${font}padding:26px 32px 4px;">
+    ${d.paymentLink ? button(d.paymentLink, `Pay the advance${d.advance && !full ? ` · ${money0(d.advance)}` : ""}`, true) : ""}
+    ${button(d.dashboardUrl, "View & approve quote", !d.paymentLink)}
+  </td></tr>
+
+  <tr><td style="padding:16px 32px 0;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#F6F7F9;border-radius:10px;">
+      <tr><td style="${font}padding:16px 20px;font-size:13.5px;line-height:1.7;color:${MUTED};">
+        <strong style="color:${INK};">What happens next</strong><br>
+        1. Approve the quote and pay the advance.<br>
+        2. We send a <strong style="color:${INK};">free 3D mockup</strong> of your artwork on the exact pack for sign-off.<br>
+        3. Production starts — with quality checks before dispatch.
+      </td></tr>
+    </table>
+  </td></tr>
+
+  <tr><td style="${font}padding:24px 32px 30px;font-size:14px;line-height:1.7;color:${MUTED};">
+    Want a different quantity or spec? Just reply to this email and we'll revise the quote the same day.<br><br>
+    Warm regards,<br><strong style="color:${INK};">Team Packworkz</strong>
+  </td></tr>
+
+  <tr><td style="background:#F6F7F9;border-top:1px solid ${LINE};padding:18px 32px;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>
+      <td style="${font}font-size:12.5px;color:${MUTED};line-height:1.6;">
+        <a href="mailto:sales@packworkz.com" style="color:${INK};font-weight:700;text-decoration:none;">sales@packworkz.com</a> &nbsp;·&nbsp;
+        <a href="https://wa.me/918208990366" style="color:${INK};font-weight:700;text-decoration:none;">WhatsApp ${WHATSAPP}</a><br>
+        <a href="https://${SITE}" style="color:${MUTED};text-decoration:none;">${SITE}</a> &nbsp;·&nbsp; Kalyani Rotopack Pvt Ltd, Kolkata
+      </td>
+    </tr></table>
+  </td></tr>
+
+</table>
+</td></tr></table>
+</body></html>`;
+}
+
+export async function sendQuoteEmail(opts: { to: string; data: QuoteEmailData }) {
+  return sendEmail({
+    from: FROM,
+    to: opts.to,
+    subject: `Your Packworkz quotation ${opts.data.quoteId} · ${opts.data.product}`,
+    html: renderQuoteEmail(opts.data),
+  });
+}

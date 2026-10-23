@@ -4,7 +4,7 @@ import { sb } from "../lib/supabase";
 import { requireAdmin, hashPassword, generateTempPassword } from "../lib/auth";
 import { generateId } from "../lib/generateId";
 import { sendWhatsApp } from "../lib/whatsapp";
-import { sendWelcomeEmail, sendAdminQuoteNotification } from "../lib/email";
+import { renderQuoteEmail, sendQuoteEmail, sendWelcomeEmail, sendAdminQuoteNotification, type QuoteEmailData } from "../lib/email";
 import { advancePercent } from "../lib/paymentTerms";
 
 const router: IRouter = Router();
@@ -232,6 +232,50 @@ router.put("/admin/quotes/:id/notes", async (req, res): Promise<void> => {
   }
   if (!result.data) { res.status(404).json({ error: "Quote not found" }); return; }
   res.json({ success: true, quote: result.data });
+});
+
+// Designed quotation email. The admin panel builds the figures (same as the
+// WhatsApp message); the recipient always comes from the quote record.
+router.post("/admin/quotes/:id/email", async (req, res): Promise<void> => {
+  const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
+  const raw = req.body?.data || {};
+  const text = (v: unknown, max = 200) => String(v ?? "").replace(/\s+/g, " ").trim().slice(0, max);
+  const num = (v: unknown) => (v === null || v === undefined || v === "" || !Number.isFinite(Number(v)) ? null : Number(v));
+  const url = (v: unknown, allowLocal: boolean) => {
+    try {
+      const u = new URL(String(v || ""));
+      if (u.protocol === "https:") return u.toString();
+      return allowLocal && u.hostname === "localhost" ? u.toString() : null;
+    } catch { return null; }
+  };
+  const { data: quote } = await sb.from("quote_requests").select("quote_id, email, contact_name").eq("id", id).maybeSingle();
+  if (!quote) { res.status(404).json({ error: "Quote not found" }); return; }
+  const data: QuoteEmailData = {
+    firstName: text(raw.firstName, 60) || "there",
+    company: text(raw.company, 120),
+    quoteId: quote.quote_id,
+    product: text(raw.product, 120) || "Custom packaging",
+    quantity: num(raw.quantity) || 0,
+    unit: text(raw.unit, 20) || "units",
+    specs: (Array.isArray(raw.specs) ? raw.specs : []).slice(0, 14).map((pair: unknown) => Array.isArray(pair) ? [text(pair[0], 40), text(pair[1], 160)] : ["", ""]).filter(([k, v]: string[]) => k && v),
+    subtotal: num(raw.subtotal),
+    gstRate: num(raw.gstRate),
+    gst: num(raw.gst),
+    total: num(raw.total),
+    perUnit: num(raw.perUnit),
+    delivery: text(raw.delivery, 80),
+    advancePercent: Math.min(100, Math.max(0, num(raw.advancePercent) ?? 70)),
+    advance: num(raw.advance),
+    balance: num(raw.balance),
+    paymentLink: url(raw.paymentLink, false),
+    dashboardUrl: url(raw.dashboardUrl, true) || `https://packworkz.com/dashboard/quotes?quote=${encodeURIComponent(quote.quote_id)}`,
+  };
+  if (req.body?.preview) { res.json({ html: renderQuoteEmail(data), to: quote.email }); return; }
+  const to = String(quote.email || "");
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to) || to.endsWith(".invalid")) { res.status(400).json({ error: "This quote has no valid customer email." }); return; }
+  const sent = await sendQuoteEmail({ to, data });
+  if (!sent.ok) { res.status(502).json({ error: sent.status === 0 ? "Email is not configured on this server (RESEND_API_KEY)." : `Email provider error (${sent.status})` }); return; }
+  res.json({ sent: true, to });
 });
 
 router.delete("/admin/quotes/:id", async (req, res): Promise<void> => {

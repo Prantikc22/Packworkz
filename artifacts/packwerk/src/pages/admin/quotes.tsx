@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { useAdminListQuotes } from "@workspace/api-client-react";
-import { Loader2, ChevronDown, ChevronUp, ExternalLink, MessageSquare, Link2, Save, Trash2, Mail } from "lucide-react";
+import { Loader2, ChevronDown, ChevronUp, ExternalLink, MessageSquare, Link2, Save, Trash2, Mail, Send, X } from "lucide-react";
 import { formatINR } from "@/lib/format";
 import { useToast } from "@/hooks/use-toast";
 import { DEFAULT_PAYMENT_TERMS } from "@/lib/payment-terms";
-import { buildQuoteEmail, buildQuoteWhatsApp, whatsappLink } from "@/lib/quote-messages";
+import { buildQuoteEmail, buildQuoteWhatsApp, quoteEmailData, whatsappLink } from "@/lib/quote-messages";
 
 const STATUS_OPTIONS = ["submitted", "reviewing", "quoted", "accepted", "rejected"];
 
@@ -85,6 +85,37 @@ function QuoteRow({ q, onRefetch }: { q: any; onRefetch: () => void }) {
   const buildEmailHref = () => {
     const { subject, body } = buildQuoteEmail(quoteMessage());
     return `mailto:${q.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  };
+
+  const [emailPreview, setEmailPreview] = useState<{ html: string; to: string } | null>(null);
+  const [emailBusy, setEmailBusy] = useState(false);
+  const adminPost = async (path: string, body: object) => {
+    const response = await fetch(`/api${path}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "x-admin-key": localStorage.getItem("packwerk_admin_key") || "" },
+      body: JSON.stringify(body),
+    });
+    const payload = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(payload.error || "Request failed");
+    return payload;
+  };
+  const openEmailPreview = async () => {
+    setEmailBusy(true);
+    try {
+      setEmailPreview(await adminPost(`/admin/quotes/${q.id}/email`, { preview: true, data: quoteEmailData(quoteMessage()) }));
+    } catch (error) {
+      toast({ variant: "destructive", title: "Could not build the email", description: error instanceof Error ? error.message : undefined });
+    } finally { setEmailBusy(false); }
+  };
+  const sendEmailNow = async () => {
+    setEmailBusy(true);
+    try {
+      const result = await adminPost(`/admin/quotes/${q.id}/email`, { data: quoteEmailData(quoteMessage()) });
+      toast({ title: `Quotation emailed to ${result.to}` });
+      setEmailPreview(null);
+    } catch (error) {
+      toast({ variant: "destructive", title: "Email not sent", description: error instanceof Error ? error.message : undefined });
+    } finally { setEmailBusy(false); }
   };
 
   const handleSaveNotes = async () => {
@@ -314,12 +345,33 @@ function QuoteRow({ q, onRefetch }: { q: any; onRefetch: () => void }) {
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
                       WhatsApp Quote
                     </a>
-                    <a href={buildEmailHref()}
-                      className="inline-flex items-center gap-2 px-4 py-2 rounded text-xs font-bold bg-[#1B6CA8] text-white hover:bg-[#0D1B2A] transition-colors"
+                    <button type="button" onClick={() => void openEmailPreview()} disabled={emailBusy}
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded text-xs font-bold bg-[#1B6CA8] text-white hover:bg-[#0D1B2A] transition-colors disabled:opacity-60"
                     >
-                      <Mail className="w-3.5 h-3.5" />
+                      {emailBusy && !emailPreview ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Mail className="w-3.5 h-3.5" />}
                       Email Quote
-                    </a>
+                    </button>
+                    {emailPreview && (
+                      <div className="fixed inset-0 z-[2000] flex items-center justify-center bg-[#0B1726]/60 p-4" role="dialog" aria-modal="true" aria-label="Email preview">
+                        <div className="flex max-h-[92vh] w-full max-w-[720px] flex-col overflow-hidden rounded-lg bg-white shadow-2xl">
+                          <div className="flex items-center justify-between gap-3 border-b border-[#E2EAF4] px-5 py-3">
+                            <div className="min-w-0">
+                              <p className="text-[11px] font-bold uppercase tracking-wider text-[#94A3B8]">Email preview</p>
+                              <p className="truncate text-sm font-semibold text-[#0D1B2A]">To: {emailPreview.to} · from sales@packworkz.com</p>
+                            </div>
+                            <button type="button" onClick={() => setEmailPreview(null)} className="rounded p-1.5 text-[#64748B] hover:bg-[#F1F5F9]" aria-label="Close preview"><X className="h-4 w-4" /></button>
+                          </div>
+                          <iframe title="Quotation email preview" srcDoc={emailPreview.html} className="h-[62vh] w-full border-0 bg-[#EEF1F4]" />
+                          <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[#E2EAF4] px-5 py-3">
+                            <a href={buildEmailHref()} className="text-xs font-semibold text-[#64748B] underline">Open as plain text in my mail app instead</a>
+                            <button type="button" onClick={() => void sendEmailNow()} disabled={emailBusy}
+                              className="inline-flex items-center gap-2 rounded bg-[#0D1B2A] px-4 py-2 text-xs font-bold text-white hover:bg-[#1B6CA8] disabled:opacity-60">
+                              {emailBusy ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Send className="h-3.5 w-3.5" />} Send to {emailPreview.to}
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                     <button onClick={handleDelete} disabled={deleting}
                       className="inline-flex items-center gap-2 px-4 py-2 rounded text-xs font-bold bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 transition-colors disabled:opacity-50 ml-auto"
                     >

@@ -38,6 +38,14 @@ const REQUIRED_KEYS = new Set([
   "container_height", "max_diameter", "volume_ml", "capacity_oz",
 ]);
 
+// Where the generic rule asks for too much: a spout pouch is sized by fill volume,
+// a shaped pouch by its outline, and a shrink wrap roll has no cut length.
+const REQUIRED_OVERRIDE: Record<string, string[]> = {
+  "FP-104": ["volume_ml"],
+  "FP-114": ["width", "height"],
+  "RL-705": ["layflat"],
+};
+
 export function sizeOptionsFor(sku: Pick<Sku, "code">): SizeOption[] {
   return COMMERCE_PRODUCTS[sku.code]?.sizes || QUOTE_SIZES[sku.code] || [];
 }
@@ -48,10 +56,30 @@ export function sizeChosenByOption(sku: Pick<Sku, "code">) {
 
 export function requiredSizeFields(sku: Pick<Sku, "code" | "customization_fields">): CustomField[] {
   if (SIZE_FROM_OPTION.has(sku.code)) return [];
-  return sku.customization_fields.filter((field) => field.type === "number" && REQUIRED_KEYS.has(field.key));
+  const override = REQUIRED_OVERRIDE[sku.code];
+  return sku.customization_fields.filter((field) => field.type === "number" && (override ? override.includes(field.key) : REQUIRED_KEYS.has(field.key)));
 }
 
 /** Readable size for the quote record, e.g. "40 g — 110 × 165 mm". */
 export function sizeText(option: SizeOption) {
   return option.detail ? `${option.label} — ${option.detail}` : option.label;
+}
+
+/**
+ * Common sizes as a starting point for a custom size: each standard size's
+ * millimetre figures ("110 x 170 + 60 mm", "60 × 35 × 100 mm") mapped onto the
+ * product's own dimension fields in order (W, H, gusset · L, W, H · dia., H).
+ */
+export function commonSizePresets(sku: Pick<Sku, "code" | "customization_fields">): Array<{ code: string; label: string; values: Record<string, string> }> {
+  const dimFields = sku.customization_fields.filter((field) => field.type === "number" && field.unit === "mm");
+  if (!dimFields.length) return [];
+  return sizeOptionsFor(sku).flatMap((option) => {
+    const text = `${option.detail || ""}`;
+    if (!/mm\b/.test(text)) return [];
+    const numbers = (text.match(/\d+(?:\.\d+)?/g) || []).map(Number);
+    if (numbers.length < 2) return [];
+    const values: Record<string, string> = {};
+    dimFields.slice(0, numbers.length).forEach((field, i) => { values[field.key] = String(numbers[i]); });
+    return [{ code: option.code, label: sizeText(option), values }];
+  });
 }
