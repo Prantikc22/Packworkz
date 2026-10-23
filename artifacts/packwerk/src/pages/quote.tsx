@@ -4,6 +4,7 @@ import { useSubmitQuote } from "@workspace/api-client-react";
 import { useToast } from "@/hooks/use-toast";
 import { CATEGORIES } from "@/lib/skus";
 import type { Sku, VariantGroup } from "@/lib/skus";
+import { requiredSizeFields, sizeChosenByOption, sizeOptionsFor, sizeText } from "@/lib/quote-sizes";
 import { CATALOG_SKUS as SKUS, getCatalogImage, getCatalogSkusByCategory as getSkusByCategory, getMaxSelfServeQuantity, requiresQuote, type CatalogSku } from "@/lib/catalog";
 import { openOrderPayment, openRazorpay, prepareOrderPayment, type PreparedOrderPayment } from "@/lib/razorpay";
 import { calculateOrderEstimate } from "@/lib/pricing";
@@ -850,6 +851,11 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
     if (stepNum === 1 && !selectedSku) {
       toast({ variant: "destructive", title: "Choose a product", description: "Select the packaging you want before continuing." }); return;
     }
+    if (stepNum === 1 && missingSizeFields.length) {
+      toast({ variant: "destructive", title: "Add your size", description: `Pick a standard size or enter the ${missingSizeFields.map((field) => field.label.toLowerCase()).join(", ")}.` });
+      document.getElementById("cfg-size")?.scrollIntoView({ behavior: "smooth", block: "center" });
+      return;
+    }
     if (stepNum === 3) {
       if (!contactName.trim()) { toast({ variant: "destructive", title: "Required field missing", description: "Please enter your contact name." }); return; }
       if (!company.trim()) { toast({ variant: "destructive", title: "Required field missing", description: "Please enter your company name." }); return; }
@@ -906,7 +912,14 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
     && !exceedsOnlineOrderLimit
     ? "self"
     : "assisted";
-  const usingStandardSize = Boolean(commerceProduct?.sizes.length) && selectedSizeCode !== CUSTOM_SIZE;
+  // Quote products get reference sizes too; instant checkout only offers priced sizes.
+  const sizeOptions = selectedSku ? (selectedSkuBuyingMode === "self" ? commerceProduct?.sizes || [] : sizeOptionsFor(selectedSku)) : [];
+  const chosenSizeOption = sizeOptions.find((option) => option.code === selectedSizeCode);
+  const usingStandardSize = Boolean(chosenSizeOption);
+  const requiredFields = selectedSku ? requiredSizeFields(selectedSku) : [];
+  const missingSizeFields = !selectedSku || selectedSkuBuyingMode === "self" || usingStandardSize || sizeChosenByOption(selectedSku)
+    ? []
+    : requiredFields.filter((field) => !String(customFieldValues[field.key] || "").trim());
   const visibleCustomFields = (selectedSku?.customization_fields || []).filter((field) => !(usingStandardSize && isSizeField(field)));
   /** What the converter receives: every visible field, select defaults included, with its unit. */
   const buildCustomSpecs = () => {
@@ -917,7 +930,10 @@ export default function Quote({ params }: { params?: { step?: string; id?: strin
       const unit = field.unit && /^\d+(\.\d+)?$/.test(String(raw).trim()) ? ` ${field.unit}` : "";
       specs[field.key] = `${String(raw).trim()}${unit}`;
     }
-    if (usingStandardSize && selectedSizeCode) specs.standard_size = selectedSizeCode;
+    if (chosenSizeOption) {
+      specs.standard_size = chosenSizeOption.code;
+      specs.size = sizeText(chosenSizeOption);
+    }
     return specs;
   };
 const quantityPresets = useMemo(() => {
@@ -941,13 +957,12 @@ const maxSelfServeQuantity = selectedSku ? getMaxSelfServeQuantity(selectedSku) 
   }, [qty, qtyUnit, selectedSku, selectedSkuMoq]);
 
   useEffect(() => {
-    if (!commerceProduct) return;
-    const customAllowed = selectedSizeCode === CUSTOM_SIZE && selectedSkuBuyingMode === "assisted";
-    if (!customAllowed && !commerceProduct.sizes.some((item) => item.code === selectedSizeCode)) {
-      setSelectedSizeCode(commerceProduct.sizes[0].code);
-    }
-    if (qtyUnit !== "pieces") setQtyUnit("pieces");
-  }, [commerceProduct, qtyUnit, selectedSizeCode, selectedSkuBuyingMode]);
+    if (commerceProduct && qtyUnit !== "pieces") setQtyUnit("pieces");
+    if (!selectedSku) return;
+    if (selectedSizeCode === CUSTOM_SIZE && selectedSkuBuyingMode === "assisted") return;
+    if (sizeOptions.length && !sizeOptions.some((item) => item.code === selectedSizeCode)) setSelectedSizeCode(sizeOptions[0].code);
+    else if (!sizeOptions.length && selectedSkuBuyingMode === "assisted") setSelectedSizeCode(CUSTOM_SIZE);
+  }, [commerceProduct, qtyUnit, selectedSku, selectedSizeCode, selectedSkuBuyingMode, sizeOptions]);
 
   const initVariants = (sku: Sku) => {
     const defaults: Record<string, string> = {};
@@ -1513,8 +1528,8 @@ const maxSelfServeQuantity = selectedSku ? getMaxSelfServeQuantity(selectedSku) 
                 )}
 
                 {/* Fixed, priced size menu for every instant-buy family. */}
-                {commerceProduct && commerceProduct.sizes.length > 0 && (
-                  <div className="bg-white border border-slate-200 p-5">
+                {sizeOptions.length > 0 && (
+                  <div className="bg-white border border-slate-200 p-5" id="cfg-size">
                     <div className="flex items-start justify-between gap-4 mb-4">
                       <div>
                         <div className="font-bold text-slate-800 text-sm" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>{selectedSkuBuyingMode === "self" ? "Choose a standard size" : "Choose a size"}</div>
@@ -1525,7 +1540,7 @@ const maxSelfServeQuantity = selectedSku ? getMaxSelfServeQuantity(selectedSku) 
                       {selectedSkuBuyingMode === "self" && <span className="border border-emerald-700 bg-white px-2 py-1 text-[10px] font-black uppercase tracking-wider text-emerald-800">Price locked</span>}
                     </div>
                     <div className="grid grid-cols-2 gap-2">
-                      {commerceProduct.sizes.map((item) => {
+                      {sizeOptions.map((item) => {
                         const active = selectedSizeCode === item.code;
                         return (
                           <button
@@ -1557,7 +1572,7 @@ const maxSelfServeQuantity = selectedSku ? getMaxSelfServeQuantity(selectedSku) 
 
                 {/* Package Size & Specs */}
                 {selectedSku && selectedSkuBuyingMode === "assisted" && visibleCustomFields.length > 0 && (
-                  <div className="bg-white rounded-lg border border-slate-200 p-5">
+                  <div className="bg-white rounded-lg border border-slate-200 p-5" {...(sizeOptions.length ? {} : { id: "cfg-size" })}>
                     <div className="font-bold text-slate-800 text-sm mb-1" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
                       Package Size &amp; Specs
                     </div>
@@ -1604,7 +1619,7 @@ const maxSelfServeQuantity = selectedSku ? getMaxSelfServeQuantity(selectedSku) 
                         return (
                           <div key={field.key}>
                             <label className="text-xs font-medium text-slate-600 mb-1 block">
-                              {stripUnitSuffix(field.label)}{dispUnit ? ` (${dispUnit})` : ""}
+                              {stripUnitSuffix(field.label)}{dispUnit ? ` (${dispUnit})` : ""}{requiredFields.some((f) => f.key === field.key) && <span className="text-red-600"> *</span>}
                             </label>
                             {field.type === "select" ? (
                               <select
@@ -1887,7 +1902,7 @@ const maxSelfServeQuantity = selectedSku ? getMaxSelfServeQuantity(selectedSku) 
                         ["SKU", selectedSku?.name || "—"],
                         ["SKU Code", selectedSku?.code || "—"],
                         ["Quantity", `${qty.toLocaleString()} ${qtyUnit}`],
-                        ...(commerceProduct && usingStandardSize ? [["Production size", formatMeasurementInCm(commerceProduct.sizes.find((item) => item.code === selectedSizeCode)?.label || selectedSizeCode)]] : []),
+                        ...(chosenSizeOption ? [["Production size", formatMeasurementInCm(sizeText(chosenSizeOption))]] : []),
                         ...Object.entries(variantSelections).map(([k, v]) => {
                           const group = selectedSku?.variants.find(g => g.key === k);
                           return [group?.label || k, v];

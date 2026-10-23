@@ -57,10 +57,16 @@ function ConfirmModal({ quote, onConfirm, onCancel, loading }: {
           )}
           {(quote.quoted_amount || quote.total_estimated_max) && (
             <div className="flex justify-between text-[13px]">
-              <span style={{ color: "#64748B" }}>Order value</span>
+              <span style={{ color: "#64748B" }}>{quote.tax ? "Order value incl. GST" : "Order value"}</span>
               <span className="font-black" style={{ color: "#0D1B2A" }}>
                 ₹{fmt(Number(quote.quoted_amount || quote.total_estimated_max))}
               </span>
+            </div>
+          )}
+          {quote.tax && (
+            <div className="flex justify-between text-[12px]">
+              <span style={{ color: "#94A3B8" }}>Price ₹{fmt(quote.tax.subtotal)} + GST {quote.tax.gstRate}%</span>
+              <span style={{ color: "#64748B" }}>₹{fmt(quote.tax.gst)}</span>
             </div>
           )}
           {quote.delivery_date && (
@@ -237,9 +243,16 @@ export default function DashboardQuotes() {
                       <div className="flex justify-between items-end mb-4">
                         <div>
                           {quote.quoted_amount ? (
-                            <p className="text-[22px] font-black" style={{ color: "#0D1B2A" }}>
-                              ₹{fmt(Number(quote.quoted_amount))}
-                            </p>
+                            <>
+                              <p className="text-[22px] font-black" style={{ color: "#0D1B2A" }}>
+                                ₹{fmt(Number(quote.quoted_amount))}
+                              </p>
+                              <p className="text-[12px]" style={{ color: "#64748B" }}>
+                                {quote.tax
+                                  ? <>₹{fmt(quote.tax.subtotal)} + GST {quote.tax.gstRate}% (₹{fmt(quote.tax.gst)}) · total incl. GST</>
+                                  : "GST extra as applicable"}
+                              </p>
+                            </>
                           ) : quote.total_estimated_min ? (
                             <p className="text-[22px] font-black" style={{ color: "#0D1B2A" }}>
                               ₹{fmt(quote.total_estimated_min)}

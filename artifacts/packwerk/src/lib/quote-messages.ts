@@ -7,6 +7,8 @@ export const SALES_PHONE = "+91 82089 90366";
 type QuoteMessageInput = {
   quote: any;
   quotedAmount: number | null;
+  /** Price before GST and GST; when present, quotedAmount is the total incl. GST. */
+  tax?: { subtotal: number; gstRate: number; gst: number } | null;
   delivery: string;
   paymentTerms: string;
   paymentLink?: string;
@@ -19,11 +21,13 @@ const VARIANT_LABELS: Record<string, string> = {
   closure: "Closure",
   window: "Window",
   hang: "Hang hole",
+  print_sides: "Printing",
+  base_colour: "Pouch colour",
   print: "Print",
   colours: "Colours",
   colors: "Colours",
 };
-const VARIANT_ORDER = ["material", "finish", "print", "colours", "colors", "closure", "window", "hang"];
+const VARIANT_ORDER = ["material", "base_colour", "finish", "print_sides", "print", "colours", "colors", "closure", "window", "hang"];
 const variantRank = (key: string) => (VARIANT_ORDER.indexOf(key) + 1 || VARIANT_ORDER.length + 1);
 const SKIP_VARIANTS = new Set(["promotion_code"]);
 const SIZE_KEYS = ["width", "height", "depth"];
@@ -40,16 +44,17 @@ function productLines(item: any) {
   const specs: Record<string, any> = item.custom_specs || {};
   // Values arrive as "80 mm" (new quotes) or "80" (older quotes, always mm).
   const [w, h, d] = SIZE_KEYS.map((key) => parseFloat(String(specs[key] ?? "")) || 0);
-  if (w && h) lines.push(["Size", `${w} × ${h} mm (W × H)${d ? `, ${d} mm gusset` : ""}`]);
+  if (specs.size) lines.push(["Size", String(specs.size)]);
+  else if (w && h) lines.push(["Size", `${w} × ${h} mm (W × H)${d ? `, ${d} mm gusset` : ""}`]);
   const variants = Object.entries(item.variant_selections || {})
     .filter(([key, value]) => value && !SKIP_VARIANTS.has(key) && !/^(none|n\/a|-)$/i.test(String(value)))
     .sort(([a], [b]) => variantRank(a) - variantRank(b));
   for (const [key, value] of variants) lines.push([label(key), String(value)]);
   for (const [key, value] of Object.entries(specs)) {
-    if (!value || SIZE_KEYS.includes(key) || key === "artwork" || key === "standard_size") continue;
+    if (!value || SIZE_KEYS.includes(key) || key === "artwork" || key === "standard_size" || key === "size") continue;
     lines.push([label(key), `${value}${MM_KEY.test(key) && /^\d+(\.\d+)?$/.test(String(value)) ? " mm" : ""}`]);
   }
-  if (specs.standard_size) lines.push(["Size", String(specs.standard_size)]);
+  if (specs.standard_size && !specs.size) lines.push(["Size", String(specs.standard_size)]);
   return lines;
 }
 
@@ -74,7 +79,8 @@ function commercials(input: QuoteMessageInput) {
     unit,
     percent,
     total,
-    perUnit: total && quantity && unit === "units" ? total / quantity : null,
+    perUnit: total && quantity && unit === "units" ? (input.tax?.subtotal || total) / quantity : null,
+    tax: total && input.tax ? input.tax : null,
     advance: total ? (total * percent) / 100 : null,
     balance: total ? (total * (100 - percent)) / 100 : null,
     link: /^https:\/\//.test(String(input.paymentLink || "")) ? String(input.paymentLink) : null,
@@ -105,10 +111,15 @@ export function buildQuoteEmail(input: QuoteMessageInput) {
     ...(artwork ? [`Artwork: ${artwork}`] : []),
     ``,
     `PRICING`,
-    ...(c.total
-      ? [`Quoted price: ${inr(c.total)}${c.perUnit ? ` (${inrUnit(c.perUnit)} per unit)` : ""}`]
-      : [`Quoted price: to be confirmed`]),
-    `GST: extra, as applicable`,
+    ...(c.total && c.tax
+      ? [
+          `Price before GST: ${inr(c.tax.subtotal)}${c.perUnit ? ` (${inrUnit(c.perUnit)} per unit)` : ""}`,
+          `GST (${c.tax.gstRate}%): ${inr(c.tax.gst)}`,
+          `Total incl. GST: ${inr(c.total)}`,
+        ]
+      : c.total
+        ? [`Quoted price: ${inr(c.total)}${c.perUnit ? ` (${inrUnit(c.perUnit)} per unit)` : ""}`, `GST: extra, as applicable`]
+        : [`Quoted price: to be confirmed`, `GST: extra, as applicable`]),
     `Delivery charges: extra, billed at actuals`,
     ...(input.delivery ? [`Estimated delivery: ${input.delivery}`] : []),
     ``,
@@ -119,7 +130,7 @@ export function buildQuoteEmail(input: QuoteMessageInput) {
     ...(c.percent < 100
       ? [`Balance (${100 - c.percent}%)${c.balance ? `: ${inr(c.balance)}` : ""}, before dispatch, after quality check`]
       : []),
-    `Amounts above exclude GST and delivery.`,
+    c.tax ? `Amounts above include GST; delivery is billed at actuals.` : `Amounts above exclude GST and delivery.`,
     rule,
     ``,
     `NEXT STEPS`,
@@ -154,10 +165,16 @@ export function buildQuoteWhatsApp(input: QuoteMessageInput) {
     `*${product}* · ${c.quantity ? c.quantity.toLocaleString("en-IN") : "—"} ${c.unit}`,
     ...(specs.length ? [specs.join(" · ")] : []),
     ``,
-    c.total
-      ? `*Price:* ${inr(c.total)}${c.perUnit ? ` (${inrUnit(c.perUnit)}/unit)` : ""}`
-      : `*Price:* to be confirmed`,
-    `GST extra · delivery charges extra, at actuals`,
+    ...(c.total && c.tax
+      ? [
+          `*Price:* ${inr(c.tax.subtotal)}${c.perUnit ? ` (${inrUnit(c.perUnit)}/unit)` : ""} + GST ${c.tax.gstRate}% ${inr(c.tax.gst)}`,
+          `*Total incl. GST:* ${inr(c.total)}`,
+          `Delivery charges extra, at actuals`,
+        ]
+      : [
+          c.total ? `*Price:* ${inr(c.total)}${c.perUnit ? ` (${inrUnit(c.perUnit)}/unit)` : ""}` : `*Price:* to be confirmed`,
+          `GST extra · delivery charges extra, at actuals`,
+        ]),
     ...(input.delivery ? [`*Estimated delivery:* ${input.delivery}`] : []),
     ``,
     `*Payment*`,

@@ -106,7 +106,7 @@ export default function CartCheckout() {
           artwork_status: item.artworkOption || "upload",
           artwork_file_url: item.artworkFileUrl || undefined,
           variant_selections: { ...item.variantSelections, ...(LAUNCH_PROMOTION_ENABLED ? { promotion_code: LAUNCH_PROMOTION_CODE } : {}) },
-          custom_specs: { ...item.customSpecs, standard_size: item.sizeCode },
+          custom_specs: { ...item.customSpecs, ...(item.sizeCode ? { standard_size: item.sizeCode } : {}) },
           sample_requested: false,
           sample_tier: "none",
           design_paid: false,

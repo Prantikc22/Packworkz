@@ -33,3 +33,24 @@ export function withDeliveryLabel(items: unknown, label: string | null): any[] {
   list[0] = first;
   return list;
 }
+
+/** Price before GST and GST rate saved with an admin quote (items[0].metadata). */
+export function quoteTax(quote: any): { subtotal: number; gstRate: number; gst: number; total: number } | null {
+  const meta = (Array.isArray(quote?.items) ? quote.items[0]?.metadata : null) || {};
+  const subtotal = Number(meta.quote_subtotal);
+  const gstRate = Number(meta.gst_rate);
+  if (!Number.isFinite(subtotal) || subtotal <= 0 || !Number.isFinite(gstRate) || gstRate < 0) return null;
+  const gst = Math.round(subtotal * gstRate) / 100;
+  return { subtotal, gstRate, gst, total: Math.round((subtotal + gst) * 100) / 100 };
+}
+
+export function withQuoteTax(items: unknown, tax: { subtotal: number; gstRate: number } | null): any[] {
+  const list = Array.isArray(items) ? [...items] : [];
+  const first = { ...(list[0] || {}) };
+  const metadata = { ...(first.metadata || {}) };
+  if (tax) { metadata.quote_subtotal = tax.subtotal; metadata.gst_rate = tax.gstRate; }
+  else { delete metadata.quote_subtotal; delete metadata.gst_rate; }
+  first.metadata = metadata;
+  list[0] = first;
+  return list;
+}

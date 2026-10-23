@@ -1,5 +1,5 @@
 import { Router, type IRouter } from "express";
-import { deliveryLabel, toCalendarDate, withDeliveryLabel } from "../lib/quoteDelivery";
+import { deliveryLabel, quoteTax, toCalendarDate, withDeliveryLabel, withQuoteTax } from "../lib/quoteDelivery";
 import { sb } from "../lib/supabase";
 import { requireAdmin, hashPassword, generateTempPassword } from "../lib/auth";
 import { generateId } from "../lib/generateId";
@@ -86,6 +86,7 @@ router.get("/admin/quotes", async (req, res): Promise<void> => {
         admin_notes: q.admin_notes ?? adminMeta.admin_notes ?? null,
         payment_link: q.payment_link ?? adminMeta.payment_link ?? null,
         delivery_date: deliveryLabel(q, adminMeta),
+        tax: quoteTax(q),
         payment_terms: q.payment_terms ?? adminMeta.payment_terms ?? null,
         rejection_reason: adminMeta.admin_notes ? null : q.rejection_reason,
       };
@@ -131,7 +132,25 @@ router.put("/admin/quotes/:id/status", async (req, res): Promise<void> => {
 
 router.put("/admin/quotes/:id/notes", async (req, res): Promise<void> => {
   const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
-  const { admin_notes, payment_link, quoted_amount, delivery_date, payment_terms } = req.body;
+  const { admin_notes, payment_link, delivery_date, payment_terms } = req.body;
+  let { quoted_amount } = req.body;
+  // Price before GST + GST rate → the payable total is stored as quoted_amount, so
+  // advances, orders and payment links all work on the amount the customer pays.
+  const subtotalInput = req.body?.quote_subtotal;
+  const gstRateInput = req.body?.gst_rate;
+  let tax: { subtotal: number; gstRate: number } | null | undefined;
+  if (subtotalInput !== undefined && subtotalInput !== "" && subtotalInput !== null) {
+    const subtotal = Number(subtotalInput);
+    const gstRate = Number(gstRateInput ?? 18);
+    if (!Number.isFinite(subtotal) || subtotal <= 0 || ![0, 5, 12, 18, 28].includes(gstRate)) {
+      res.status(400).json({ error: "Enter the price before GST and a GST rate of 0, 5, 12, 18 or 28%." });
+      return;
+    }
+    tax = { subtotal: Math.round(subtotal * 100) / 100, gstRate };
+    quoted_amount = Math.round(tax.subtotal * (1 + gstRate / 100) * 100) / 100;
+  } else if (subtotalInput === "") {
+    tax = null;
+  }
 
   if (payment_link) {
     try {
@@ -153,9 +172,7 @@ router.put("/admin/quotes/:id/notes", async (req, res): Promise<void> => {
   }
   // The quote stores the client-facing delivery promise as text. This may be
   // an exact date ("1 October 2026") or a reviewed lead-time window.
-  if (delivery_date !== undefined) {
-    const label = String(delivery_date || "").trim();
-    fullUpdate.delivery_date = toCalendarDate(label);
+  if (delivery_date !== undefined || tax !== undefined) {
     const { data: current, error: readError } = await sb.from("quote_requests").select("items").eq("id", id).maybeSingle();
     if (readError) {
       console.error("[admin/quotes/notes] read", readError.message);
@@ -163,7 +180,14 @@ router.put("/admin/quotes/:id/notes", async (req, res): Promise<void> => {
       return;
     }
     if (!current) { res.status(404).json({ error: "Quote not found" }); return; }
-    fullUpdate.items = withDeliveryLabel(current.items, label || null);
+    let items = current.items;
+    if (delivery_date !== undefined) {
+      const label = String(delivery_date || "").trim();
+      fullUpdate.delivery_date = toCalendarDate(label);
+      items = withDeliveryLabel(items, label || null);
+    }
+    if (tax !== undefined) items = withQuoteTax(items, tax);
+    fullUpdate.items = items;
   }
   if (payment_terms !== undefined) fullUpdate.payment_terms = payment_terms;
 

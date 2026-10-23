@@ -27,7 +27,13 @@ function QuoteRow({ q, onRefetch }: { q: any; onRefetch: () => void }) {
   const [status, setStatus] = useState(q.status);
   const [adminNotes, setAdminNotes] = useState(q.admin_notes || "");
   const [paymentLink, setPaymentLink] = useState(q.payment_link || "");
-  const [quotedAmount, setQuotedAmount] = useState(q.quoted_amount ? String(q.quoted_amount) : "");
+  // Price is entered before GST; GST and the payable total are worked out here.
+  // Older quotes have no saved breakdown: their amount was quoted "GST extra".
+  const [subtotal, setSubtotal] = useState(q.tax?.subtotal ? String(q.tax.subtotal) : q.quoted_amount ? String(q.quoted_amount) : "");
+  const [gstRate, setGstRate] = useState(String(q.tax?.gstRate ?? 18));
+  const subtotalValue = Number(subtotal) > 0 ? Number(subtotal) : 0;
+  const gstValue = Math.round(subtotalValue * Number(gstRate)) / 100;
+  const totalValue = Math.round((subtotalValue + gstValue) * 100) / 100;
   const [deliveryDate, setDeliveryDate] = useState(q.delivery_date || "");
   const [paymentTerms, setPaymentTerms] = useState(q.payment_terms || DEFAULT_PAYMENT_TERMS);
   const [savingNotes, setSavingNotes] = useState(false);
@@ -65,7 +71,8 @@ function QuoteRow({ q, onRefetch }: { q: any; onRefetch: () => void }) {
 
   const quoteMessage = () => ({
     quote: q,
-    quotedAmount: quotedAmount ? Number(quotedAmount) : null,
+    quotedAmount: totalValue || null,
+    tax: subtotalValue ? { subtotal: subtotalValue, gstRate: Number(gstRate), gst: gstValue } : null,
     delivery: deliveryDate,
     paymentTerms,
     paymentLink,
@@ -86,7 +93,7 @@ function QuoteRow({ q, onRefetch }: { q: any; onRefetch: () => void }) {
       await apiPut(`/admin/quotes/${q.id}/notes`, {
         admin_notes: adminNotes,
         payment_link: paymentLink,
-        quoted_amount: quotedAmount ? Number(quotedAmount) : undefined,
+        ...(subtotalValue ? { quote_subtotal: subtotalValue, gst_rate: Number(gstRate) } : {}),
         delivery_date: deliveryDate,
         payment_terms: paymentTerms,
       });
@@ -329,14 +336,30 @@ function QuoteRow({ q, onRefetch }: { q: any; onRefetch: () => void }) {
                   <div className="space-y-3">
                     <div className="grid grid-cols-2 gap-3">
                       <div>
-                        <label className="text-xs font-medium text-[#64748B] mb-1 block">Quoted Amount (₹)</label>
+                        <label className="text-xs font-medium text-[#64748B] mb-1 block">Price before GST (₹)</label>
                         <input
                           type="number"
-                          value={quotedAmount}
-                          onChange={e => setQuotedAmount(e.target.value)}
+                          min="0"
+                          value={subtotal}
+                          onChange={e => setSubtotal(e.target.value)}
                           placeholder="e.g. 48000"
                           className="w-full border border-[#E2EAF4] rounded px-3 py-2 text-sm focus:outline-none focus:border-[#1B6CA8] bg-[#F8F9FC]"
                         />
+                      </div>
+                      <div>
+                        <label className="text-xs font-medium text-[#64748B] mb-1 block">GST rate</label>
+                        <select
+                          value={gstRate}
+                          onChange={e => setGstRate(e.target.value)}
+                          className="w-full border border-[#E2EAF4] rounded px-3 py-2 text-sm focus:outline-none focus:border-[#1B6CA8] bg-[#F8F9FC]"
+                        >
+                          {["18", "12", "5", "28", "0"].map((rate) => <option key={rate} value={rate}>{rate}%{rate === "18" ? " (most packaging)" : rate === "0" ? " (exempt / export)" : ""}</option>)}
+                        </select>
+                      </div>
+                      <div className="col-span-2 grid grid-cols-3 gap-2 rounded border border-[#E2EAF4] bg-white px-3 py-2.5 text-sm">
+                        <div><span className="block text-[11px] text-[#94A3B8]">Before GST</span><b className="text-[#0D1B2A]">₹{subtotalValue.toLocaleString("en-IN", { maximumFractionDigits: 2 })}</b></div>
+                        <div><span className="block text-[11px] text-[#94A3B8]">GST {gstRate}%</span><b className="text-[#0D1B2A]">₹{gstValue.toLocaleString("en-IN", { maximumFractionDigits: 2 })}</b></div>
+                        <div><span className="block text-[11px] text-[#94A3B8]">Total incl. GST</span><b className="text-[#1B6CA8]">₹{totalValue.toLocaleString("en-IN", { maximumFractionDigits: 2 })}</b></div>
                       </div>
                       <div>
                         <label className="text-xs font-medium text-[#64748B] mb-1 block">Delivery Date</label>

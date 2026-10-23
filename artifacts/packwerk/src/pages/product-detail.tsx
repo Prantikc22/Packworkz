@@ -8,6 +8,7 @@ import { calculateOrderEstimate } from "@/lib/pricing";
 import { formatINR } from "@/lib/format";
 import { getCategoryBySlug } from "@/lib/skus";
 import { CATALOG_SKUS, getCatalogImage, getCategoryLabel, requiresQuote, type CatalogSku } from "@/lib/catalog";
+import { requiredSizeFields, sizeChosenByOption, sizeOptionsFor, sizeText } from "@/lib/quote-sizes";
 import { ARTICLES } from "@/lib/resources-data";
 import { useCasesForSku, titleCase } from "@/lib/use-cases";
 import { MFG_CATEGORIES } from "@/lib/manufacturers";
@@ -91,9 +92,14 @@ function ProductBuilder({ product }: { product: CatalogSku }) {
   const mockupFormat = MOCKUP_FORMAT_BY_SKU[product.code];
   const fromStudio = new URLSearchParams(search).get("studio") === "1";
 
-  const [sizeCode, setSizeCode] = useState(() => commerce?.sizes[0]?.code || "");
+  const sizeOptions = sizeOptionsFor(product);
+  const isQuoteRoute = product.publicBuyingPath === "quote";
+  // Quote products can always take a custom size; instant products keep their priced sizes.
+  const allowCustom = isQuoteRoute && product.customization_fields.length > 0;
+  const [sizeCode, setSizeCode] = useState(() => sizeOptions[0]?.code || "");
   const [variants, setVariants] = useState<Record<string, string>>(() => Object.fromEntries(product.variants.map((variant) => [variant.key, variant.options[0]])));
-  const [sizeMode, setSizeMode] = useState<"standard" | "custom">("standard");
+  const [sizeMode, setSizeMode] = useState<"standard" | "custom">(() => (sizeOptions.length || !allowCustom ? "standard" : "custom"));
+  const [sizeError, setSizeError] = useState("");
   const [customSpecs, setCustomSpecs] = useState<Record<string, string>>({});
   const [quantity, setQuantity] = useState(product.moq);
   const [quantityDraft, setQuantityDraft] = useState(String(product.moq));
@@ -119,7 +125,7 @@ function ProductBuilder({ product }: { product: CatalogSku }) {
   }, [minimumQuantity, quantity]);
 
   const unitLabel = product.moq_unit.replace(/s$/, "");
-  const estimate = calculateOrderEstimate(product, quantity, "standard", artworkChoice === "design" ? "design" : "upload", sizeCode || undefined, variants);
+  const estimate = calculateOrderEstimate(product, quantity, "standard", artworkChoice === "design" ? "design" : "upload", commerce && sizeMode === "standard" ? sizeCode || undefined : undefined, variants);
   const hasExactPrice = product.publicBuyingPath === "instant"
     && !requiresQuote(product, quantity)
     && "total" in estimate && typeof estimate.total === "number"
@@ -167,14 +173,35 @@ function ProductBuilder({ product }: { product: CatalogSku }) {
   };
 
   const uploadBlocked = artworkChoice === "upload" && (uploading || (Boolean(artworkFile) && !artworkUrl));
-  const specs = sizeMode === "custom" ? Object.fromEntries(Object.entries(customSpecs).filter(([, value]) => value)) : {};
+  const requiredFields = requiredSizeFields(product);
+  const chosenSize = sizeMode === "standard" ? sizeOptions.find((option) => option.code === sizeCode) : undefined;
+  const missingSize = sizeChosenByOption(product) ? [] : sizeMode === "custom" || !sizeOptions.length
+    ? requiredFields.filter((field) => !String(customSpecs[field.key] || "").trim())
+    : chosenSize ? [] : requiredFields;
+  const specs: Record<string, string> = sizeMode === "custom"
+    ? Object.fromEntries(product.customization_fields
+        .map((field) => [field.key, String(customSpecs[field.key] || "").trim()] as const)
+        .filter(([, value]) => value)
+        .map(([key, value]) => {
+          const field = product.customization_fields.find((f) => f.key === key);
+          return [key, field?.unit && /^\d+(\.\d+)?$/.test(value) ? `${value} ${field.unit}` : value];
+        }))
+    : chosenSize ? { size: sizeText(chosenSize) } : {};
   const studioSpecs: Record<string, string> = studioDesign ? { studio_design: `${studioDesign.brandName} · ${studioDesign.stock} · ${studioDesign.color}` } : {};
 
   const addToCart = (goToCheckout: boolean) => {
     if (uploadBlocked) return;
+    if (missingSize.length) {
+      setSizeError(`Add the ${missingSize.map((field) => field.label.toLowerCase()).join(", ")} so we can quote the right size.`);
+      if (sizeMode !== "custom" && allowCustom && !sizeOptions.length) setSizeMode("custom");
+      document.getElementById("pb-size")?.scrollIntoView({ behavior: "smooth", block: "center" });
+      return;
+    }
+    setSizeError("");
     const item = createConfiguredCartItem(product, {
       quantity,
-      sizeCode,
+      // Only priced online sizes travel as a size code; reference sizes go in the spec.
+      sizeCode: sizeMode === "standard" && commerce ? sizeCode : "",
       variantSelections: variants,
       customSpecs: {
         ...specs,
@@ -279,42 +306,46 @@ function ProductBuilder({ product }: { product: CatalogSku }) {
           </div>
 
           {/* 1. Size */}
-          {(commerce?.sizes.length || product.customization_fields.length > 0) && (
-            <fieldset className="pb-step">
-              <legend><i>1</i> {product.category === "labels" ? "Size" : "Size"}</legend>
-              {commerce?.sizes.length ? (
+          {(sizeOptions.length > 0 || product.customization_fields.length > 0) && (
+            <fieldset className="pb-step" id="pb-size">
+              <legend><i>1</i> Size</legend>
+              {(sizeOptions.length > 0 || allowCustom) && (
                 <div className="pb-chips">
-                  {commerce.sizes.map((size) => (
-                    <button key={size.code} type="button" className={sizeCode === size.code ? "is-active" : ""} onClick={() => setSizeCode(size.code)} aria-pressed={sizeCode === size.code}>
+                  {sizeOptions.map((size) => (
+                    <button key={size.code} type="button" className={sizeMode === "standard" && sizeCode === size.code ? "is-active" : ""} onClick={() => { setSizeCode(size.code); setSizeMode("standard"); setSizeError(""); }} aria-pressed={sizeMode === "standard" && sizeCode === size.code}>
                       <b>{formatMeasurementInCm(size.label)}</b>{size.detail && <small>{formatMeasurementInCm(size.detail)}</small>}
                     </button>
                   ))}
-                </div>
-              ) : (
-                <>
-                  <div className="pb-chips">
-                    <button type="button" className={sizeMode === "standard" ? "is-active" : ""} onClick={() => setSizeMode("standard")}><b>Standard size</b><small>{product.standard_spec || "Recommended by our team"}</small></button>
-                    <button type="button" className={sizeMode === "custom" ? "is-active" : ""} onClick={() => setSizeMode("custom")}><b>Custom size</b><small>Enter your dimensions</small></button>
-                  </div>
-                  {sizeMode === "custom" && (
-                    <div className="pb-dims">
-                      {product.customization_fields.map((field) => (
-                        <label key={field.key}>
-                          <span>{field.label}{field.unit ? ` (${field.unit})` : ""}</span>
-                          {field.type === "select" ? (
-                            <select value={customSpecs[field.key] || ""} onChange={(event) => setCustomSpecs((current) => ({ ...current, [field.key]: event.target.value }))}>
-                              <option value="">Select</option>
-                              {field.options?.map((option) => <option key={option}>{option}</option>)}
-                            </select>
-                          ) : (
-                            <input type={field.type === "number" ? "number" : "text"} min={0} placeholder={field.placeholder} value={customSpecs[field.key] || ""} onChange={(event) => setCustomSpecs((current) => ({ ...current, [field.key]: event.target.value }))} />
-                          )}
-                        </label>
-                      ))}
-                    </div>
+                  {allowCustom && (
+                    <button type="button" className={sizeMode === "custom" ? "is-active" : ""} onClick={() => { setSizeMode("custom"); setSizeError(""); }} aria-pressed={sizeMode === "custom"}>
+                      <b>Custom size</b><small>Enter your dimensions</small>
+                    </button>
                   )}
-                </>
+                </div>
               )}
+              {sizeOptions.length > 0 && isQuoteRoute && sizeMode === "standard" && <p className="pb-size-note">Reference sizes — fill weights are a guide for dry products. We confirm the exact size with you before printing.</p>}
+              {(sizeMode === "custom" || (!sizeOptions.length && !allowCustom)) && product.customization_fields.length > 0 && (
+                <div className="pb-dims">
+                  {product.customization_fields.map((field) => {
+                    const required = requiredFields.some((f) => f.key === field.key);
+                    const missing = Boolean(sizeError) && required && !String(customSpecs[field.key] || "").trim();
+                    return (
+                      <label key={field.key} className={missing ? "is-missing" : ""}>
+                        <span>{field.label}{field.unit ? ` (${field.unit})` : ""}{required && <em aria-label="required"> *</em>}</span>
+                        {field.type === "select" ? (
+                          <select value={customSpecs[field.key] || ""} onChange={(event) => setCustomSpecs((current) => ({ ...current, [field.key]: event.target.value }))}>
+                            <option value="">Select</option>
+                            {field.options?.map((option) => <option key={option}>{option}</option>)}
+                          </select>
+                        ) : (
+                          <input type={field.type === "number" ? "number" : "text"} min={0} placeholder={field.placeholder} value={customSpecs[field.key] || ""} onChange={(event) => { setCustomSpecs((current) => ({ ...current, [field.key]: event.target.value })); setSizeError(""); }} />
+                        )}
+                      </label>
+                    );
+                  })}
+                </div>
+              )}
+              {sizeError && <p className="pb-size-error" role="alert">{sizeError}</p>}
             </fieldset>
           )}
 

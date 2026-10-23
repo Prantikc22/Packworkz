@@ -1,6 +1,6 @@
 import { SKUS, SKU_IMAGES, CATEGORIES, type Sku } from "./skus";
 import { EXPANDED_SKUS, type PurchaseMode } from "./catalog-expansion";
-import { PRINT_SPEC_OVERRIDES, withPrintStartFields } from "./sku-print-specs";
+import { PRINT_SPEC_OVERRIDES, withPrintStartFields, withPrintStartVariants } from "./sku-print-specs";
 import { COMMERCE_PRODUCTS, getEffectiveCommerceTiers, MINIMUM_NET_UNIT_PRICE_RUPEES, UNIT_PRICE_INCREASE_RUPEES } from "@workspace/commerce";
 
 export type BuyingMode = "self_serve" | "assisted";
@@ -434,6 +434,7 @@ export const CATALOG_SKUS: CatalogSku[] = ALL_CATALOG_SKUS.filter((sku) => !STOR
   sku.customization_fields = withPrintStartFields(sku);
   const purchaseMode = resolveMode(sku);
   const publicBuyingPath = resolvePublicBuyingPath(sku);
+  sku.variants = withPrintStartVariants(sku, publicBuyingPath);
   const commerceProduct = COMMERCE_PRODUCTS[sku.code];
   const commerceTiers = commerceProduct ? getEffectiveCommerceTiers(sku.code) : [];
   const sourceTiers = commerceProduct

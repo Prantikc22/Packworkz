@@ -309,3 +309,28 @@ export function withPrintStartFields(sku: Sku): CustomField[] {
   if (sku.code === "LC-806" || sku.code === "RL-705") add(SHRINK_TUNNEL);
   return fields;
 }
+
+// Every quote must say what gets printed, on which sides, on what base colour
+// and finish. Added only to reviewed-quote products: instant-buy prices are
+// locked to their existing options.
+const POUCHES = new Set(["FP-101", "FP-102", "FP-103", "FP-104", "FP-105", "FP-106", "FP-107", "FP-108", "FP-109", "FP-110", "FP-114", "FP-115"]);
+const NO_POUCH_COLOUR = new Set(["FP-110"]); // retort colour follows its structure
+const BOX_SIDES = new Set(["BX-414", "BX-415", "BX-416", "EC-503"]);
+
+const POUCH_PRINTING = v("print_sides", "Printing", ["Printed front only", "Printed front & back", "No print (plain)"]);
+const POUCH_COLOUR = v("base_colour", "Pouch colour", ["Transparent", "White", "Black", "Silver (metallised)", "Gold (metallised)", "Kraft paper look"]);
+const POUCH_FINISH = v("finish", "Finish", ["Matte", "Gloss"]);
+const BOX_PRINTING = v("print_sides", "Printing", ["Outside only", "Outside + inside", "No print (plain)"]);
+
+export function withPrintStartVariants(sku: Sku, buyingPath: string): VariantGroup[] {
+  if (buyingPath !== "quote") return sku.variants;
+  const variants = [...sku.variants];
+  const has = (key: string) => variants.some((group) => group.key === key);
+  if (POUCHES.has(sku.code)) {
+    if (!has("print_sides")) variants.push(POUCH_PRINTING);
+    if (!has("base_colour") && !NO_POUCH_COLOUR.has(sku.code)) variants.push(POUCH_COLOUR);
+    if (!has("finish")) variants.push(POUCH_FINISH);
+  }
+  if (BOX_SIDES.has(sku.code) && !has("print_sides")) variants.push(BOX_PRINTING);
+  return variants;
+}

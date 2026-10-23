@@ -1,5 +1,5 @@
 import { Router, type IRouter, type Request } from "express";
-import { deliveryLabel, toCalendarDate } from "../lib/quoteDelivery";
+import { deliveryLabel, quoteTax, toCalendarDate } from "../lib/quoteDelivery";
 import { sb } from "../lib/supabase";
 import { requireAuth } from "../lib/auth";
 import { generateId } from "../lib/generateId";
@@ -39,6 +39,7 @@ function normalizeQuote(quote: any) {
     quoted_amount: quote.quoted_amount ? Number(quote.quoted_amount) : (meta.quoted_amount ? Number(meta.quoted_amount) : null),
     payment_link: safePaymentUrl(quote.payment_link || meta.payment_link),
     delivery_date: deliveryLabel(quote, meta),
+    tax: quoteTax(quote),
     payment_terms: quote.payment_terms || meta.payment_terms || null,
   };
 }
